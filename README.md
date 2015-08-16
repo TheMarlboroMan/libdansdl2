@@ -1,2 +1,4 @@
 # libdansdl2
-Small C++ wrappers for SDL2
+Wrappers para SDL2.
+
+
