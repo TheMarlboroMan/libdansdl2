@@ -63,6 +63,8 @@ class Camara
 		caja_foco.w=w; caja_foco.h=h;
 		enfocar_a(caja_foco.x, caja_foco.y);
 	}
+	void mut_w_pos(unsigned int v) {caja_pos.w=v;}
+	void mut_h_pos(unsigned int v) {caja_pos.h=v;}
 	void mut_w_enfoque(unsigned int v) {caja_foco.w=v;}
 	void mut_h_enfoque(unsigned int v) {caja_foco.h=v;}
 	void restaurar_enfoque() 
