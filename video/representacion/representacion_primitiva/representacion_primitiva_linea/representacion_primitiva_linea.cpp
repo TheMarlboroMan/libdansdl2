@@ -1,5 +1,4 @@
 #include "representacion_primitiva_linea.h"
-#include "representacion_primitiva_linea.h"
 
 using namespace DLibV;
 
@@ -73,6 +72,7 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer)
 	SDL_RenderSetClipRect(p_renderer, NULL);
 
 	SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
+
 	return true;
 }
 
@@ -110,7 +110,6 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 			{
 				procesar_zoom(pos, p_posicion, p_enfoque);
 			}
-
 			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
 			return true;
 		}

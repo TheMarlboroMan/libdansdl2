@@ -35,11 +35,9 @@ class Camara
 	Camara(Sint16=0, Sint16=0, Uint16=800, Uint16=600, unsigned int=0, unsigned int=0);
 	~Camara();
 
-//	const SDL_Rect& acc_caja() const {return this->caja_foco;}
 	const SDL_Rect& acc_caja_foco() const {return this->caja_foco;}
 	const SDL_Rect& acc_caja_pos() const {return this->caja_pos;}
 
-//	SDL_Rect copia_caja() const {return this->caja;}
 	SDL_Rect copia_caja_foco() const {return this->caja_foco;}
 	SDL_Rect copia_caja_pos() const {return this->caja_pos;}
 
@@ -47,17 +45,11 @@ class Camara
 	unsigned int acc_pos_y() const {return this->pos_y;}
 	Sint16 acc_x() const {return this->caja_foco.x;}
 	Sint16 acc_y() const {return this->caja_foco.y;}
-//	Uint16 acc_w() const {return this->caja.w;}
-//	Uint16 acc_h() const {return this->caja.h;}
-//	bool es_con_clip() const {return this->con_clip;}
 
 	void mut_pos_x(unsigned int p_valor) {this->pos_x=p_valor; sincronizar_cajas();}
 	void mut_pos_y(unsigned int p_valor) {this->pos_y=p_valor; sincronizar_cajas();}
 	void mut_x(Sint16 p_valor) {this->caja_foco.x=p_valor;}
 	void mut_y(Sint16 p_valor) {this->caja_foco.y=p_valor;}
-//	void mut_w(Uint16 p_valor) {this->caja.w=p_valor;}
-//	void mut_h(Uint16 p_valor) {this->caja.h=p_valor;}
-//	void mut_con_clip(bool p_valor) {this->con_clip=p_valor;}
 	void mut_enfoque(unsigned int w, unsigned int h) 
 	{
 		caja_foco.w=w; caja_foco.h=h;
