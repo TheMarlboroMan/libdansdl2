@@ -24,11 +24,13 @@ class Representacion_primitiva_puntos:
 						Representacion_primitiva_puntos& operator=(const Representacion_primitiva_puntos&);
 
 	void 					insertar(int x, int y);
+	void					limpiar_puntos();
 
 	protected:
 
 	void 					generar_posicion();
 	void 					preparar_posicion();
+
 
 	private:
 

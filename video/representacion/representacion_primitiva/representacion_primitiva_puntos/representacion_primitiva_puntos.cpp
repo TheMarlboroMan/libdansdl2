@@ -39,6 +39,12 @@ void Representacion_primitiva_puntos::insertar(int x, int y)
 	generar_posicion();
 }
 
+void Representacion_primitiva_puntos::limpiar_puntos()
+{
+	puntos.clear();
+	generar_posicion();
+}	
+
 void Representacion_primitiva_puntos::generar_posicion()
 {
 	if(!puntos.size())
