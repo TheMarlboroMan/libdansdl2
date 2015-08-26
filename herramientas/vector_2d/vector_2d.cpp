@@ -143,6 +143,20 @@ Vector_2d Vector_2d::vector_unidad_para_angulo(float p_angulo)
 	return r;
 }
 
+float Vector_2d::angulo_radianes()
+{
+	auto vec(*this);
+	vec.normalizar();
+	return obtener_angulo_para_vector_unidad_radianes(vec);
+}
+
+float Vector_2d::angulo_grados()
+{
+	auto vec(*this);
+	vec.normalizar();
+	return obtener_angulo_para_vector_unidad_grados(vec);
+}
+
 float Vector_2d::obtener_angulo_para_vector_unidad_radianes(const Vector_2d& p_vector)
 {
 	float rad=std::atan2(p_vector.y, p_vector.x);
