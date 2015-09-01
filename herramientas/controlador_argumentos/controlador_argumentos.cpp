@@ -79,6 +79,12 @@ a la izquierda del separador (en este caso =)
 Si no se localiza el argumento se lanza una excepción propia para indicarlo.
 */
 
+std::string Controlador_argumentos::valor_argumento(const char *c, const char separador) const
+{
+	std::string cad=c;
+	return valor_argumento(cad, separador);
+}
+
 std::string Controlador_argumentos::valor_argumento(const std::string& argumento, const char separador) const
 {
 	std::stringstream ss;

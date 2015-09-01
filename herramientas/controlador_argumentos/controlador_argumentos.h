@@ -34,15 +34,17 @@ class Controlador_argumentos
 	Controlador_argumentos(int argc, char ** argv);
 	~Controlador_argumentos();
 
-	int buscar(const char * p_char) const;
-	int buscar(t_argumento const& p_buscar) const;
-	void inicializar(int argc, char ** argv);
-	size_t obtener_cantidad() const {return argumentos.size();}
-	size_t size() const {return argumentos.size();}
-	const t_argumento acc_argumento(unsigned int p_arg) const;
-	const t_lista_argumentos& acc_argumentos() const;
+	int 			buscar(const char * p_char) const;
+	int 			buscar(t_argumento const& p_buscar) const;
+	void 			inicializar(int argc, char ** argv);
+	size_t 			obtener_cantidad() const {return argumentos.size();}
+	size_t 			size() const {return argumentos.size();}
+	const 			t_argumento acc_argumento(unsigned int p_arg) const;
+	const 			t_lista_argumentos& acc_argumentos() const;
+	bool			argumento_existe(const char * p_char) const;
 	//TODO: Mejor, un método al que pasemos un callable.. Y que itere.
 
+	std::string valor_argumento(const char *c, const char separador='=') const;
 	std::string valor_argumento(const std::string& c, const char separador='=') const;
 };
 
