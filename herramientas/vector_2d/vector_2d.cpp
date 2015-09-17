@@ -108,7 +108,7 @@ void Vector_2d::normalizar()
 	this->y=this->y / m;
 }
 
-float Vector_2d::longitud()
+float Vector_2d::longitud() const
 {
 	return sqrtf(this->x*this->x + this->y*this->y);
 }
@@ -143,14 +143,14 @@ Vector_2d Vector_2d::vector_unidad_para_angulo(float p_angulo)
 	return r;
 }
 
-float Vector_2d::angulo_radianes()
+float Vector_2d::angulo_radianes() const
 {
 	auto vec(*this);
 	vec.normalizar();
 	return obtener_angulo_para_vector_unidad_radianes(vec);
 }
 
-float Vector_2d::angulo_grados()
+float Vector_2d::angulo_grados() const
 {
 	auto vec(*this);
 	vec.normalizar();

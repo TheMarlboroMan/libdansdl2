@@ -34,9 +34,9 @@ struct Vector_2d
 	Vector_2d& operator/=(const float p_divisor);
 
 	void normalizar();
-	float longitud();
-	float angulo_radianes();
-	float angulo_grados();
+	float longitud() const;
+	float angulo_radianes() const;
+	float angulo_grados() const;
 	static float obtener_angulo_para_vector_unidad_radianes(const Vector_2d&);
 	static float obtener_angulo_para_vector_unidad_grados(const Vector_2d&);
 	static Vector_2d obtener_para_puntos(float p_xa, float p_ya, float p_xb, float p_yb);
