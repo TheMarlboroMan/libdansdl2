@@ -5,6 +5,14 @@ using namespace DLibH;
 
 //Operaciones con vectores.
 
+Vector_2d& Vector_2d::operator=(const Vector_2d &otro)
+{
+	this->x=otro.x;
+	this->y=otro.y;
+
+	return *this;
+}
+
 Vector_2d Vector_2d::operator+(const Vector_2d &otro)
 {
 	float x=this->x+otro.x;
@@ -31,14 +39,6 @@ Vector_2d Vector_2d::operator/(const Vector_2d &otro)
 	float x=this->x/otro.x;
 	float y=this->y/otro.y;
 	return Vector_2d(x,y);
-}
-
-Vector_2d& Vector_2d::operator=(const Vector_2d &otro)
-{
-	this->x=otro.x;
-	this->y=otro.y;
-
-	return *this;
 }
 
 Vector_2d& Vector_2d::operator+=(const Vector_2d &otro)
@@ -99,7 +99,6 @@ Vector_2d& Vector_2d::operator/=(const float p_divisor)
 	this->y/=p_divisor;
 	return *this;
 }
-
 
 void Vector_2d::normalizar()
 {
@@ -180,6 +179,8 @@ float Vector_2d::obtener_angulo_para_vector_unidad_grados(const Vector_2d& p_vec
 	return grados;
 }
 
+/******************************************************************************/
+
 Vector_2d_cartesiano::Vector_2d_cartesiano(const Vector_2d& v)
 	:Vector_2d(v)
 {
@@ -197,6 +198,93 @@ Vector_2d_cartesiano Vector_2d_pantalla::a_cartesiano() const
 	return Vector_2d_cartesiano(x, -y);
 }
 
+Vector_2d_cartesiano Vector_2d_cartesiano::operator+(const Vector_2d &otro)
+{
+	float x=this->x+otro.x;
+	float y=this->y+otro.y;
+	return Vector_2d_cartesiano(x,y);
+}
+
+Vector_2d_cartesiano Vector_2d_cartesiano::operator-(const Vector_2d &otro)
+{
+	float x=this->x-otro.x;
+	float y=this->y-otro.y;
+	return Vector_2d_cartesiano(x,y);
+}
+
+Vector_2d_cartesiano Vector_2d_cartesiano::operator*(const Vector_2d &otro)
+{
+	float x=this->x*otro.x;
+	float y=this->y*otro.y;
+	return Vector_2d_cartesiano(x,y);
+}
+
+Vector_2d_cartesiano Vector_2d_cartesiano::operator/(const Vector_2d &otro)
+{
+	float x=this->x/otro.x;
+	float y=this->y/otro.y;
+	return Vector_2d_cartesiano(x,y);
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator+=(const Vector_2d &otro)
+{
+	this->x+=otro.x;
+	this->y+=otro.y;
+	return *this;
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator-=(const Vector_2d &otro)
+{
+	this->x-=otro.x;
+	this->y-=otro.y;
+	return *this;
+}
+
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator*=(const Vector_2d &otro)
+{
+	this->x*=otro.x;
+	this->y*=otro.y;
+	return *this;
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator/=(const Vector_2d &otro)
+{
+	this->x/=otro.x;
+	this->y/=otro.y;
+	return *this;
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator*(const float p_multiplicador)
+{
+	this->x=this->x*p_multiplicador;
+	this->y=this->y*p_multiplicador;
+	return *this;
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator/(const float p_divisor)
+{
+	this->x=this->x/p_divisor;
+	this->y=this->y/p_divisor;
+	return *this;
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator*=(const float p_multiplicador)
+{
+	this->x*=p_multiplicador;
+	this->y*=p_multiplicador;
+	return *this;
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator/=(const float p_divisor)
+{
+	this->x/=p_divisor;
+	this->y/=p_divisor;
+	return *this;
+}
+
+/******************************************************************************/
+
 Vector_2d_pantalla::Vector_2d_pantalla(const Vector_2d& v)
 	:Vector_2d(v)
 {
@@ -212,4 +300,89 @@ Vector_2d_pantalla& Vector_2d_pantalla::operator=(const Vector_2d& v)
 Vector_2d_pantalla Vector_2d_cartesiano::a_pantalla() const
 {
 	return Vector_2d_pantalla(x, -y);
+}
+
+Vector_2d_pantalla Vector_2d_pantalla::operator+(const Vector_2d &otro)
+{
+	float x=this->x+otro.x;
+	float y=this->y+otro.y;
+	return Vector_2d_pantalla(x,y);
+}
+
+Vector_2d_pantalla Vector_2d_pantalla::operator-(const Vector_2d &otro)
+{
+	float x=this->x-otro.x;
+	float y=this->y-otro.y;
+	return Vector_2d_pantalla(x,y);
+}
+
+Vector_2d_pantalla Vector_2d_pantalla::operator*(const Vector_2d &otro)
+{
+	float x=this->x*otro.x;
+	float y=this->y*otro.y;
+	return Vector_2d_pantalla(x,y);
+}
+
+Vector_2d_pantalla Vector_2d_pantalla::operator/(const Vector_2d &otro)
+{
+	float x=this->x/otro.x;
+	float y=this->y/otro.y;
+	return Vector_2d_pantalla(x,y);
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator+=(const Vector_2d &otro)
+{
+	this->x+=otro.x;
+	this->y+=otro.y;
+	return *this;
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator-=(const Vector_2d &otro)
+{
+	this->x-=otro.x;
+	this->y-=otro.y;
+	return *this;
+}
+
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator*=(const Vector_2d &otro)
+{
+	this->x*=otro.x;
+	this->y*=otro.y;
+	return *this;
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator/=(const Vector_2d &otro)
+{
+	this->x/=otro.x;
+	this->y/=otro.y;
+	return *this;
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator*(const float p_multiplicador)
+{
+	this->x=this->x*p_multiplicador;
+	this->y=this->y*p_multiplicador;
+	return *this;
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator/(const float p_divisor)
+{
+	this->x=this->x/p_divisor;
+	this->y=this->y/p_divisor;
+	return *this;
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator*=(const float p_multiplicador)
+{
+	this->x*=p_multiplicador;
+	this->y*=p_multiplicador;
+	return *this;
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator/=(const float p_divisor)
+{
+	this->x/=p_divisor;
+	this->y/=p_divisor;
+	return *this;
 }

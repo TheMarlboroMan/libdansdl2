@@ -47,7 +47,9 @@ struct Vector_2d
 
 	static float obtener_angulo_para_vector_unidad_radianes(const Vector_2d&);
 	static float obtener_angulo_para_vector_unidad_grados(const Vector_2d&);
+
 	static Vector_2d vector_unidad_para_angulo(float);
+
 	static Vector_2d_cartesiano obtener_para_puntos_cartesiano(float p_xa, float p_ya, float p_xb, float p_yb);
 	static Vector_2d_pantalla obtener_para_puntos_pantalla(float p_xa, float p_ya, float p_xb, float p_yb);
 };
@@ -65,6 +67,18 @@ struct Vector_2d_pantalla:
 						Vector_2d_pantalla(const Vector_2d& v);
 						Vector_2d_pantalla& operator=(const Vector_2d& v);
 	Vector_2d_cartesiano			a_cartesiano() const;
+	Vector_2d_pantalla 			operator+(const Vector_2d &otro);
+	Vector_2d_pantalla 			operator-(const Vector_2d &otro);
+	Vector_2d_pantalla 			operator*(const Vector_2d &otro);
+	Vector_2d_pantalla 			operator/(const Vector_2d &otro);
+	Vector_2d_pantalla& 			operator+=(const Vector_2d &otro);
+	Vector_2d_pantalla& 			operator-=(const Vector_2d &otro);
+	Vector_2d_pantalla& 			operator*=(const Vector_2d &otro);
+	Vector_2d_pantalla& 			operator/=(const Vector_2d &otro);
+	Vector_2d_pantalla&			operator*(const float p_multiplicador);
+	Vector_2d_pantalla& 			operator/(const float p_divisor);
+	Vector_2d_pantalla& 			operator*=(const float p_multiplicador);
+	Vector_2d_pantalla& 			operator/=(const float p_divisor);	
 };
 
 /**
@@ -78,6 +92,19 @@ struct Vector_2d_cartesiano:
 						Vector_2d_cartesiano(const Vector_2d& v);
 						Vector_2d_cartesiano& operator=(const Vector_2d& v);
 	Vector_2d_pantalla			a_pantalla() const;
+	Vector_2d_cartesiano 			operator+(const Vector_2d &otro);
+	Vector_2d_cartesiano 			operator-(const Vector_2d &otro);
+	Vector_2d_cartesiano 			operator*(const Vector_2d &otro);
+	Vector_2d_cartesiano 			operator/(const Vector_2d &otro);
+	Vector_2d_cartesiano& 			operator+=(const Vector_2d &otro);
+	Vector_2d_cartesiano& 			operator-=(const Vector_2d &otro);
+	Vector_2d_cartesiano& 			operator*=(const Vector_2d &otro);
+	Vector_2d_cartesiano& 			operator/=(const Vector_2d &otro);
+	Vector_2d_cartesiano&			operator*(const float p_multiplicador);
+	Vector_2d_cartesiano& 			operator/(const float p_divisor);
+	Vector_2d_cartesiano& 			operator*=(const float p_multiplicador);
+	Vector_2d_cartesiano& 			operator/=(const float p_divisor);
+	
 };
 
 } //Fin namespace DLibH
