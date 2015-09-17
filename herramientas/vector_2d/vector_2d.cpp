@@ -115,18 +115,28 @@ float Vector_2d::longitud() const
 
 /*El orden de los factores PUEDE alterar el producto.*/
 
-Vector_2d Vector_2d::obtener_para_puntos(float p_xa, float p_ya, float p_xb, float p_yb)
+Vector_2d_pantalla Vector_2d::obtener_para_puntos_pantalla(float p_xa, float p_ya, float p_xb, float p_yb)
 {
-	Vector_2d r(0,0);
+	Vector_2d_pantalla r(0.0f, 0.0f);
 
-	if(p_xa==p_xb && p_ya==p_yb)
-	{
-
-	}
-	else
+	if(! (p_xa==p_xb && p_ya==p_yb))
 	{
 		r.x=p_xa-p_xb;
 		r.y=p_ya-p_yb;
+		r.normalizar();
+	}
+
+	return r;
+}
+
+Vector_2d_cartesiano Vector_2d::obtener_para_puntos_cartesiano(float p_xa, float p_ya, float p_xb, float p_yb)
+{
+	Vector_2d_cartesiano r(0.0,0.0);
+
+	if(! (p_xa==p_xb && p_ya==p_yb))
+	{
+		r.x=p_xa-p_xb;
+		r.y=p_yb-p_ya;
 		r.normalizar();
 	}
 
@@ -168,4 +178,38 @@ float Vector_2d::obtener_angulo_para_vector_unidad_grados(const Vector_2d& p_vec
 	float rad=obtener_angulo_para_vector_unidad_radianes(p_vector);
 	float grados=(rad / M_PI) * 180.0;
 	return grados;
+}
+
+Vector_2d_cartesiano::Vector_2d_cartesiano(const Vector_2d& v)
+	:Vector_2d(v)
+{
+
+}
+
+Vector_2d_cartesiano& Vector_2d_cartesiano::operator=(const Vector_2d& v)
+{
+	Vector_2d::operator=(v);
+	return *this;
+}
+
+Vector_2d_cartesiano Vector_2d_pantalla::a_cartesiano() const
+{
+	return Vector_2d_cartesiano(x, -y);
+}
+
+Vector_2d_pantalla::Vector_2d_pantalla(const Vector_2d& v)
+	:Vector_2d(v)
+{
+
+}
+
+Vector_2d_pantalla& Vector_2d_pantalla::operator=(const Vector_2d& v)
+{
+	Vector_2d::operator=(v);
+	return *this;
+}
+
+Vector_2d_pantalla Vector_2d_cartesiano::a_pantalla() const
+{
+	return Vector_2d_pantalla(x, -y);
 }
