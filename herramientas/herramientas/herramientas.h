@@ -64,6 +64,7 @@ class Herramientas
 	static std::string cadena_desde_fichero(const char *);
 	static float grados_a_radianes(float);
 	static float round(float);
+	static float angulo_360(float f);
 	static float angulo_entre_puntos(float, float, float, float);
 	static bool validar_email(std::string);
 //	static int cadena_a_entero(const std::string &)

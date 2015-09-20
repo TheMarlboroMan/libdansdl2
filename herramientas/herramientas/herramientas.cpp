@@ -479,3 +479,14 @@ bool Herramientas::caja_en_caja(int pqx, int pqy, unsigned int pqw, unsigned int
 
 	return resultado;
 }
+
+float Herramientas::angulo_360(float a)
+{
+	//Convertir a formato 360...
+	if(a < 0.f)
+	{
+		a=180.f + 180.f + a;
+	}
+
+	return a;
+}
