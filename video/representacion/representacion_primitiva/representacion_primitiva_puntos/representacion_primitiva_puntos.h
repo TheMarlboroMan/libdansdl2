@@ -11,7 +11,6 @@ class Representacion_primitiva_puntos:
 {
 	public:
 	
-	void 					preparar();
 	virtual bool 				es_estatica() const=0;
 
 	bool 					volcado(SDL_Renderer *);

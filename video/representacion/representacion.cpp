@@ -14,14 +14,18 @@ Representacion::Representacion():
 }
 
 Representacion::Representacion(Uint8 p_alpha):
-	alpha(p_alpha), visible(true)
+	alpha(p_alpha), 
+	mod_color_r(255), mod_color_g(255), mod_color_b(255), 
+	visible(true)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
 }
 
 Representacion::Representacion(const Representacion& p_otra):
-	alpha(p_otra.alpha), visible(p_otra.visible)
+	alpha(p_otra.alpha), mod_color_r(p_otra.mod_color_r), 
+	mod_color_g(p_otra.mod_color_g), mod_color_b(p_otra.mod_color_b), 
+	visible(p_otra.visible)
 {
 	this->posicion=p_otra.posicion;
 	this->recorte=p_otra.recorte;
@@ -88,6 +92,9 @@ Representacion& Representacion::operator=(const Representacion& p_otra)
 	this->posicion=p_otra.posicion;
 	this->recorte=p_otra.recorte;
 	this->visible=p_otra.visible;
+	mod_color_r=p_otra.mod_color_r;
+	mod_color_g=p_otra.mod_color_g;
+	mod_color_b=p_otra.mod_color_b;
 
 	return *this;
 }

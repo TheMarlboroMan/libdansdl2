@@ -19,7 +19,7 @@ class Representacion_bitmap:public Representacion_grafica
 
 	void establecer_recurso_sin_recortar(Textura const * r){Representacion_grafica::establecer_textura(r);}
 	virtual void establecer_textura(Textura const *);
-	void preparar() {marcar_como_preparada();}
+	void preparar(const SDL_Renderer * r) {marcar_como_preparada();}
 	virtual bool es_estatica() const=0;
 };
 

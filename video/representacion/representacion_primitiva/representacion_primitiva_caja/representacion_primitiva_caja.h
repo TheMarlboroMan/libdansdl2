@@ -19,7 +19,6 @@ class Representacion_primitiva_caja:public Representacion_primitiva
 
 	public:
 	
-	void preparar();
 	virtual bool es_estatica() const=0;
 	virtual bool es_rellena() const=0;
 

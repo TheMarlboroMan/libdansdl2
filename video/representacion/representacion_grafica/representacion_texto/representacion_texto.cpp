@@ -2,14 +2,13 @@
 
 using namespace DLibV;
 
-Representacion_texto::Representacion_texto(const SDL_Renderer * r, const DLibV::Superficie * p_rep)
+Representacion_texto::Representacion_texto(const DLibV::Superficie * p_rep)
 	:Representacion_grafica(),
 	ancho_glifo(0), alto_glifo(0), interlineado(0), interletra(0), cadena(""),
 	ancho_area(0), alto_area(0),
 	color_fondo(0), 
-	renderer(r),
-	superficie_texto(NULL), 
-	superficie_alfabeto(NULL)
+	superficie_texto(nullptr), 
+	superficie_alfabeto(nullptr)
 {
 	this->establecer_recurso_fuente(p_rep);
 }
@@ -25,20 +24,20 @@ Representacion_texto::Representacion_texto(const Representacion_texto& p_otra)
 	ancho_area(p_otra.ancho_area), 
 	alto_area(p_otra.alto_area),
 	color_fondo(p_otra.color_fondo), 
-	renderer(p_otra.renderer),
-	superficie_texto(NULL),
+	superficie_texto(nullptr),
 	superficie_alfabeto(p_otra.superficie_alfabeto)
 {
+	anular_textura();
 	this->establecer_posicion(p_otra.acc_posicion());
 	iniciar_recurso();
-	preparar();
+	marcar_como_no_preparada();
 }
 
 Representacion_texto::~Representacion_texto()
 {
-	liberar_textura();
 	liberar_superficie_texto();
-	superficie_alfabeto=NULL;	
+	superficie_alfabeto=nullptr;
+	liberar_textura();
 }
 
 Representacion_texto& Representacion_texto::operator=(const Representacion_texto& p_otra)
@@ -52,11 +51,10 @@ Representacion_texto& Representacion_texto::operator=(const Representacion_texto
 	cadena=std::string(p_otra.cadena);
 	ancho_area=p_otra.ancho_area;
 	alto_area=p_otra.alto_area;
-	renderer=p_otra.renderer;
-	superficie_texto=NULL;
+	superficie_texto=nullptr;
 	superficie_alfabeto=p_otra.superficie_alfabeto;
+	marcar_como_no_preparada();
 	iniciar_recurso();
-	preparar();
 
 	return *this;
 }
@@ -66,7 +64,7 @@ void Representacion_texto::liberar_superficie_texto()
 	if(superficie_texto) 
 	{
 		delete superficie_texto; //Ojo, es DLibV::Superficie, no SDL_Surface.
-		superficie_texto=NULL;
+		superficie_texto=nullptr;
 	}
 }
 
@@ -139,8 +137,6 @@ void Representacion_texto::iniciar_recurso()
 		//superficie de forma instantánea. 
 
 		color_fondo=superficie_alfabeto->acc_color_transparencia();
-
-
 		superficie_texto->establecer_transparencia(color_fondo);
 		superficie_texto->rellenar(color_fondo);
 
@@ -160,7 +156,7 @@ void Representacion_texto::establecer_dimensiones_area(unsigned int p_ancho, uns
 
 /*Esta escribe realmente el texto...*/
 
-void Representacion_texto::preparar()
+void Representacion_texto::preparar(const SDL_Renderer * renderer)
 {
 	if(!superficie_texto)
 	{
@@ -216,7 +212,8 @@ void Representacion_texto::preparar()
 
 		//A partir de este momento la textura es propiedad del objeto.
 
-		liberar_textura();
+		//TODO: Warning warning warning... La textura PUEDE SER DE OTRO OBJETO, COPIADA!!!!!!!!!!!!!!!
+		//liberar_textura();
 
 		DLibV::Textura * tex=new DLibV::Textura(renderer, sur);
 		establecer_textura(tex);

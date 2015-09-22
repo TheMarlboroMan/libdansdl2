@@ -12,7 +12,7 @@ cambiar: para esos es mejor usar una fija con el tamaño suficiente.
 namespace DLibV
 {
 
-
+	
 class Representacion_texto_auto:public Representacion_texto
 {
 	private:
@@ -26,20 +26,20 @@ class Representacion_texto_auto:public Representacion_texto
 	virtual void asignar(std::string const& p_param);
 	virtual bool es_estatica()const=0;
 
-	Representacion_texto_auto(const SDL_Renderer * r, const DLibV::Superficie * p_rep, const char p_char)
-		:Representacion_texto(r, p_rep)
+	Representacion_texto_auto(const DLibV::Superficie * p_rep, const char p_char)
+		:Representacion_texto(p_rep)
 	{
 		this->asignar(p_char);
 	}
 
-	Representacion_texto_auto(const SDL_Renderer * r, const DLibV::Superficie * p_rep, const char * p_char)
-		:Representacion_texto(r, p_rep)
+	Representacion_texto_auto(const DLibV::Superficie * p_rep, const char * p_char)
+		:Representacion_texto(p_rep)
 	{
 		if(p_char) this->asignar(p_char);
 	}
 
-	Representacion_texto_auto(const SDL_Renderer * r, const DLibV::Superficie * p_rep, std::string const& p_cad)
-		:Representacion_texto(r, p_rep)
+	Representacion_texto_auto(const DLibV::Superficie * p_rep, std::string const& p_cad)
+		:Representacion_texto(p_rep)
 	{
 		this->asignar(p_cad);
 	}
@@ -53,13 +53,13 @@ class Representacion_texto_auto_dinamica:public Representacion_texto_auto
 {
 	public:
 
-	Representacion_texto_auto_dinamica(const SDL_Renderer * r, const DLibV::Superficie * p_rep, const char p_char)
-		:Representacion_texto_auto(r, p_rep, p_char){}
+	Representacion_texto_auto_dinamica(const DLibV::Superficie * p_rep, const char p_char)
+		:Representacion_texto_auto(p_rep, p_char){}
 
-	Representacion_texto_auto_dinamica(const SDL_Renderer * r, const DLibV::Superficie * p_rep, const char * p_char)
-		:Representacion_texto_auto(r, p_rep, p_char){}
-	Representacion_texto_auto_dinamica(const SDL_Renderer * r, const DLibV::Superficie * p_rep, std::string const& p_cad)
-		:Representacion_texto_auto(r, p_rep, p_cad){}
+	Representacion_texto_auto_dinamica(const DLibV::Superficie * p_rep, const char * p_char)
+		:Representacion_texto_auto(p_rep, p_char){}
+	Representacion_texto_auto_dinamica(const DLibV::Superficie * p_rep, std::string const& p_cad)
+		:Representacion_texto_auto(p_rep, p_cad){}
 	Representacion_texto_auto_dinamica(const Representacion_texto_auto_dinamica& p_otra)
 		:Representacion_texto_auto(p_otra) {};
 	~Representacion_texto_auto_dinamica(){}
@@ -77,12 +77,12 @@ class Representacion_texto_auto_estatica:public Representacion_texto_auto
 {
 	public:
 
-	Representacion_texto_auto_estatica(const SDL_Renderer * r, const DLibV::Superficie * p_rep, const char p_char)
-		:Representacion_texto_auto(r, p_rep, p_char){}
-	Representacion_texto_auto_estatica(const SDL_Renderer * r, const DLibV::Superficie * p_rep, const char * p_char)
-		:Representacion_texto_auto(r, p_rep, p_char){}
-	Representacion_texto_auto_estatica(const SDL_Renderer * r, const DLibV::Superficie * p_rep, std::string const& p_cad)
-		:Representacion_texto_auto(r, p_rep, p_cad){}	
+	Representacion_texto_auto_estatica(const DLibV::Superficie * p_rep, const char p_char)
+		:Representacion_texto_auto(p_rep, p_char){}
+	Representacion_texto_auto_estatica(const DLibV::Superficie * p_rep, const char * p_char)
+		:Representacion_texto_auto(p_rep, p_char){}
+	Representacion_texto_auto_estatica(const DLibV::Superficie * p_rep, std::string const& p_cad)
+		:Representacion_texto_auto(p_rep, p_cad){}	
 	Representacion_texto_auto_estatica(const Representacion_texto_auto_estatica& p_otra)
 		:Representacion_texto_auto(p_otra) {};
 	~Representacion_texto_auto_estatica(){}

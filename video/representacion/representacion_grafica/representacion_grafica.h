@@ -118,7 +118,7 @@ class Representacion_grafica:public Representacion
 	Representacion_grafica_transformacion transformacion;
 
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
-	mutable bool preparada;	//Indica si la pantalla puede volcar o tiene que hacer una preparación propia.
+	mutable bool preparada; //Indica si la pantalla puede volcar o tiene que hacer una preparación propia.
 
 	bool realizar_render(SDL_Renderer *, SDL_Rect& rec, SDL_Rect& pos);
 
@@ -156,7 +156,7 @@ class Representacion_grafica:public Representacion
 	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;};
 
 	virtual void establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
-	virtual void preparar()=0;
+	virtual void preparar(const SDL_Renderer * renderer)=0;
 };
 
 } //Fin namespace DLibV

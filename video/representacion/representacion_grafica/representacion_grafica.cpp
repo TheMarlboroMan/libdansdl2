@@ -3,7 +3,7 @@
 using namespace DLibV;
 
 Representacion_grafica::Representacion_grafica()
-	:Representacion(), textura(NULL), preparada(false)
+	:Representacion(), textura(nullptr), preparada(false)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
@@ -83,7 +83,7 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	}
 	else
 	{
-		if(!this->es_preparada()) this->preparar();
+		if(!this->es_preparada()) this->preparar(p_renderer);
 
 		
 		//Definimos aquí estas variables: puede que al "preparar" hayan cambiado los valores.
@@ -126,7 +126,7 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 		}
 		else
 		{
-			if(!this->es_preparada()) this->preparar();
+			if(!this->es_preparada()) this->preparar(p_renderer);
 
 			SDL_Rect rec=copia_recorte();
 			pos=copia_posicion();	//Again, por si al preparar ha cambiado.

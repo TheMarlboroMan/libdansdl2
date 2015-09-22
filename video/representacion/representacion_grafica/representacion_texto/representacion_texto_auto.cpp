@@ -74,8 +74,6 @@ void Representacion_texto_auto::establecer_dimensiones_por_contenido()
 		}while(!salir);
 	}
 
-//std::cout<<ancho_maximo<<" * ("<<this->ancho_glifo<<"+"<<interletra<<"), "<<cantidad_lineas<<" * ("<<this->alto_glifo<<"+"<<this->interlineado<<")"<<std::endl;
-
 	this->establecer_dimensiones_area(ancho_maximo * (this->ancho_glifo+interletra), cantidad_lineas * (this->alto_glifo+this->interlineado));
 }
 

@@ -39,7 +39,6 @@ class Representacion_texto:public Representacion_grafica
 	
 	Uint32 color_fondo;
 
-	const SDL_Renderer * renderer;
 	DLibV::Superficie * superficie_texto;
 	const DLibV::Superficie * superficie_alfabeto;
 
@@ -61,7 +60,7 @@ class Representacion_texto:public Representacion_grafica
 
 	std::string acc_cadena() const {return this->cadena;}
 	void establecer_dimensiones_area(unsigned int, unsigned int);
-	void preparar();
+	void preparar(const SDL_Renderer * renderer);
 	void mut_interlineado(int p_valor) 
 	{
 		this->interlineado=p_valor;
@@ -89,7 +88,7 @@ class Representacion_texto:public Representacion_grafica
 	////////////////////////////////////////////////////////////////////////
 	//Constructor y destructor.
 
-	Representacion_texto(const SDL_Renderer * renderer, const DLibV::Superficie *);
+	Representacion_texto(const DLibV::Superficie *);
 	Representacion_texto(const Representacion_texto&);
 
 	virtual ~Representacion_texto();

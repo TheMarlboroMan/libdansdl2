@@ -40,19 +40,19 @@ void Representacion_bitmap::establecer_textura(Textura const * p_recurso)
 
 Representacion_bitmap_dinamica::Representacion_bitmap_dinamica():Representacion_bitmap()
 {
-	this->preparar();
+	this->preparar(nullptr);
 }
 
 Representacion_bitmap_dinamica::Representacion_bitmap_dinamica(const Representacion_bitmap_dinamica& o)
 	:Representacion_bitmap(o)
 {
-	this->preparar();
+	this->preparar(nullptr);
 }
 
 Representacion_bitmap_dinamica::Representacion_bitmap_dinamica(const Textura * p_rec)
 	:Representacion_bitmap(p_rec)
 {
-	this->preparar();
+	this->preparar(nullptr);
 }
 
 Representacion_bitmap_dinamica& Representacion_bitmap_dinamica::operator=(const Representacion_bitmap_dinamica& o)
@@ -65,18 +65,18 @@ Representacion_bitmap_dinamica& Representacion_bitmap_dinamica::operator=(const 
 
 Representacion_bitmap_estatica::Representacion_bitmap_estatica():Representacion_bitmap()
 {
-	this->preparar();
+	this->preparar(nullptr);
 }
 
 Representacion_bitmap_estatica::Representacion_bitmap_estatica(const Representacion_bitmap_estatica& o)
 	:Representacion_bitmap(o)
 {
-	this->preparar();
+	this->preparar(nullptr);
 }
 
 Representacion_bitmap_estatica::Representacion_bitmap_estatica(const Textura * p_rec):Representacion_bitmap(p_rec)
 {
-	this->preparar();
+	this->preparar(nullptr);
 }
 
 Representacion_bitmap_estatica& Representacion_bitmap_estatica::operator=(const Representacion_bitmap_estatica& o)
