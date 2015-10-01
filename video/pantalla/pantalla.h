@@ -41,7 +41,7 @@ class Pantalla
 	//Métodos privados.
 
 	void cortar_caja_a_pantalla(SDL_Rect *);
-	void configurar();
+	void configurar(int);
 	
 	public:
 
@@ -58,8 +58,7 @@ class Pantalla
 	void establecer_titulo(const char * p_cadena);
 	unsigned short int acc_modo_ventana() const {return modo_ventana;}
 
-	void inicializar();
-	void inicializar(int, int);
+	void inicializar(int, int, int=0);
 	void establecer_modo_ventana(unsigned int);
 	void establecer_medidas_logicas(int, int);
 	void rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect const&);

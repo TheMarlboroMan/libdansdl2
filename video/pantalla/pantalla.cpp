@@ -14,22 +14,17 @@ Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
 
 Pantalla::~Pantalla()
 {
-	if(this->ventana) SDL_DestroyWindow(this->ventana);	
+	if(this->ventana) SDL_DestroyWindow(this->ventana);
 	if(this->renderer) SDL_DestroyRenderer(this->renderer);	 //Esto destruirá texturas asociadas al renderer.
 }
 
-void Pantalla::inicializar(int p_w, int p_h)
+void Pantalla::inicializar(int p_w, int p_h, int flags_ventana)
 {
 	w=p_w;
 	h=p_h;
 //	w_logico(w);
 //	h_logico(h);
-	configurar();
-}
-
-void Pantalla::inicializar()
-{
-	this->configurar();
+	configurar(flags_ventana);
 }
 
 void Pantalla::establecer_titulo(const char * p_cadena)
@@ -93,7 +88,7 @@ void Pantalla::preparar_para_camara(Camara const& p_camara)
 	if(p_camara.es_con_clip()) this->establecer_clip_para_camara(p_camara);
 }
 */
-void Pantalla::configurar()
+void Pantalla::configurar(int flags_ventana)
 {
 	//TODO: A esto se llamaría si cambiamos el tamaño de la ventana. Y es un 
 	//error, puesto que la otra ventana se queda ahí.
@@ -102,7 +97,7 @@ void Pantalla::configurar()
 		ventana=SDL_CreateWindow("", 
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
-			w, h, 0); //SDL_WINDOW_FULLSCREEN_DESKTOP);
+			w, h, flags_ventana); //SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else
 	{
