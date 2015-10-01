@@ -3,7 +3,7 @@
 using namespace DLibV;
 
 Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
-	ventana(NULL), renderer(NULL), volcados(0), 
+	ventana(nullptr), renderer(nullptr), volcados(0), 
 	w(p_w), h(p_h), modo_ventana(p_m), w_logico(w), h_logico(h)
 {
 	this->simulacro_caja.w=0;
@@ -34,12 +34,14 @@ void Pantalla::establecer_titulo(const char * p_cadena)
 
 void Pantalla::rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect const& p_caja)
 {
+	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);
 	SDL_RenderDrawRect(renderer, &p_caja);
 }
 
 void Pantalla::rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
 	SDL_RenderSetClipRect(renderer, NULL);
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);
 	SDL_RenderDrawRect(renderer, NULL);
@@ -54,7 +56,19 @@ void Pantalla::limpiar(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void Pantalla::actualizar()
 {
-	SDL_RenderPresent(renderer);
+	//Uint32 SDL_GetWindowFlags(SDL_Window* window)
+//	std::cout<<SDL_GetWindowFlags(ventana)<<std::endl;
+
+//	if(SDL_GetWindowFlags(ventana) & SDL_WINDOW_OPENGL) 
+//	{
+//		std::cout<<"GL"<<std::endl;
+//		SDL_GL_SwapWindow(ventana);
+//	}
+//	else 
+//	{
+//		std::cout<<"NO GL"<<std::endl;
+		SDL_RenderPresent(renderer);
+//	}
 	this->volcados=0;
 }
 
@@ -90,8 +104,6 @@ void Pantalla::preparar_para_camara(Camara const& p_camara)
 */
 void Pantalla::configurar(int flags_ventana)
 {
-	//TODO: A esto se llamaría si cambiamos el tamaño de la ventana. Y es un 
-	//error, puesto que la otra ventana se queda ahí.
 	if(!ventana)
 	{	
 		ventana=SDL_CreateWindow("", 
@@ -104,6 +116,7 @@ void Pantalla::configurar(int flags_ventana)
 		SDL_SetWindowSize(ventana, w, h);
 	}
 
+	//TODO: NO crear renderer si la flag de OpenGL está activa...
 	renderer=SDL_CreateRenderer(ventana, -1, 0);
 
 	establecer_modo_ventana(modo_ventana);
@@ -147,11 +160,13 @@ void Pantalla::reiniciar_clip_completo()
 
 void Pantalla::establecer_clip_para_camara(Camara const& p_camara)
 {
-	SDL_Rect caja=p_camara.acc_caja_pos();	
+	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
+	SDL_Rect caja=p_camara.acc_caja_pos();
 	SDL_RenderSetClipRect(renderer, &caja);
 }
 
 void Pantalla::establecer_clip(SDL_Rect p_caja)
 {
+	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
 	SDL_RenderSetClipRect(renderer, &p_caja);
 }
