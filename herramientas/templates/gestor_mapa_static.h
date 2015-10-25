@@ -71,6 +71,11 @@ class Gestor_mapa_static
 		return it != Gestor_mapa_static::elementos.end();
 	}
 
+	static void swap(C a, C b)
+	{
+		std::swap(Gestor_mapa_static::elementos[a], Gestor_mapa_static::elementos[b]);
+	}
+
 	static void vaciar()
 	{
 		while(!Gestor_mapa_static::elementos.empty())
