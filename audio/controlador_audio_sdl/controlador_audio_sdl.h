@@ -165,6 +165,7 @@ class Controlador_audio_SDL
 	void establecer_volumen_general(int);
 	void establecer_volumen(int p_vol, int p_canal=-1); //p_vol de 0 a 128.
 	void establecer_volumen_musica(int);
+	int acc_volumen_musica() const {return Mix_VolumeMusic(-1);}
 	void debug_estado_canales();
 	bool iniciar();
 	unsigned int acc_canales_audio() const {return canales_audio;}
