@@ -261,7 +261,7 @@ std::string Herramientas::cadena_a_maximo_ancho(std::string const &p_cadena, uns
 {
 	unsigned int leidos=0;
 	std::string resultado;
-	auto it=p_cadena.begin(), fin=p_cadena.end();
+	auto it=std::begin(p_cadena), fin=std::end(p_cadena);
 	
 	while(it != fin)
 	{
