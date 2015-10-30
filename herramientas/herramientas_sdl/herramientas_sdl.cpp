@@ -9,11 +9,12 @@ void Herramientas_SDL::error()
 
 bool Herramientas_SDL::iniciar_SDL(Uint32 p_flags)
 {
-	return SDL_Init(p_flags) >= 0;
+	return SDL_Init(p_flags) >= 0 && TTF_Init()==0;
 }
 
 void Herramientas_SDL::apagar_SDL()
 {
+ 	TTF_Quit();
 	SDL_Quit();
 }
 
