@@ -15,6 +15,7 @@ class Fuente_TTF
 
 					Fuente_TTF(const std::string&, int);
 					~Fuente_TTF();
+	TTF_Font *			acc_fuente() {return fuente;}
 
 	//TODO: Definir constructores de copia y demás, porque estarían COMPARTIENDO
 	//el mismo puntero.
