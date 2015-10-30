@@ -8,6 +8,7 @@
 #include <cstring> //Para memset
 #include <utility> //para "pair"
 #include "../herramientas/herramientas.h"
+#include "../log_base/log_base.h"
 #include <vector>
 
 
@@ -45,14 +46,14 @@ class Localizador_base
 	virtual ~Localizador_base();
 
 	void cambiar_idioma(unsigned short int);
-	t_cadena const& obtener(unsigned int);
+	t_cadena const& obtener(unsigned int) const;
 
 	//A implementar...
 
 	protected:
 	virtual t_lista_nombres_archivo obtener_lista_archivos()=0;
-	virtual t_cadena const& cadena_no_cargado()=0;
-	virtual t_cadena const& cadena_no_encontrado()=0;
+	virtual t_cadena const& cadena_no_cargado()const=0;
+	virtual t_cadena const& cadena_no_encontrado()const=0;
 
 	public:
 	virtual void inicializar();

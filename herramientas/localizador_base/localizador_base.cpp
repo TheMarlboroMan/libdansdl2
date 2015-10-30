@@ -2,6 +2,8 @@
 
 using namespace DLibH;
 
+extern Log_base LOG;
+
 Localizador_base::Localizador_base(unsigned short int p_idioma)
 {
 	this->idioma=p_idioma;
@@ -62,15 +64,20 @@ void Localizador_base::inicializar()
 
 void Localizador_base::procesar_fichero(t_cadena const& nombre_archivo)
 {
-	t_stream_in archivo(this->generar_nombre_archivo(nombre_archivo).c_str(), std::ios::in | std::ios::binary);
+	const std::string ruta=generar_nombre_archivo(nombre_archivo);
 
-	size_t indice=0; //, pos;
-	size_t indice_aux=0;
-	t_cadena_stream cadena, cadena_def;
-	bool leyendo=false;
-
-	if(archivo)
+	t_stream_in archivo(ruta.c_str(), std::ios::in | std::ios::binary);
+	if(!archivo)
 	{
+		LOG<<"Imposible abrir fichero de localización "<<ruta<<std::endl;
+	}
+	else
+	{
+		size_t indice=0; //, pos;
+		size_t indice_aux=0;
+		t_cadena_stream cadena, cadena_def;
+		bool leyendo=false;
+
 		//Leemos de línea en línea, 1024 como mucho. Por cada línea leida procesamos.
 		while(true)
 		{
@@ -164,7 +171,7 @@ bool Localizador_base::delimitador_fin_en_cadena(std::string const& p_cadena)
 	return resultado;
 }
 
-t_cadena const& Localizador_base::obtener(unsigned int p_indice)
+t_cadena const& Localizador_base::obtener(unsigned int p_indice) const
 {
 	if(!this->cadenas.size())
 	{
@@ -172,8 +179,7 @@ t_cadena const& Localizador_base::obtener(unsigned int p_indice)
 	}
 	else
 	{
-		t_mapa::iterator it;
-		it=this->cadenas.find(p_indice);
+		const auto it=this->cadenas.find(p_indice);
 
 		if(it==this->cadenas.end())
 		{

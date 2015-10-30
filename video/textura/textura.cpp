@@ -24,6 +24,10 @@ Textura::Textura(const Textura& t):
 
 Textura::~Textura()
 {
+	//TODO: Cosas terribles ocurrirán si alguna vez copiamos una textura.
+	//Deberíamos duplicar la textura en el constructor de copia y en el
+	//operador de asignación.
+
 	SDL_DestroyTexture(textura);
 	renderer=NULL;
 }

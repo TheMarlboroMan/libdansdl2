@@ -8,44 +8,38 @@
 
 namespace DLibV
 {
-
-//TODO: Debe ser muy parecida a la representación de texto. Si podemos poner la
-//misma interface pública, mejor aún :D!.
-
-//TODO: Hay que reparar el bug que hay en la representación de texto, que 
-//revienta la memoria al reasignar ¬¬...
-
 class Representacion_TTF:
 	public Representacion_grafica
 {
 	public:
 
-	//TODO: El constructor debe recibir fuente, texto, color.
+					Representacion_TTF(const Fuente_TTF&, SDL_Color, const std::string&);
+					Representacion_TTF(const Fuente_TTF&, int r, int g, int b, int a, const std::string&);
+					Representacion_TTF(const Fuente_TTF&, SDL_Color);
+					Representacion_TTF(const Fuente_TTF&, int r, int g, int b, int a);
+					Representacion_TTF(const Representacion_TTF&);
+	Representacion_TTF&		operator=(const Representacion_TTF&);
+	virtual				~Representacion_TTF();
+
+	const std::string& 		acc_cadena() const {return this->cadena;}
+	int				acc_tamano_fuente() const {return fuente->acc_tamano_fuente();}
+	const std::string&		acc_nombre_fuente() const {return fuente->acc_nombre_fuente();}
+
+	void 				preparar(const SDL_Renderer * renderer);
+	void 				modificar_fuente(const Fuente_TTF&);
+	virtual void 			asignar(const char);
+	virtual void 			asignar(const char *);
+	virtual void 			asignar(const std::string& p_param);
+	virtual bool 			es_estatica() const=0;
 
 	private:
 
 	std::unique_ptr<Textura>	textura;
 
-	Fuente_ttf&			fuente;
-	std::string			texto;
+	//Esto es un puntero a conciencia, para poderlo cambiar.
+	const Fuente_ttf *		fuente;
+	std::string			cadena;
 	SDL_Color			color;
-	
-
-/*
-
-	SDL_Color color = { 255, 255, 255, 255 };
-
-	//Cuando vayamos a dibujar, como no estará preparada, haremos esto... 
-	//Tendremos un acceso al renderer mediante la pantalla...
-
-	//TODO: Hay varios tipos de renderText..
-
-	Superficie s(TTF_RenderText_Blended(fuente.acc_fuente(), message.c_str(), color));
-
-	//TODO: La textura tendría que ser un puntero... No podemos tenerla sin
-	//asignar. Quizás podamos usar un unique_ptr.
-	textura.reset(new Textura(surf->acc_superficie(), pantalla.acc_renderer()));
-*/
 };
 
 #endif

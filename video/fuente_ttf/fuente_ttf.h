@@ -14,20 +14,19 @@ class Fuente_TTF
 	public:
 
 					Fuente_TTF(const std::string&, int);
+					Fuente_TTF(const Fuente_TTF&);
+					Fuente_TTF& operator=(const Fuente_TTF&);
 					~Fuente_TTF();
+
 	TTF_Font *			acc_fuente() {return fuente;}
-
-	//TODO: Definir constructores de copia y demás, porque estarían COMPARTIENDO
-	//el mismo puntero.
-
 	const std::string&		acc_nombre_fuente() const {return nombre_fuente;}
 	int				acc_tamano_fuente() const {return tamano_fuente;}
 
 	private:
 
+	void				cargar_fuente();
 	std::string			nombre_fuente;
 	int				tamano_fuente;
-
 	TTF_Font *			fuente;
 };
 
