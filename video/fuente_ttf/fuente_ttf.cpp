@@ -11,8 +11,8 @@ Fuente_TTF::Fuente_TTF(const std::string& f, int t)
 
 Fuente_TTF::Fuente_TTF(const Fuente_TTF& f)
 	:nombre_fuente(f.nombre_fuente),
-	tamano_fuente(t),
-	
+	tamano_fuente(f.tamano_fuente),
+	fuente(nullptr)
 {
 	cargar_fuente();
 }
@@ -21,8 +21,9 @@ Fuente_TTF& Fuente_TTF::operator=(const Fuente_TTF& f)
 {
 	nombre_fuente=f.nombre_fuente;
 	tamano_fuente=f.tamano_fuente;
+	fuente=nullptr;
 	cargar_fuente();
-
+	return *this;
 }
 
 Fuente_TTF::~Fuente_TTF()

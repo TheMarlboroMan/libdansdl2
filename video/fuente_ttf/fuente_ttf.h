@@ -18,7 +18,7 @@ class Fuente_TTF
 					Fuente_TTF& operator=(const Fuente_TTF&);
 					~Fuente_TTF();
 
-	TTF_Font *			acc_fuente() {return fuente;}
+	TTF_Font const *		acc_fuente() const {return fuente;}
 	const std::string&		acc_nombre_fuente() const {return nombre_fuente;}
 	int				acc_tamano_fuente() const {return tamano_fuente;}
 
@@ -33,4 +33,3 @@ class Fuente_TTF
 }
 
 #endif
-

@@ -4,7 +4,7 @@
 #include "../representacion_grafica.h"
 #include "../../../fuente_ttf/fuente_ttf.h"
 #include "../../../textura/textura.h"
-#include "../../../textura/superficie.h"
+#include "../../../superficie/superficie.h"
 
 namespace DLibV
 {
@@ -14,9 +14,9 @@ class Representacion_TTF:
 	public:
 
 					Representacion_TTF(const Fuente_TTF&, SDL_Color, const std::string&);
-					Representacion_TTF(const Fuente_TTF&, int r, int g, int b, int a, const std::string&);
+					Representacion_TTF(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a, const std::string&);
 					Representacion_TTF(const Fuente_TTF&, SDL_Color);
-					Representacion_TTF(const Fuente_TTF&, int r, int g, int b, int a);
+					Representacion_TTF(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 					Representacion_TTF(const Representacion_TTF&);
 	Representacion_TTF&		operator=(const Representacion_TTF&);
 	virtual				~Representacion_TTF();
@@ -37,9 +37,10 @@ class Representacion_TTF:
 	std::unique_ptr<Textura>	textura;
 
 	//Esto es un puntero a conciencia, para poderlo cambiar.
-	const Fuente_ttf *		fuente;
+	Fuente_TTF const *		fuente;
 	std::string			cadena;
 	SDL_Color			color;
 };
+}
 
 #endif
