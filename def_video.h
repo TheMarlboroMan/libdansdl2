@@ -8,6 +8,7 @@
 #include "video/pantalla/pantalla.h"
 #include "video/mapa_colision_bitmap/mapa_colision_bitmap.h"
 #include "video/textura/textura.h"
+#include "video/fuente_ttf/fuente_ttf.h"
 #include "video/superficie/superficie.h"
 #include "video/superficie/imagen.h"
 #include "video/superficie/lienzo.h"

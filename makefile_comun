@@ -11,6 +11,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)superficie.o \
 	$(DIR_O)imagen.o \
 	$(DIR_O)lienzo.o \
+	$(DIR_O)fuente_ttf.o \
 	$(DIR_O)representacion.o \
 	$(DIR_O)representacion_grafica.o \
 	$(DIR_O)representacion_agrupada.o \
@@ -130,6 +131,11 @@ $(DIR_O)superficie.o: \
 $(DIR_CLASS_V)superficie/superficie.h \
 $(DIR_CLASS_V)superficie/superficie.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/superficie.cpp -o $(DIR_O)superficie.o $(INCLUDES)
+
+$(DIR_O)fuente_ttf.o: \
+$(DIR_CLASS_V)fuente_ttf/fuente_ttf.h \
+$(DIR_CLASS_V)fuente_ttf/fuente_ttf.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)fuente_ttf/fuente_ttf.cpp -o $(DIR_O)fuente_ttf.o $(INCLUDES)
 
 $(DIR_O)textura.o: \
 $(DIR_O)utilidades_graficas_sdl.o \
@@ -317,4 +323,3 @@ $(DIR_CLASS_H)herramientas/herramientas.templates.cpp \
 $(DIR_CLASS_H)herramientas/herramientas.cpp \
 $(DIR_CLASS_H)herramientas/herramientas.h
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)herramientas/herramientas.cpp -o $(DIR_O)herramientas.o $(INCLUDES)
-
