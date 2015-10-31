@@ -1,10 +1,14 @@
 #ifndef REPRESENTACION_TTF_H
 #define REPRESENTACION_TTF_H
 
+#include <memory>
 #include "../representacion_grafica.h"
 #include "../../../fuente_ttf/fuente_ttf.h"
 #include "../../../textura/textura.h"
 #include "../../../superficie/superficie.h"
+#include "../../../superficie/lienzo.h"
+#include "../../../../herramientas/log_base/log_base.h"
+#include "../../../../herramientas/herramientas/herramientas.h"
 
 namespace DLibV
 {
@@ -18,8 +22,8 @@ class Representacion_TTF:
 					Representacion_TTF(const Fuente_TTF&, SDL_Color);
 					Representacion_TTF(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 					Representacion_TTF(const Representacion_TTF&);
-	Representacion_TTF&		operator=(const Representacion_TTF&);
 	virtual				~Representacion_TTF();
+	Representacion_TTF&		operator=(const Representacion_TTF&);
 
 	const std::string& 		acc_cadena() const {return this->cadena;}
 	int				acc_tamano_fuente() const {return fuente->acc_tamano_fuente();}
@@ -33,14 +37,45 @@ class Representacion_TTF:
 	virtual bool 			es_estatica() const=0;
 
 	private:
-
-	std::unique_ptr<Textura>	textura;
+	
+	void				interno_asignar(const std::string&);
 
 	//Esto es un puntero a conciencia, para poderlo cambiar.
 	Fuente_TTF const *		fuente;
 	std::string			cadena;
 	SDL_Color			color;
 };
+
+class Representacion_TTF_estatica:
+	public Representacion_TTF
+{
+	public:
+
+					Representacion_TTF_estatica(const Fuente_TTF&, SDL_Color, const std::string&);
+					Representacion_TTF_estatica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a, const std::string&);
+					Representacion_TTF_estatica(const Fuente_TTF&, SDL_Color);
+					Representacion_TTF_estatica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+					Representacion_TTF_estatica(const Representacion_TTF_estatica&);
+	virtual				~Representacion_TTF_estatica();
+	Representacion_TTF_estatica&	operator=(const Representacion_TTF_estatica&);
+	virtual bool 			es_estatica() const {return true;}
+};
+
+class Representacion_TTF_dinamica:
+	public Representacion_TTF
+{
+	public:
+
+					Representacion_TTF_dinamica(const Fuente_TTF&, SDL_Color, const std::string&);
+					Representacion_TTF_dinamica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a, const std::string&);
+					Representacion_TTF_dinamica(const Fuente_TTF&, SDL_Color);
+					Representacion_TTF_dinamica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+					Representacion_TTF_dinamica(const Representacion_TTF_dinamica&);
+	virtual				~Representacion_TTF_dinamica();
+	Representacion_TTF_dinamica&	operator=(const Representacion_TTF_dinamica&);
+	virtual bool 			es_estatica() const {return false;}
+};
+
 }
 
 #endif

@@ -2,6 +2,8 @@
 
 using namespace DLibV;
 
+extern DLibH::Log_base LOG;
+
 Representacion_grafica::Representacion_grafica()
 	:Representacion(), textura(nullptr), preparada(false)
 {
@@ -85,7 +87,7 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	{
 		if(!this->es_preparada()) this->preparar(p_renderer);
 
-		
+
 		//Definimos aquí estas variables: puede que al "preparar" hayan cambiado los valores.
 		SDL_Rect rec=acc_recorte();
 		SDL_Rect pos=acc_posicion();

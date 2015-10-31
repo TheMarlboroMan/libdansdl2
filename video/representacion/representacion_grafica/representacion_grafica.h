@@ -3,6 +3,7 @@
 
 #include "../representacion.h"
 #include "../../textura/textura.h"
+#include "../../../herramientas/log_base/log_base.h"
 
 /*
 Es la clase base de todas las representaciones que usan un SDL_Texture 
