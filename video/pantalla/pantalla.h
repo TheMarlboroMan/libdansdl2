@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <string>
 //#include <vector>
 #include "../utilidades_graficas_sdl/utilidades_graficas_sdl.h"
 #include "../camara/camara.h"
@@ -56,6 +57,7 @@ class Pantalla
 	unsigned int acc_w() const {return w;}
 	unsigned int acc_h() const {return h;}
 	void establecer_titulo(const char * p_cadena);
+	void establecer_titulo(const std::string&);
 	unsigned short int acc_modo_ventana() const {return modo_ventana;}
 
 	void inicializar(int, int, int=0);

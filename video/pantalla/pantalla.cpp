@@ -32,6 +32,12 @@ void Pantalla::establecer_titulo(const char * p_cadena)
 	SDL_SetWindowTitle(ventana, p_cadena);
 }
 
+void Pantalla::establecer_titulo(const std::string& c)
+{
+	SDL_SetWindowTitle(ventana, c.c_str());
+}
+
+
 void Pantalla::rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect const& p_caja)
 {
 	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
@@ -116,10 +122,12 @@ void Pantalla::configurar(int flags_ventana)
 		SDL_SetWindowSize(ventana, w, h);
 	}
 
-	//TODO: NO crear renderer si la flag de OpenGL está activa...
-	renderer=SDL_CreateRenderer(ventana, -1, 0);
-
-	establecer_modo_ventana(modo_ventana);
+	if(!renderer)
+	{
+		//TODO: NO crear renderer si la flag de OpenGL está activa...
+		renderer=SDL_CreateRenderer(ventana, -1, 0);
+		establecer_modo_ventana(modo_ventana);
+	}
 //	establecer_medidas_logicas();
 	SDL_RenderSetLogicalSize(renderer, w, h);
 
