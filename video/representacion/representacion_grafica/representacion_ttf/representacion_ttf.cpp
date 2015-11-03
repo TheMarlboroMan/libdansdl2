@@ -76,7 +76,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 
 	for(const std::string& c : lineas)
 	{
-		TTF_SizeText(const_cast<TTF_Font*>(fuente->acc_fuente()), c.c_str(), &tw, &h);
+		TTF_SizeUTF8(const_cast<TTF_Font*>(fuente->acc_fuente()), c.c_str(), &tw, &h);
 		if(tw > w) w=tw;
 	}
 
@@ -86,7 +86,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 	//Podemos preparar una superficie de ese tamaño... Vamos a sacar una
 	//superficie primero para obtener el formato... Es una mierda pero
 	//me vale.
-	SDL_Surface * s=TTF_RenderText_Blended
+	SDL_Surface * s=TTF_RenderUTF8_Blended
 			(const_cast<TTF_Font*>(fuente->acc_fuente()), 
 			"a",
 			color);	
@@ -99,7 +99,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 	for(const std::string c : lineas)
 	{
 		//TODO: Hay varios tipos de "blend". Podemos ponerlos aquí.
-		SDL_Surface * s=TTF_RenderText_Blended
+		SDL_Surface * s=TTF_RenderUTF8_Blended
 			(const_cast<TTF_Font*>(fuente->acc_fuente()), 
 			c.c_str(),
 			color);	
