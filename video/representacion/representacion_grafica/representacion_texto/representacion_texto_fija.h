@@ -42,62 +42,6 @@ class Representacion_texto_fija:public Representacion_texto
 	virtual ~Representacion_texto_fija() {}
 
 	Representacion_texto_fija& operator=(const Representacion_texto_fija&);
-
-	bool es_estatica() const=0;
-};
-
-class Representacion_texto_fija_dinamica:public Representacion_texto_fija
-{
-	public:
-
-	Representacion_texto_fija_dinamica(const DLibV::Superficie * p_rep, const char p_char, unsigned int p_ancho, unsigned int p_alto)
-		:Representacion_texto_fija(p_rep, p_char, p_ancho, p_alto)
-	{}
-
-	Representacion_texto_fija_dinamica(const DLibV::Superficie * p_rep, const char * p_char, unsigned int p_ancho, unsigned int p_alto)
-		:Representacion_texto_fija(p_rep, p_char, p_ancho, p_alto)
-	{}
-
-	Representacion_texto_fija_dinamica(const DLibV::Superficie * p_rep, std::string const& p_cad, unsigned int p_ancho, unsigned int p_alto)
-		:Representacion_texto_fija(p_rep, p_cad, p_ancho, p_alto)
-	{}
-
-	Representacion_texto_fija_dinamica(const Representacion_texto_fija_dinamica& p_otra):Representacion_texto_fija(p_otra) {}
-	~Representacion_texto_fija_dinamica() {}
-	Representacion_texto_fija_dinamica& operator=(const Representacion_texto_fija_dinamica& p_otra)
-	{
-		Representacion_texto_fija::operator=(p_otra);
-		return *this;
-	}
-
-	bool es_estatica() const {return false;}
-};
-
-class Representacion_texto_fija_estatica:public Representacion_texto_fija
-{
-	public:
-
-	Representacion_texto_fija_estatica(const DLibV::Superficie * p_rep, const char p_char, unsigned int p_ancho, unsigned int p_alto)	
-		:Representacion_texto_fija(p_rep, p_char, p_ancho, p_alto)
-	{}
-
-	Representacion_texto_fija_estatica(const DLibV::Superficie * p_rep, const char * p_char, unsigned int p_ancho, unsigned int p_alto)
-		:Representacion_texto_fija(p_rep, p_char, p_ancho, p_alto)
-	{}
-
-	Representacion_texto_fija_estatica(const DLibV::Superficie * p_rep, std::string const& p_cad, unsigned int p_ancho, unsigned int p_alto)
-		:Representacion_texto_fija(p_rep, p_cad, p_ancho, p_alto)
-	{}
-
-	Representacion_texto_fija_estatica(const Representacion_texto_fija_estatica& p_otra):Representacion_texto_fija(p_otra) {}
-	~Representacion_texto_fija_estatica(){}
-	Representacion_texto_fija_estatica& operator=(const Representacion_texto_fija_estatica& p_otra)
-	{
-		Representacion_texto_fija::operator=(p_otra);
-		return *this;
-	}
-
-	bool es_estatica() const {return true;}
 };
 
 } //Fin namespace DLibV

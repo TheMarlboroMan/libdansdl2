@@ -83,7 +83,6 @@ class Representacion_texto:public Representacion_grafica
 	virtual void asignar(const char);
 	virtual void asignar(const char *);
 	virtual void asignar(const std::string& p_param);
-	virtual bool es_estatica() const=0;
 
 	////////////////////////////////////////////////////////////////////////
 	//Constructor y destructor.

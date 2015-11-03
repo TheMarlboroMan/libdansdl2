@@ -34,7 +34,6 @@ class Representacion_TTF:
 	virtual void 			asignar(const char);
 	virtual void 			asignar(const char *);
 	virtual void 			asignar(const std::string& p_param);
-	virtual bool 			es_estatica() const=0;
 
 	private:
 	
@@ -44,36 +43,6 @@ class Representacion_TTF:
 	Fuente_TTF const *		fuente;
 	std::string			cadena;
 	SDL_Color			color;
-};
-
-class Representacion_TTF_estatica:
-	public Representacion_TTF
-{
-	public:
-
-					Representacion_TTF_estatica(const Fuente_TTF&, SDL_Color, const std::string&);
-					Representacion_TTF_estatica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a, const std::string&);
-					Representacion_TTF_estatica(const Fuente_TTF&, SDL_Color);
-					Representacion_TTF_estatica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-					Representacion_TTF_estatica(const Representacion_TTF_estatica&);
-	virtual				~Representacion_TTF_estatica();
-	Representacion_TTF_estatica&	operator=(const Representacion_TTF_estatica&);
-	virtual bool 			es_estatica() const {return true;}
-};
-
-class Representacion_TTF_dinamica:
-	public Representacion_TTF
-{
-	public:
-
-					Representacion_TTF_dinamica(const Fuente_TTF&, SDL_Color, const std::string&);
-					Representacion_TTF_dinamica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a, const std::string&);
-					Representacion_TTF_dinamica(const Fuente_TTF&, SDL_Color);
-					Representacion_TTF_dinamica(const Fuente_TTF&, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-					Representacion_TTF_dinamica(const Representacion_TTF_dinamica&);
-	virtual				~Representacion_TTF_dinamica();
-	Representacion_TTF_dinamica&	operator=(const Representacion_TTF_dinamica&);
-	virtual bool 			es_estatica() const {return false;}
 };
 
 }

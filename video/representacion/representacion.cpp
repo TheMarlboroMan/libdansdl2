@@ -5,30 +5,33 @@
 using namespace DLibV;
 
 Representacion::Representacion():
+	estatica(false), visible(true),
 	alpha(SDL_ALPHA_OPAQUE), modo_blend(BLEND_NADA), 
-	mod_color_r(255), mod_color_g(255), mod_color_b(255),
-	/*con_clip_volcado(false),*/ visible(true)
+	mod_color_r(255), mod_color_g(255), mod_color_b(255)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
 }
 
+/*
 Representacion::Representacion(Uint8 p_alpha):
-	alpha(p_alpha), 
-	mod_color_r(255), mod_color_g(255), mod_color_b(255), 
-	visible(true)
+	estatica(false), visible(true), alpha(p_alpha), 
+	mod_color_r(255), mod_color_g(255), mod_color_b(255)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
 }
+*/
 
 Representacion::Representacion(const Representacion& p_otra):
+	estatica(p_otra.estatica), visible(p_otra.visible), 
 	alpha(p_otra.alpha), mod_color_r(p_otra.mod_color_r), 
-	mod_color_g(p_otra.mod_color_g), mod_color_b(p_otra.mod_color_b), 
-	visible(p_otra.visible)
+	mod_color_g(p_otra.mod_color_g), mod_color_b(p_otra.mod_color_b),
+	posicion(p_otra.posicion), recorte(p_otra.recorte)
+
 {
-	this->posicion=p_otra.posicion;
-	this->recorte=p_otra.recorte;
+//	this->posicion=p_otra.posicion;
+//	this->recorte=p_otra.recorte;
 }
 
 Representacion::~Representacion()

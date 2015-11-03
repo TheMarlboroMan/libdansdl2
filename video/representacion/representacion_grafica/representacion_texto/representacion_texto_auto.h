@@ -24,7 +24,6 @@ class Representacion_texto_auto:public Representacion_texto
 	virtual void asignar(const char);
 	virtual void asignar(const char *);
 	virtual void asignar(std::string const& p_param);
-	virtual bool es_estatica()const=0;
 
 	Representacion_texto_auto(const DLibV::Superficie * p_rep, const char p_char)
 		:Representacion_texto(p_rep)
@@ -47,53 +46,6 @@ class Representacion_texto_auto:public Representacion_texto
 	Representacion_texto_auto(const Representacion_texto_auto&);
 	virtual ~Representacion_texto_auto() {}
 	Representacion_texto_auto& operator=(const Representacion_texto_auto&);
-};
-
-class Representacion_texto_auto_dinamica:public Representacion_texto_auto
-{
-	public:
-
-	Representacion_texto_auto_dinamica(const DLibV::Superficie * p_rep, const char p_char)
-		:Representacion_texto_auto(p_rep, p_char){}
-
-	Representacion_texto_auto_dinamica(const DLibV::Superficie * p_rep, const char * p_char)
-		:Representacion_texto_auto(p_rep, p_char){}
-	Representacion_texto_auto_dinamica(const DLibV::Superficie * p_rep, std::string const& p_cad)
-		:Representacion_texto_auto(p_rep, p_cad){}
-	Representacion_texto_auto_dinamica(const Representacion_texto_auto_dinamica& p_otra)
-		:Representacion_texto_auto(p_otra) {};
-	~Representacion_texto_auto_dinamica(){}
-	Representacion_texto_auto_dinamica& operator=(const Representacion_texto_auto_dinamica& p_otra) 
-	{
-		Representacion_texto_auto::operator=(p_otra); 
-		return *this;
-	}
-
-
-	bool es_estatica() const {return false;}
-};
-
-class Representacion_texto_auto_estatica:public Representacion_texto_auto
-{
-	public:
-
-	Representacion_texto_auto_estatica(const DLibV::Superficie * p_rep, const char p_char)
-		:Representacion_texto_auto(p_rep, p_char){}
-	Representacion_texto_auto_estatica(const DLibV::Superficie * p_rep, const char * p_char)
-		:Representacion_texto_auto(p_rep, p_char){}
-	Representacion_texto_auto_estatica(const DLibV::Superficie * p_rep, std::string const& p_cad)
-		:Representacion_texto_auto(p_rep, p_cad){}	
-	Representacion_texto_auto_estatica(const Representacion_texto_auto_estatica& p_otra)
-		:Representacion_texto_auto(p_otra) {};
-	~Representacion_texto_auto_estatica(){}
-	Representacion_texto_auto_estatica& operator=(const Representacion_texto_auto_estatica& p_otra) 
-	{
-		Representacion_texto_auto::operator=(p_otra); 
-		return *this;
-	}
-
-
-	bool es_estatica() const {return true;}
 };
 
 } //Fin namespace DLibV

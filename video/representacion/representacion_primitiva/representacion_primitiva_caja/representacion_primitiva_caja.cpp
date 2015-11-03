@@ -2,31 +2,31 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_caja::Representacion_primitiva_caja(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
+Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
 	:Representacion_primitiva(pr, pg, pb)
 {
 	establecer_posicion(p_pos);
 	this->preparar_posicion();
 }
 
-Representacion_primitiva_caja::Representacion_primitiva_caja(const Representacion_primitiva_caja& p_otra)
+Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const Representacion_primitiva_caja_base& p_otra)
 	:Representacion_primitiva(p_otra)
 {
 
 }
 
-Representacion_primitiva_caja& Representacion_primitiva_caja::operator=(const Representacion_primitiva_caja& p_otro)
+Representacion_primitiva_caja_base& Representacion_primitiva_caja_base::operator=(const Representacion_primitiva_caja_base& p_otro)
 {
 	Representacion_primitiva::operator=(p_otro);
 	return *this;
 }
 
-Representacion_primitiva_caja::~Representacion_primitiva_caja()
+Representacion_primitiva_caja_base::~Representacion_primitiva_caja_base()
 {
 
 }
 
-bool Representacion_primitiva_caja::volcado(SDL_Renderer * p_renderer)
+bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 {
 	if(!es_visible()) return false;
 	SDL_Rect pos=acc_posicion();
@@ -43,7 +43,7 @@ bool Representacion_primitiva_caja::volcado(SDL_Renderer * p_renderer)
 	return true;
 }
 
-bool Representacion_primitiva_caja::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion)
+bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion)
 {
 	if(!es_visible()) return false;
 
@@ -92,7 +92,7 @@ bool Representacion_primitiva_caja::volcado(SDL_Renderer * p_renderer, const SDL
 	return true;
 }
 
-void Representacion_primitiva_caja::preparar_posicion()
+void Representacion_primitiva_caja_base::preparar_posicion()
 {
 	//No hace nada.
 }	
