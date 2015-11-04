@@ -129,7 +129,7 @@ class Representacion_grafica:public Representacion
 	void marcar_como_no_preparada() {this->preparada=false;}
 	void recorte_a_medidas_textura();
 	void liberar_textura();
-	void anular_textura() {textura=NULL;}
+	void anular_textura() {textura=nullptr;}
 
 	virtual bool volcado(SDL_Renderer *);
 	virtual bool volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&);
@@ -140,6 +140,7 @@ class Representacion_grafica:public Representacion
 
 	Textura * ref_textura() const {return this->textura ? this->textura : NULL;}
 	SDL_Texture * ref_textura_sdl() {return this->textura ? this->textura->ref_textura() : NULL;}
+	virtual SDL_Rect		obtener_caja_clip() const {return acc_posicion();}
 	Representacion_grafica();
 	Representacion_grafica(const Representacion_grafica&);
 	Representacion_grafica& operator=(const Representacion_grafica &);

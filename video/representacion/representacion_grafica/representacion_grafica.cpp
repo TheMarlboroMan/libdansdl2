@@ -92,7 +92,13 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 		SDL_Rect rec=acc_recorte();
 		SDL_Rect pos=acc_posicion();
 		SDL_Rect temp=DLibH::Herramientas_SDL::copiar_sdl_rect(pos, 0, 0);
-		SDL_RenderSetClipRect(p_renderer, NULL);
+
+		//Esto es especialmente útil para cuando vamos a hacer 
+		//bitmaps en patrón... Para poco más, normalmente es la
+		//posición de la representación.
+		auto clip_rect=obtener_caja_clip();
+		SDL_RenderSetClipRect(p_renderer, &clip_rect);
+
 		return realizar_render(p_renderer, rec, temp);
 	}
 }
@@ -108,18 +114,18 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 		//Las representaciones estáticas están SIEMPRE en las mismas
 		//posiciones para la cámara que la vea. Simplemente veremos
 		//si está dentro de la caja de la cámara en 0,0.
-
+		
 		SDL_Rect pos=copia_posicion();
 		bool en_toma=true;
 		
 		if(this->es_estatica())
 		{
 			SDL_Rect caja_cam=DLibH::Herramientas_SDL::nuevo_sdl_rect(0, 0, p_foco.w, p_foco.h);
-			en_toma=DLibH::Herramientas_SDL::rectangulos_superpuestos(caja_cam, pos, true);
+			en_toma=DLibH::Herramientas_SDL::rectangulos_superpuestos(caja_cam, pos, false);
 		}
 		else
 		{
-			en_toma=DLibH::Herramientas_SDL::rectangulos_superpuestos(p_foco, pos, true);
+			en_toma=DLibH::Herramientas_SDL::rectangulos_superpuestos(p_foco, pos, false);
 		}
 
 		if(!en_toma)
@@ -132,16 +138,21 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 
 			SDL_Rect rec=copia_recorte();
 			pos=copia_posicion();	//Again, por si al preparar ha cambiado.
+			SDL_Rect clip_rect=obtener_caja_clip();
 
 			//Una representación estática aparecerá en la posición absoluta del objeto más la posición de la cámara.	
 			pos.x+=p_pos.x;
 			pos.y+=p_pos.y;
+			clip_rect.x+=p_pos.x;
+			clip_rect.y+=p_pos.y;
 
 			//Una representación dinámica tiene un cálculo distinto, relativo a la cámara.
 			if(!this->es_estatica())
 			{
 				pos.x-=p_foco.x;
 				pos.y-=p_foco.y;
+				clip_rect.x-=p_foco.x;
+				clip_rect.y-=p_foco.y;
 			}
 
 			//Proceso del zoom...
@@ -150,7 +161,11 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 				procesar_zoom(pos, p_pos, p_foco);
 			}
 
-			SDL_RenderSetClipRect(p_renderer, &p_pos);
+			//Si la caja de clip se sale por algún lado de la 
+			//posición de la cámara vamos a ajustarla...
+			DLibH::Herramientas_SDL::rectangulos_superpuestos(p_pos, clip_rect, clip_rect, false);
+
+			SDL_RenderSetClipRect(p_renderer, &clip_rect);
 			return realizar_render(p_renderer, rec, pos);
 		}
 	}
