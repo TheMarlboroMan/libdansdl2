@@ -70,12 +70,12 @@ void Representacion::reiniciar_recorte()
 	this->recorte.h=0;
 }
 
-void Representacion::establecer_posicion(const SDL_Rect & p_caja)
+void Representacion::establecer_posicion(SDL_Rect p_caja)
 {
 	posicion=p_caja;
 }
 
-void Representacion::establecer_recorte(const SDL_Rect & p_caja)
+void Representacion::establecer_recorte(SDL_Rect p_caja)
 {
 	recorte=p_caja;
 }

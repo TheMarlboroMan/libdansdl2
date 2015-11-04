@@ -71,7 +71,7 @@ class Representacion
 		return res;
 	}
 	void 			establecer_posicion(int, int, int=-1, int=-1, int=15);
-	void 			establecer_posicion(const SDL_Rect &);	
+	void 			establecer_posicion(SDL_Rect);
 
 	const SDL_Rect& 	acc_recorte() const {return this->recorte;}
 	const SDL_Rect 		copia_recorte() const 
@@ -84,7 +84,7 @@ class Representacion
 		return res;
 	}
 	void 			establecer_recorte(Sint16, Sint16, Uint16, Uint16, int=15);
-	void 			establecer_recorte(const SDL_Rect&);
+	void 			establecer_recorte(SDL_Rect);
 
 	void 			establecer_dimensiones_posicion_por_recorte();
 
