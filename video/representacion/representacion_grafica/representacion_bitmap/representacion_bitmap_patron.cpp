@@ -63,13 +63,13 @@ bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer)
 	int max_x=copia_posicion.x+copia_posicion.w,
 		max_y=copia_posicion.y+copia_posicion.h;
 
-	int y=copia_posicion.y;
+	int y=copia_posicion.y-pincel.y;
 
 	bool resultado=true;
 
 	while(y < max_y)
 	{
-		int x=copia_posicion.x;
+		int x=copia_posicion.x-pincel.x;
 
 		pincel_y=y;
 		while(x < max_x)
@@ -103,13 +103,13 @@ bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_
 	int max_x=copia_posicion.x+copia_posicion.w,
 		max_y=copia_posicion.y+copia_posicion.h;
 
-	int y=copia_posicion.y;
+	int y=copia_posicion.y-pincel.y;
 
 	bool resultado=true;
 
 	while(y < max_y)
 	{
-		int x=copia_posicion.x;
+		int x=copia_posicion.x-pincel.x;
 
 		pincel_y=y;
 		while(x < max_x)
