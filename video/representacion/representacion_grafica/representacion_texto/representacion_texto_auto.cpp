@@ -2,6 +2,24 @@
 
 using namespace DLibV;
 
+Representacion_texto_auto::Representacion_texto_auto(const DLibV::Superficie * p_rep, std::string const& p_cad)
+	:Representacion_texto(p_rep)
+{
+	this->asignar(p_cad);
+}
+
+Representacion_texto_auto::Representacion_texto_auto(const DLibV::Superficie * p_rep, const char * p_char)
+	:Representacion_texto(p_rep)
+{
+	if(p_char) this->asignar(p_char);
+}
+
+Representacion_texto_auto::Representacion_texto_auto(const DLibV::Superficie * p_rep, const char p_char)
+	:Representacion_texto(p_rep)
+{
+	this->asignar(p_char);
+}
+
 Representacion_texto_auto::Representacion_texto_auto(const Representacion_texto_auto& p_otra)
 	:Representacion_texto(p_otra)
 {

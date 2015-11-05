@@ -12,40 +12,26 @@ cambiar: para esos es mejor usar una fija con el tamaño suficiente.
 namespace DLibV
 {
 
-	
-class Representacion_texto_auto:public Representacion_texto
+class Representacion_texto_auto:
+	public Representacion_texto
 {
-	private:
-
-	void establecer_dimensiones_por_contenido();
-
 	public:
 
-	virtual void asignar(const char);
-	virtual void asignar(const char *);
-	virtual void asignar(std::string const& p_param);
+						Representacion_texto_auto(const DLibV::Superficie * p_rep, const char p_char);
+						Representacion_texto_auto(const DLibV::Superficie * p_rep, const char * p_char);
+						Representacion_texto_auto(const DLibV::Superficie * p_rep, std::string const& p_cad);
+						Representacion_texto_auto(const Representacion_texto_auto&);
+						Representacion_texto_auto& operator=(const Representacion_texto_auto&);
+	virtual 				~Representacion_texto_auto() {}
 
-	Representacion_texto_auto(const DLibV::Superficie * p_rep, const char p_char)
-		:Representacion_texto(p_rep)
-	{
-		this->asignar(p_char);
-	}
+	virtual void 				asignar(const char);
+	virtual void 				asignar(const char *);
+	virtual void 				asignar(std::string const& p_param);
 
-	Representacion_texto_auto(const DLibV::Superficie * p_rep, const char * p_char)
-		:Representacion_texto(p_rep)
-	{
-		if(p_char) this->asignar(p_char);
-	}
 
-	Representacion_texto_auto(const DLibV::Superficie * p_rep, std::string const& p_cad)
-		:Representacion_texto(p_rep)
-	{
-		this->asignar(p_cad);
-	}
+	private:
 
-	Representacion_texto_auto(const Representacion_texto_auto&);
-	virtual ~Representacion_texto_auto() {}
-	Representacion_texto_auto& operator=(const Representacion_texto_auto&);
+	void 					establecer_dimensiones_por_contenido();
 };
 
 } //Fin namespace DLibV

@@ -22,76 +22,73 @@ tocar el tinglao.
 namespace DLibV
 {
 
-class Representacion_texto:public Representacion_grafica
+class Representacion_texto:
+	public Representacion_grafica
 {
-	protected:
-
-	enum T_GLIFOS{T_GLIFOS_FILA=16};	//Hay 16 glifos for fila.
-
-	unsigned short int ancho_glifo;
-	unsigned short int alto_glifo;
-	int interlineado;	//Es un entero con signo, por si queremos hacer efectos raros.
-	int interletra;		//Es un entero con signo, por si queremos hacer efectos raros.
-	std::string cadena;
-	
-	unsigned int ancho_area;
-	unsigned int alto_area;
-	
-	Uint32 color_fondo;
-
-	DLibV::Superficie * superficie_texto;
-	const DLibV::Superficie * superficie_alfabeto;
-
-	private:
-
-	bool establecer_recorte_para_glifo(unsigned char, SDL_Rect &);
-	void establecer_posicion_para_glifo(unsigned char, SDL_Rect &, unsigned int);
-	void establecer_recurso_fuente(DLibV::Superficie const *);
-
-	void interno_asignar(const std::string& cadena);
-
-	protected:
-
-	void liberar_superficie_texto();
-
 	public:
-
-	virtual void iniciar_recurso();
-
-	std::string acc_cadena() const {return this->cadena;}
-	void establecer_dimensiones_area(unsigned int, unsigned int);
-	void preparar(const SDL_Renderer * renderer);
-	void mut_interlineado(int p_valor) 
-	{
-		this->interlineado=p_valor;
-		asignar(cadena);
-	}
-	void mut_interletra(int p_valor) 
-	{
-		this->interletra=p_valor;
-		asignar(cadena);
-	}
-	unsigned short int acc_alto_glifo() const {return this->alto_glifo;}
-	unsigned short int acc_ancho_glifo() const {return this->ancho_glifo;}
-	unsigned int acc_ancho_area() const {return this->ancho_area;}
-	unsigned int acc_alto_area() const {return this->alto_area;}
-	void modificar_fuente(DLibV::Superficie const * p_rep);
-	void mut_color_fondo(Uint32 c) {this->color_fondo=c;}
-
-	////////////////////////////////////////////////////////////////////////
-
-	virtual void asignar(const char);
-	virtual void asignar(const char *);
-	virtual void asignar(const std::string& p_param);
 
 	////////////////////////////////////////////////////////////////////////
 	//Constructor y destructor.
 
-	Representacion_texto(const DLibV::Superficie *);
-	Representacion_texto(const Representacion_texto&);
+						Representacion_texto(const DLibV::Superficie *);
+						Representacion_texto(const Representacion_texto&);
+	virtual 				~Representacion_texto();
+	Representacion_texto& 			operator=(const Representacion_texto&);
 
-	virtual ~Representacion_texto();
-	Representacion_texto& operator=(const Representacion_texto&);
+	virtual void 				iniciar_recurso();
+
+	std::string 				acc_cadena() const {return this->cadena;}
+	void 					establecer_dimensiones_area(unsigned int, unsigned int);
+	void 					preparar(const SDL_Renderer * renderer);
+	void 					mut_interlineado(int p_valor) 
+	{
+		this->interlineado=p_valor;
+		asignar(cadena);
+	}
+	void 					mut_interletra(int p_valor) 
+	{
+		this->interletra=p_valor;
+		asignar(cadena);
+	}
+	unsigned short int			acc_alto_glifo() const {return this->alto_glifo;}
+	unsigned short int			acc_ancho_glifo() const {return this->ancho_glifo;}
+	unsigned int 				acc_ancho_area() const {return this->ancho_area;}
+	unsigned int				acc_alto_area() const {return this->alto_area;}
+	void 					modificar_fuente(DLibV::Superficie const * p_rep);
+	void 					mut_color_fondo(Uint32 c) {this->color_fondo=c;}
+
+	////////////////////////////////////////////////////////////////////////
+
+	virtual void 				asignar(const char);
+	virtual void 				asignar(const char *);
+	virtual void 				asignar(const std::string& p_param);
+
+	protected:
+
+	void 					liberar_superficie_texto();
+
+	enum T_GLIFOS{T_GLIFOS_FILA=16};	//Hay 16 glifos for fila.
+
+	unsigned short int 			ancho_glifo;
+	unsigned short int 			alto_glifo;
+	int 					interlineado;	//Es un entero con signo, por si queremos hacer efectos raros.
+	int 					interletra;		//Es un entero con signo, por si queremos hacer efectos raros.
+	std::string 				cadena;
+	
+	unsigned int 				ancho_area;
+	unsigned int 				alto_area;
+	
+	Uint32 					color_fondo;
+
+	DLibV::Superficie * 			superficie_texto;
+	const DLibV::Superficie * 		superficie_alfabeto;
+
+	private:
+
+	bool 					establecer_recorte_para_glifo(unsigned char, SDL_Rect &);
+	void 					establecer_posicion_para_glifo(unsigned char, SDL_Rect &, unsigned int);
+	void 					establecer_recurso_fuente(DLibV::Superficie const *);
+	void 					interno_asignar(const std::string& cadena);
 };
 
 } //Fin namespace DLibV

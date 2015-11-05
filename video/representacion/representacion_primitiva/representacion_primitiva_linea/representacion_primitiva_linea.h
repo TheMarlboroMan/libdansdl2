@@ -7,26 +7,27 @@ namespace DLibV
 {
 class Representacion_primitiva_linea:public Representacion_primitiva
 {
-	private:
+	public:
+	
+					Representacion_primitiva_linea(int x1, int y1, int x2, int y2, Uint8, Uint8, Uint8);
+					Representacion_primitiva_linea(const Representacion_primitiva_linea&);
+	virtual 			~Representacion_primitiva_linea();
+					Representacion_primitiva_linea& operator=(const Representacion_primitiva_linea&);
 
-	int x1, y1, x2, y2;	
+	bool 				volcado(SDL_Renderer *);
+	bool 				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&); 
+
+
+	void 				establecer_puntos(int x1, int y1, int x2, int y2);
 
 	protected:
 
-	void generar_posicion();
-	void preparar_posicion();
+	void				generar_posicion();
+	void 				preparar_posicion();
 
-	public:
-	
-	bool volcado(SDL_Renderer *);
-	bool volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&); 
+	private:
 
-	Representacion_primitiva_linea(int x1, int y1, int x2, int y2, Uint8, Uint8, Uint8);
-	Representacion_primitiva_linea(const Representacion_primitiva_linea&);
-	virtual ~Representacion_primitiva_linea();
-	Representacion_primitiva_linea& operator=(const Representacion_primitiva_linea&);
-
-	void establecer_puntos(int x1, int y1, int x2, int y2);
+	int 				x1, y1, x2, y2;
 };
 
 }

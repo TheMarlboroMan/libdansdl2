@@ -17,41 +17,44 @@ de destruirlas al finalizar su tiempo de vida.*/
 
 class Representacion_agrupada:public Representacion
 {
+	public:
+
+				Representacion_agrupada(bool=true);
+				Representacion_agrupada(const Representacion_agrupada&);
+	virtual 		~Representacion_agrupada();
+	virtual bool 		insertar_representacion(Representacion *);
+
+	bool 			es_preparada() const {return true;}
+
+	void 			imponer_alpha() {impone_alpha=true;}
+	void 			no_imponer_alpha() {impone_alpha=false;}
+	
+	void 			imponer_modo_blend() {impone_modo_blend=true;}
+	void 			no_imponer_modo_blend() {impone_modo_blend=false;}
+
+	void 			poseer_representaciones() {this->posee_las_representaciones=true;}
+	void 			no_poseer_representaciones() {this->posee_las_representaciones=false;}
+	
+	void 			vaciar_grupo();
+
+	unsigned int 		obtener_cuenta() const {return grupo.size();}
+
 	private:
 
-	bool posee_las_representaciones;
-	bool impone_alpha;
-	bool impone_modo_blend;
-	Representacion_agrupada& operator=(const Representacion_agrupada &);	//OJO: Es incopiable!.
+	bool			posee_las_representaciones;
+	bool 			impone_alpha;
+	bool 			impone_modo_blend;
+
+	Representacion_agrupada& 	operator=(const Representacion_agrupada &);	//OJO: Es incopiable!.
 
 	protected:
 
-	std::vector<Representacion *> grupo;
+	std::vector<Representacion *> 	grupo;
 
-	bool volcado(SDL_Renderer *);
-	bool volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&);
+	bool 				volcado(SDL_Renderer *);
+	bool 				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&);
 
-	public:
 
-	bool es_preparada() const {return true;}
-
-	Representacion_agrupada(bool=true);
-	Representacion_agrupada(const Representacion_agrupada&);
-	virtual ~Representacion_agrupada();
-	virtual bool insertar_representacion(Representacion *);
-
-	void imponer_alpha() {impone_alpha=true;}
-	void no_imponer_alpha() {impone_alpha=false;}
-	
-	void imponer_modo_blend() {impone_modo_blend=true;}
-	void no_imponer_modo_blend() {impone_modo_blend=false;}
-
-	void poseer_representaciones() {this->posee_las_representaciones=true;}
-	void no_poseer_representaciones() {this->posee_las_representaciones=false;}
-	
-	void vaciar_grupo();
-
-	unsigned int obtener_cuenta() const {return grupo.size();}
 };
 
 }

@@ -21,6 +21,7 @@
 #include "video/representacion/representacion_grafica/representacion_grafica.h"
 #include "video/representacion/representacion_grafica/representacion_bitmap/representacion_bitmap.h"
 #include "video/representacion/representacion_grafica/representacion_bitmap/representacion_bitmap_patron.h"
+#include "video/representacion/representacion_grafica/representacion_ttf/representacion_ttf.h"
 #include "video/representacion/representacion_grafica/representacion_texto/representacion_texto.h"
 #include "video/representacion/representacion_grafica/representacion_texto/representacion_texto_fija.h"
 #include "video/representacion/representacion_grafica/representacion_texto/representacion_texto_auto.h"

@@ -96,3 +96,39 @@ void Representacion_primitiva_caja_base::preparar_posicion()
 {
 	//No hace nada.
 }	
+
+Representacion_primitiva_caja& Representacion_primitiva_caja::operator=(const Representacion_primitiva_caja& p_otro)
+{
+	Representacion_primitiva_caja_base::operator=(p_otro);
+	return *this;
+}
+
+Representacion_primitiva_caja::Representacion_primitiva_caja(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
+	:Representacion_primitiva_caja_base(p_pos, pr, pg, pb)
+{
+
+}
+
+Representacion_primitiva_caja::Representacion_primitiva_caja(const Representacion_primitiva_caja& p_otra)
+	:Representacion_primitiva_caja_base(p_otra) 
+{
+
+}
+
+Representacion_primitiva_caja_lineas& Representacion_primitiva_caja_lineas::operator=(const Representacion_primitiva_caja_lineas& p_otro)
+{
+	Representacion_primitiva_caja_base::operator=(p_otro);
+	return *this;
+}
+
+Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
+	:Representacion_primitiva_caja_base(p_pos, pr, pg, pb)
+{
+
+}
+
+Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const Representacion_primitiva_caja_lineas& p_otra)
+	:Representacion_primitiva_caja_base(p_otra) 
+{
+
+}
