@@ -36,10 +36,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)linea.o \
 	$(DIR_O)log_base.o \
 	$(DIR_O)herramientas_sdl.o \
-	$(DIR_O)localizador_base.o \
 	$(DIR_O)herramientas.o \
-	$(DIR_O)lector_txt.o \
-	$(DIR_O)controlador_argumentos.o \
 	$(DIR_O)controles_sdl.o \
 	$(DIR_O)controlador_audio_sdl.o \
 	$(DIR_O)gestor_recursos_audio.o \
@@ -316,23 +313,6 @@ $(DIR_O)log_base.o: \
 $(DIR_CLASS_H)log_base/log_base.h \
 $(DIR_CLASS_H)log_base/log_base.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)log_base/log_base.cpp -o $(DIR_O)log_base.o $(INCLUDES)
-
-$(DIR_O)localizador_base.o: \
-$(DIR_O)herramientas.o \
-$(DIR_CLASS_H)localizador_base/localizador_base.cpp \
-$(DIR_CLASS_H)localizador_base/localizador_base.h
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)localizador_base/localizador_base.cpp -o $(DIR_O)localizador_base.o $(INCLUDES)
-
-$(DIR_O)controlador_argumentos.o: \
-$(DIR_CLASS_H)controlador_argumentos/controlador_argumentos.cpp \
-$(DIR_CLASS_H)controlador_argumentos/controlador_argumentos.h\
-$(DIR_O)herramientas.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)controlador_argumentos/controlador_argumentos.cpp -o $(DIR_O)controlador_argumentos.o $(INCLUDES)
-
-$(DIR_O)lector_txt.o: \
-$(DIR_CLASS_H)lector_txt/lector_txt.cpp \
-$(DIR_CLASS_H)lector_txt/lector_txt.h
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)lector_txt/lector_txt.cpp -o $(DIR_O)lector_txt.o $(INCLUDES)
 
 $(DIR_O)herramientas.o: \
 $(DIR_CLASS_H)herramientas/herramientas.templates.cpp \
