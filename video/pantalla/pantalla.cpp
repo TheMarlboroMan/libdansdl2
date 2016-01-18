@@ -22,8 +22,6 @@ void Pantalla::inicializar(int p_w, int p_h, int flags_ventana)
 {
 	w=p_w;
 	h=p_h;
-//	w_logico(w);
-//	h_logico(h);
 	configurar(flags_ventana);
 }
 
@@ -113,8 +111,8 @@ void Pantalla::configurar(int flags_ventana)
 	if(!ventana)
 	{	
 		ventana=SDL_CreateWindow("", 
-			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_UNDEFINED,
+			SDL_WINDOWPOS_UNDEFINED,
 			w, h, flags_ventana); //SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else
@@ -177,4 +175,9 @@ void Pantalla::establecer_clip(SDL_Rect p_caja)
 {
 	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
 	SDL_RenderSetClipRect(renderer, &p_caja);
+}
+
+void Pantalla::establecer_posicion(int x, int y)
+{
+	SDL_SetWindowPosition(ventana, x, y);
 }

@@ -56,6 +56,7 @@ class Pantalla
 	unsigned int acc_volcados() const {return this->volcados;}
 	unsigned int acc_w() const {return w;}
 	unsigned int acc_h() const {return h;}
+	void establecer_posicion(int, int);
 	void establecer_titulo(const char * p_cadena);
 	void establecer_titulo(const std::string&);
 	unsigned short int acc_modo_ventana() const {return modo_ventana;}
