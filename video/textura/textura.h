@@ -43,6 +43,7 @@ class Textura
 	unsigned int acc_w() const {return w;}
 	unsigned int acc_h() const {return h;}
 	unsigned int acc_acceso() const {return acceso;}
+	void reemplazar(SDL_Surface * superficie);
 
 	Textura(const SDL_Renderer * renderer, SDL_Surface * superficie);
 	Textura(const SDL_Renderer * renderer, SDL_Texture * t);
