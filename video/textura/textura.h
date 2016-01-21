@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../utilidades_graficas_sdl/utilidades_graficas_sdl.h"
+#include "../superficie/superficie.h"
 
 /*En la clase Textura vamos a encapsular no sólo la extructura SDL_Texture
 sino también un puntero al renderer para el cual ha sido creada. Esto es así
@@ -43,7 +44,7 @@ class Textura
 	unsigned int acc_w() const {return w;}
 	unsigned int acc_h() const {return h;}
 	unsigned int acc_acceso() const {return acceso;}
-	void reemplazar(SDL_Surface * superficie);
+	void reemplazar(Superficie& superficie);
 
 	Textura(const SDL_Renderer * renderer, SDL_Surface * superficie);
 	Textura(const SDL_Renderer * renderer, SDL_Texture * t);

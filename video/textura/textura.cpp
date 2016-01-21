@@ -43,9 +43,9 @@ Textura& Textura::operator=(const Textura& t)
 	return *this;
 }
 
-void Textura::reemplazar(SDL_Surface * superficie)
+void Textura::reemplazar(Superficie& superficie)
 {
 	//Más leña para el fuego si no hacemos constructores de copia decentes...
 	SDL_DestroyTexture(textura);
-	textura=DLibV::Utilidades_graficas_SDL::cargar_textura_desde_superficie(renderer, superficie);
+	textura=DLibV::Utilidades_graficas_SDL::cargar_textura_desde_superficie(renderer, superficie.acc_superficie());
 }
