@@ -4,7 +4,8 @@ using namespace DLibV;
 
 Representacion_agrupada::Representacion_agrupada(bool p_poseer):
 	posee_las_representaciones(p_poseer),
-	impone_alpha(true)
+	impone_alpha(true),
+	impone_modo_blend(false)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();

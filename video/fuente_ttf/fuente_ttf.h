@@ -25,6 +25,7 @@ class Fuente_TTF
 	private:
 
 	void				cargar_fuente();
+
 	std::string			nombre_fuente;
 	int				tamano_fuente;
 	TTF_Font *			fuente;
