@@ -85,7 +85,10 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	}
 	else
 	{
-		if(!this->es_preparada()) this->preparar(p_renderer);
+		if(!this->es_preparada()) 
+		{
+			this->preparar(p_renderer);
+		}
 
 
 		//Definimos aquí estas variables: puede que al "preparar" hayan cambiado los valores.
@@ -111,13 +114,17 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 	}
 	else
 	{	
+		//Se prepara antes de comparar si está dentro o fuera de la toma: es 
+		//posible que el tamaño se establezca después de prepararla!!!.
+		if(!this->es_preparada()) this->preparar(p_renderer);
+
 		//Las representaciones estáticas están SIEMPRE en las mismas
 		//posiciones para la cámara que la vea. Simplemente veremos
 		//si está dentro de la caja de la cámara en 0,0.
 		
 		SDL_Rect pos=copia_posicion();
 		bool en_toma=true;
-		
+
 		if(this->es_estatica())
 		{
 			SDL_Rect caja_cam=DLibH::Herramientas_SDL::nuevo_sdl_rect(0, 0, p_foco.w, p_foco.h);
@@ -134,8 +141,6 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 		}
 		else
 		{
-			if(!this->es_preparada()) this->preparar(p_renderer);
-
 			SDL_Rect rec=copia_recorte();
 			pos=copia_posicion();	//Again, por si al preparar ha cambiado.
 			SDL_Rect clip_rect=obtener_caja_clip();
@@ -163,12 +168,12 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 
 			//Si la caja de clip se sale por algún lado de la 
 			//posición de la cámara vamos a ajustarla...
-/*			DLibH::Herramientas_SDL::rectangulos_superpuestos(p_pos, clip_rect, clip_rect, false);
+			DLibH::Herramientas_SDL::rectangulos_superpuestos(p_pos, clip_rect, clip_rect, false);
 
-std::cout<<"POS TO "<<p_pos.x<<", "<<p_pos.y<<" "<<p_pos.w<<" "<<p_pos.h<<std::endl;
-std::cout<<"CLIPPING TO "<<clip_rect.x<<", "<<clip_rect.y<<" "<<clip_rect.w<<" "<<clip_rect.h<<std::endl;
-*/
-			auto cpos=p_pos;
+			auto cpos=p_foco;
+			cpos.x=p_pos.x;
+			cpos.y=p_pos.y;
+
 			SDL_RenderSetClipRect(p_renderer, &cpos);
 			return realizar_render(p_renderer, rec, pos);
 		}
