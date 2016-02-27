@@ -163,9 +163,16 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 
 			//Si la caja de clip se sale por algún lado de la 
 			//posición de la cámara vamos a ajustarla...
-			DLibH::Herramientas_SDL::rectangulos_superpuestos(p_pos, clip_rect, clip_rect, false);
 
-			SDL_RenderSetClipRect(p_renderer, &clip_rect);
+			//TODO: Maybe por aquí hay problemas???
+
+/*			DLibH::Herramientas_SDL::rectangulos_superpuestos(p_pos, clip_rect, clip_rect, false);
+
+std::cout<<"POS TO "<<p_pos.x<<", "<<p_pos.y<<" "<<p_pos.w<<" "<<p_pos.h<<std::endl;
+std::cout<<"CLIPPING TO "<<clip_rect.x<<", "<<clip_rect.y<<" "<<clip_rect.w<<" "<<clip_rect.h<<std::endl;
+*/
+			auto cpos=p_pos;
+			SDL_RenderSetClipRect(p_renderer, &cpos);
 			return realizar_render(p_renderer, rec, pos);
 		}
 	}

@@ -122,7 +122,7 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
 	return true;
 }
 
-bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_vista, const SDL_Rect& p_posicion)
+bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos)
 {
 	if(!this->es_visible())
 	{
@@ -165,10 +165,9 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect&
 
 		(*inicio)->desplazar(px, py);
 
-
 //		(*inicio)->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
-		(*inicio)->volcar(p_renderer, p_vista, p_posicion);
+		(*inicio)->volcar(p_renderer, p_foco, p_pos);
 
 		(*inicio)->desplazar(-px, -py);
 		if(impone_alpha) (*inicio)->establecer_alpha(alpha_a);
