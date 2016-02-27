@@ -121,9 +121,20 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 		//Las representaciones estáticas están SIEMPRE en las mismas
 		//posiciones para la cámara que la vea. Simplemente veremos
 		//si está dentro de la caja de la cámara en 0,0.
-		
+
 		SDL_Rect pos=copia_posicion();
+
+		if(transformacion.obtener_angulo_rotacion())
+		{
+			//TODO: Ajustar posición si está rotado!!!!... Una rotación no
+			//está ajustando realmente a la posición...
+
+			//TODO: Ojo además con el centro de rotación.
+		}
+
 		bool en_toma=true;
+
+
 
 		if(this->es_estatica())
 		{
