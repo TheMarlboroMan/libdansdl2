@@ -11,13 +11,15 @@ class Poligono_2d
 {
 	public:
 
+	typedef	Punto_2d<T>		tpunto;
+
 					Poligono_2d()
 	{
 	
 	}
 
 	
-					Poligono_2d(const std::vector<Punto_2d<T>>& pts, Punto_2d<T> c)
+					Poligono_2d(const std::vector<tpunto>& pts, tpunto c)
 		:centro(c), puntos(pts)
 	{
 
@@ -25,12 +27,14 @@ class Poligono_2d
 
 	size_t				size() const {return puntos.size();}
 
-	void				punto(Punto_2d<T> v)
+	void				punto(tpunto v)
 	{
 		if(!size()) centro=v;
 		puntos.push_back(v);
 	}
-	void				desplazar(Punto_2d<T> v)
+
+
+	void				desplazar(tpunto v)
 	{
 		centro+=v;
 		for(auto &p : puntos) p+=v;
@@ -41,8 +45,8 @@ class Poligono_2d
 		for(auto &p : puntos) p.rotar(grados, centro);
 	}
 
-	Punto_2d<T>			centro;
-	std::vector<Punto_2d<T>>	puntos;
+	tpunto				centro;
+	std::vector<tpunto>		puntos;
 };
 
 }

@@ -1,5 +1,8 @@
 #include "representacion_grafica.h"
 
+#include <algorithm>
+#include "../../../herramientas/poligono_2d/poligono_2d.h"
+
 using namespace DLibV;
 
 extern DLibH::Log_base LOG;
@@ -9,10 +12,13 @@ Representacion_grafica::Representacion_grafica()
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
+	reiniciar_rect(posicion_rotada);
+	
 }
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
-	:Representacion(o) ,textura(o.textura), preparada(o.preparada)
+	:Representacion(o) ,textura(o.textura), preparada(o.preparada),
+	posicion_rotada(o.posicion_rotada)
 {
 
 }
@@ -22,6 +28,7 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 	Representacion::operator=(o);
 	textura=o.textura;
 	preparada=o.preparada;
+	posicion_rotada=o.posicion_rotada;
 
 	return *this;
 }
@@ -122,19 +129,9 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 		//posiciones para la cámara que la vea. Simplemente veremos
 		//si está dentro de la caja de la cámara en 0,0.
 
-		SDL_Rect pos=copia_posicion();
-
-		if(transformacion.obtener_angulo_rotacion())
-		{
-			//TODO: Ajustar posición si está rotado!!!!... Una rotación no
-			//está ajustando realmente a la posición...
-
-			//TODO: Ojo además con el centro de rotación.
-		}
+		SDL_Rect pos=copia_posicion_rotada();
 
 		bool en_toma=true;
-
-
 
 		if(this->es_estatica())
 		{
@@ -205,3 +202,77 @@ void Representacion_grafica::liberar_textura()
 	}
 }
 
+void Representacion_grafica::transformar_rotar(float v) 
+{
+	transformacion.rotar(v);
+	actualizar_caja_rotacion();
+}
+
+void Representacion_grafica::transformar_cancelar_rotar() 
+{
+	transformacion.cancelar_rotar();
+	actualizar_caja_rotacion();
+}
+
+void Representacion_grafica::transformar_centro_rotacion(float x, float y) 
+{
+	transformacion.centro_rotacion(x, y);
+	actualizar_caja_rotacion();
+}
+
+void Representacion_grafica::transformar_centro_rotacion_cancelar() 
+{
+	transformacion.cancelar_centro_rotacion();
+	actualizar_caja_rotacion();
+}
+
+void Representacion_grafica::actualizar_caja_rotacion()
+{
+	const auto& p=acc_posicion();
+
+	if(!transformacion.es_transformacion())
+	{
+		posicion_rotada=p;
+	}
+	else
+	{
+		auto c=transformacion.obtener_centro_rotacion();
+		DLibH::Poligono_2d<double> polig(
+			{ 
+				{(double)p.x, (double)p.y},
+				{(double)(p.x+p.w), (double)p.y},
+				{(double)(p.x+p.w), (double)(p.y+p.h)},
+				{(double)p.x, (double)(p.y+p.h)},        
+			}, {(double)c.x+p.x, (double)c.y+p.y});
+
+		//Las rotaciones de SDL son "clockwise"... Las reales son "counter-clockwise"...
+		float a=transformacion.obtener_angulo_rotacion();
+		polig.rotar(a);
+
+		//Sacar las medidas para la nueva caja...
+		std::vector<double> xs={polig.puntos[0].x, polig.puntos[1].x, polig.puntos[2].x, polig.puntos[3].x};
+		std::vector<double> ys={polig.puntos[0].y, polig.puntos[1].y, polig.puntos[2].y, polig.puntos[3].y};
+
+		posicion_rotada.x=*std::min_element(std::begin(xs), std::end(xs));
+		posicion_rotada.y=*std::min_element(std::begin(ys), std::end(ys));
+		posicion_rotada.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_rotada.x;
+		posicion_rotada.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_rotada.y;
+	}
+}
+
+void Representacion_grafica::establecer_posicion(int x, int y, int w, int h, int f)
+{
+	Representacion::establecer_posicion(x, y, w, h, f);
+	actualizar_caja_rotacion();
+}
+
+void Representacion_grafica::establecer_posicion(SDL_Rect c)
+{
+	Representacion::establecer_posicion(c);
+	actualizar_caja_rotacion();
+}
+
+SDL_Rect Representacion_grafica::copia_posicion_rotada() const
+{
+	return SDL_Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
+}

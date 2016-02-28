@@ -35,6 +35,8 @@ class Representacion
 
 	void 			reiniciar_posicion();
 	void 			reiniciar_recorte();
+	void 			reiniciar_rect(SDL_Rect&);
+
 
 				Representacion();
 	//			Representacion(Uint8);
@@ -70,8 +72,8 @@ class Representacion
 		res.h=posicion.h;
 		return res;
 	}
-	void 			establecer_posicion(int, int, int=-1, int=-1, int=15);
-	void 			establecer_posicion(SDL_Rect);
+	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
+	virtual void 		establecer_posicion(SDL_Rect);
 
 	const SDL_Rect& 	acc_recorte() const {return this->recorte;}
 	const SDL_Rect 		copia_recorte() const 
@@ -88,7 +90,7 @@ class Representacion
 
 	void 			establecer_dimensiones_posicion_por_recorte();
 
-	virtual void 		ir_a(int x, int y){this->establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas....
+	virtual void 		ir_a(int x, int y){establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas....
 	void 			desplazar(Sint16 p_x, Sint16 p_y);					
 	void 			hacer_invisible() {this->visible=false;}
 	void 			hacer_visible() {this->visible=true;}

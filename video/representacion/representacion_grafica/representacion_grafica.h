@@ -30,6 +30,9 @@ struct Representacion_grafica_transformacion
 
 	public:
 
+	float acc_x_centro_rotacion() const {return x_centro_rotacion;}
+	float acc_y_centro_rotacion() const {return y_centro_rotacion;}
+
 	Representacion_grafica_transformacion():
 		invertir_horizontal(false), invertir_vertical(false), rotacion(false),
 		cambiar_centro_rotacion(false),
@@ -114,51 +117,58 @@ struct Representacion_grafica_transformacion
 
 class Representacion_grafica:public Representacion
 {
+	public:
+
+	bool 			es_preparada() const {return this->preparada;}
+	SDL_Rect 		copia_posicion_rotada() const;
+	Textura * ref_textura() const {return this->textura ? this->textura : NULL;}
+	SDL_Texture * 		ref_textura_sdl() {return this->textura ? this->textura->ref_textura() : NULL;}
+	virtual SDL_Rect	obtener_caja_clip() const {return acc_posicion();}
+			
+				Representacion_grafica();
+				Representacion_grafica(const Representacion_grafica&);
+				Representacion_grafica& operator=(const Representacion_grafica &);
+	virtual 		~Representacion_grafica();
+	
+	void 			reiniciar_transformacion() {transformacion.reiniciar();}
+	void 			transformar_invertir_horizontal(bool v) {transformacion.establecer_invertir_horizontal(v);}
+	void 			transformar_invertir_vertical(bool v) {transformacion.establecer_invertir_vertical(v);}
+
+	void 			transformar_rotar(float v);
+	void 			transformar_cancelar_rotar();
+	void 			transformar_centro_rotacion(float x, float y);
+	void 			transformar_centro_rotacion_cancelar();
+	bool 			es_transformada() const {return transformacion.es_transformacion();}
+
+	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
+	virtual void 		establecer_posicion(SDL_Rect);
+
+	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;};
+
+	virtual void 		establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
+	virtual void 		preparar(const SDL_Renderer * renderer)=0;
+
 	private:
 
 	Representacion_grafica_transformacion transformacion;
 
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
 	mutable bool preparada; //Indica si la pantalla puede volcar o tiene que hacer una preparación propia.
+	SDL_Rect 		posicion_rotada; 	//Copia de posición alterada según rotación.
 
-	bool realizar_render(SDL_Renderer *, SDL_Rect& rec, SDL_Rect& pos);
+	bool 			realizar_render(SDL_Renderer *, SDL_Rect& rec, SDL_Rect& pos);
 
 	protected:
 
-	void marcar_como_preparada() {this->preparada=true;}
-	void marcar_como_no_preparada() {this->preparada=false;}
-	void recorte_a_medidas_textura();
-	void liberar_textura();
-	void anular_textura() {textura=nullptr;}
+	void 			marcar_como_preparada() {this->preparada=true;}
+	void 			marcar_como_no_preparada() {this->preparada=false;}
+	void 			recorte_a_medidas_textura();
+	void 			liberar_textura();
+	void 			anular_textura() {textura=nullptr;}
+	void 			actualizar_caja_rotacion();
 
-	virtual bool volcado(SDL_Renderer *);
-	virtual bool volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&);
-
-	public:
-
-	bool es_preparada() const {return this->preparada;}
-
-	Textura * ref_textura() const {return this->textura ? this->textura : NULL;}
-	SDL_Texture * ref_textura_sdl() {return this->textura ? this->textura->ref_textura() : NULL;}
-	virtual SDL_Rect		obtener_caja_clip() const {return acc_posicion();}
-	Representacion_grafica();
-	Representacion_grafica(const Representacion_grafica&);
-	Representacion_grafica& operator=(const Representacion_grafica &);
-	virtual ~Representacion_grafica();
-
-	void reiniciar_transformacion() {transformacion.reiniciar();}
-	void transformar_invertir_horizontal(bool v) {transformacion.establecer_invertir_horizontal(v);}
-	void transformar_invertir_vertical(bool v) {transformacion.establecer_invertir_vertical(v);}
-	void transformar_rotar(float v) {transformacion.rotar(v);}
-	void transformar_cancelar_rotar() {transformacion.cancelar_rotar();}
-	void transformar_centro_rotacion(float x, float y) {transformacion.centro_rotacion(x, y);}
-	void transformar_centro_rotacion_cancelar() {transformacion.cancelar_centro_rotacion();}
-	bool es_transformada() const {return transformacion.es_transformacion();}
-
-	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;};
-
-	virtual void establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
-	virtual void preparar(const SDL_Renderer * renderer)=0;
+	virtual bool 		volcado(SDL_Renderer *);
+	virtual bool 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&);
 };
 
 } //Fin namespace DLibV

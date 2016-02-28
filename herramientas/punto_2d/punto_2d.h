@@ -16,11 +16,35 @@ struct Punto_2d
 
 	Punto_2d(): x(0), y(0) {}
 	Punto_2d(T px, T py):x(px), y(py) {}
-	Punto_2d(const Punto_2d& p):x(p.x), y(p.y) {}
-	Punto_2d& operator=(const Punto_2d& p)
+	Punto_2d(const Punto_2d<T>& p):x(p.x), y(p.y) {}
+	Punto_2d& operator=(const Punto_2d<T>& p)
 	{
 		x=p.x;
 		y=p.y;
+		return *this;
+	}
+
+	Punto_2d operator+(const Punto_2d<T>& p)
+	{
+		return Punto_2d<T> {x+p.x, y+p.y};
+	}
+
+	Punto_2d operator-(const Punto_2d& p)
+	{
+		return Punto_2d<T> {x-p.x, y-p.y};
+	}
+
+	Punto_2d& operator+=(const Punto_2d<T>& p)
+	{
+		x+=p.x;
+		y+=p.y;
+		return *this;
+	}
+
+	Punto_2d& operator-=(const Punto_2d& p)
+	{
+		x-=p.x;
+		y-=p.y;
 		return *this;
 	}
 

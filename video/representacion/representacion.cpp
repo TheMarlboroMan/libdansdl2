@@ -47,13 +47,17 @@ void Representacion::establecer_posicion(int p_x, int p_y, int p_w, int p_h, int
 	if(p_flags & FRECT_H && p_h != -1) this->posicion.h=p_h;
 }
 
+void Representacion::reiniciar_rect(SDL_Rect& r)
+{
+	r.x=0;
+	r.y=0;
+	r.w=0;
+	r.h=0;
+}
 
 void Representacion::reiniciar_posicion()
 {
-	this->posicion.x=0;
-	this->posicion.y=0;
-	this->posicion.w=0;
-	this->posicion.h=0;
+	reiniciar_rect(posicion);
 }
 
 void Representacion::desplazar(Sint16 p_x, Sint16 p_y)
@@ -64,10 +68,7 @@ void Representacion::desplazar(Sint16 p_x, Sint16 p_y)
 
 void Representacion::reiniciar_recorte()
 {
-	this->recorte.x=0;
-	this->recorte.y=0;
-	this->recorte.w=0;
-	this->recorte.h=0;
+	reiniciar_rect(recorte);
 }
 
 void Representacion::establecer_posicion(SDL_Rect p_caja)
