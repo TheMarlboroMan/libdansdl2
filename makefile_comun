@@ -32,6 +32,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)camara.o \
 	$(DIR_O)vector_2d.o \
 	$(DIR_O)punto_2d.o \
+	$(DIR_O)poligono_2d.o \
 	$(DIR_O)caja.o \
 	$(DIR_O)linea.o \
 	$(DIR_O)log_base.o \
@@ -264,6 +265,13 @@ $(DIR_O)linea.o: \
 $(DIR_CLASS_H)linea/linea.h \
 $(DIR_CLASS_H)linea/linea.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)linea/linea.cpp -o $(DIR_O)linea.o $(INCLUDES)
+
+$(DIR_O)poligono_2d.o: \
+$(DIR_O)punto_2d.o \
+$(DIR_O)herramientas.o \
+$(DIR_CLASS_H)poligono_2d/poligono_2d.h \
+$(DIR_CLASS_H)poligono_2d/poligono_2d.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)poligono_2d/poligono_2d.cpp -o $(DIR_O)poligono_2d.o $(INCLUDES)
 
 $(DIR_O)punto_2d.o: \
 $(DIR_CLASS_H)punto_2d/punto_2d.h \
