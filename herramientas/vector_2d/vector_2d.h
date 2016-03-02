@@ -17,126 +17,132 @@ struct Vector_2d
 	T x;
 	T y;
 
-	Vector_2d(): x(), y() 
+						Vector_2d()
+		:x(), y() 
 	{
 
 	}
 
-	Vector_2d(const Vector_2d<T>& o)
-		: x(o.x), y(o.y) 
+						Vector_2d(const Vector_2d<T>& o)
+		:x(o.x), y(o.y) 
 	{
 
 	}
 
-	Vector_2d(T p_x, T p_y)
+						Vector_2d(T p_x, T p_y)
 		:x(p_x), y(p_y) 
 	{
 	
 	}
 
-	Vector_2d operator+(const Vector_2d<T> &otro)
+	Vector_2d<T> operator+(const Vector_2d<T> &otro)
 	{
-		return Vector_2d(this->x+otro.x, this->y+otro.y);
+		return Vector_2d<T>(this->x+otro.x, this->y+otro.y);
 	}
 
-	Vector_2d operator-(const Vector_2d<T> &otro)
+	Vector_2d<T> 				operator-(const Vector_2d<T> &otro)
 	{
-		return Vector_2d(this->x-otro.x, this->y-otro.y);
+		return Vector_2d<T>(this->x-otro.x, this->y-otro.y);
 	}
 
-	Vector_2d operator*(const Vector_2d<T> &otro)
+	Vector_2d<T> 				operator*(const Vector_2d<T> &otro)
 	{
-		return Vector_2d(this->x*otro.x, this->y*otro.y);
+		return Vector_2d<T>(this->x*otro.x, this->y*otro.y);
 	}
 
-	Vector_2d operator/(const Vector_2d<T> &otro)
+	Vector_2d<T> 				operator/(const Vector_2d<T> &otro)
 	{
-		return Vector_2d(this->x/otro.x, this->y/otro.y);
+		return Vector_2d<T>(this->x/otro.x, this->y/otro.y);
 	}
 
-	Vector_2d& operator=(const Vector_2d<T> &otro)
+	Vector_2d<T>& 				operator=(const Vector_2d<T> &otro)
 	{
 		this->x=otro.x;
 		this->y=otro.y;
 		return *this;
 	}
 
-	Vector_2d& operator+=(const Vector_2d<T> &otro)
+	Vector_2d<T>& 				operator+=(const Vector_2d<T> &otro)
 	{
 		this->x+=otro.x;
 		this->y+=otro.y;
 		return *this;
 	}
 
-	Vector_2d& operator-=(const Vector_2d<T> &otro)
+	Vector_2d<T>&				operator-=(const Vector_2d<T> &otro)
 	{
 		this->x-=otro.x;
 		this->y-=otro.y;
 		return *this;
 	}
 
-	Vector_2d& operator*=(const Vector_2d<T> &otro)
+	Vector_2d<T>&				operator*=(const Vector_2d<T> &otro)
 	{
 		this->x*=otro.x;
 		this->y*=otro.y;
 		return *this;
 	}
 
-	Vector_2d& operator/=(const Vector_2d<T> &otro)
+	Vector_2d<T>& 				operator/=(const Vector_2d<T> &otro)
 	{
 		this->x/=otro.x;
 		this->y/=otro.y;
 		return *this;
 	}
 
-	Vector_2d& operator*(const T p_multiplicador)
+	Vector_2d<T>& 				operator*(const T p_multiplicador)
 	{
 		this->x=this->x*p_multiplicador;
 		this->y=this->y*p_multiplicador;
 		return *this;
 	}
 
-	Vector_2d& operator/(const T p_divisor)
+	Vector_2d<T>& 				operator/(const T p_divisor)
 	{
 		this->x=this->x/p_divisor;
 		this->y=this->y/p_divisor;
 		return *this;
 	}
 
-	Vector_2d& operator*=(const T p_multiplicador)
+	Vector_2d<T>& 				operator*=(const T p_multiplicador)
 	{
 		this->x*=p_multiplicador;
 		this->y*=p_multiplicador;
 		return *this;
 	}
 
-	Vector_2d& operator/=(const T p_divisor)
+	Vector_2d<T>& 				operator/=(const T p_divisor)
 	{
 		this->x/=p_divisor;
 		this->y/=p_divisor;
 		return *this;
 	}
 
-	void normalizar()
+	Vector_2d<T>				perpendicular() const
+	{
+		return Vector_2d<T>{this->y, -this->x};
+	}
+
+	void 					normalizar()
 	{
 		T m=this->longitud();
 		this->x=this->x / m;
 		this->y=this->y / m;
 	}
 
-	T longitud() const
+	T 					longitud() const
 	{
 		return sqrtf(this->x*this->x + this->y*this->y);
 	}
 
-	T angulo_radianes() const
+	T 					angulo_radianes() const
 	{
 		auto vec(*this);
 		vec.normalizar();
 		return obtener_angulo_para_vector_unidad_radianes(vec);
 	}
 
-	T angulo_grados() const
+	T 					angulo_grados() const
 	{
 		auto vec(*this);
 		vec.normalizar();
@@ -246,6 +252,11 @@ struct Vector_2d_pantalla:
 		this->y/=p_divisor;
 		return *this;
 	}
+
+	Vector_2d_pantalla<T>			perpendicular() const
+	{
+		return Vector_2d_pantalla<T>{this->y, -this->x};
+	}
 };
 
 /**
@@ -348,7 +359,45 @@ struct Vector_2d_cartesiano:
 		this->y/=p_divisor;
 		return *this;
 	}
+
+	Vector_2d_cartesiano<T>			perpendicular() const
+	{
+		return Vector_2d_cartesiano<T>{this->y, -this->x};
+	}
 };
+
+//Funciones de cálculo...
+template<typename T>
+T obtener_angulo_para_vector_unidad_radianes(const Vector_2d<T>& p_vector)
+{
+	T rad=std::atan2(p_vector.y, p_vector.x);
+	return rad;
+}
+
+template<typename T>
+T obtener_angulo_para_vector_unidad_grados(const Vector_2d<T>& p_vector)
+{
+	T rad=obtener_angulo_para_vector_unidad_radianes(p_vector);
+	T grados=(rad / M_PI) * 180.0;
+	return grados;
+}
+
+template<typename T>
+Vector_2d<T> vector_unidad_para_angulo(T p_angulo)
+{
+	T rad=DLibH::Herramientas::grados_a_radianes(p_angulo);
+	T v_x=sin(rad);
+	T v_y=cos(rad);
+
+	Vector_2d<T> r(v_x, v_y);
+	return r;
+}
+
+template<typename T>
+T producto_vectorial(const Vector_2d<T>& a, const Vector_2d<T>& b)
+{
+	return a.x*b.x+a.y*b.y;
+}
 
 /*El orden de los factores PUEDE alterar el producto.*/
 template<typename T>
@@ -381,6 +430,7 @@ Vector_2d_cartesiano<T> obtener_para_puntos_cartesiano(T p_xa, T p_ya, T p_xb, T
 	return r;
 }
 
+//Funciones para conversión de cartesiano a pantalla...
 template<typename T>
 Vector_2d_cartesiano<T>	a_cartesiano(const Vector_2d_pantalla<T>& v)
 {
@@ -391,32 +441,6 @@ template<typename T>
 Vector_2d_pantalla<T> a_pantalla(const Vector_2d_cartesiano<T>& v)
 {
 	return Vector_2d_pantalla<T>(v.x, -v.y);
-}
-
-template<typename T>
-T obtener_angulo_para_vector_unidad_radianes(const Vector_2d<T>& p_vector)
-{
-	T rad=std::atan2(p_vector.y, p_vector.x);
-	return rad;
-}
-
-template<typename T>
-T obtener_angulo_para_vector_unidad_grados(const Vector_2d<T>& p_vector)
-{
-	T rad=obtener_angulo_para_vector_unidad_radianes(p_vector);
-	T grados=(rad / M_PI) * 180.0;
-	return grados;
-}
-
-template<typename T>
-Vector_2d<T> vector_unidad_para_angulo(T p_angulo)
-{
-	T rad=DLibH::Herramientas::grados_a_radianes(p_angulo);
-	T v_x=sin(rad);
-	T v_y=cos(rad);
-
-	Vector_2d<T> r(v_x, v_y);
-	return r;
 }
 
 } //Fin namespace DLibH
