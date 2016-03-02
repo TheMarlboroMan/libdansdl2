@@ -4,6 +4,15 @@
 #include <vector>
 #include "../punto_2d/punto_2d.h"
 
+/**
+* TODO: Crear clase segmento: dos puntos y el vector de dirección.
+* TODO: Crear la clase poligono_2d_winded o segmentado.
+* TODO: Permitir la conversión de uno segmentado a este otro indicando la dirección CW o CCW.
+* TODO: El polígono segmentado podría valer para colisiones.
+*/
+
+//El polígono se asume que está declarado en el sentido de las agujas del reloj.
+
 namespace DLibH
 {
 template<typename T>
