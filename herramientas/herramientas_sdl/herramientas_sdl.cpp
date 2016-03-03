@@ -98,19 +98,6 @@ bool Herramientas_SDL::rectangulos_superpuestos(SDL_Rect const&plantilla, SDL_Re
 			roce_es_colision);
 }
 
-bool Herramientas_SDL::segmentos_superpuestos(int aini, int afin, int bini, int bfin, bool roce_es_colision)
-{
- 	//Comparamos si está fuera y lo negamos...
-        if(roce_es_colision)
-        {
-                return !( (bfin < aini) || (bini > afin) );
-        }
-        else
-        {
-                return !( (bfin <= aini) || (bini >= afin) );
-        }
-}
-
 /*Con estos dos parámetros devuelve también la parte de las cajas que está DENTRO 
 de la colisión dentro de esas propias cajas. Esto lo podemos usar para muchas
 cosas luego, como para colisiones por píxeles y esas historias, o para determinar

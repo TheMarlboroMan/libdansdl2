@@ -35,7 +35,6 @@ class Herramientas_SDL
 	static SDL_Rect nuevo_sdl_rect(Sint16=0, Sint16=0, Uint16=0, Uint16=0);
         static bool rectangulos_superpuestos(SDL_Rect const&, SDL_Rect const&, bool=false);
         static bool rectangulos_superpuestos(SDL_Rect const&, SDL_Rect const&, SDL_Rect &, bool=false);
-	static bool segmentos_superpuestos(int, int, int, int, bool=false);
         static bool punto_en_caja(SDL_Rect const&, int, int);
         static bool caja_en_caja(SDL_Rect const&, SDL_Rect const&);
 	static void copiar_caja_de_a(SDL_Rect const&, SDL_Rect &);

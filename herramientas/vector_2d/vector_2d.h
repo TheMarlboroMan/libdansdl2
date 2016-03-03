@@ -400,6 +400,22 @@ T producto_vectorial(const Vector_2d<T>& a, const Vector_2d<T>& b)
 }
 
 /*El orden de los factores PUEDE alterar el producto.*/
+
+template<typename T>
+Vector_2d<T> obtener_para_puntos(T p_xa, T p_ya, T p_xb, T p_yb)
+{
+	Vector_2d<T> r;
+
+	if(! (p_xa==p_xb && p_ya==p_yb))
+	{
+		r.x=p_xb-p_xa;
+		r.y=p_yb-p_ya;
+		r.normalizar();
+	}
+
+	return r;
+}
+
 template<typename T>
 Vector_2d_pantalla<T> obtener_para_puntos_pantalla(T p_xa, T p_ya, T p_xb, T p_yb)
 {

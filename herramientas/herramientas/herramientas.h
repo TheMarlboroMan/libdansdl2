@@ -1,5 +1,5 @@
-#ifndef HERRAMIENTAS_H
-#define HERRAMIENTAS_H
+#ifndef HERRAMIENTAS_DLIBDAN_H
+#define HERRAMIENTAS_DLIBDAN_H
 
 #include <cstring> //Para memset
 #include <fstream>
@@ -62,7 +62,27 @@ class Herramientas
 	static std::string cadena_a_alfanumerica_normalizada(std::string const &, const char);
 	static std::string cadena_a_maximo_ancho(std::string const &, unsigned int);
 	static std::string cadena_desde_fichero(const char *);
-	static float grados_a_radianes(float);
+	
+	template<typename T>
+	static float grados_a_radianes(T val)
+	{
+	    return (val * M_PI) / 180.0;
+	}
+
+	template<typename T>
+	static bool segmentos_superpuestos(T aini, T afin, T bini, T bfin, bool roce_es_colision=false)
+	{
+	 	//Comparamos si está fuera y lo negamos...
+	        if(roce_es_colision)
+	        {
+	                return !( (bfin < aini) || (bini > afin) );
+	        }
+	        else
+	        {
+	                return !( (bfin <= aini) || (bini >= afin) );
+	        }
+	}
+
 	static float round(float);
 	static float angulo_360(float f);
 	static float angulo_entre_puntos(float, float, float, float);

@@ -237,7 +237,7 @@ void Representacion_grafica::actualizar_caja_rotacion()
 	else
 	{
 		auto c=transformacion.obtener_centro_rotacion();
-		DLibH::Poligono_2d<double> polig(
+		DLibH::Poligono_2d_vertices<double> polig(
 			{ 
 				{(double)p.x, (double)p.y},
 				{(double)(p.x+p.w), (double)p.y},
@@ -250,8 +250,8 @@ void Representacion_grafica::actualizar_caja_rotacion()
 		polig.rotar(a);
 
 		//Sacar las medidas para la nueva caja...
-		std::vector<double> xs={polig.puntos[0].x, polig.puntos[1].x, polig.puntos[2].x, polig.puntos[3].x};
-		std::vector<double> ys={polig.puntos[0].y, polig.puntos[1].y, polig.puntos[2].y, polig.puntos[3].y};
+		std::vector<double> xs={polig.vertice(0).x, polig.vertice(1).x, polig.vertice(2).x, polig.vertice(3).x};
+		std::vector<double> ys={polig.vertice(0).y, polig.vertice(1).y, polig.vertice(2).y, polig.vertice(3).y};
 
 		posicion_rotada.x=*std::min_element(std::begin(xs), std::end(xs));
 		posicion_rotada.y=*std::min_element(std::begin(ys), std::end(ys));

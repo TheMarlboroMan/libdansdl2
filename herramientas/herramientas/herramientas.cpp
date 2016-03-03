@@ -219,12 +219,6 @@ float Herramientas::round(float r)
 	return (r > 0.0f) ? floor(r + 0.5f) : ceil(r - 0.5f);
 }
 
-float Herramientas::grados_a_radianes(float cosa)
-{
-    return (cosa * M_PI) / 180;
-}
-
-
 //Estas dos sirven para coger una cadena cualquiera y reemplazar cualquier
 //caracter que no sea alfanumérico por el caracter p_reemplazo.
 

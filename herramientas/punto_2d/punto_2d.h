@@ -48,6 +48,11 @@ struct Punto_2d
 		return *this;
 	}
 
+	bool 		operator==(const Punto_2d& p) const
+	{
+		return p.x==x && p.y==y;
+	}
+
 	T distancia_hasta(const Punto_2d<T>& p)
 	{
 		T x=(this.x-p.x)*(this.x-p.x);
@@ -62,16 +67,17 @@ struct Punto_2d
 		return sqrt(x+y);
 	}
 
-	void rotar(float grados, const Punto_2d<T> centro)
+	//La rotación es negativa si va en sentido de las agujas del reloj...
+	void rotar(T grados, const Punto_2d<T> centro)
 	{
 		//Llevar a origen...
 		T ox=x - centro.x;
 		T oy=y - centro.y;
 
 		//Precalculos...
-		float rad=Herramientas::grados_a_radianes(grados);
-		float sr=sin(rad);
-		float cr=cos(rad);
+		T rad=Herramientas::grados_a_radianes(grados);
+		T sr=sin(rad);
+		T cr=cos(rad);
 
 		//Rotar...
 		T rx=(ox * cr) - (oy * sr);
