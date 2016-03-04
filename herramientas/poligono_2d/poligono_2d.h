@@ -57,6 +57,11 @@ class Poligono_2d_vertices
 		vertices.push_back(p);
 	}
 
+	void				mut_centro(const tpunto& p)
+	{
+		centro=p;
+	}
+
 	tpunto				acc_centro() const
 	{
 		return centro;
