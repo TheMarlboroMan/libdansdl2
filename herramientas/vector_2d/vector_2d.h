@@ -394,6 +394,17 @@ Vector_2d<T> vector_unidad_para_angulo(T p_angulo)
 }
 
 template<typename T>
+Vector_2d<T> vector_unidad_para_angulo_cartesiano(T p_angulo)
+{
+	T rad=DLibH::Herramientas::grados_a_radianes(p_angulo);
+	T v_x=cos(rad);
+	T v_y=sin(rad);
+
+	Vector_2d<T> r(v_x, v_y);
+	return r;
+}
+
+template<typename T>
 T producto_vectorial(const Vector_2d<T>& a, const Vector_2d<T>& b)
 {
 	return a.x*b.x+a.y*b.y;
