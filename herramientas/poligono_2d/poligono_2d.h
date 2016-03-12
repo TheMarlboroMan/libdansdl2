@@ -38,6 +38,12 @@ class Poligono_2d_vertices
 
 	}
 
+	bool				es_concavo() const
+	{
+		//TODO...
+		return false;
+	}
+
 	size_t				size() const {return vertices.size();}
 
 	virtual void			desplazar(tpunto v)

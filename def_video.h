@@ -16,6 +16,7 @@
 #include "video/representacion/representacion_primitiva/representacion_primitiva.h"
 #include "video/representacion/representacion_primitiva/representacion_primitiva_caja/representacion_primitiva_caja.h"
 #include "video/representacion/representacion_primitiva/representacion_primitiva_linea/representacion_primitiva_linea.h"
+#include "video/representacion/representacion_primitiva/representacion_primitiva_poligono/representacion_primitiva_poligono.h"
 #include "video/representacion/representacion_primitiva/representacion_primitiva_puntos/representacion_primitiva_puntos.h"
 #include "video/representacion/representacion_agrupada/representacion_agrupada.h"
 #include "video/representacion/representacion_grafica/representacion_grafica.h"

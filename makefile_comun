@@ -18,6 +18,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)representacion_primitiva.o \
 	$(DIR_O)representacion_primitiva_caja.o \
 	$(DIR_O)representacion_primitiva_linea.o \
+	$(DIR_O)representacion_primitiva_poligono.o \
 	$(DIR_O)representacion_primitiva_puntos.o \
 	$(DIR_O)representacion_bitmap.o \
 	$(DIR_O)representacion_bitmap_patron.o \
@@ -90,6 +91,12 @@ $(DIR_O)representacion_primitiva.o \
 $(DIR_CLASS_V)representacion/representacion_primitiva/representacion_primitiva_puntos/representacion_primitiva_puntos.h \
 $(DIR_CLASS_V)representacion/representacion_primitiva/representacion_primitiva_puntos/representacion_primitiva_puntos.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_primitiva/representacion_primitiva_puntos/representacion_primitiva_puntos.cpp -o $(DIR_O)representacion_primitiva_puntos.o $(INCLUDES)
+
+$(DIR_O)representacion_primitiva_poligono.o :\
+$(DIR_O)representacion_primitiva.o \
+$(DIR_CLASS_V)representacion/representacion_primitiva/representacion_primitiva_poligono/representacion_primitiva_poligono.h \
+$(DIR_CLASS_V)representacion/representacion_primitiva/representacion_primitiva_poligono/representacion_primitiva_poligono.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_primitiva/representacion_primitiva_poligono/representacion_primitiva_poligono.cpp -o $(DIR_O)representacion_primitiva_poligono.o $(INCLUDES)
 
 $(DIR_O)representacion_primitiva_caja.o :\
 $(DIR_O)representacion_primitiva.o \
