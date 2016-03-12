@@ -70,6 +70,12 @@ class Herramientas
 	}
 
 	template<typename T>
+	static float radianes_a_grados(T val)
+	{
+	    return ( val * 180.0) / M_PI;
+	}
+
+	template<typename T>
 	static bool segmentos_superpuestos(T aini, T afin, T bini, T bfin, bool roce_es_colision=false)
 	{
 	 	//Comparamos si está fuera y lo negamos...

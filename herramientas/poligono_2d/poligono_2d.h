@@ -40,7 +40,52 @@ class Poligono_2d_vertices
 
 	bool				es_concavo() const
 	{
-		//TODO...
+		if(vertices.size() <= 3) return false;
+
+		size_t i=0;
+		while(i < vertices.size())
+		{
+			auto ptc=vertices.at(i),
+				pt1=ptc, pt2=ptc;
+
+			if(i==0)
+			{
+				pt1=vertices.at(vertices.size()-1);
+				pt2=vertices.at(i+1);				
+			}
+			else if(i==vertices.size()-1)
+			{
+				pt1=vertices.at(i-1);
+				pt2=vertices.at(0);
+			}
+			else
+			{
+				pt1=vertices.at(i-1);
+				pt2=vertices.at(i+1);
+			}
+
+			auto vector_1=obtener_para_puntos_cartesiano(ptc.x, ptc.y, pt1.x, pt1.y);
+			auto vector_2=obtener_para_puntos_cartesiano(ptc.x, ptc.y, pt2.x, pt2.y);
+			double dot=producto_vectorial(vector_1, vector_2);
+			double det=determinante(vector_1, vector_2);
+			double angulorad=atan2(det, dot);
+			double angulo=DLibH::Herramientas::radianes_a_grados(angulorad);
+
+			angulo=angulo > 0.0 ? 360.0-angulo : -angulo;
+/*
+std::cout<<"CENTRO: "<<ptc.x<<", "<<ptc.y<<std::endl;
+std::cout<<"PT1: "<<pt1.x<<", "<<pt1.y<<std::endl;
+std::cout<<"PT2: "<<pt2.x<<", "<<pt2.y<<std::endl;
+std::cout<<"VEC C A 1: "<<vector_1.x<<", "<<vector_1.y<<std::endl;
+std::cout<<"VEC C A 2: "<<vector_2.x<<", "<<vector_2.y<<std::endl;
+
+std::cout<<"ANGULO: "<<angulo<<std::endl;
+std::cout<<"========================"<<std::endl;
+*/
+			if(angulo > 180.0) return true;
+			++i;
+		}
+
 		return false;
 	}
 

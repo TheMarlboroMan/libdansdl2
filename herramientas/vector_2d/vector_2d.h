@@ -160,6 +160,11 @@ template<typename T>
 struct Vector_2d_pantalla:
 	public Vector_2d<T>
 {
+						Vector_2d_pantalla():Vector_2d<T>() 
+	{
+
+	}
+
 						Vector_2d_pantalla(T px, T py):Vector_2d<T>(px, py) 
 	{
 
@@ -267,6 +272,11 @@ template<typename T>
 struct Vector_2d_cartesiano:
 	public Vector_2d<T>
 {
+						Vector_2d_cartesiano():Vector_2d<T>() 
+	{
+
+	}
+
 						Vector_2d_cartesiano(T px, T py):Vector_2d<T>(px, py) 
 	{
 
@@ -408,6 +418,12 @@ template<typename T>
 T producto_vectorial(const Vector_2d<T>& a, const Vector_2d<T>& b)
 {
 	return a.x*b.x+a.y*b.y;
+}
+
+template<typename T>
+T determinante(const Vector_2d<T>& a, const Vector_2d<T>& b)
+{
+	return (a.x*b.y)-(a.y*b.x);
 }
 
 /*El orden de los factores PUEDE alterar el producto.*/
