@@ -89,7 +89,7 @@ class Poligono_2d_vertices
 
 	virtual void			centrar_en(tpunto v)
 	{
-		auto vec=obtener_para_puntos_cartesiano(centro.x, centro.y, v.x, v.y);
+		auto vec=obtener_para_puntos_cartesiano(centro.x, centro.y, v.x, v.y, false);
 		for(auto &p : vertices) p+={vec.x, vec.y};
 		centro=v;
 	}
@@ -223,14 +223,14 @@ class Poligono_2d:
 
 	virtual void			centrar_en(tpunto v)
 	{
-		auto vec=obtener_para_puntos_cartesiano(this->centro.x, this->centro.y, v.x, v.y);
+		auto vec=obtener_para_puntos_cartesiano(this->centro.x, this->centro.y, v.x, v.y, false);
+
+std::cout<<">>>CENTRANDO EN "<<v.x<<", "<<v.y<<std::endl;
+std::cout<<"DESDE "<<this->centro.x<<", "<<this->centro.y<<std::endl;
+
 		Poligono_2d_vertices<T>::centrar_en(v);
 
-/*
-std::cout<<"CENTRANDO EN "<<v.x<<", "<<v.y<<std::endl;
-std::cout<<"DESDE "<<this->centro.x<<", "<<this->centro.y<<std::endl;
 std::cout<<"CON DIFERENCIA DE "<<vec.x<<", "<<vec.y<<std::endl;
-*/
 
 		for(auto &s : segmentos) s.desplazar({vec.x, vec.y});
 	}

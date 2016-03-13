@@ -459,7 +459,7 @@ Vector_2d_pantalla<T> obtener_para_puntos_pantalla(T p_xa, T p_ya, T p_xb, T p_y
 }
 
 template<typename T>
-Vector_2d_cartesiano<T> obtener_para_puntos_cartesiano(T p_xa, T p_ya, T p_xb, T p_yb)
+Vector_2d_cartesiano<T> obtener_para_puntos_cartesiano(T p_xa, T p_ya, T p_xb, T p_yb, bool normalizar=true)
 {
 	Vector_2d_cartesiano<T> r;
 
@@ -467,7 +467,7 @@ Vector_2d_cartesiano<T> obtener_para_puntos_cartesiano(T p_xa, T p_ya, T p_xb, T
 	{
 		r.x=p_xa-p_xb;
 		r.y=p_yb-p_ya;
-		r.normalizar();
+		if(normalizar) r.normalizar();
 	}
 
 	return r;
