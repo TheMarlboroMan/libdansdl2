@@ -72,16 +72,6 @@ class Poligono_2d_vertices
 			double angulo=DLibH::Herramientas::radianes_a_grados(angulorad);
 
 			angulo=angulo > 0.0 ? 360.0-angulo : -angulo;
-/*
-std::cout<<"CENTRO: "<<ptc.x<<", "<<ptc.y<<std::endl;
-std::cout<<"PT1: "<<pt1.x<<", "<<pt1.y<<std::endl;
-std::cout<<"PT2: "<<pt2.x<<", "<<pt2.y<<std::endl;
-std::cout<<"VEC C A 1: "<<vector_1.x<<", "<<vector_1.y<<std::endl;
-std::cout<<"VEC C A 2: "<<vector_2.x<<", "<<vector_2.y<<std::endl;
-
-std::cout<<"ANGULO: "<<angulo<<std::endl;
-std::cout<<"========================"<<std::endl;
-*/
 			if(angulo > 180.0) return true;
 			++i;
 		}
@@ -95,6 +85,13 @@ std::cout<<"========================"<<std::endl;
 	{
 		centro+=v;
 		for(auto &p : vertices) p+=v;
+	}
+
+	virtual void			centrar_en(tpunto v)
+	{
+		auto vec=obtener_para_puntos_cartesiano(centro.x, centro.y, v.x, v.y);
+		for(auto &p : vertices) p+={vec.x, vec.y};
+		centro=v;
 	}
 
 	virtual void			rotar(T grados)
@@ -222,6 +219,20 @@ class Poligono_2d:
 	{
 		Poligono_2d_vertices<T>::desplazar(v);
 		for(auto &s : segmentos) s.desplazar(v);
+	}
+
+	virtual void			centrar_en(tpunto v)
+	{
+		auto vec=obtener_para_puntos_cartesiano(this->centro.x, this->centro.y, v.x, v.y);
+		Poligono_2d_vertices<T>::centrar_en(v);
+
+/*
+std::cout<<"CENTRANDO EN "<<v.x<<", "<<v.y<<std::endl;
+std::cout<<"DESDE "<<this->centro.x<<", "<<this->centro.y<<std::endl;
+std::cout<<"CON DIFERENCIA DE "<<vec.x<<", "<<vec.y<<std::endl;
+*/
+
+		for(auto &s : segmentos) s.desplazar({vec.x, vec.y});
 	}
 
 	virtual void			rotar(T grados)
