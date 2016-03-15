@@ -71,7 +71,7 @@ class Poligono_2d_vertices
 			double angulorad=atan2(det, dot);
 			double angulo=DLibH::Herramientas::radianes_a_grados(angulorad);
 
-			angulo=angulo > 0.0 ? 360.0-angulo : -angulo;
+			angulo=angulo < 0.0 ? 360.0-angulo : -angulo;
 			if(angulo > 180.0) return true;
 			++i;
 		}
@@ -87,11 +87,12 @@ class Poligono_2d_vertices
 		for(auto &p : vertices) p+=v;
 	}
 
-	virtual void			centrar_en(tpunto v)
+	virtual DLibH::Vector_2d<double>	centrar_en(tpunto v)
 	{
-		auto vec=obtener_para_puntos_cartesiano(centro.x, centro.y, v.x, v.y, false);
+		auto vec=obtener_para_puntos_cartesiano(v.x, v.y, this->centro.x, this->centro.y, false);
 		for(auto &p : vertices) p+={vec.x, vec.y};
 		centro=v;
+		return vec;
 	}
 
 	virtual void			rotar(T grados)
@@ -221,18 +222,11 @@ class Poligono_2d:
 		for(auto &s : segmentos) s.desplazar(v);
 	}
 
-	virtual void			centrar_en(tpunto v)
+	virtual DLibH::Vector_2d<double>	centrar_en(tpunto v)
 	{
-		auto vec=obtener_para_puntos_cartesiano(this->centro.x, this->centro.y, v.x, v.y, false);
-
-std::cout<<">>>CENTRANDO EN "<<v.x<<", "<<v.y<<std::endl;
-std::cout<<"DESDE "<<this->centro.x<<", "<<this->centro.y<<std::endl;
-
-		Poligono_2d_vertices<T>::centrar_en(v);
-
-std::cout<<"CON DIFERENCIA DE "<<vec.x<<", "<<vec.y<<std::endl;
-
-		for(auto &s : segmentos) s.desplazar({vec.x, vec.y});
+		auto res=Poligono_2d_vertices<T>::centrar_en(v);
+		for(auto &s : segmentos) s.desplazar({res.x, res.y});
+		return res;
 	}
 
 	virtual void			rotar(T grados)
