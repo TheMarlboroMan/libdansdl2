@@ -310,3 +310,43 @@ bool Controles_SDL::es_evento_mousebuttondown(SDL_Event &p_evento) const {return
 bool Controles_SDL::es_evento_mousebuttonup(SDL_Event &p_evento) const {return p_evento.type==SDL_MOUSEBUTTONUP;}
 bool Controles_SDL::es_evento_keydown(SDL_Event &p_evento) const {return p_evento.type==SDL_KEYDOWN;}
 bool Controles_SDL::es_evento_keyup(SDL_Event &p_evento) const {return p_evento.type==SDL_KEYUP;}
+
+int Controles_SDL::obtener_tecla_down() const
+{
+	int i=0;
+	while(i < SDL_NUM_SCANCODES)
+	{
+		if(teclas_down[i]) return i;
+		++i;
+	}
+	
+	return 1;
+}
+
+int Controles_SDL::obtener_boton_down() const
+{
+	unsigned int i=0;
+	while(i < Raton::MAX_BOTONES)
+	{
+		if(raton.botones_down[i]) return i;
+		++i;
+	}
+	return -1;
+}
+
+int Controles_SDL::obtener_joystick_boton_down(int indice) const
+{
+	const Joystick& j=*joysticks[indice];
+	unsigned int i=0;
+
+	while(i < j.botones - 1)
+	{
+		if(j.botones_down[i]) 
+		{
+			return i;
+		}
+		++i;
+	}
+
+	return -1;
+}

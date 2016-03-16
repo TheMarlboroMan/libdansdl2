@@ -29,8 +29,9 @@ class Controles_SDL
 		const Uint8 * teclas_pulsadas; //Lo manejaremos todo manualmente...
 
 		public:
-		Teclado() {teclas_pulsadas=NULL;}
-		~Teclado() {teclas_pulsadas=NULL;}
+		Teclado() {teclas_pulsadas=nullptr;}
+		//TODO: Esto es un leak???
+		~Teclado() {teclas_pulsadas=nullptr;}
 		void mut_teclas_pulsadas(const Uint8 * teclas)  {teclas_pulsadas=teclas;}
 		Uint8 const * acc_teclas_pulsadas() const {return teclas_pulsadas;}
 		bool es_tecla_pulsada(int p_tecla) const {return this->teclas_pulsadas[p_tecla];}
@@ -91,14 +92,16 @@ class Controles_SDL
 	{
 		public:
 
+		typedef std::vector<bool> vbotones;
+
 		unsigned int numero;
 		unsigned int botones;
 		unsigned int cantidad_ejes;
 		SDL_Joystick * estructura;
-		char * botones_up;
-		char * botones_down;
-		char * botones_pulsados;
-		char * botones_soltados;
+		vbotones botones_up;
+		vbotones botones_down;
+		vbotones botones_pulsados;
+		vbotones botones_soltados;
 		Sint16 * ejes;
 		std::string nombre;
 
@@ -111,10 +114,6 @@ class Controles_SDL
 
 			this->estructura=NULL;	
 
-			this->botones_up=NULL;
-			this->botones_down=NULL;
-			this->botones_pulsados=NULL;
-			this->botones_soltados=NULL;
 			this->ejes=NULL;
 
 			this->inicializar();
@@ -128,12 +127,12 @@ class Controles_SDL
 //TODO TODO
 //			this->nombre=SDL_JoystickName(this->numero);				
 
-			if(this->botones)
+			if(botones)
 			{
-				this->botones_up=new char[this->botones];
-				this->botones_down=new char[this->botones];
-				this->botones_pulsados=new char[this->botones];
-				this->botones_soltados=new char[this->botones];
+				botones_up.reserve(botones);
+				botones_down.reserve(botones);
+				botones_pulsados.reserve(botones);
+				botones_soltados.reserve(botones);
 			}
 
 			if(this->cantidad_ejes)
@@ -147,8 +146,13 @@ class Controles_SDL
 			si lo hacemos se perderá el estado del input de botones
 			pulsados o movimientos de ejes!!!.*/
 
-			memset(this->botones_pulsados, 0, this->botones);
-			memset(this->botones_soltados, 1, this->botones);
+			if(botones)
+			{
+				botones_up.insert(std::begin(botones_up), botones, false);
+				botones_pulsados.insert(std::begin(botones_pulsados), botones, false);
+				botones_down.insert(std::begin(botones_down), botones, false);
+				botones_soltados.insert(std::begin(botones_soltados), botones, true);
+			}
 
 			if(this->cantidad_ejes) 
 			{
@@ -161,15 +165,15 @@ class Controles_SDL
 		{
 			if(v_tipo==0)
 			{
-				this->botones_down[v_boton]=1;
-				this->botones_pulsados[v_boton]=1;
-				this->botones_soltados[v_boton]=0;
+				this->botones_down[v_boton]=true;
+				this->botones_pulsados[v_boton]=true;
+				this->botones_soltados[v_boton]=false;
 			}
 			else
 			{
-				this->botones_up[v_boton]=1;
-				this->botones_soltados[v_boton]=1;
-				this->botones_pulsados[v_boton]=0;
+				this->botones_up[v_boton]=true;
+				this->botones_soltados[v_boton]=true;
+				this->botones_pulsados[v_boton]=false;
 			}
 		}
 	
@@ -182,21 +186,13 @@ class Controles_SDL
 		{
 			if(this->botones)
 			{
-				memset(this->botones_up, 0, this->botones);
-				memset(this->botones_down, 0, this->botones);
+				std::fill(std::begin(botones_up), std::end(botones_up), false);
+				std::fill(std::begin(botones_down), std::end(botones_down), false);
 			}
 		}
 
 		~Joystick()
 		{
-			if(this->botones)
-			{
-				delete [] this->botones_up;
-				delete [] this->botones_down;
-				delete [] this->botones_pulsados;
-				delete [] this->botones_soltados;	
-			}
-
 			if(this->cantidad_ejes)
 			{
 				delete [] this->ejes;
@@ -252,40 +248,41 @@ class Controles_SDL
 
 	private:
 
-	SDL_Event eventos; //Las cosas que ocurran, como cerrar la ventana
-	Teclado teclado;
-	Raton raton;		//Siempre hay un ratón, no?.
-	Evento_actividad evento_actividad;
-	std::vector<Joystick *> joysticks;
-	std::string input_text;	//El input de texto...
+	SDL_Event 			eventos; //Las cosas que ocurran, como cerrar la ventana
+	Teclado		 		teclado;
+	Raton 				raton;		//Siempre hay un ratón, no?.
+	Evento_actividad	 	evento_actividad;
+	std::vector<Joystick *> 	joysticks;
+	std::string 			input_text;	//El input de texto...
 
-	bool senal_salida; //SDL_QUIT; básicamente...
-	unsigned short int joystick_defecto;
-	unsigned short int cantidad_joysticks;
+	bool 				senal_salida; //SDL_QUIT; básicamente...
+	unsigned short int 		joystick_defecto;
+	unsigned short int 		cantidad_joysticks;
 
-	char * teclas_down;
-	char * teclas_down_bloqueo;
-	char * teclas_up;
+	//TODO: Esto debería ser cosa del teclado...
+	char * 				teclas_down;
+	char * 				teclas_down_bloqueo;
+	char * 				teclas_up;
 
-	void inicializar_teclas(bool con_bloqueo=false);
-	void inicializar_joysticks();
-	void limpiar_estado_joysticks();
-	void limpiar_estado_eventos_actividad();
-	void cerrar_joysticks();
-	bool comprobacion_boton_joystick(unsigned int, unsigned int) const;
-	bool comprobacion_eje_joystick(unsigned int, unsigned int) const;
+	void 				inicializar_teclas(bool con_bloqueo=false);
+	void 				inicializar_joysticks();
+	void 				limpiar_estado_joysticks();
+	void 				limpiar_estado_eventos_actividad();
+	void 				cerrar_joysticks();
+	bool 				comprobacion_boton_joystick(unsigned int, unsigned int) const;
+	bool 				comprobacion_eje_joystick(unsigned int, unsigned int) const;
 
 	/*Esto registra simplemente si hay algún evento de este tipo por cada
 	ciclo de eventos.*/
 
-	bool hay_eventos_texto;
-	bool hay_eventos_movimiento_raton;
-	bool hay_eventos_boton_raton;
-	bool hay_eventos_teclado_down;
-	bool hay_eventos_teclado_up;
-	bool hay_eventos_eje_joystick;
-	bool hay_eventos_boton_joystick_up;
-	bool hay_eventos_boton_joystick_down;
+	bool 				hay_eventos_texto;
+	bool 				hay_eventos_movimiento_raton;
+	bool 				hay_eventos_boton_raton;
+	bool				hay_eventos_teclado_down;
+	bool 				hay_eventos_teclado_up;
+	bool 				hay_eventos_eje_joystick;
+	bool 				hay_eventos_boton_joystick_up;
+	bool 				hay_eventos_boton_joystick_down;
 
 	/*Registra el foco...*/
 
@@ -294,84 +291,125 @@ class Controles_SDL
 	//enum ESTADOS{E_FOCO_RATON=SDL_APPMOUSEFOCUS, E_FOCO_INPUT=SDL_APPINPUTFOCUS, E_FOCO_ACTIVIDAD=SDL_APPACTIVE};	
 	enum VALORES_EJES{MIN_EJE=-32768, MAX_EJE=32767, MIN_RUIDO=-3200, MAX_RUIDO=3200};
 
-	void iniciar_input_texto() {SDL_StartTextInput();}
-	void finalizar_input_texto() {SDL_StopTextInput();}
-	void vaciar_input_texto() {input_text=std::string("");}
-	const std::string acc_input_texto() const {return input_text;}
-	bool es_input_texto_activo() const {return SDL_IsTextInputActive();}
+				Controles_SDL();
+				~Controles_SDL();
 
-	bool bombear_eventos_manual(SDL_Event &, bool=true);
-	Controles_SDL();
-	~Controles_SDL();
-	Teclado const & acc_teclado() const {return this->teclado;}
-	SDL_Event const & acc_eventos() const {return this->eventos;}
-	Raton const & acc_raton() const {return raton;}
-	Joystick const & acc_joystick(int indice) const {return *(joysticks[indice]);}
-	void recoger();
+	void 			iniciar_input_texto() {SDL_StartTextInput();}
+	void 			finalizar_input_texto() {SDL_StopTextInput();}
+	void 			vaciar_input_texto() {input_text=std::string("");}
+	const std::string 	acc_input_texto() const {return input_text;}
+	bool 			es_input_texto_activo() const {return SDL_IsTextInputActive();}
+
+	bool 			bombear_eventos_manual(SDL_Event &, bool=true);
+	Teclado const & 	acc_teclado() const {return this->teclado;}
+	SDL_Event const & 	acc_eventos() const {return this->eventos;}
+	Raton const & 		acc_raton() const {return raton;}
+	Joystick const & 	acc_joystick(int indice) const {return *(joysticks[indice]);}
+	void 			recoger();
 
 	/*Recibe como parámetro una functión f que toma como parámetro un evento y
-	devuelve true o false... Si devuelve true se sale del loop.*/
+	devuelve true o false... Si devuelve true se sale del loop. Es una forma 
+	de obtener un control a bajo nivel sobre los eventos.
+
+	Un ejemplo de un callback para poder leer manualmente el input que se recibe...  Se
+	puede usar para, por ejemplo, aprender las teclas que se quieran usar.
+
+	bool test;
+	struct Cosa
+	{
+		int val;
+		bool operator()(SDL_Event& ev)
+		{
+			if(ev.type==SDL_KEYDOWN)
+			{
+				std::cout<<"CODIGO DE TECLA ES "<<ev.key.keysym.scancode<<std::endl;
+				return true;
+			}
+
+			++val;
+			std::cout<<"HOLA "<<val<<std::endl;
+			return false;
+		}
+		
+		Cosa():val(0) {}		
+	}c;
+
+	virtual void turno()
+	{
+		if(!test)
+		{
+			Input_base::turno();
+		}
+		else
+		{
+			acc_controles_sdl().recoger_callback(c);
+			std::cout<<c.val<<std::endl;
+			if(c.val > 100) test=false;
+		}
+	}
+	*/
 
 	template <typename TipoFunc> void recoger_callback(TipoFunc& f)
 	{
-		this->limpiar_para_nueva_recogida();
-			
+		this->limpiar_para_nueva_recogida();			
 		while(SDL_PollEvent(&eventos))
 		{
 			if(f(eventos)) break;
 		}
 	}
 
-	void limpiar_para_nueva_recogida();
-	void procesar_evento(SDL_Event &);
-	void mover_raton(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
-	bool es_tecla_pulsada(int p_tecla) const {return this->teclado.es_tecla_pulsada(p_tecla);}
-	bool es_tecla_down(int p_tecla) const {return this->teclas_down[p_tecla];}
-	bool es_tecla_up(int p_tecla) const {return this->teclas_up[p_tecla];}
-	bool es_boton_up(int p_boton) const {return this->raton.botones_up[p_boton];}
-	bool es_boton_down(int p_boton) const {return this->raton.botones_down[p_boton];}
-	bool es_boton_pulsado(int p_boton) const {return this->raton.botones_pulsados[p_boton];}
-	bool es_movimiento_raton() const {return this->raton.movimiento;}
-	bool es_joystick_boton_down(unsigned int, unsigned int) const;
-	bool es_joystick_boton_up(unsigned int, unsigned int) const;
-	bool es_joystick_boton_pulsado(unsigned int, unsigned int) const;
-	bool es_joystick_boton_soltado(unsigned int, unsigned int) const;
-	bool es_joystick_boton_down(unsigned int) const;
-	bool es_joystick_boton_up(unsigned int) const;
-	bool es_joystick_boton_pulsado(unsigned int) const;
-	bool es_joystick_boton_soltado(unsigned int) const;
-	Sint16 joystick_eje(unsigned int, unsigned int) const;
-	Sint16 joystick_eje(unsigned int) const;
-	unsigned short int acc_cantidad_joysticks() const {return this->cantidad_joysticks;}
+	void 			limpiar_para_nueva_recogida();
+	void 			procesar_evento(SDL_Event &);
+	void 			mover_raton(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
+	bool 			es_tecla_pulsada(int p_tecla) const {return this->teclado.es_tecla_pulsada(p_tecla);}
+	bool 			es_tecla_down(int p_tecla) const {return this->teclas_down[p_tecla];}
+	bool 			es_tecla_up(int p_tecla) const {return this->teclas_up[p_tecla];}
+	bool 			es_boton_up(int p_boton) const {return this->raton.botones_up[p_boton];}
+	bool			es_boton_down(int p_boton) const {return this->raton.botones_down[p_boton];}
+	bool 			es_boton_pulsado(int p_boton) const {return this->raton.botones_pulsados[p_boton];}
+	bool 			es_movimiento_raton() const {return this->raton.movimiento;}
+	bool 			es_joystick_boton_down(unsigned int, unsigned int) const;
+	bool 			es_joystick_boton_up(unsigned int, unsigned int) const;
+	bool 			es_joystick_boton_pulsado(unsigned int, unsigned int) const;
+	bool 			es_joystick_boton_soltado(unsigned int, unsigned int) const;
+	bool			es_joystick_boton_down(unsigned int) const;
+	bool 			es_joystick_boton_up(unsigned int) const;
+	bool 			es_joystick_boton_pulsado(unsigned int) const;
+	bool 			es_joystick_boton_soltado(unsigned int) const;
+	Sint16 			joystick_eje(unsigned int, unsigned int) const;
+	Sint16 			joystick_eje(unsigned int) const;
+	unsigned short int 	acc_cantidad_joysticks() const {return this->cantidad_joysticks;}
 
-	bool es_evento_quit(SDL_Event &) const;
-	bool es_evento_mousemotion(SDL_Event &) const;
-	bool es_evento_mousebuttondown(SDL_Event &) const;
-	bool es_evento_mousebuttonup(SDL_Event &) const;
-	bool es_evento_keydown(SDL_Event &) const;
-	bool es_evento_keyup(SDL_Event &) const; 
-	bool es_senal_salida() const {return senal_salida;}
-	void establecer_joystick_defecto(unsigned int p_valor) {this->joystick_defecto=p_valor;}
-	Posicion_raton obtener_posicion_raton() const {return raton.acc_posicion();}
+	bool 			es_evento_quit(SDL_Event &) const;
+	bool 			es_evento_mousemotion(SDL_Event &) const;
+	bool 			es_evento_mousebuttondown(SDL_Event &) const;
+	bool 			es_evento_mousebuttonup(SDL_Event &) const;
+	bool 			es_evento_keydown(SDL_Event &) const;
+	bool 			es_evento_keyup(SDL_Event &) const; 
+	bool 			es_senal_salida() const {return senal_salida;}
+	void 			establecer_joystick_defecto(unsigned int p_valor) {this->joystick_defecto=p_valor;}
+	Posicion_raton 		obtener_posicion_raton() const {return raton.acc_posicion();}
 
-	bool recibe_eventos_texto() const {return this->hay_eventos_texto;}
-	bool recibe_eventos_raton() const {return this->hay_eventos_movimiento_raton || this->hay_eventos_boton_raton;}
-	bool recibe_eventos_movimiento_raton() const {return this->hay_eventos_movimiento_raton;}
-	bool recibe_eventos_boton_raton() const {return this->hay_eventos_boton_raton;}
-	bool recibe_eventos_teclado() const {return this->hay_eventos_teclado_up || hay_eventos_teclado_down;}
-	bool recibe_eventos_teclado_down() const {return this->hay_eventos_teclado_down;}
-	bool recibe_eventos_teclado_up() const {return this->hay_eventos_teclado_up;}
-	bool recibe_eventos_joystick() const {return this->hay_eventos_eje_joystick || this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down ;}
-	bool recibe_eventos_eje_joystick() const {return this->hay_eventos_eje_joystick;}
-	bool recibe_eventos_boton_joystick() const {return this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down;}
-	bool recibe_eventos_boton_joystick_up() const {return this->hay_eventos_boton_joystick_up;}
-	bool recibe_eventos_boton_joystick_down() const {return this->hay_eventos_boton_joystick_down;}
-	bool recibe_eventos_input() const {return this->recibe_eventos_raton() || this->recibe_eventos_teclado() || this->recibe_eventos_joystick();}
-	bool es_evento_actividad() const {return this->evento_actividad.es_registrado_evento_actividad();}
-	bool es_foco_evento_actividad() const {return this->evento_actividad.es_foco();}
-	Uint8 acc_estado_evento_actividad() const {return this->evento_actividad.acc_estado();}
+	bool 			recibe_eventos_texto() const {return this->hay_eventos_texto;}
+	bool 			recibe_eventos_raton() const {return this->hay_eventos_movimiento_raton || this->hay_eventos_boton_raton;}
+	bool 			recibe_eventos_movimiento_raton() const {return this->hay_eventos_movimiento_raton;}
+	bool 			recibe_eventos_boton_raton() const {return this->hay_eventos_boton_raton;}
+	bool 			recibe_eventos_teclado() const {return this->hay_eventos_teclado_up || hay_eventos_teclado_down;}
+	bool 			recibe_eventos_teclado_down() const {return this->hay_eventos_teclado_down;}
+	bool 			recibe_eventos_teclado_up() const {return this->hay_eventos_teclado_up;}
+	bool 			recibe_eventos_joystick() const {return this->hay_eventos_eje_joystick || this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down ;}
+	bool 			recibe_eventos_eje_joystick() const {return this->hay_eventos_eje_joystick;}
+	bool 			recibe_eventos_boton_joystick() const {return this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down;}
+	bool 			recibe_eventos_boton_joystick_up() const {return this->hay_eventos_boton_joystick_up;}
+	bool 			recibe_eventos_boton_joystick_down() const {return this->hay_eventos_boton_joystick_down;}
+	bool 			recibe_eventos_input() const {return this->recibe_eventos_raton() || this->recibe_eventos_teclado() || this->recibe_eventos_joystick();}
+	bool 			es_evento_actividad() const {return this->evento_actividad.es_registrado_evento_actividad();}
+	bool 			es_foco_evento_actividad() const {return this->evento_actividad.es_foco();}
+	Uint8 			acc_estado_evento_actividad() const {return this->evento_actividad.acc_estado();}
 
-	//TODO: Obtener código evento teclado...
+	int			obtener_tecla_down() const;
+	int			obtener_boton_down() const;
+	int			obtener_joystick_boton_down(int) const;
 };
 
 } //Fin namespace DLibI
