@@ -29,6 +29,30 @@ struct Punto_2d
 		return Punto_2d<T> {x+p.x, y+p.y};
 	}
 
+	Punto_2d operator*(T p)
+	{
+		return Punto_2d<T> {x*p, y*p};
+	}
+
+	Punto_2d operator*=(T p)
+	{
+		x*=p;
+		y*=p;
+		return *this;
+	}
+
+	Punto_2d operator/=(T p)
+	{
+		x/=p;
+		y/=p;
+		return *this;
+	}
+
+	Punto_2d operator/(T p)
+	{
+		return Punto_2d<T> {x/p, y/p};
+	}
+
 	Punto_2d operator-(const Punto_2d& p)
 	{
 		return Punto_2d<T> {x-p.x, y-p.y};
