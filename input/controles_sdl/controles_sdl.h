@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstring> //Para memset.
 #include <vector>
+#include <map>
 #include <string>
 
 namespace DLibI
@@ -93,39 +94,41 @@ class Controles_SDL
 		public:
 
 		typedef std::vector<bool> vbotones;
+		typedef std::vector<Sint16> vejes;
 
-		unsigned int numero;
-		unsigned int botones;
-		unsigned int cantidad_ejes;
-		SDL_Joystick * estructura;
-		vbotones botones_up;
-		vbotones botones_down;
-		vbotones botones_pulsados;
-		vbotones botones_soltados;
-		Sint16 * ejes;
-		std::string nombre;
+		SDL_Joystick * 	estructura;
+		SDL_JoystickID	id;
+		unsigned int 	botones;
+		unsigned int 	cantidad_ejes;
+		vbotones 	botones_up;
+		vbotones 	botones_down;
+		vbotones 	botones_pulsados;
+		vbotones 	botones_soltados;
+		vejes		ejes;
 
-		Joystick(unsigned int p_i)
+		Joystick(SDL_JoystickID id)
+			:estructura(nullptr), id(id), botones(0),
+			cantidad_ejes(0)
 		{
-			this->numero=p_i;
-
-			this->botones=0;
-			this->cantidad_ejes=0;
-
-			this->estructura=NULL;	
-
-			this->ejes=NULL;
-
-			this->inicializar();
 		}
 
-		void inicializar()
+		/**
+		* Los joysticks están metidos en un mapa que hace copia del objeto
+		* de forma que se borra y se liberaría la estructura si la emplazamos
+		* en el constructor. La solución de momento es pasar la estructura 
+		* después de construido el objeto.
+		* TODO: Probar deleter...
+std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
+{
+    SDL_FreeSurface(surface);
+});
+		*/
+
+		void inicializar(SDL_Joystick * joy)
 		{
-			this->estructura=SDL_JoystickOpen(this->numero);	//De alguna manera el valgrind saca aquí una pérdida.
-			this->botones=SDL_JoystickNumButtons(this->estructura);
-			this->cantidad_ejes=SDL_JoystickNumAxes(this->estructura);
-//TODO TODO
-//			this->nombre=SDL_JoystickName(this->numero);				
+			estructura=joy;
+			botones=SDL_JoystickNumButtons(estructura);
+			cantidad_ejes=SDL_JoystickNumAxes(estructura);
 
 			if(botones)
 			{
@@ -135,12 +138,12 @@ class Controles_SDL
 				botones_soltados.reserve(botones);
 			}
 
-			if(this->cantidad_ejes)
+			if(cantidad_ejes)
 			{
-				this->ejes=new Sint16[this->cantidad_ejes];
+				ejes.reserve(cantidad_ejes);
 			}
 
-			this->inicializar_estado();	
+			inicializar_estado();	
 
 			/*OJO: No vamos a mover esto a "inicializar estado!!!",
 			si lo hacemos se perderá el estado del input de botones
@@ -154,11 +157,10 @@ class Controles_SDL
 				botones_soltados.insert(std::begin(botones_soltados), botones, true);
 			}
 
-			if(this->cantidad_ejes) 
+			if(cantidad_ejes) 
 			{
-				memset(this->ejes, 0, this->cantidad_ejes);
+				ejes.insert(std::begin(ejes), cantidad_ejes, 0);
 			}
-
 		}
 
 		void registrar_boton(unsigned int v_tipo, unsigned int v_boton)
@@ -193,13 +195,10 @@ class Controles_SDL
 
 		~Joystick()
 		{
-			if(this->cantidad_ejes)
+			if(estructura)
 			{
-				delete [] this->ejes;
+				SDL_JoystickClose(estructura);
 			}
-
-			SDL_JoystickClose(this->estructura);
-			this->estructura=NULL;
 		}		
 	};
 
@@ -252,11 +251,12 @@ class Controles_SDL
 	Teclado		 		teclado;
 	Raton 				raton;		//Siempre hay un ratón, no?.
 	Evento_actividad	 	evento_actividad;
-	std::vector<Joystick *> 	joysticks;
+
+	std::map<int, Joystick> 	joysticks;
+	std::map<SDL_JoystickID, int>	id_joystick_a_indice;
 	std::string 			input_text;	//El input de texto...
 
 	bool 				senal_salida; //SDL_QUIT; básicamente...
-	unsigned short int 		joystick_defecto;
 	unsigned short int 		cantidad_joysticks;
 
 	//TODO: Esto debería ser cosa del teclado...
@@ -269,6 +269,7 @@ class Controles_SDL
 	void 				limpiar_estado_joysticks();
 	void 				limpiar_estado_eventos_actividad();
 	void 				cerrar_joysticks();
+	void				inicializar_joystick(SDL_Joystick *, int);
 	bool 				comprobacion_boton_joystick(unsigned int, unsigned int) const;
 	bool 				comprobacion_eje_joystick(unsigned int, unsigned int) const;
 
@@ -301,10 +302,10 @@ class Controles_SDL
 	bool 			es_input_texto_activo() const {return SDL_IsTextInputActive();}
 
 	bool 			bombear_eventos_manual(SDL_Event &, bool=true);
-	Teclado const & 	acc_teclado() const {return this->teclado;}
-	SDL_Event const & 	acc_eventos() const {return this->eventos;}
-	Raton const & 		acc_raton() const {return raton;}
-	Joystick const & 	acc_joystick(int indice) const {return *(joysticks[indice]);}
+	const Teclado& 		acc_teclado() const {return this->teclado;}
+	const SDL_Event& 	acc_eventos() const {return this->eventos;}
+	const Raton& 		acc_raton() const {return raton;}
+	const Joystick& 	acc_joystick(int indice) const {return joysticks.at(indice);}
 	void 			recoger();
 
 	/*Recibe como parámetro una functión f que toma como parámetro un evento y
@@ -372,12 +373,7 @@ class Controles_SDL
 	bool 			es_joystick_boton_up(unsigned int, unsigned int) const;
 	bool 			es_joystick_boton_pulsado(unsigned int, unsigned int) const;
 	bool 			es_joystick_boton_soltado(unsigned int, unsigned int) const;
-	bool			es_joystick_boton_down(unsigned int) const;
-	bool 			es_joystick_boton_up(unsigned int) const;
-	bool 			es_joystick_boton_pulsado(unsigned int) const;
-	bool 			es_joystick_boton_soltado(unsigned int) const;
 	Sint16 			joystick_eje(unsigned int, unsigned int) const;
-	Sint16 			joystick_eje(unsigned int) const;
 	unsigned short int 	acc_cantidad_joysticks() const {return this->cantidad_joysticks;}
 
 	bool 			es_evento_quit(SDL_Event &) const;
@@ -387,7 +383,6 @@ class Controles_SDL
 	bool 			es_evento_keydown(SDL_Event &) const;
 	bool 			es_evento_keyup(SDL_Event &) const; 
 	bool 			es_senal_salida() const {return senal_salida;}
-	void 			establecer_joystick_defecto(unsigned int p_valor) {this->joystick_defecto=p_valor;}
 	Posicion_raton 		obtener_posicion_raton() const {return raton.acc_posicion();}
 
 	bool 			recibe_eventos_texto() const {return this->hay_eventos_texto;}
