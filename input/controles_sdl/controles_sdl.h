@@ -99,6 +99,7 @@ class Controles_SDL
 
 		SDL_Joystick * 	estructura;
 		SDL_JoystickID	id;
+		unsigned int	device_id;
 		unsigned int 	botones;
 		unsigned int 	cantidad_ejes;
 		vbotones 	botones_up;
@@ -107,9 +108,9 @@ class Controles_SDL
 		vbotones 	botones_soltados;
 		vejes		ejes;
 
-		Joystick(SDL_JoystickID id)
-			:estructura(nullptr), id(id), botones(0),
-			cantidad_ejes(0)
+		Joystick(SDL_JoystickID id, int device_id)
+			:estructura(nullptr), id(id), device_id(device_id), 
+			botones(0), cantidad_ejes(0)
 		{
 		}
 
@@ -273,6 +274,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	void				inicializar_joystick(SDL_Joystick *, int);
 	bool 				comprobacion_boton_joystick(unsigned int, unsigned int) const;
 	bool 				comprobacion_eje_joystick(unsigned int, unsigned int) const;
+	bool 				es_joystick_registrado_por_device_id(unsigned int);
 
 	/*Esto registra simplemente si hay algún evento de este tipo por cada
 	ciclo de eventos.*/

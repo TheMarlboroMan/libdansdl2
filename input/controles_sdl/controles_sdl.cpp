@@ -56,7 +56,7 @@ void Controles_SDL::inicializar_joysticks()
 void Controles_SDL::inicializar_joystick(SDL_Joystick * estructura, int indice)
 {
 	SDL_JoystickID id=SDL_JoystickInstanceID(estructura);
-	joysticks.insert(std::pair<int, Joystick>(indice, Joystick(id) ) ) ;
+	joysticks.insert(std::pair<int, Joystick>(indice, Joystick(id, indice) ) ) ;
 	joysticks.at(indice).inicializar(estructura);
 	id_joystick_a_indice[id]=indice;
 
@@ -145,13 +145,23 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 		case SDL_JOYDEVICEADDED:
 		case SDL_CONTROLLERDEVICEADDED:
 			DLibH::Log_motor::L()<<"Nuevo joystick detectado..."<<std::endl;
-			inicializar_joystick(SDL_JoystickOpen(evento.cdevice.which), joysticks.size());
+		
+			if(!es_joystick_registrado_por_device_id(evento.cdevice.which))
+			{
+				inicializar_joystick(SDL_JoystickOpen(evento.cdevice.which), joysticks.size());
+				++cantidad_joysticks;
+			}
+			else
+			{
+				DLibH::Log_motor::L()<<"El joystick había sido registrado anteriormente."<<std::endl;
+			}
 		break;
 
 		case SDL_JOYDEVICEREMOVED:
 		case SDL_CONTROLLERDEVICEREMOVED:
 			DLibH::Log_motor::L()<<"Retirada de joystick detectada..."<<std::endl;
 			joysticks.erase(id_joystick_a_indice[evento.cdevice.which]);
+			--cantidad_joysticks;
 		break;
 
 		case SDL_TEXTINPUT:
@@ -203,6 +213,16 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 
 		default: break;
 	}
+}
+
+bool Controles_SDL::es_joystick_registrado_por_device_id(unsigned int d_id)
+{
+	for(const auto& j : joysticks)
+	{
+		if(j.second.device_id==d_id) return true;
+	}
+
+	return false;
 }
 
 void Controles_SDL::limpiar_estado_joysticks()
