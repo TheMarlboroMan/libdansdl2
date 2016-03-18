@@ -43,6 +43,8 @@ void Controles_SDL::inicializar_joysticks()
 	{
 		SDL_JoystickEventState(SDL_ENABLE);
 
+		DLibH::Log_motor::L()<<"Localizados "<<cantidad_joysticks<<" joysticks"<<std::endl;
+
 		for(int i=0; i<cantidad_joysticks; i++)
 		{
 			SDL_Joystick * joy=SDL_JoystickOpen(i);	//De alguna manera el valgrind saca aquí una pérdida.
@@ -57,6 +59,9 @@ void Controles_SDL::inicializar_joystick(SDL_Joystick * estructura, int indice)
 	joysticks.insert(std::pair<int, Joystick>(indice, Joystick(id) ) ) ;
 	joysticks.at(indice).inicializar(estructura);
 	id_joystick_a_indice[id]=indice;
+
+	DLibH::Log_motor::L()<<"Inicializado joystick "<<indice<<" con "<<joysticks.at(indice).botones<<" botones y "<<joysticks.at(indice).cantidad_ejes<<std::endl;
+
 }
 
 void Controles_SDL::cerrar_joysticks()
@@ -139,11 +144,13 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 
 		case SDL_JOYDEVICEADDED:
 		case SDL_CONTROLLERDEVICEADDED:
+			DLibH::Log_motor::L()<<"Nuevo joystick detectado..."<<std::endl;
 			inicializar_joystick(SDL_JoystickOpen(evento.cdevice.which), joysticks.size());
 		break;
 
 		case SDL_JOYDEVICEREMOVED:
 		case SDL_CONTROLLERDEVICEREMOVED:
+			DLibH::Log_motor::L()<<"Retirada de joystick detectada..."<<std::endl;
 			joysticks.erase(id_joystick_a_indice[evento.cdevice.which]);
 		break;
 

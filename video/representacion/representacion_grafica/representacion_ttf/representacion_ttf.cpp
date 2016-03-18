@@ -106,7 +106,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 
 		if(!s)
 		{
-			throw std::runtime_error("Error preparando Representacion_TTF");
+			throw std::runtime_error("Error preparando Representacion_TTF : "+std::string(TTF_GetError()));
 		}
 		else
 		{

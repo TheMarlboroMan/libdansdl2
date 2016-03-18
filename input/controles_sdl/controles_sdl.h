@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include "../../herramientas/log_base/log_base.h"
 
 namespace DLibI
 {
