@@ -364,7 +364,7 @@ int Controles_SDL::obtener_joystick_boton_down(int indice) const
 	const Joystick& j=joysticks.at(indice);
 	unsigned int i=0;
 
-	while(i < j.botones - 1)
+	while(i < j.botones)
 	{
 		if(j.botones_down[i]) 
 		{
