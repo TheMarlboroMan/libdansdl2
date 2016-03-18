@@ -96,21 +96,25 @@ class Controles_SDL
 
 		typedef std::vector<bool> vbotones;
 		typedef std::vector<Sint16> vejes;
+		typedef std::vector<int> vhats;
 
 		SDL_Joystick * 	estructura;
 		SDL_JoystickID	id;
 		unsigned int	device_id;
 		unsigned int 	botones;
 		unsigned int 	cantidad_ejes;
+		unsigned int 	cantidad_hats;
 		vbotones 	botones_up;
 		vbotones 	botones_down;
 		vbotones 	botones_pulsados;
 		vbotones 	botones_soltados;
 		vejes		ejes;
+		vhats		hats;
+				
 
 		Joystick(SDL_JoystickID id, int device_id)
 			:estructura(nullptr), id(id), device_id(device_id), 
-			botones(0), cantidad_ejes(0)
+			botones(0), cantidad_ejes(0), cantidad_hats(0)
 		{
 		}
 
@@ -131,6 +135,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 			estructura=joy;
 			botones=SDL_JoystickNumButtons(estructura);
 			cantidad_ejes=SDL_JoystickNumAxes(estructura);
+			cantidad_hats=SDL_JoystickNumHats(estructura);
 
 			if(botones)
 			{
@@ -143,6 +148,11 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 			if(cantidad_ejes)
 			{
 				ejes.reserve(cantidad_ejes);
+			}
+
+			if(cantidad_hats)
+			{
+				hats.reserve(cantidad_hats);
 			}
 
 			inicializar_estado();	
@@ -162,6 +172,11 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 			if(cantidad_ejes) 
 			{
 				ejes.insert(std::begin(ejes), cantidad_ejes, 0);
+			}
+
+			if(cantidad_hats) 
+			{
+				hats.insert(std::begin(hats), cantidad_hats, SDL_HAT_CENTERED);
 			}
 		}
 
@@ -184,7 +199,12 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 		void registrar_eje(unsigned int v_eje, Sint16 v_valor)
 		{
 			this->ejes[v_eje]=v_valor;
-		}	
+		}
+
+		void registrar_hat(unsigned int v_hat, int v_valor)
+		{
+			hats[v_hat]=v_valor;
+		}		
 
 		void inicializar_estado()
 		{
@@ -274,6 +294,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	void				inicializar_joystick(SDL_Joystick *, int);
 	bool 				comprobacion_boton_joystick(unsigned int, unsigned int) const;
 	bool 				comprobacion_eje_joystick(unsigned int, unsigned int) const;
+	bool 				comprobacion_hat_joystick(unsigned int, unsigned int) const;
 	bool 				es_joystick_registrado_por_device_id(unsigned int);
 
 	/*Esto registra simplemente si hay algún evento de este tipo por cada
@@ -285,6 +306,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	bool				hay_eventos_teclado_down;
 	bool 				hay_eventos_teclado_up;
 	bool 				hay_eventos_eje_joystick;
+	bool 				hay_eventos_hat_joystick;
 	bool 				hay_eventos_boton_joystick_up;
 	bool 				hay_eventos_boton_joystick_down;
 
@@ -377,6 +399,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	bool 			es_joystick_boton_pulsado(unsigned int, unsigned int) const;
 	bool 			es_joystick_boton_soltado(unsigned int, unsigned int) const;
 	Sint16 			joystick_eje(unsigned int, unsigned int) const;
+	int			joystick_hat(unsigned int, unsigned int) const;
 	unsigned short int 	acc_cantidad_joysticks() const {return this->cantidad_joysticks;}
 
 	bool 			es_evento_quit(SDL_Event &) const;
@@ -395,8 +418,9 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	bool 			recibe_eventos_teclado() const {return this->hay_eventos_teclado_up || hay_eventos_teclado_down;}
 	bool 			recibe_eventos_teclado_down() const {return this->hay_eventos_teclado_down;}
 	bool 			recibe_eventos_teclado_up() const {return this->hay_eventos_teclado_up;}
-	bool 			recibe_eventos_joystick() const {return this->hay_eventos_eje_joystick || this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down ;}
+	bool 			recibe_eventos_joystick() const {return this->hay_eventos_eje_joystick || hay_eventos_hat_joystick || this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down ;}
 	bool 			recibe_eventos_eje_joystick() const {return this->hay_eventos_eje_joystick;}
+	bool 			recibe_eventos_hat_joystick() const {return hay_eventos_hat_joystick;}
 	bool 			recibe_eventos_boton_joystick() const {return this->hay_eventos_boton_joystick_up || this->hay_eventos_boton_joystick_down;}
 	bool 			recibe_eventos_boton_joystick_up() const {return this->hay_eventos_boton_joystick_up;}
 	bool 			recibe_eventos_boton_joystick_down() const {return this->hay_eventos_boton_joystick_down;}

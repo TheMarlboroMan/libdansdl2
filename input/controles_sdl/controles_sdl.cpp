@@ -21,7 +21,7 @@ Controles_SDL::Controles_SDL():
 	this->hay_eventos_teclado_up=false;
 	this->hay_eventos_teclado_down=false;
 	this->hay_eventos_eje_joystick=false;
-	this->hay_eventos_eje_joystick=false;
+	this->hay_eventos_hat_joystick=false;
 	this->hay_eventos_boton_joystick_up=false;
 	this->hay_eventos_boton_joystick_down=false;
 }
@@ -60,7 +60,7 @@ void Controles_SDL::inicializar_joystick(SDL_Joystick * estructura, int indice)
 	joysticks.at(indice).inicializar(estructura);
 	id_joystick_a_indice[id]=indice;
 
-	DLibH::Log_motor::L()<<"Inicializado joystick "<<indice<<" con "<<joysticks.at(indice).botones<<" botones y "<<joysticks.at(indice).cantidad_ejes<<std::endl;
+	DLibH::Log_motor::L()<<"Inicializado joystick "<<indice<<" con "<<joysticks.at(indice).botones<<" botones y "<<joysticks.at(indice).cantidad_ejes<<"ejes."<<std::endl;
 
 }
 
@@ -135,11 +135,17 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 			{
 				hay_eventos_eje_joystick=true;
 				joysticks.at(id_joystick_a_indice[evento.jbutton.which]).registrar_eje(evento.jaxis.axis, evento.jaxis.value);
+				std::cout<<"EJE "<<evento.jaxis.axis<<" VALOR "<<evento.jaxis.value<<std::endl;
 			}
 			else
 			{
 				joysticks.at(id_joystick_a_indice[evento.jbutton.which]).registrar_eje(evento.jaxis.axis, 0);
 			}
+		break;
+
+		case SDL_JOYHATMOTION:
+			hay_eventos_hat_joystick=true;
+			joysticks.at(id_joystick_a_indice[evento.jhat.which]).registrar_hat(evento.jhat.hat, evento.jhat.value);
 		break;
 
 		case SDL_JOYDEVICEADDED:
@@ -282,12 +288,29 @@ bool Controles_SDL::comprobacion_eje_joystick(unsigned int p_joystick, unsigned 
 	else return true;
 }
 
+bool Controles_SDL::comprobacion_hat_joystick(unsigned int p_joystick, unsigned int p_hat) const
+{
+	if(!joysticks.size()) return false;
+	else if(joysticks.count(p_joystick)) return false;
+	else if(p_hat > joysticks.at(p_joystick).cantidad_hats) return false;
+	else return true;
+}
+
 Sint16 Controles_SDL::joystick_eje(unsigned int p_joystick, unsigned int p_eje) const
 {
 	if(!this->comprobacion_eje_joystick(p_joystick, p_eje)) return false;
 	else
 	{
 		return joysticks.at(p_joystick).ejes[p_eje];
+	}
+}
+
+int Controles_SDL::joystick_hat(unsigned int p_joystick, unsigned int p_hat) const
+{
+	if(!this->comprobacion_hat_joystick(p_joystick, p_hat)) return false;
+	else
+	{
+		return joysticks.at(p_joystick).hats[p_hat];
 	}
 }
 
@@ -300,13 +323,14 @@ void Controles_SDL::limpiar_para_nueva_recogida()
 {
 	
 	hay_eventos_texto=false;
-	this->hay_eventos_movimiento_raton=false;
-	this->hay_eventos_boton_raton=false;
-	this->hay_eventos_teclado_up=false;
-	this->hay_eventos_teclado_down=false;
-	this->hay_eventos_eje_joystick=false;
-	this->hay_eventos_boton_joystick_up=false;
-	this->hay_eventos_boton_joystick_down=false;
+	hay_eventos_movimiento_raton=false;
+	hay_eventos_boton_raton=false;
+	hay_eventos_teclado_up=false;
+	hay_eventos_teclado_down=false;
+	hay_eventos_eje_joystick=false;
+	hay_eventos_hat_joystick=false;
+	hay_eventos_boton_joystick_up=false;
+	hay_eventos_boton_joystick_down=false;
 
 	//Alimentamos las teclas pulsadas y trabajamos con ellas.
 	this->teclado.mut_teclas_pulsadas(SDL_GetKeyboardState(NULL));
