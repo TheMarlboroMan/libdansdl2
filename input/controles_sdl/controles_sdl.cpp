@@ -1,5 +1,7 @@
 #include "controles_sdl.h"
 
+#include <algorithm>
+
 using namespace DLibI;
 
 Controles_SDL::Controles_SDL():
@@ -88,6 +90,22 @@ bool Controles_SDL::bombear_eventos_manual(SDL_Event &p_evento, bool p_procesar)
 	return resultado;
 }
 
+void Controles_SDL::recoger()
+{
+	this->limpiar_para_nueva_recogida();
+			
+	//Eventos...
+	while(SDL_PollEvent(&eventos))
+	{
+		this->procesar_evento(eventos);
+	}
+
+	//TODO: Actualizar stuff...
+	//for(auto& j: joysticks) j.second.debug();
+
+//	raton.manejador();
+}
+
 /*
 A esto se le llama una vez por cada evento que haya en "recoger". Lo hemos
 incluido para poderlo llamar desde otros puntos como el "Escritor_texto" y 
@@ -146,11 +164,22 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 			{
 				joysticks.at(id_joystick_a_indice[evento.jbutton.which]).registrar_eje(evento.jaxis.axis, 0);
 			}
+
+			if(joysticks.at(id_joystick_a_indice[evento.jhat.which]).ejes_virtualizados)
+			{
+				establecer_input_virtualizado();
+			}
 		break;
 
 		case SDL_JOYHATMOTION:
 			hay_eventos_hat_joystick=true;
 			joysticks.at(id_joystick_a_indice[evento.jhat.which]).registrar_hat(evento.jhat.hat, evento.jhat.value);
+
+			if(joysticks.at(id_joystick_a_indice[evento.jhat.which]).hats_virtualizados)
+			{
+				establecer_input_virtualizado();
+			}
+
 		break;
 
 		case SDL_JOYDEVICEADDED:
@@ -224,6 +253,22 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 		break;
 
 		default: break;
+	}
+}
+
+void Controles_SDL::establecer_input_virtualizado()
+{
+	for(const auto& pj: joysticks)
+	{	
+		const auto& j=pj.second;
+
+		if(j.hats_virtualizados || j.ejes_virtualizados)
+		{
+			if(std::any_of(std::begin(j.botones_up), std::end(j.botones_up), [](bool v) {return v;})) hay_eventos_boton_joystick_up=true; 
+			if(std::any_of(std::begin(j.botones_down), std::end(j.botones_down), [](bool v) {return v;})) hay_eventos_boton_joystick_down=true; 
+//			if(std::any_of(std::begin(j.botones_pulsados), std::end(j.botones_pulsados), [](bool v) {return v;}))
+//			if(std::any_of(std::begin(j.botones_soltados), std::end(j.botones_soltados), [](bool v) {return v;}))
+		}
 	}
 }
 
@@ -344,21 +389,6 @@ void Controles_SDL::limpiar_para_nueva_recogida()
 	this->limpiar_estado_joysticks();
 	this->limpiar_estado_eventos_actividad();
 	this->raton.inicializar_estado();
-}
-
-void Controles_SDL::recoger()
-{
-	this->limpiar_para_nueva_recogida();
-			
-	//Eventos...
-	while(SDL_PollEvent(&eventos))
-	{
-		this->procesar_evento(eventos);
-	}
-
-	//for(auto& j: joysticks) j.second.debug();
-
-//	raton.manejador();
 }
 
 bool Controles_SDL::es_evento_quit(SDL_Event &p_evento) const {return p_evento.type==SDL_QUIT;}

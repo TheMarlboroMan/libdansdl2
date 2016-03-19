@@ -420,6 +420,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	bool 				comprobacion_eje_joystick(unsigned int, unsigned int) const;
 	bool 				comprobacion_hat_joystick(unsigned int, unsigned int) const;
 	bool 				es_joystick_registrado_por_device_id(unsigned int);
+	void				establecer_input_virtualizado();
 
 	/*Esto registra simplemente si hay algún evento de este tipo por cada
 	ciclo de eventos.*/
