@@ -140,7 +140,7 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 			{
 				hay_eventos_eje_joystick=true;
 				joysticks.at(id_joystick_a_indice[evento.jbutton.which]).registrar_eje(evento.jaxis.axis, evento.jaxis.value);
-				std::cout<<"EJE "<<evento.jaxis.axis<<" VALOR "<<evento.jaxis.value<<std::endl;
+//				std::cout<<"EJE "<<evento.jaxis.axis<<" VALOR "<<evento.jaxis.value<<std::endl;
 			}
 			else
 			{
