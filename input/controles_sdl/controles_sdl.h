@@ -456,6 +456,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	const SDL_Event& 	acc_eventos() const {return this->eventos;}
 	const Raton& 		acc_raton() const {return raton;}
 	const Joystick& 	acc_joystick(int indice) const {return joysticks.at(indice);}
+	Joystick& 		acc_joystick(int indice) {return joysticks.at(indice);}
 	void			virtualizar_hats_joystick(int indice) {joysticks.at(indice).virtualizar_hats();}
 	void			virtualizar_ejes_joystick(int indice, int threshold) {joysticks.at(indice).virtualizar_ejes(threshold);}
 	void 			recoger();
