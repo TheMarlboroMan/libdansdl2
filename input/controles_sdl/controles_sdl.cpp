@@ -60,7 +60,12 @@ void Controles_SDL::inicializar_joystick(SDL_Joystick * estructura, int indice)
 	joysticks.at(indice).inicializar(estructura);
 	id_joystick_a_indice[id]=indice;
 
-	DLibH::Log_motor::L()<<"Inicializado joystick "<<indice<<" con "<<joysticks.at(indice).botones<<" botones y "<<joysticks.at(indice).cantidad_ejes<<"ejes."<<std::endl;
+	auto& j=joysticks.at(indice);
+
+	DLibH::Log_motor::L()<<"Inicializado joystick "<<indice<<" con "<<
+		j.botones<<" botones, "<<
+		j.cantidad_hats<<" hats, "<<
+		j.cantidad_ejes<<" ejes."<<std::endl;
 
 }
 
@@ -156,6 +161,7 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 			{
 				inicializar_joystick(SDL_JoystickOpen(evento.cdevice.which), joysticks.size());
 				++cantidad_joysticks;
+				nuevo_joystick_conectado=true;
 			}
 			else
 			{
@@ -321,7 +327,6 @@ void Controles_SDL::limpiar_estado_eventos_actividad()
 
 void Controles_SDL::limpiar_para_nueva_recogida()
 {
-	
 	hay_eventos_texto=false;
 	hay_eventos_movimiento_raton=false;
 	hay_eventos_boton_raton=false;
@@ -331,6 +336,7 @@ void Controles_SDL::limpiar_para_nueva_recogida()
 	hay_eventos_hat_joystick=false;
 	hay_eventos_boton_joystick_up=false;
 	hay_eventos_boton_joystick_down=false;
+	nuevo_joystick_conectado=false;
 
 	//Alimentamos las teclas pulsadas y trabajamos con ellas.
 	this->teclado.mut_teclas_pulsadas(SDL_GetKeyboardState(NULL));
@@ -349,6 +355,8 @@ void Controles_SDL::recoger()
 	{
 		this->procesar_evento(eventos);
 	}
+
+	//for(auto& j: joysticks) j.second.debug();
 
 //	raton.manejador();
 }

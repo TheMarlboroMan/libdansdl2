@@ -100,21 +100,26 @@ class Controles_SDL
 
 		SDL_Joystick * 	estructura;
 		SDL_JoystickID	id;
-		unsigned int	device_id;
-		unsigned int 	botones;
-		unsigned int 	cantidad_ejes;
-		unsigned int 	cantidad_hats;
-		vbotones 	botones_up;
-		vbotones 	botones_down;
-		vbotones 	botones_pulsados;
-		vbotones 	botones_soltados;
+		unsigned int	device_id,
+			 	botones,
+			 	cantidad_ejes,
+			 	cantidad_hats;
+		vbotones 	botones_up,
+			 	botones_down,
+			 	botones_pulsados,
+			 	botones_soltados;
 		vejes		ejes;
 		vhats		hats;
+		size_t 		hats_virtualizados,
+				ejes_virtualizados;
+		int		threshold_boton_virtual_eje;
 				
 
 		Joystick(SDL_JoystickID id, int device_id)
 			:estructura(nullptr), id(id), device_id(device_id), 
-			botones(0), cantidad_ejes(0), cantidad_hats(0)
+			botones(0), cantidad_ejes(0), cantidad_hats(0),
+			hats_virtualizados(0), ejes_virtualizados(0),
+			threshold_boton_virtual_eje(0)
 		{
 		}
 
@@ -180,6 +185,37 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 			}
 		}
 
+		//Crea botones virtuales para los hats.
+		void virtualizar_hats()
+		{
+			if(hats_virtualizados) return;
+			int nbotones=4 * cantidad_hats;
+
+			botones_up.insert(std::end(botones_up), nbotones, false);
+			botones_pulsados.insert(std::end(botones_pulsados), nbotones, false);
+			botones_down.insert(std::end(botones_down), nbotones, false);
+			botones_soltados.insert(std::end(botones_soltados), nbotones, true);
+
+			hats_virtualizados=botones; //Primer índice de los hats virtualizados.
+			botones+=nbotones;
+		}
+
+		void virtualizar_ejes(int threshold_virtual)
+		{
+			if(ejes_virtualizados) return;
+
+			threshold_boton_virtual_eje=threshold_boton_virtual_eje;
+			int nbotones=2 * cantidad_ejes;
+
+			botones_up.insert(std::end(botones_up), nbotones, false);
+			botones_pulsados.insert(std::end(botones_pulsados), nbotones, false);
+			botones_down.insert(std::end(botones_down), nbotones, false);
+			botones_soltados.insert(std::end(botones_soltados), nbotones, true);
+
+			ejes_virtualizados=botones; //Primer índice de los ejes virtualizados.
+			botones+=nbotones;
+		}
+
 		void registrar_boton(unsigned int v_tipo, unsigned int v_boton)
 		{
 			if(v_tipo==0)
@@ -199,12 +235,100 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 		void registrar_eje(unsigned int v_eje, Sint16 v_valor)
 		{
 			this->ejes[v_eje]=v_valor;
+
+			if(ejes_virtualizados)
+			{
+				size_t indice=ejes_virtualizados + (2 * v_eje);
+
+				if(abs(v_valor) > threshold_boton_virtual_eje)
+				{
+					std::fill(std::begin(botones_down)+indice, std::begin(botones_down)+indice+2, false);
+					std::fill(std::begin(botones_pulsados)+indice, std::begin(botones_pulsados)+indice+2, false);
+					std::fill(std::begin(botones_soltados)+indice, std::begin(botones_soltados)+indice+2, true);
+
+					auto f=[this](size_t v_boton)
+					{
+						botones_down[v_boton]=true;
+						botones_pulsados[v_boton]=true;
+						botones_soltados[v_boton]=false;
+					};
+
+					if(v_valor > 0) f(indice);
+					else f(indice+1);
+				}
+				else
+				{
+					auto f=[this](size_t v_boton)
+					{
+						if(botones_pulsados[v_boton]) 
+						{
+							botones_soltados[v_boton]=true;
+							botones_up[v_boton]=true;
+						}
+					};
+
+					f(indice);
+					f(indice+1);
+
+					std::fill(std::begin(botones_pulsados)+indice, std::begin(botones_pulsados)+indice+2, false);
+				}
+			}
 		}
 
 		void registrar_hat(unsigned int v_hat, int v_valor)
 		{
 			hats[v_hat]=v_valor;
-		}		
+
+			if(hats_virtualizados)
+			{
+				size_t indice=hats_virtualizados + (4 * v_hat);
+
+				if(v_valor==SDL_HAT_CENTERED)
+				{
+					for(size_t helper=0; helper < 4; ++helper)
+					{
+						if(botones_pulsados[indice+helper]) 
+						{
+							botones_soltados[indice+helper]=true;
+							botones_up[indice+helper]=true;
+						}
+					}
+
+					std::fill(std::begin(botones_pulsados)+indice, std::begin(botones_pulsados)+indice+4, false);
+				}
+				else
+		 		{
+					std::fill(std::begin(botones_down)+indice, std::begin(botones_down)+indice+4, false);
+					std::fill(std::begin(botones_pulsados)+indice, std::begin(botones_pulsados)+indice+4, false);
+					std::fill(std::begin(botones_soltados)+indice, std::begin(botones_soltados)+indice+4, true);
+
+					auto f=[this](size_t v_boton)
+					{
+						botones_down[v_boton]=true;
+						botones_pulsados[v_boton]=true;
+						botones_soltados[v_boton]=false;
+					};
+
+					if(v_valor & SDL_HAT_UP) f(indice);
+					if(v_valor & SDL_HAT_RIGHT) f(indice+1);
+					if(v_valor & SDL_HAT_DOWN) f(indice+2);
+					if(v_valor & SDL_HAT_LEFT) f(indice+3);
+				}
+			}
+		}
+
+		void debug()
+		{
+			std::cout<<std::endl<<"UP\t";
+			for(auto v : botones_up) std::cout<<(int(v));
+			std::cout<<std::endl<<"PULSA\t";
+			for(auto v : botones_pulsados) std::cout<<(int(v));
+			std::cout<<std::endl<<"DOWN\t";
+			for(auto v : botones_down) std::cout<<(int(v));
+			std::cout<<std::endl<<"SOLTA\t";
+			for(auto v : botones_soltados) std::cout<<(int(v));
+			std::cout<<std::endl;
+		}
 
 		void inicializar_estado()
 		{
@@ -309,6 +433,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	bool 				hay_eventos_hat_joystick;
 	bool 				hay_eventos_boton_joystick_up;
 	bool 				hay_eventos_boton_joystick_down;
+	bool				nuevo_joystick_conectado;
 
 	/*Registra el foco...*/
 
@@ -331,7 +456,10 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	const SDL_Event& 	acc_eventos() const {return this->eventos;}
 	const Raton& 		acc_raton() const {return raton;}
 	const Joystick& 	acc_joystick(int indice) const {return joysticks.at(indice);}
+	void			virtualizar_hats_joystick(int indice) {joysticks.at(indice).virtualizar_hats();}
+	void			virtualizar_ejes_joystick(int indice, int threshold) {joysticks.at(indice).virtualizar_ejes(threshold);}
 	void 			recoger();
+	bool			es_nuevo_joystick_conectado() const {return nuevo_joystick_conectado;}
 
 	/*Recibe como parámetro una functión f que toma como parámetro un evento y
 	devuelve true o false... Si devuelve true se sale del loop. Es una forma 
