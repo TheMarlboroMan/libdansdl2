@@ -166,6 +166,30 @@ struct Segmento_2d
 		v1+=p;
 		v2+=p;
 	}
+
+/*
+	T				calcular_pendiente() const
+	{
+		if(es_horizontal() || es_vertical() ) return 0.0;
+		else return (v2.y-v2.y)/((v2.x-v1.x);  
+	}
+
+	T				calcular_constante() const
+	{
+		if(es_horizontal() || es_vertical() ) return 0.0;
+		return v1.y-(calcular_pendiente()*v1.x);
+	}
+
+	bool 				es_horizontal() const
+	{
+		return v1.y==v2.y;
+	}
+
+	bool 				es_vertical() const
+	{
+		return v1.x==v2.x;
+	}
+*/
 };
 
 /**
@@ -315,6 +339,59 @@ bool colision_poligono_SAT(const Poligono_2d<T>& a,const Poligono_2d<T>& b)
 	if(!f(a, b)) return false;
 	else if(!f(b, a)) return false;
 	else return true;
+}
+
+template<typename T>
+struct Interseccion_segmentos
+{
+	bool 	interseccion;
+	T 	x, y;
+
+	explicit operator bool() const {return interseccion;}
+};
+
+//Directamente sacado de internet y adaptado... Ahora mismo no lo comprendo.
+
+template<typename T>
+Interseccion_segmentos<T> segmentos_intersectan(const Segmento_2d<T>& a, const Segmento_2d<T>& b)
+{
+	T p0_x=a.v1.x, p0_y=a.v1.y,
+	p1_x=a.v2.x, p1_y=a.v2.y,
+	p2_x=b.v1.x, p2_y=b.v1.y,
+	p3_x=b.v2.x, p3_y=b.v2.y;
+
+	T s1_x = p1_x - p0_x;     
+	T s1_y = p1_y - p0_y;
+	T s2_x = p3_x - p2_x;     
+	T s2_y = p3_y - p2_y;
+
+	T sn = -s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y);
+	T sd = -s2_x * s1_y + s1_x * s2_y;
+	T tn =  s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x);
+	T td = -s2_x * s1_y + s1_x * s2_y;
+
+	if (sn >= 0 && sn <= sd && tn >= 0 && tn <= td)
+	{
+// 		T t = tn / td; //????
+		T rx=p0_x + (tn * s1_x);
+		T ry=p0_y + (tn * s1_y);
+		return Interseccion_segmentos<T>{true, rx, ry};
+	}
+
+	return Interseccion_segmentos<T>{false, 0.0, 0.0};
+}
+
+template<typename T>
+bool interseccion_segmento_poligono(const Segmento_2d<T>& s, const Poligono_2d<T> p)
+{
+	const auto& segs=p.acc_segmentos();
+
+	for(const auto& sg : segs)
+	{
+		if(segmentos_intersectan(s, sg)) return true;
+	}
+
+	return false;
 }
 
 }
