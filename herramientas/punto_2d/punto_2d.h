@@ -77,10 +77,10 @@ struct Punto_2d
 		return p.x==x && p.y==y;
 	}
 
-	T distancia_hasta(const Punto_2d<T>& p)
+	T distancia_hasta(const Punto_2d<T>& p) const
 	{
-		T x=(this.x-p.x)*(this.x-p.x);
-		T y=(this.y-p.y)*(this.y-p.y);
+		T x=(this->x-p.x)*(this->x-p.x);
+		T y=(this->y-p.y)*(this->y-p.y);
 		return sqrt(x+y);
 	}
 
