@@ -75,6 +75,7 @@ class Herramientas
 	    return ( val * 180.0) / M_PI;
 	}
 
+	//Sólo válido para líneas rectas, of course.
 	template<typename T>
 	static bool segmentos_superpuestos(T aini, T afin, T bini, T bfin, bool roce_es_colision=false)
 	{

@@ -353,7 +353,7 @@ struct Interseccion_segmentos
 //Directamente sacado de internet y adaptado... Ahora mismo no lo comprendo.
 
 template<typename T>
-Interseccion_segmentos<T> segmentos_intersectan(const Segmento_2d<T>& a, const Segmento_2d<T>& b)
+Interseccion_segmentos<T> segmentos_intersectan_shit(const Segmento_2d<T>& a, const Segmento_2d<T>& b)
 {
 	T p0_x=a.v1.x, p0_y=a.v1.y,
 	p1_x=a.v2.x, p1_y=a.v2.y,
@@ -379,6 +379,65 @@ Interseccion_segmentos<T> segmentos_intersectan(const Segmento_2d<T>& a, const S
 	}
 
 	return Interseccion_segmentos<T>{false, 0.0, 0.0};
+}
+
+//Adaptado de https://github.com/siebenschlaefer/line-segments-intersect/blob/included_line_segments/js/line-segments-intersect.js
+template<typename T>
+bool segmentos_intersectan(const Segmento_2d<T>& a, const Segmento_2d<T>& b)
+{
+	auto producto_escalar=[](const Punto_2d<T>& a, const Punto_2d<T>& b)
+	{
+		return (a.x * b.y) - (a.y * b.x);
+	};
+
+	auto todos_iguales=[](bool a, bool b, bool c, bool d)
+	{
+		return a==b && a==c && a==d;
+	};
+
+	Punto_2d<T> r=a.v2 - a.v1;
+	Punto_2d<T> s=b.v2 - b.v1;
+	Punto_2d<T> bmenosa=b.v1-a.v1;
+
+	T uNumerator=producto_escalar(bmenosa, r);
+	T denominator=producto_escalar(r, s);
+
+	//Son parte de la misma línea.
+	if(uNumerator==0.0 && denominator==0.0) 
+	{
+	
+		//Si alguno de los puntos son el mismo... TODO: Supongo que no podemos
+		//moverlo más arriba, al principio de la comprobación????.
+		if(a.v1==b.v1 || a.v1==b.v2 || a.v2==b.v1 || a.v2==b.v2)
+		{
+			return true;
+		}
+
+		//Comprobación de superposicion... ¿Tienen todos los puntos en la dirección de turno el mismo signo?.
+		return !todos_iguales(
+				(b.v1.x - a.v1.x < 0),
+				(b.v1.x - a.v2.x < 0),
+				(b.v2.x - a.v1.x < 0),
+				(b.v2.x - a.v2.x < 0)) ||
+			!todos_iguales(
+				(b.v1.y - a.v1.y < 0),
+				(b.v1.y - a.v2.y < 0),
+				(b.v2.y - a.v1.y < 0),
+				(b.v2.y - a.v2.y < 0));
+
+	}
+
+	//Las líneas son paralelas.
+	if(denominator == 0) 
+	{
+		return false;
+	}
+
+	DLibH::Punto_2d<T> npt=b.v1-a.v1;
+	T u=uNumerator / denominator;
+	T t=producto_escalar(npt, s) / denominator;
+
+	return (t >= 0) && (t <= 1) && (u >= 0) && (u <= 1);
 }
 
 template<typename T>

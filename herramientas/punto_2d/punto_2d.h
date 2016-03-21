@@ -24,12 +24,12 @@ struct Punto_2d
 		return *this;
 	}
 
-	Punto_2d operator+(const Punto_2d<T>& p)
+	Punto_2d operator+(const Punto_2d<T>& p) const
 	{
 		return Punto_2d<T> {x+p.x, y+p.y};
 	}
 
-	Punto_2d operator*(T p)
+	Punto_2d operator*(T p) const
 	{
 		return Punto_2d<T> {x*p, y*p};
 	}
@@ -48,12 +48,12 @@ struct Punto_2d
 		return *this;
 	}
 
-	Punto_2d operator/(T p)
+	Punto_2d operator/(T p) const
 	{
 		return Punto_2d<T> {x/p, y/p};
 	}
 
-	Punto_2d operator-(const Punto_2d& p)
+	Punto_2d operator-(const Punto_2d& p) const
 	{
 		return Punto_2d<T> {x-p.x, y-p.y};
 	}
