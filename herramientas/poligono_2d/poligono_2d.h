@@ -453,5 +453,26 @@ bool interseccion_segmento_poligono(const Segmento_2d<T>& s, const Poligono_2d<T
 	return false;
 }
 
+//Adaptado de https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+template<typename T>
+bool punto_en_poligono(const Poligono_2d<T> p, const Punto_2d<T> pt)
+{
+	bool res=false;
+	T testx=pt.x, testy=pt.y;
+	const auto& vertices=p.acc_vertices();
+	size_t i=0, j=0, nvert=vertices.size();
+
+	for(i = 0, j = nvert-1; i < nvert; j = i++) 
+	{
+		if( 
+			((vertices[i].y > testy) != (vertices[j].y > testy)) &&
+			(testx < ( vertices[j].x-vertices[i].x) * (testy - vertices[i].y) / (vertices[j].y-vertices[i].y) + vertices[i].x) )
+		{
+			res=!res;
+		}
+	}
+	return res;
+}
+
 }
 #endif
