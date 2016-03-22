@@ -465,8 +465,8 @@ Vector_2d_cartesiano<T> obtener_para_puntos_cartesiano(T p_xa, T p_ya, T p_xb, T
 
 	if(! (p_xa==p_xb && p_ya==p_yb))
 	{
-		r.x=p_xa-p_xb;
-		r.y=p_ya-p_yb;
+		r.x=p_xb-p_xa;
+		r.y=p_yb-p_ya;
 		if(normalizar) r.normalizar();
 	}
 
