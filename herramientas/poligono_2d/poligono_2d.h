@@ -89,7 +89,7 @@ class Poligono_2d_vertices
 
 	virtual DLibH::Vector_2d<double>	centrar_en(tpunto v)
 	{
-		auto vec=obtener_para_puntos_cartesiano(v.x, v.y, this->centro.x, this->centro.y, false);
+		auto vec=obtener_para_puntos_cartesiano(this->centro.x, this->centro.y, v.x, v.y, false);
 		for(auto &p : vertices) p+={vec.x, vec.y};
 		centro=v;
 		return vec;
