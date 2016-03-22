@@ -341,46 +341,6 @@ bool colision_poligono_SAT(const Poligono_2d<T>& a,const Poligono_2d<T>& b)
 	else return true;
 }
 
-template<typename T>
-struct Interseccion_segmentos
-{
-	bool 	interseccion;
-	T 	x, y;
-
-	explicit operator bool() const {return interseccion;}
-};
-
-//Directamente sacado de internet y adaptado... Ahora mismo no lo comprendo.
-
-template<typename T>
-Interseccion_segmentos<T> segmentos_intersectan_shit(const Segmento_2d<T>& a, const Segmento_2d<T>& b)
-{
-	T p0_x=a.v1.x, p0_y=a.v1.y,
-	p1_x=a.v2.x, p1_y=a.v2.y,
-	p2_x=b.v1.x, p2_y=b.v1.y,
-	p3_x=b.v2.x, p3_y=b.v2.y;
-
-	T s1_x = p1_x - p0_x;     
-	T s1_y = p1_y - p0_y;
-	T s2_x = p3_x - p2_x;     
-	T s2_y = p3_y - p2_y;
-
-	T sn = -s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y);
-	T sd = -s2_x * s1_y + s1_x * s2_y;
-	T tn =  s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x);
-	T td = -s2_x * s1_y + s1_x * s2_y;
-
-	if (sn >= 0 && sn <= sd && tn >= 0 && tn <= td)
-	{
-// 		T t = tn / td; //????
-		T rx=p0_x + (tn * s1_x);
-		T ry=p0_y + (tn * s1_y);
-		return Interseccion_segmentos<T>{true, rx, ry};
-	}
-
-	return Interseccion_segmentos<T>{false, 0.0, 0.0};
-}
-
 //Adaptado de https://github.com/siebenschlaefer/line-segments-intersect/blob/included_line_segments/js/line-segments-intersect.js
 template<typename T>
 bool segmentos_intersectan(const Segmento_2d<T>& a, const Segmento_2d<T>& b)

@@ -38,8 +38,16 @@ bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
 {
 	if(!es_visible()) return false;
 
-//TODO: Optimizar fuera de pantalla????
-//	SDL_Rect pos=acc_posicion();
+	//Test para no dibujar fuera de pantalla...
+	SDL_Rect pos=acc_posicion();
+
+	int w=0, h=0;
+	SDL_RenderGetLogicalSize(p_renderer, &w, &h);
+	if( (pos.x + pos.w < 0) || (pos.y + pos.h < 0) || pos.x >= w || pos.y >= h)
+	{
+		return false;
+	}
+
 	SDL_RenderSetClipRect(p_renderer, NULL);
 
 	//TODO: No siempre devuelve true!!!
