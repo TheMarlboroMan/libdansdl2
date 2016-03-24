@@ -43,7 +43,7 @@ Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, Uint8 r, Uint8 
 Representacion_TTF::Representacion_TTF(const Representacion_TTF& o)
 	:Representacion_grafica(o), 
 	fuente(o.fuente),
-	cadena(""),
+	cadena(o.cadena),
 	color(o.color)
 {
 	marcar_como_no_preparada();
@@ -106,7 +106,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 
 		if(!s)
 		{
-			throw std::runtime_error("Error preparando Representacion_TTF : "+std::string(TTF_GetError()));
+			throw std::runtime_error("Error preparando Representacion_TTF : "+std::string(TTF_GetError())+" : "+c);
 		}
 		else
 		{
