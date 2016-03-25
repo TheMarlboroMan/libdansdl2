@@ -111,8 +111,8 @@ void Pantalla::configurar(int flags_ventana)
 	if(!ventana)
 	{	
 		ventana=SDL_CreateWindow("", 
-			SDL_WINDOWPOS_UNDEFINED,
-			SDL_WINDOWPOS_UNDEFINED,
+			0, //SDL_WINDOWPOS_UNDEFINED,
+			0, //SDL_WINDOWPOS_UNDEFINED,
 			w, h, flags_ventana); //SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else
