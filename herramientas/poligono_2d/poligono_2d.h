@@ -38,47 +38,8 @@ class Poligono_2d_vertices
 
 	}
 
-	bool				es_concavo() const
-	{
-		if(vertices.size() <= 3) return false;
-
-		size_t i=0;
-		while(i < vertices.size())
-		{
-			auto ptc=vertices.at(i),
-				pt1=ptc, pt2=ptc;
-
-			if(i==0)
-			{
-				pt1=vertices.at(vertices.size()-1);
-				pt2=vertices.at(i+1);				
-			}
-			else if(i==vertices.size()-1)
-			{
-				pt1=vertices.at(i-1);
-				pt2=vertices.at(0);
-			}
-			else
-			{
-				pt1=vertices.at(i-1);
-				pt2=vertices.at(i+1);
-			}
-
-			auto vector_1=obtener_para_puntos_cartesiano(ptc.x, ptc.y, pt1.x, pt1.y);
-			auto vector_2=obtener_para_puntos_cartesiano(ptc.x, ptc.y, pt2.x, pt2.y);
-			double dot=producto_vectorial(vector_1, vector_2);
-			double det=determinante(vector_1, vector_2);
-			double angulorad=atan2(det, dot);
-			double angulo=DLibH::Herramientas::radianes_a_grados(angulorad);
-
-			angulo=angulo < 0.0 ? 360.0-angulo : -angulo;
-			if(angulo > 180.0) return true;
-			++i;
-		}
-
-		return false;
-	}
-
+	bool				es_concavo() const {return vertices_poligono_concavo(vertices);}
+	bool				es_sentido_horario() const {return vertices_poligono_horario(vertices);}
 	size_t				size() const {return vertices.size();}
 
 	virtual void			desplazar(tpunto v)
@@ -434,5 +395,84 @@ bool punto_en_poligono(const Poligono_2d<T> p, const Punto_2d<T> pt)
 	return res;
 }
 
+template<typename T>
+bool vertices_poligono_concavo(const std::vector<Punto_2d<T>>& vertices)
+{
+	if(vertices.size() <= 3) return false;
+
+	size_t i=0;
+	while(i < vertices.size())
+	{
+		auto ptc=vertices.at(i),
+			pt1=ptc, pt2=ptc;
+
+		if(i==0)
+		{
+			pt1=vertices.at(vertices.size()-1);
+			pt2=vertices.at(i+1);				
+		}
+		else if(i==vertices.size()-1)
+		{
+			pt1=vertices.at(i-1);
+			pt2=vertices.at(0);
+		}
+		else
+		{
+			pt1=vertices.at(i-1);
+			pt2=vertices.at(i+1);
+		}
+
+		auto vector_1=obtener_para_puntos_cartesiano(ptc.x, ptc.y, pt1.x, pt1.y);
+		auto vector_2=obtener_para_puntos_cartesiano(ptc.x, ptc.y, pt2.x, pt2.y);
+		double dot=producto_vectorial(vector_1, vector_2);
+		double det=determinante(vector_1, vector_2);
+		double angulorad=atan2(det, dot);
+		double angulo=DLibH::Herramientas::radianes_a_grados(angulorad);
+
+		angulo=angulo < 0.0 ? 360.0-angulo : -angulo;
+		if(angulo > 180.0) return true;
+		++i;
+	}
+
+	return false;
 }
+
+/*
+http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order
+
+point[0] = (5,0)
+point[1] = (6,4)
+point[2] = (4,5)
+point[3] = (1,5)
+point[4] = (1,0)
+
+point[0] = (5,0)   edge[0]: (6-5)(4+0) =   4
+point[1] = (6,4)   edge[1]: (4-6)(5+4) = -18
+point[2] = (4,5)   edge[2]: (1-4)(5+5) = -30
+point[3] = (1,5)   edge[3]: (1-1)(0+5) =   0
+point[4] = (1,0)   edge[4]: (5-1)(0+0) =   0
+                                         ---
+                                         -44  counter-clockwise
+
+
+*/
+
+template<typename T>
+bool vertices_poligono_horario(const std::vector<Punto_2d<T>>& vertices)
+{
+	size_t tam=vertices.size();
+	if(tam < 3) return false;
+
+	int suma=0;
+	for(size_t i=1; i<tam; ++i)
+	{
+		suma+=(vertices[i].x-vertices[i-1].x)*(vertices[i].y+vertices[i-1].y);
+	}
+
+	suma+=(vertices[0].x-vertices[tam-1].x)*(vertices[0].y+vertices[tam-1].y);
+	return suma >= 0;	
+}
+
+}
+
 #endif
