@@ -98,10 +98,13 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 
 	for(const std::string c : lineas)
 	{
+		//TODO: ¿Qué ocurre con los tabulados?.
+		const char * cad=c.size() ? c.c_str() : " \0";
+
 		//TODO: Hay varios tipos de "blend". Podemos ponerlos aquí.
 		SDL_Surface * s=TTF_RenderUTF8_Blended
 			(const_cast<TTF_Font*>(fuente->acc_fuente()), 
-			c.c_str(),
+			cad,
 			color);	
 
 		if(!s)
