@@ -222,7 +222,7 @@ void Representacion_texto::preparar(const SDL_Renderer * renderer)
 		establecer_recorte(0, 0, ancho_area, alto_area);
 		liberar_superficie_texto();
 
-		marcar_como_preparada();
+		Representacion_grafica::preparar(renderer);
 	}
 	else
 	{

@@ -12,8 +12,7 @@ Representacion_grafica::Representacion_grafica()
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
-	reiniciar_rect(posicion_rotada);
-	
+	actualizar_caja_rotacion();
 }
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
@@ -275,4 +274,10 @@ void Representacion_grafica::establecer_posicion(SDL_Rect c)
 SDL_Rect Representacion_grafica::copia_posicion_rotada() const
 {
 	return SDL_Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
+}
+
+void Representacion_grafica::preparar(const SDL_Renderer * renderer)
+{
+	actualizar_caja_rotacion();
+	marcar_como_preparada();
 }

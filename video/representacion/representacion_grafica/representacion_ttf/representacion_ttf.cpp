@@ -128,7 +128,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 	establecer_recorte(0,0, tex->acc_w(), tex->acc_h());
 	establecer_posicion(0, 0, tex->acc_w(), tex->acc_h(), FRECT_W|FRECT_H);	//Esto debemos llamarlo aquí, de lo contrario se queda con ancho y alto 0, dando problemas con las cámaras.
 
-	marcar_como_preparada();
+	Representacion_grafica::preparar(renderer);
 }
 
 void Representacion_TTF::modificar_fuente(const Fuente_TTF& f)

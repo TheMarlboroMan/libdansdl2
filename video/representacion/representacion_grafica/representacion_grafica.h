@@ -146,7 +146,7 @@ class Representacion_grafica:public Representacion
 	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;};
 
 	virtual void 		establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
-	virtual void 		preparar(const SDL_Renderer * renderer)=0;
+	virtual void		preparar(const SDL_Renderer * renderer);
 
 	private:
 

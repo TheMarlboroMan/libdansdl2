@@ -36,3 +36,8 @@ void Representacion_bitmap::establecer_textura(Textura const * p_recurso)
 	Representacion_grafica::establecer_textura(p_recurso);
 	this->recorte_a_medidas_textura();
 }
+
+void Representacion_bitmap::preparar(const SDL_Renderer * r)
+{
+	Representacion_grafica::preparar(r);
+}
