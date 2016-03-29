@@ -86,7 +86,6 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 
 	SDL_SetRenderDrawColor(p_renderer, acc_r(), acc_g(), acc_b(), alpha);
 	SDL_Rect pos=copia_posicion();
-	SDL_Rect clip=p_posicion;
 
 	if(this->es_estatica())
 	{
@@ -103,9 +102,10 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 			pos.y+=p_posicion.y;
 
 			//Posición absoluta.
+			SDL_Rect clip=p_posicion;
 			SDL_RenderSetClipRect(p_renderer, &clip);
 
-			//Proceso del zoom...					
+			//Proceso del zoom...
 			procesar_zoom(pos, zoom);
 			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
 			return true;
@@ -126,22 +126,17 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 			pos.x-=p_enfoque.x;
 			pos.y-=p_enfoque.y;
 
+			SDL_Rect clip=p_posicion;
 			SDL_RenderSetClipRect(p_renderer, &clip);
 
-			//Proceso del zoom...
-			if(p_enfoque.w != p_posicion.w || p_enfoque.h != p_posicion.h)
-			{
-				float fx=(float) p_posicion.w / (float) p_enfoque.w;
-				float fy=(float) p_posicion.h / (float) p_enfoque.h;
-				pos.w*=fx;
-				pos.h*=fy;
-				pos.x*=fx;
-				pos.y*=fy;
-			}
+			procesar_zoom(pos, zoom);
 
+			x1+=p_posicion.x - p_enfoque.x;
+			x2+=p_posicion.x - p_enfoque.x;
+			y1+=p_posicion.y - p_enfoque.y;
+			y2+=p_posicion.y - p_enfoque.y;
 
-			//TODO... HOW?
-			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);	
+			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
 			return true;
 		}
 	}
