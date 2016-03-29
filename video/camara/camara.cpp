@@ -5,7 +5,7 @@ using namespace DLibV;
 Camara::Camara(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, unsigned int p_px, unsigned int p_py):
 	pos_x(p_px), pos_y(p_py),
 	/*con_clip(true),*/ limitada(false), limite_min_x(0), limite_min_y(0),
-	limite_max_x(0), limite_max_y(0)
+	limite_max_x(0), limite_max_y(0), zoom(1.0)
 {
 	this->caja_foco.x=p_x;
 	this->caja_foco.y=p_y;
@@ -15,10 +15,6 @@ Camara::Camara(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, unsigned int p_px
 	this->sincronizar_cajas();
 	this->caja_pos.w=this->caja_foco.w;
 	this->caja_pos.h=this->caja_foco.h;
-}
-
-Camara::~Camara()
-{
 }
 
 void Camara::sincronizar_cajas()
@@ -89,4 +85,11 @@ void Camara::transformar_posicion_raton(int& x, int& y)
 {
 	x=caja_foco.x + (x * (caja_foco.w / (float) caja_pos.w));
 	y=caja_foco.y + (y * (caja_foco.h / (float) caja_pos.h));
+}
+
+void Camara::mut_zoom(double v)
+{
+	zoom=v;
+	caja_foco.w=caja_pos.w*v;
+	caja_foco.h=caja_pos.h*v;
 }

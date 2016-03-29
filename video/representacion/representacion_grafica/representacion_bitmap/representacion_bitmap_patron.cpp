@@ -87,7 +87,7 @@ bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer)
 	return resultado;
 }
 
-bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_Rect& caja_a, const SDL_Rect& caja_b)
+bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_Rect& caja_a, const SDL_Rect& caja_b, double zoom)
 {
 	//Si no está en la pantalla no perdemos tiempo.
 	if(!this->es_visible())
@@ -115,7 +115,7 @@ bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_
 		while(x < max_x)
 		{
 			pincel_x=x;
-			resultado=resultado && Representacion_grafica::volcado(p_renderer, caja_a, caja_b);
+			resultado=resultado && Representacion_grafica::volcado(p_renderer, caja_a, caja_b, zoom);
 			marcar_como_no_preparada();
 			establecer_posicion(copia_posicion);
 			x+=pincel.w;

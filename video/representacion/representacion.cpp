@@ -113,13 +113,13 @@ bool Representacion::volcar(SDL_Renderer * renderer, const SDL_Rect& p_pant)
 //Explícito, con cámara... LLama al de abajo pero es más cómodo.
 bool Representacion::volcar(SDL_Renderer * renderer, const Camara& p_camara)
 {
-	return this->volcado(renderer, p_camara.acc_caja_foco(), p_camara.acc_caja_pos()); //, p_camara.acc_desp_x(), p_camara.acc_desp_y());
+	return this->volcado(renderer, p_camara.acc_caja_foco(), p_camara.acc_caja_pos(), p_camara.acc_zoom());
 }
 
 //Explícitos, con pantalla...
 bool Representacion::volcar(const Pantalla& p_pantalla, const Camara& p_camara)
 {
-	return this->volcado(p_pantalla.acc_renderer(), p_camara.acc_caja_foco(), p_camara.acc_caja_pos() ); //, p_camara.acc_desp_x(), p_camara.acc_desp_y());
+	return this->volcado(p_pantalla.acc_renderer(), p_camara.acc_caja_foco(), p_camara.acc_caja_pos(), p_camara.acc_zoom() ); //, p_camara.acc_desp_x(), p_camara.acc_desp_y());
 }
 
 bool Representacion::volcar(const Pantalla& p_pantalla)
@@ -132,9 +132,9 @@ bool Representacion::volcar(SDL_Renderer * renderer)
 	return this->volcado(renderer);
 }
 
-bool Representacion::volcar(SDL_Renderer * renderer, const SDL_Rect& p_foco, const SDL_Rect& p_posicion)
+bool Representacion::volcar(SDL_Renderer * renderer, const SDL_Rect& p_foco, const SDL_Rect& p_posicion, double zoom)
 {
-	return this->volcado(renderer, p_foco, p_posicion);
+	return this->volcado(renderer, p_foco, p_posicion, zoom);
 }
 
 //Se usa para darle un volumen a la posición, que de por si no tiene.
@@ -157,4 +157,14 @@ void Representacion::procesar_zoom(SDL_Rect& pos, const SDL_Rect& p_posicion, co
 	pos.h*=fy;
 	pos.x*=fx;
 	pos.y*=fy;
+}
+
+void Representacion::procesar_zoom(SDL_Rect& pos, double zoom)
+{
+	if(zoom==1.0) return;
+
+	pos.w/=zoom;
+	pos.h/=zoom;
+	pos.x/=zoom;
+	pos.y/=zoom;
 }

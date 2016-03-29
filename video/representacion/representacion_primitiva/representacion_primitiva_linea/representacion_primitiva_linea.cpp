@@ -76,7 +76,7 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer)
 	return true;
 }
 
-bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion)
+bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
 	if(!es_visible()) return false;
 
@@ -106,10 +106,7 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 			SDL_RenderSetClipRect(p_renderer, &clip);
 
 			//Proceso del zoom...					
-			if(p_enfoque.w != p_posicion.w || p_enfoque.h != p_posicion.h)
-			{
-				procesar_zoom(pos, p_posicion, p_enfoque);
-			}
+			procesar_zoom(pos, zoom);
 			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
 			return true;
 		}

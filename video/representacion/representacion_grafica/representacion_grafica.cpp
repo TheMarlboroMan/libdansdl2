@@ -112,7 +112,7 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	}
 }
 
-bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos)
+bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
 {
 	if(!this->es_visible())
 	{
@@ -150,38 +150,23 @@ bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& 
 		{
 			SDL_Rect rec=copia_recorte();
 			pos=copia_posicion();	//Again, por si al preparar ha cambiado.
-			SDL_Rect clip_rect=obtener_caja_clip();
 
 			//Una representación estática aparecerá en la posición absoluta del objeto más la posición de la cámara.	
 			pos.x+=p_pos.x;
 			pos.y+=p_pos.y;
-			clip_rect.x+=p_pos.x;
-			clip_rect.y+=p_pos.y;
 
 			//Una representación dinámica tiene un cálculo distinto, relativo a la cámara.
 			if(!this->es_estatica())
 			{
 				pos.x-=p_foco.x;
 				pos.y-=p_foco.y;
-				clip_rect.x-=p_foco.x;
-				clip_rect.y-=p_foco.y;
 			}
 
 			//Proceso del zoom...
-			if(p_foco.w != p_pos.w || p_foco.h != p_pos.h)
-			{
-				procesar_zoom(pos, p_pos, p_foco);
-			}
+			procesar_zoom(pos, zoom);
 
-			//Si la caja de clip se sale por algún lado de la 
-			//posición de la cámara vamos a ajustarla...
-			DLibH::Herramientas_SDL::rectangulos_superpuestos(p_pos, clip_rect, clip_rect, false);
-
-			auto cpos=p_foco;
-			cpos.x=p_pos.x;
-			cpos.y=p_pos.y;
-
-			SDL_RenderSetClipRect(p_renderer, &cpos);
+			SDL_Rect clip_rect=p_pos; //La representación no puede salirse de la cámara. Fin.
+			SDL_RenderSetClipRect(p_renderer, &clip_rect);
 			return realizar_render(p_renderer, rec, pos);
 		}
 	}

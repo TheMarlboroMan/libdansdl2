@@ -50,16 +50,12 @@ bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
 
 	SDL_RenderSetClipRect(p_renderer, NULL);
 
-	//TODO: No siempre devuelve true!!!
-
-	//TODO: No tiene en cuenta el zoom...
-
 	if(es_rellena()) filledPolygonRGBA(p_renderer, puntos_x.data(), puntos_y.data(), puntos_x.size(), acc_r(), acc_g(), acc_b(), acc_alpha());
 	else polygonRGBA(p_renderer, puntos_x.data(), puntos_y.data(), puntos_x.size(), acc_r(), acc_g(), acc_b(), acc_alpha());
 	return true;
 }
 
-bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion)
+bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
 	if(!es_visible()) return false;
 
@@ -93,8 +89,12 @@ bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer, 
 
 	SDL_RenderSetClipRect(p_renderer, &clip);
 
-	//TODO: No tiene en cuenta el zoom.
-	//TODO: No siempre devuelve true!!!
+	if(zoom!=1.0)
+	{
+		auto proc=[zoom](Sint16& n) {n/=zoom;};
+		for(auto& p : cpuntos_x) proc(p);
+		for(auto& p : cpuntos_y) proc(p);
+	}
 
 	if(es_rellena()) filledPolygonRGBA(p_renderer, cpuntos_x.data(), cpuntos_y.data(), puntos_x.size(), acc_r(), acc_g(), acc_b(), acc_alpha());
 	else polygonRGBA(p_renderer, cpuntos_x.data(), cpuntos_y.data(), puntos_x.size(), acc_r(), acc_g(), acc_b(), acc_alpha());

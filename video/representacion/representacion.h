@@ -43,7 +43,7 @@ class Representacion
 				Representacion(const Representacion&);
 	Representacion& 	operator=(const Representacion &);
 
-	virtual bool 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&)=0;
+	virtual bool 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double)=0;
 	virtual bool 		volcado(SDL_Renderer *)=0;
 	
 	public:
@@ -103,7 +103,7 @@ class Representacion
 	bool 			volcar(SDL_Renderer *, const Camara&);
 	bool 			volcar(const Pantalla&, const Camara&);
 	bool 			volcar(const Pantalla&);
-	bool 			volcar(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&);
+	bool 			volcar(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
 	bool 			volcar(SDL_Renderer *);
 
 	void 			establecer_alpha(Uint8 p_valor) {this->alpha=p_valor;}
@@ -111,6 +111,7 @@ class Representacion
 	void 			establecer_modo_blend(unsigned short int v) {this->modo_blend=v;}
 	unsigned short int 	acc_modo_blend() const {return this->modo_blend;}
 	static void 		procesar_zoom(SDL_Rect& pos, const SDL_Rect& p_posicion, const SDL_Rect& p_enfoque);
+	static void 		procesar_zoom(SDL_Rect&, double);
 
 	unsigned short int 	acc_mod_color_r() const {return mod_color_r;}
 	unsigned short int 	acc_mod_color_g() const {return mod_color_g;}

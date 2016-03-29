@@ -84,7 +84,7 @@ bool Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer)
 	return true;
 }
 
-bool Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion)
+bool Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
 	if(!es_visible() || !puntos.size()) return false;
 

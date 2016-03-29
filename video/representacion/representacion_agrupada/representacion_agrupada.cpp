@@ -122,7 +122,7 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
 	return true;
 }
 
-bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos)
+bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
 {
 	if(!this->es_visible())
 	{
@@ -167,7 +167,7 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect&
 
 //		(*inicio)->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
-		(*inicio)->volcar(p_renderer, p_foco, p_pos);
+		(*inicio)->volcar(p_renderer, p_foco, p_pos, zoom);
 
 		(*inicio)->desplazar(-px, -py);
 		if(impone_alpha) (*inicio)->establecer_alpha(alpha_a);

@@ -15,7 +15,7 @@ class Representacion_primitiva_linea:public Representacion_primitiva
 					Representacion_primitiva_linea& operator=(const Representacion_primitiva_linea&);
 
 	bool 				volcado(SDL_Renderer *);
-	bool 				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&); 
+	bool 				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double); 
 
 
 	void 				establecer_puntos(int x1, int y1, int x2, int y2);
