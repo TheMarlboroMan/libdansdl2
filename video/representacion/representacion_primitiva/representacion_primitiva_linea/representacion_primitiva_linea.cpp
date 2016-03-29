@@ -107,7 +107,7 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 
 			//Proceso del zoom...
 			procesar_zoom(pos, zoom);
-			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
+			SDL_RenderDrawLine(p_renderer, x1/zoom, y1/zoom, x2/zoom, y2/zoom);
 			return true;
 		}
 	}
@@ -136,7 +136,7 @@ bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SD
 			y1+=p_posicion.y - p_enfoque.y;
 			y2+=p_posicion.y - p_enfoque.y;
 
-			SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
+			SDL_RenderDrawLine(p_renderer, x1 / zoom, y1 / zoom, x2 / zoom, y2 / zoom);
 			return true;
 		}
 	}
