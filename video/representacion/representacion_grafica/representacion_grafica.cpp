@@ -47,7 +47,6 @@ void Representacion_grafica::recorte_a_medidas_textura()
 bool Representacion_grafica::realizar_render(SDL_Renderer * p_renderer, SDL_Rect& rec, SDL_Rect& pos)
 {
 	SDL_Texture * tex=ref_textura_sdl();
-	SDL_SetTextureAlphaMod(tex, acc_alpha());
 
 	switch(acc_modo_blend())
 	{
@@ -57,6 +56,7 @@ bool Representacion_grafica::realizar_render(SDL_Renderer * p_renderer, SDL_Rect
 		case BLEND_MODULAR: SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_MOD); break;
 	};
 
+	SDL_SetTextureAlphaMod(tex, acc_alpha());
 	SDL_SetTextureColorMod(tex, acc_mod_color_r(), acc_mod_color_g(), acc_mod_color_b());
 
 	if(!es_transformada())

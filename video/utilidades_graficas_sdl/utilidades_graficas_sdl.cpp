@@ -75,9 +75,9 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
 		else
 		{
 		
-			Uint32 formato=SDL_GetWindowPixelFormat(const_cast<SDL_Window *>(ventana));
-			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, formato, 0);
-        	        SDL_FreeSurface(temporal);
+//			Uint32 formato=SDL_GetWindowPixelFormat(const_cast<SDL_Window *>(ventana));
+			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_ARGB8888, 0);
+	      	        SDL_FreeSurface(temporal);
 			return optimizada;
 		}
 	}
