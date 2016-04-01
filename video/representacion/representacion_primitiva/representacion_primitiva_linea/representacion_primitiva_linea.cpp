@@ -42,15 +42,15 @@ void Representacion_primitiva_linea::generar_posicion()
 
 	auto f=[](int v1, int v2, int& pos, int& medida)
 	{
-		if(v1 > v2)
+		if(v1 < v2)
 		{
 			pos=v1;
-			medida=v2-v1;
+			medida=abs(v2-v1);
 		}
 		else
 		{
 			pos=v2;
-			medida=v1-v2;
+			medida=abs(v1-v2);
 		}
 	};
 
