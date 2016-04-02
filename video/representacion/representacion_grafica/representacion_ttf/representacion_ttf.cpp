@@ -89,16 +89,16 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 	SDL_Surface * s=TTF_RenderUTF8_Blended
 			(const_cast<TTF_Font*>(fuente->acc_fuente()), 
 			"a",
-			color);	
+			color);
 	std::unique_ptr<DLibV::Lienzo> lienzo(DLibV::Lienzo::generar_nuevo(w, total_h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
 
 	//Y ahora, por cada línea, crear una superficie y pegarla en el lienzo...
 	int y=0;
 
-	for(const std::string c : lineas)
+	for(std::string& c : lineas)
 	{
-		//TODO: ¿Qué ocurre con los tabulados?.
+		reemplazar(c, "\t", "    ");
 		const char * cad=c.size() ? c.c_str() : " \0";
 
 		//TODO: Hay varios tipos de "blend". Podemos ponerlos aquí.
@@ -163,5 +163,15 @@ void Representacion_TTF::interno_asignar(const std::string& c)
 		cadena=c;
 		liberar_textura();
 		marcar_como_no_preparada();
+	}
+}
+
+void Representacion_TTF::reemplazar(std::string& sujeto, const std::string& busca, const std::string& reemplaza)
+{
+	size_t pos = 0, l=reemplaza.length();
+	while ((pos = sujeto.find(busca, pos)) != std::string::npos) 
+	{
+		sujeto.replace(pos, busca.length(), reemplaza);
+		pos += l;
 	}
 }

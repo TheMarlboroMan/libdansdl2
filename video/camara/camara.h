@@ -24,6 +24,8 @@ class Camara
 	double			acc_zoom() const {return zoom;}
 	unsigned int		acc_pos_x() const {return this->pos_x;}
 	unsigned int 		acc_pos_y() const {return this->pos_y;}
+	unsigned int		acc_pos_w() const {return this->caja_pos.w;}
+	unsigned int 		acc_pos_h() const {return this->caja_pos.h;}
 	unsigned int		acc_foco_w() const {return this->caja_foco.w;}
 	unsigned int 		acc_foco_h() const {return this->caja_foco.h;}
 	Sint16 			acc_x() const {return this->caja_foco.x;}

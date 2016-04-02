@@ -38,6 +38,7 @@ class Representacion_TTF:
 	private:
 	
 	void				interno_asignar(const std::string&);
+	void				reemplazar(std::string&, const std::string&, const std::string&);
 
 	//Esto es un puntero a conciencia, para poderlo cambiar.
 	Fuente_TTF const *		fuente;
