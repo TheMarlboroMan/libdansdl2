@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <cstring> //Para memset.
+#include <cstdlib> //Para abs en windows.
 #include <vector>
 #include <map>
 #include <string>
