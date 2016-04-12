@@ -39,6 +39,8 @@ class Representacion_agrupada:public Representacion
 
 	unsigned int 		obtener_cuenta() const {return grupo.size();}
 
+	std::vector<Representacion *>&	obtener_grupo() {return grupo;}
+
 	private:
 
 	bool			posee_las_representaciones;
