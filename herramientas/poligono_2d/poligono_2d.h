@@ -178,7 +178,7 @@ bool	hay_superposicion(const Proyeccion_poligono<T>& pa, const Proyeccion_poligo
 
 //Un par de forwards...
 template<typename T> class Poligono_2d;
-template<typename T> bool colision_poligono_SAT(const Poligono_2d<T>& a,const Poligono_2d<T>& b);
+template<typename T> bool colision_poligono_SAT(const Poligono_2d<T>& a,const Poligono_2d<T>& b, bool=false);
 
 template<typename T>
 class Poligono_2d:
@@ -280,12 +280,17 @@ class Poligono_2d:
 	}
 
 	std::vector<Segmento_2d<T> > segmentos;
-	friend bool colision_poligono_SAT<T>(const Poligono_2d<T>& a,const Poligono_2d<T>& b);
+	friend bool colision_poligono_SAT<T>(const Poligono_2d<T>& a,const Poligono_2d<T>& b, bool);
 };
 
 template<typename T>
-bool colision_poligono_SAT(const Poligono_2d<T>& a,const Poligono_2d<T>& b)
+bool colision_poligono_SAT(const Poligono_2d<T>& a,const Poligono_2d<T>& b, bool cordura)
 {
+	if(cordura && (a.acc_vertices().size() != a.acc_segmentos().size() || b.acc_vertices().size() != b.acc_segmentos().size()))
+	{
+		throw std::runtime_error("ERROR: El número de vertices no coincide con el número de segmentos");
+	}
+
 	auto f=[](const Poligono_2d<T>& pa, const Poligono_2d<T>& pb)
 	{
 		for(const auto& s : pa.segmentos)
