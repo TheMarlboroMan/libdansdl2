@@ -70,13 +70,13 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
 	{
 		if(!ventana) 
 		{
-			return temporal;
+			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_ARGB8888, 0);
+	      	        SDL_FreeSurface(temporal);
+			return optimizada;
 		}
 		else
 		{
-		
-//			Uint32 formato=SDL_GetWindowPixelFormat(const_cast<SDL_Window *>(ventana));
-			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_ARGB8888, 0);
+			SDL_Surface * optimizada=SDL_ConvertSurface(temporal, SDL_GetWindowSurface(const_cast<SDL_Window *>(ventana))->format, 0);
 	      	        SDL_FreeSurface(temporal);
 			return optimizada;
 		}
