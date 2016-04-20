@@ -13,19 +13,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifdef WINCOMPIL
-namespace parche_mingw
-{
-    template < typename T > std::string to_string( const T& n )
-    {
-        std::ostringstream stm ;
-        stm << n ;
-        return stm.str() ;
-    }
-}
 #ifndef M_PI
 #define M_PI 3.14159
-#endif
 #endif
 
 namespace DLibH
