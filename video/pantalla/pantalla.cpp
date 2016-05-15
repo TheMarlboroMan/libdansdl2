@@ -2,6 +2,9 @@
 
 using namespace DLibV;
 
+//TODO: Extinguish the renderer. 
+//TODO: This will, in turn, fuck up everything else.
+
 Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
 	ventana(nullptr), renderer(nullptr), volcados(0), 
 	w(p_w), h(p_h), modo_ventana(p_m), w_logico(w), h_logico(h)
@@ -16,6 +19,7 @@ Pantalla::~Pantalla()
 {
 	if(this->ventana) SDL_DestroyWindow(this->ventana);
 	if(this->renderer) SDL_DestroyRenderer(this->renderer);	 //Esto destruirá texturas asociadas al renderer.
+	SDL_GL_DeleteContext(context); 
 }
 
 void Pantalla::inicializar(int p_w, int p_h, int flags_ventana)
@@ -35,45 +39,15 @@ void Pantalla::establecer_titulo(const std::string& c)
 	SDL_SetWindowTitle(ventana, c.c_str());
 }
 
-
-void Pantalla::rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect const& p_caja)
+void Pantalla::limpiar(const ColorRGBA& c)
 {
-	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
-	SDL_SetRenderDrawColor(renderer, r, g, b, a);
-	SDL_RenderDrawRect(renderer, &p_caja);
-}
-
-void Pantalla::rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-{
-	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
-	SDL_RenderSetClipRect(renderer, NULL);
-	SDL_SetRenderDrawColor(renderer, r, g, b, a);
-	SDL_RenderDrawRect(renderer, NULL);
-}
-
-void Pantalla::limpiar(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-{
-	SDL_RenderSetClipRect(renderer, NULL);
-	SDL_SetRenderDrawColor(renderer, r, g, b, a);
-	SDL_RenderClear(renderer);
+	glClearColor(c.r, c.g, c.b, c.a);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Pantalla::actualizar()
 {
-	//Uint32 SDL_GetWindowFlags(SDL_Window* window)
-//	std::cout<<SDL_GetWindowFlags(ventana)<<std::endl;
-
-//	if(SDL_GetWindowFlags(ventana) & SDL_WINDOW_OPENGL) 
-//	{
-//		std::cout<<"GL"<<std::endl;
-//		SDL_GL_SwapWindow(ventana);
-//	}
-//	else 
-//	{
-//		std::cout<<"NO GL"<<std::endl;
-		SDL_RenderPresent(renderer);
-//	}
-	this->volcados=0;
+	SDL_GL_SwapWindow(ventana);
 }
 
 void Pantalla::cortar_caja_a_pantalla(SDL_Rect * p_caja)
@@ -113,21 +87,42 @@ void Pantalla::configurar(int flags_ventana)
 		ventana=SDL_CreateWindow("", 
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
-			w, h, flags_ventana); //SDL_WINDOW_FULLSCREEN_DESKTOP);
+			w, h, flags_ventana); //Por defecto SDL_WINDOW_OPENGL
+
+		context=SDL_GL_CreateContext(ventana);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+		glViewport(0.f, 0.f, w, h);
+
+		//Establecer el modo a matriz de proyección y cargarla a 1.
+		glMatrixMode(GL_PROJECTION); 	
+		glLoadIdentity();
+
+		//Izquierda, derecha, abajo, arriba, cerca y lejos...
+		//Ahora el punto 0.0 es arriba a la izquierda.
+		glOrtho(0.0, w, h, 0.0, 1.0, -1.0);
+
+		//Establecer el modo a matriz de proyección y cargarla a 1.
+		glMatrixMode(GL_MODELVIEW); 
+		glLoadIdentity();
+
+		//Guardar la matriz de modelo...
+		glPushMatrix();
 	}
 	else
 	{
 		SDL_SetWindowSize(ventana, w, h);
 	}
 
+	//TODO: This shall dissapear.
 	if(!renderer)
 	{
 		//TODO: NO crear renderer si la flag de OpenGL está activa...
 		renderer=SDL_CreateRenderer(ventana, -1, 0);
 		establecer_modo_ventana(modo_ventana);
 	}
-//	establecer_medidas_logicas();
-	SDL_RenderSetLogicalSize(renderer, w, h);
+
+	establecer_medidas_logicas(w, h);
 
 	this->simulacro_caja.w=w;
 	this->simulacro_caja.h=h;
@@ -137,6 +132,7 @@ void Pantalla::configurar(int flags_ventana)
 
 void Pantalla::establecer_medidas_logicas(int w, int h)
 {
+	//TODO: This will be opengl stuff.
 	w_logico=w;
 	h_logico=h;
 	SDL_RenderSetLogicalSize(renderer, w_logico, h_logico);
@@ -161,19 +157,21 @@ void Pantalla::reiniciar_clip_completo()
 	caja.w=w;
 	caja.h=h;
 
+	//TODO: Stencil buffer?
+
 	SDL_RenderSetClipRect(renderer, &caja);
 }
 
 void Pantalla::establecer_clip_para_camara(Camara const& p_camara)
 {
-	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
+	//TODO: Stencil buffer?
 	SDL_Rect caja=p_camara.acc_caja_pos();
 	SDL_RenderSetClipRect(renderer, &caja);
 }
 
 void Pantalla::establecer_clip(SDL_Rect p_caja)
 {
-	//TODO: Si no hay renderer por estar en OpenGL no va a funcionar.
+	//TODO: Stencil buffer?
 	SDL_RenderSetClipRect(renderer, &p_caja);
 }
 

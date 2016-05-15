@@ -2,8 +2,9 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva(pr, pg, pb)
+Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const SDL_Rect& p_pos, const ColorRGBA& c)
+	//TODO...
+	:Representacion_primitiva(c.r, c.g, c.b)
 {
 	establecer_posicion(p_pos);
 	this->preparar_posicion();
@@ -31,21 +32,42 @@ bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 	if(!es_visible()) return false;
 	SDL_Rect pos=acc_posicion();
 
-	Uint8 alpha=acc_alpha();
-	if(alpha) SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_BLEND);
-	else SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_NONE);
+	//TODO: This is stupid as hell.
+	struct punto{float x, y;};
+	auto itof=[](int x, int y)
+	{
+		return punto{(float)x, (float)y};
+	};
 
-	SDL_SetRenderDrawColor(p_renderer, acc_r(), acc_g(), acc_b(), alpha);
-	SDL_RenderSetClipRect(p_renderer, NULL);
+	//TODO... This should be somewhere else.
+	//TODO... This whole class could be a subclass of a polygon.
+	std::vector<punto> puntos{ itof(pos.x, pos.y), 
+		itof(pos.x+pos.w, pos.y), 
+		itof(pos.x+pos.w, pos.y+pos.h), 
+		itof(pos.x, pos.y+pos.h) };
 
-	if(es_rellena()) SDL_RenderFillRect(p_renderer, &pos);
-	else SDL_RenderDrawRect(p_renderer, &pos);
+	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	glMatrixMode(GL_MODELVIEW);
+	//TODO: Alpha no funciona.
+	//TODO: Fix the hell color...
+	glColor4f(0.25f, 1.f, 0.25f, 1.f); //Demodular color...
+	glDisable(GL_TEXTURE_2D);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_FLOAT, 0, puntos.data());
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
 	return true;
 }
 
 bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
 	if(!es_visible()) return false;
+
+	//TODO: Fix this too...
 
 	Uint8 alpha=acc_alpha();
 	if(alpha) SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_BLEND);
@@ -54,6 +76,8 @@ bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, cons
 	SDL_SetRenderDrawColor(p_renderer, acc_r(), acc_g(), acc_b(), alpha);
 	SDL_Rect pos=copia_posicion();
 	SDL_Rect clip=p_posicion;
+
+	//TODO: Try and use translations?????.
 
 	if(this->es_estatica())
 	{
@@ -82,6 +106,8 @@ bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, cons
 	SDL_RenderSetClipRect(p_renderer, &clip);
 
 	//Proceso del zoom...					
+	//TODO: This is a whole new problem. Maybe we should forget about the zoom until
+	//the migration is complete????.
 	procesar_zoom(pos, zoom);
 
 	if(es_rellena()) SDL_RenderFillRect(p_renderer, &pos);
@@ -100,8 +126,8 @@ Representacion_primitiva_caja& Representacion_primitiva_caja::operator=(const Re
 	return *this;
 }
 
-Representacion_primitiva_caja::Representacion_primitiva_caja(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva_caja_base(p_pos, pr, pg, pb)
+Representacion_primitiva_caja::Representacion_primitiva_caja(const SDL_Rect& p_pos, const ColorRGBA& c)
+	:Representacion_primitiva_caja_base(p_pos, c)
 {
 
 }
@@ -118,8 +144,8 @@ Representacion_primitiva_caja_lineas& Representacion_primitiva_caja_lineas::oper
 	return *this;
 }
 
-Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const SDL_Rect& p_pos, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva_caja_base(p_pos, pr, pg, pb)
+Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const SDL_Rect& p_pos, const ColorRGBA& c)
+	:Representacion_primitiva_caja_base(p_pos, c)
 {
 
 }

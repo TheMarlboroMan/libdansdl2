@@ -2,6 +2,7 @@
 #define REPRESENTACION_PRIMITIVA_H
 
 #include "../representacion.h"
+#include "../../color/color.h"
 #include "../../../herramientas/herramientas_sdl/herramientas_sdl.h"
 
 /*Esto será una clase abstracta que podremos usar para volcar

@@ -10,6 +10,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)textura.o \
 	$(DIR_O)superficie.o \
 	$(DIR_O)imagen.o \
+	$(DIR_O)color.o \
 	$(DIR_O)lienzo.o \
 	$(DIR_O)fuente_ttf.o \
 	$(DIR_O)representacion.o \
@@ -63,7 +64,8 @@ $(DIR_O)pantalla.o: \
 $(DIR_CLASS_V)pantalla/pantalla.h \
 $(DIR_CLASS_V)pantalla/pantalla.cpp \
 $(DIR_O)utilidades_graficas_sdl.o \
-$(DIR_O)camara.o
+$(DIR_O)camara.o\
+$(DIR_O)color.o
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)pantalla/pantalla.cpp -o $(DIR_O)pantalla.o $(INCLUDES)
 
 $(DIR_O)gestor_superficies.o: \
@@ -303,6 +305,11 @@ $(DIR_O)punto_2d.o \
 $(DIR_CLASS_H)caja/caja.h \
 $(DIR_CLASS_H)caja/caja.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)caja/caja.cpp -o $(DIR_O)caja.o $(INCLUDES)
+
+$(DIR_O)color.o: \
+$(DIR_CLASS_V)color/color.h \
+$(DIR_CLASS_V)color/color.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
 
 $(DIR_O)gestor_mapa_static.o: \
 $(DIR_CLASS_H)templates/gestor_mapa_static.h \

@@ -2,11 +2,13 @@
 #define PANTALLA_H
 
 #include <SDL2/SDL.h>
+#include <GL/glew.h>
 #include <iostream>
 #include <string>
 //#include <vector>
 #include "../utilidades_graficas_sdl/utilidades_graficas_sdl.h"
 #include "../camara/camara.h"
+#include "../color/color.h"
 //#include "../representacion/representacion.h"
 
 namespace DLibV
@@ -21,30 +23,6 @@ class Pantalla
 		M_PANTALLA_COMPLETA_RESOLUCION, //La ventana pasa a fullscreen con cambio de resolución incluido.
 		M_PANTALLA_COMPLETA_SIMULADA, //La pantalla pasa a fullscreen simulando el cambio de resolución.
 		M_MAX_MODO};
-
-	private:
-
-	//Propiedades...	
-
-	SDL_Window * ventana;
-	SDL_Renderer * renderer;
-	SDL_Rect simulacro_caja; //El simulacro de caja es un rectángulo con las medidas de la pantalla, para controlar lo que se muestra o no.
-	unsigned int volcados;	//Volcados desde el último flipe.
-
-	int w; //Ancho y alto de la ventana...
-	int h;
-	unsigned short int modo_ventana;
-	bool comprobar_en_toma;
-
-	int w_logico; //Ancho y alto del renderer.
-	int h_logico;
-
-	//Métodos privados.
-
-	void cortar_caja_a_pantalla(SDL_Rect *);
-	void configurar(int);
-	
-	public:
 
 	//Interfaz pública.
 
@@ -61,12 +39,10 @@ class Pantalla
 	void establecer_titulo(const std::string&);
 	unsigned short int acc_modo_ventana() const {return modo_ventana;}
 
-	void inicializar(int, int, int=0);
+	void inicializar(int, int, int=SDL_WINDOW_OPENGL);
 	void establecer_modo_ventana(unsigned int);
 	void establecer_medidas_logicas(int, int);
-	void rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect const&);
-	void rellenar(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	void limpiar(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+	void limpiar(const ColorRGBA&);
 	void actualizar();
 
 //TODO?????
@@ -78,6 +54,29 @@ class Pantalla
 	void establecer_clip(SDL_Rect);
 	void reiniciar_clip_completo();
 	const SDL_Rect acc_simulacro_caja() {return this->simulacro_caja;}
+
+	private:
+
+	//Propiedades...	
+
+	SDL_Window * ventana;
+	SDL_Renderer * renderer;
+	SDL_GLContext context;
+	SDL_Rect simulacro_caja; //El simulacro de caja es un rectángulo con las medidas de la pantalla, para controlar lo que se muestra o no.
+	unsigned int volcados;	//Volcados desde el último flipe.
+
+	int w; //Ancho y alto de la ventana...
+	int h;
+	unsigned short int modo_ventana;
+	bool comprobar_en_toma;
+
+	int w_logico; //Ancho y alto del renderer.
+	int h_logico;
+
+	//Métodos privados.
+
+	void cortar_caja_a_pantalla(SDL_Rect *);
+	void configurar(int);
 };
 
 } //Fin namespace DLibV
