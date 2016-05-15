@@ -49,82 +49,12 @@ void Representacion_bitmap_patron::establecer_pincel(SDL_Rect r)
 
 bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer)
 {
-	//Si no está en la pantalla no perdemos tiempo.
-	if(!this->es_visible())
-	{
-		return false;
-	}
-
-	SDL_Rect copia_posicion=acc_posicion();
-
-	//Asignamos para que haga de clip.
-	caja_clip=copia_posicion;
-
-	int max_x=copia_posicion.x+copia_posicion.w,
-		max_y=copia_posicion.y+copia_posicion.h;
-
-	int y=copia_posicion.y-pincel.y;
-
-	bool resultado=true;
-
-	while(y < max_y)
-	{
-		int x=copia_posicion.x-pincel.x;
-
-		pincel_y=y;
-		while(x < max_x)
-		{
-			pincel_x=x;
-			resultado=resultado && Representacion_grafica::volcado(p_renderer);
-			marcar_como_no_preparada();
-			establecer_posicion(copia_posicion);
-			x+=pincel.w;
-		}
-		y+=pincel.h;
-	};
-
-	establecer_posicion(copia_posicion);
-	return resultado;
+	return true;
 }
 
 bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_Rect& caja_a, const SDL_Rect& caja_b, double zoom)
 {
-	//Si no está en la pantalla no perdemos tiempo.
-	if(!this->es_visible())
-	{
-		return false;
-	}
-
-	SDL_Rect copia_posicion=acc_posicion();
-
-	//Asignamos para que haga de clip.
-	caja_clip=copia_posicion;
-
-	int max_x=copia_posicion.x+copia_posicion.w,
-		max_y=copia_posicion.y+copia_posicion.h;
-
-	int y=copia_posicion.y-pincel.y;
-
-	bool resultado=true;
-
-	while(y < max_y)
-	{
-		int x=copia_posicion.x-pincel.x;
-
-		pincel_y=y;
-		while(x < max_x)
-		{
-			pincel_x=x;
-			resultado=resultado && Representacion_grafica::volcado(p_renderer, caja_a, caja_b, zoom);
-			marcar_como_no_preparada();
-			establecer_posicion(copia_posicion);
-			x+=pincel.w;
-		}
-		y+=pincel.h;
-	};
-
-	establecer_posicion(copia_posicion);
-	return resultado;
+	return true;
 }
 
 /*

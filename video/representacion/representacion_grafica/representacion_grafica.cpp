@@ -46,130 +46,17 @@ void Representacion_grafica::recorte_a_medidas_textura()
 
 bool Representacion_grafica::realizar_render(SDL_Renderer * p_renderer, SDL_Rect& rec, SDL_Rect& pos)
 {
-	SDL_Texture * tex=ref_textura_sdl();
-
-	switch(acc_modo_blend())
-	{
-		case BLEND_NADA: SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_NONE); break;
-		case BLEND_ALPHA: SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND); break;
-		case BLEND_SUMA: SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_ADD); break;
-		case BLEND_MODULAR: SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_MOD); break;
-	};
-
-	SDL_SetTextureAlphaMod(tex, acc_alpha());
-	SDL_SetTextureColorMod(tex, acc_mod_color_r(), acc_mod_color_g(), acc_mod_color_b());
-
-	if(!es_transformada())
-	{
-		return SDL_RenderCopy(p_renderer, tex, &rec,&pos) >= 0;
-	}
-	else
-	{
-		DLibV::Representacion_grafica_transformacion t=acc_transformacion();
-
-		float angulo=t.obtener_angulo_rotacion();
-		SDL_RendererFlip flip=t.obtener_flip();
-
-		if(t.es_cambia_centro_rotacion())
-		{
-			SDL_Point centro=t.obtener_centro_rotacion();
-			return SDL_RenderCopyEx(p_renderer, tex, &rec, &pos, angulo, &centro, flip) >= 0;
-		}
-		else
-		{
-			return SDL_RenderCopyEx(p_renderer, tex, &rec, &pos, angulo, NULL, flip) >= 0;
-		}
-	}
+	return true;
 }
 
 bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 {
-	//Si no está en la pantalla no perdemos tiempo.
-	if(!this->es_visible())
-	{
-		return false;
-	}
-	else
-	{
-		if(!this->es_preparada()) 
-		{
-			this->preparar(p_renderer);
-		}
-
-
-		//Definimos aquí estas variables: puede que al "preparar" hayan cambiado los valores.
-		SDL_Rect rec=acc_recorte();
-		SDL_Rect pos=acc_posicion();
-		SDL_Rect temp=DLibH::Herramientas_SDL::copiar_sdl_rect(pos, 0, 0);
-
-		//Esto es especialmente útil para cuando vamos a hacer 
-		//bitmaps en patrón... Para poco más, normalmente es la
-		//posición de la representación.
-		auto clip_rect=obtener_caja_clip();
-		SDL_RenderSetClipRect(p_renderer, &clip_rect);
-
-		return realizar_render(p_renderer, rec, temp);
-	}
+	return true;
 }
 
 bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
 {
-	if(!this->es_visible())
-	{
-		return false;
-	}
-	else
-	{	
-		//Se prepara antes de comparar si está dentro o fuera de la toma: es 
-		//posible que el tamaño se establezca después de prepararla!!!.
-		if(!this->es_preparada()) this->preparar(p_renderer);
-
-		//Las representaciones estáticas están SIEMPRE en las mismas
-		//posiciones para la cámara que la vea. Simplemente veremos
-		//si está dentro de la caja de la cámara en 0,0.
-
-		SDL_Rect pos=copia_posicion_rotada();
-
-		bool en_toma=true;
-
-		if(this->es_estatica())
-		{
-			SDL_Rect caja_cam=DLibH::Herramientas_SDL::nuevo_sdl_rect(0, 0, p_foco.w, p_foco.h);
-			en_toma=DLibH::Herramientas_SDL::rectangulos_superpuestos(caja_cam, pos, false);
-		}
-		else
-		{
-			en_toma=DLibH::Herramientas_SDL::rectangulos_superpuestos(p_foco, pos, false);
-		}
-
-		if(!en_toma)
-		{
-			return false;
-		}
-		else
-		{
-			SDL_Rect rec=copia_recorte();
-			pos=copia_posicion();	//Again, por si al preparar ha cambiado.
-
-			//Una representación estática aparecerá en la posición absoluta del objeto más la posición de la cámara.	
-			pos.x+=p_pos.x;
-			pos.y+=p_pos.y;
-
-			//Una representación dinámica tiene un cálculo distinto, relativo a la cámara.
-			if(!this->es_estatica())
-			{
-				pos.x-=p_foco.x;
-				pos.y-=p_foco.y;
-			}
-
-			//Proceso del zoom...
-			procesar_zoom(pos, zoom);
-
-			SDL_Rect clip_rect=p_pos; //La representación no puede salirse de la cámara. Fin.
-			SDL_RenderSetClipRect(p_renderer, &clip_rect);
-			return realizar_render(p_renderer, rec, pos);
-		}
-	}
+	return true;
 }
 
 

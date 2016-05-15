@@ -62,84 +62,12 @@ void Representacion_primitiva_linea::generar_posicion()
 
 bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer)
 {
-	if(!es_visible()) return false;
-
-	Uint8 alpha=acc_alpha();
-	if(alpha) SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_BLEND);
-	else SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_NONE);
-
-	SDL_SetRenderDrawColor(p_renderer, acc_r(), acc_g(), acc_b(), alpha);
-	SDL_RenderSetClipRect(p_renderer, NULL);
-
-	SDL_RenderDrawLine(p_renderer, x1, y1, x2, y2);
-
 	return true;
 }
 
 bool Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
-	if(!es_visible()) return false;
-
-	Uint8 alpha=acc_alpha();
-	if(alpha) SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_BLEND);
-	else SDL_SetRenderDrawBlendMode(p_renderer, SDL_BLENDMODE_NONE);
-
-	SDL_SetRenderDrawColor(p_renderer, acc_r(), acc_g(), acc_b(), alpha);
-	SDL_Rect pos=copia_posicion();
-
-	if(this->es_estatica())
-	{
-		//Comprobar si, como estática, estaría dentro del enfoque de la cámara (básicamente 0,0 ancho y alto).
-		SDL_Rect caja_cam=DLibH::Herramientas_SDL::nuevo_sdl_rect(0, 0, p_enfoque.w, p_enfoque.h);
-
-		if(!DLibH::Herramientas_SDL::rectangulos_superpuestos(caja_cam, pos, true))
-		{
-			return false;
-		}
-		else
-		{
-			pos.x+=p_posicion.x;
-			pos.y+=p_posicion.y;
-
-			//Posición absoluta.
-			SDL_Rect clip=p_posicion;
-			SDL_RenderSetClipRect(p_renderer, &clip);
-
-			//Proceso del zoom...
-			procesar_zoom(pos, zoom);
-			SDL_RenderDrawLine(p_renderer, x1/zoom, y1/zoom, x2/zoom, y2/zoom);
-			return true;
-		}
-	}
-	else
-	{
-		if(!DLibH::Herramientas_SDL::rectangulos_superpuestos(p_enfoque, pos, true))
-		{
-			return false;
-		}
-		else
-		{
-			//Calcular la nueva caja...
-			pos.x+=p_posicion.x;
-			pos.y+=p_posicion.y;
-
-			pos.x-=p_enfoque.x;
-			pos.y-=p_enfoque.y;
-
-			SDL_Rect clip=p_posicion;
-			SDL_RenderSetClipRect(p_renderer, &clip);
-
-			procesar_zoom(pos, zoom);
-
-			x1+=p_posicion.x - p_enfoque.x;
-			x2+=p_posicion.x - p_enfoque.x;
-			y1+=p_posicion.y - p_enfoque.y;
-			y2+=p_posicion.y - p_enfoque.y;
-
-			SDL_RenderDrawLine(p_renderer, x1 / zoom, y1 / zoom, x2 / zoom, y2 / zoom);
-			return true;
-		}
-	}
+	return true;
 }
 
 void Representacion_primitiva_linea::preparar_posicion()
