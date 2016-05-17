@@ -3,15 +3,15 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_puntos::Representacion_primitiva_puntos(int x, int y, Uint8 r, Uint8 g, Uint8 b)
-	:Representacion_primitiva(r, g, b)
+Representacion_primitiva_puntos::Representacion_primitiva_puntos(int x, int y, ColorRGBA c)
+	:Representacion_primitiva(c)
 {
-	insertar(x, y);	
+	insertar(x, y);
 	generar_posicion();
 }
 
-Representacion_primitiva_puntos::Representacion_primitiva_puntos(Uint8 r, Uint8 g, Uint8 b)
-	:Representacion_primitiva(r, g, b)
+Representacion_primitiva_puntos::Representacion_primitiva_puntos(ColorRGBA c)
+	:Representacion_primitiva(c)
 {
 	generar_posicion();
 }
@@ -28,14 +28,9 @@ Representacion_primitiva_puntos& Representacion_primitiva_puntos::operator=(cons
 	return *this;
 }
 
-Representacion_primitiva_puntos::~Representacion_primitiva_puntos()
-{
-
-}
-
 void Representacion_primitiva_puntos::insertar(int x, int y)
 {
-	puntos.push_back(SDL_Point{x, y});
+	puntos.push_back({x, y});
 	generar_posicion();
 }
 
@@ -55,8 +50,8 @@ void Representacion_primitiva_puntos::generar_posicion()
 	{
 		//Del manual: 
 		//The value returned indicates whether the element passed as first argument is considered less than the second.
-		struct {bool operator() (SDL_Point a, SDL_Point b) {return a.x < b.x;}}fx;
-		struct {bool operator() (SDL_Point a, SDL_Point b) {return a.y < b.y;}}fy;
+		struct {bool operator() (Representacion_primitiva::punto a, Representacion_primitiva::punto b) {return a.x < b.x;}}fx;
+		struct {bool operator() (Representacion_primitiva::punto a, Representacion_primitiva::punto b) {return a.y < b.y;}}fy;
 
 		auto min_x=*std::min_element(std::begin(puntos), std::end(puntos), fx);
 		auto max_x=*std::max_element(std::begin(puntos), std::end(puntos), fx);
@@ -68,7 +63,13 @@ void Representacion_primitiva_puntos::generar_posicion()
 
 void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer)
 {
-	//TODO...
+	preparar_color();
+	glMatrixMode(GL_MODELVIEW);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_INT, 0, puntos.data());
+	glDrawArrays(GL_POINTS, 0, puntos.size());
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)

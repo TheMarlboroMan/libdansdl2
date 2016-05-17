@@ -5,38 +5,40 @@
 using namespace DLibV;
 
 Representacion::Representacion():
-	estatica(false), visible(true),
-	alpha(SDL_ALPHA_OPAQUE), modo_blend(BLEND_NADA), 
-	mod_color_r(255), mod_color_g(255), mod_color_b(255)
+	visible(true),
+	modo_blend(BLEND_NADA), 
+	rgba{1.f, 1.f, 1.f, 0.f}
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
 }
 
-/*
-Representacion::Representacion(Uint8 p_alpha):
-	estatica(false), visible(true), alpha(p_alpha), 
-	mod_color_r(255), mod_color_g(255), mod_color_b(255)
+Representacion::Representacion(ColorRGBA c):
+	visible(true),
+	modo_blend(BLEND_NADA), 
+	rgba(c)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
 }
-*/
 
 Representacion::Representacion(const Representacion& p_otra):
-	estatica(p_otra.estatica), visible(p_otra.visible), 
-	alpha(p_otra.alpha), mod_color_r(p_otra.mod_color_r), 
-	mod_color_g(p_otra.mod_color_g), mod_color_b(p_otra.mod_color_b),
+	visible(p_otra.visible), 
+	modo_blend(BLEND_NADA),
+	rgba(p_otra.rgba),
 	posicion(p_otra.posicion), recorte(p_otra.recorte)
-
 {
-//	this->posicion=p_otra.posicion;
-//	this->recorte=p_otra.recorte;
+
 }
 
-Representacion::~Representacion()
+Representacion& Representacion::operator=(const Representacion& p_otra)
 {
-
+	this->posicion=p_otra.posicion;
+	this->recorte=p_otra.recorte;
+	this->visible=p_otra.visible;
+	rgba=p_otra.rgba;
+	modo_blend=p_otra.modo_blend;
+	return *this;
 }
 
 void Representacion::establecer_posicion(int p_x, int p_y, int p_w, int p_h, int p_flags)
@@ -81,26 +83,12 @@ void Representacion::establecer_recorte(SDL_Rect p_caja)
 	recorte=p_caja;
 }
 
-
 void Representacion::establecer_recorte(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, int p_flags)
 {
 	if(p_flags & FRECT_X) this->recorte.x=p_x;
 	if(p_flags & FRECT_Y) this->recorte.y=p_y;
 	if(p_flags & FRECT_W) this->recorte.w=p_w;
 	if(p_flags & FRECT_H) this->recorte.h=p_h;
-}
-
-Representacion& Representacion::operator=(const Representacion& p_otra)
-{
-	this->alpha=p_otra.alpha;
-	this->posicion=p_otra.posicion;
-	this->recorte=p_otra.recorte;
-	this->visible=p_otra.visible;
-	mod_color_r=p_otra.mod_color_r;
-	mod_color_g=p_otra.mod_color_g;
-	mod_color_b=p_otra.mod_color_b;
-
-	return *this;
 }
 
 //Se pasa el rectángulo de pantalla... Básicamente se comprueba si está dentro. Estática o no.

@@ -11,10 +11,10 @@ class Representacion_primitiva_puntos:
 {
 	public:
 	
-						Representacion_primitiva_puntos(Uint8, Uint8, Uint8);
-						Representacion_primitiva_puntos(int, int, Uint8, Uint8, Uint8);
+						Representacion_primitiva_puntos(ColorRGBA);
+						Representacion_primitiva_puntos(int, int, ColorRGBA);
 						Representacion_primitiva_puntos(const Representacion_primitiva_puntos&);
-	virtual 				~Representacion_primitiva_puntos();
+	virtual 				~Representacion_primitiva_puntos() {}
 						Representacion_primitiva_puntos& operator=(const Representacion_primitiva_puntos&);
 
 	virtual void				volcado(SDL_Renderer *);
@@ -31,7 +31,7 @@ class Representacion_primitiva_puntos:
 
 	private:
 
-	std::vector<SDL_Point>			puntos;
+	std::vector<Representacion_primitiva::punto>			puntos;
 };
 
 }

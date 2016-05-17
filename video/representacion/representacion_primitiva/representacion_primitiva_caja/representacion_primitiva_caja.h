@@ -3,8 +3,6 @@
 
 #include "../representacion_primitiva.h"
 
-//TODO: Revamp with rect and color.
-
 namespace DLibV
 {
 class Representacion_primitiva_caja_base
@@ -15,7 +13,7 @@ class Representacion_primitiva_caja_base
 				Representacion_primitiva_caja_base(const SDL_Rect&, const ColorRGBA&);
 				Representacion_primitiva_caja_base(const Representacion_primitiva_caja_base&);
 				Representacion_primitiva_caja_base& operator=(const Representacion_primitiva_caja_base&);
-	virtual 		~Representacion_primitiva_caja_base();
+	virtual 		~Representacion_primitiva_caja_base() {}
 
 	virtual bool 		es_rellena() const=0;
 

@@ -2,12 +2,17 @@
 
 using namespace DLibV;
 
-ColorRGBA DLibV::rgba8(int pr, int pg, int pb, int pa)
+float DLibV::colorfi(int v)
 {
-	float r=(float)pr / 255.f;
-	float g=(float)pg / 255.f;
-	float b=(float)pb / 255.f;
-	float a=(float)pa / 255.f;
+	return (float)v / 255.f;
+}
 
-	return ColorRGBA{r, g, b, a};
+unsigned int DLibV::colorif(float v)
+{
+	return v * 255.f;
+}
+
+ColorRGBA DLibV::rgba8(int r, int g, int b, int a)
+{
+	return ColorRGBA{colorfi(r), colorfi(g), colorfi(b), colorfi(a)};
 }

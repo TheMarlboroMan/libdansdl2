@@ -2,18 +2,16 @@
 
 using namespace DLibV;
 
-Representacion_primitiva::Representacion_primitiva(Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion(), r(pr), g(pg), b(pb),
-	recomponer_recorte_con_posicion(true), parametro_metodo_pixeles(NULL)
+Representacion_primitiva::Representacion_primitiva(ColorRGBA c)
+	:Representacion(c),
+	recomponer_recorte_con_posicion(true)
 {
 
 }
 
 Representacion_primitiva::Representacion_primitiva(const Representacion_primitiva& p_otra)
 	:Representacion(p_otra),
-	r(p_otra.r), g(p_otra.g), b(p_otra.b),
-	recomponer_recorte_con_posicion(p_otra.recomponer_recorte_con_posicion),
-	parametro_metodo_pixeles(p_otra.parametro_metodo_pixeles)
+	recomponer_recorte_con_posicion(p_otra.recomponer_recorte_con_posicion)
 {
 
 }
@@ -21,18 +19,8 @@ Representacion_primitiva::Representacion_primitiva(const Representacion_primitiv
 Representacion_primitiva& Representacion_primitiva::operator=(const Representacion_primitiva& p_otra)
 {
 	Representacion::operator=(p_otra);
-	r=p_otra.r;
-	g=p_otra.g;
-	b=p_otra.b;
 	recomponer_recorte_con_posicion=p_otra.recomponer_recorte_con_posicion;
-	parametro_metodo_pixeles=p_otra.parametro_metodo_pixeles;
-
 	return *this;
-}
-
-Representacion_primitiva::~Representacion_primitiva()
-{
-	this->parametro_metodo_pixeles=NULL;
 }
 
 void Representacion_primitiva::recorte_a_posicion()
@@ -79,4 +67,22 @@ bool Representacion_primitiva::determinar_caja_dibujo_final(SDL_Rect &p_caja, SD
 	{
 		return true;
 	}
+}
+
+void Representacion_primitiva::preparar_color()
+{
+	const auto c=acc_rgba();
+	if(c.a)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(c.r, c.g, c.b, c.a);
+	}
+	else
+	{
+		glColor3f(c.r, c.g, c.b);
+		glDisable(GL_BLEND);
+	}
+
+	glDisable(GL_TEXTURE_2D);
 }

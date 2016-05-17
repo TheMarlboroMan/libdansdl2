@@ -2,7 +2,7 @@
 C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
-- Re-think the RGBA part, see how we can integrate it with the alpha thing.
+
 - Think again about the renderer part... 
 - Remove the renderer from the render functions: it doesn't do anything there anymore.
 - Remove the two different rendering functions (with and without camera): use a default camera value.
@@ -16,3 +16,5 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## DONE:
 - Remove the need a return value from the rendering.
+- Get rid of static vs dynamic.
+- Re-think the RGBA part, see how we can integrate it with the alpha thing.

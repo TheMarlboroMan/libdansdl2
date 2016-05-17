@@ -3,9 +3,9 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<punto>& pt, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva(pr, pg, pb), puntos(pt)
-{
+Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<punto>& pt, ColorRGBA c)
+	:Representacion_primitiva(c), puntos(pt)
+{ 
 	//Calcular el rectángulo de posición para clip de cámara...
 	this->preparar_posicion();
 }
@@ -22,23 +22,13 @@ Representacion_primitiva_poligono_base& Representacion_primitiva_poligono_base::
 	return *this;
 }
 
-Representacion_primitiva_poligono_base::~Representacion_primitiva_poligono_base()
-{
-
-}
-
 void Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
 {
 	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	//TODO: Tesellation is fucked up.
-
+	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
-	//TODO: Alpha no funciona.
-	//TODO: Fix the hell color...
-	glColor4f(0.25f, 1.f, 0.25f, 1.f); //Demodular color...
-	glDisable(GL_TEXTURE_2D);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
@@ -74,8 +64,8 @@ Representacion_primitiva_poligono& Representacion_primitiva_poligono::operator=(
 	return *this;
 }
 
-Representacion_primitiva_poligono::Representacion_primitiva_poligono(const std::vector<punto> &puntos, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva_poligono_base(puntos, pr, pg, pb)
+Representacion_primitiva_poligono::Representacion_primitiva_poligono(const std::vector<punto> &puntos, ColorRGBA c)
+	:Representacion_primitiva_poligono_base(puntos, c)
 {
 
 }
@@ -92,8 +82,8 @@ Representacion_primitiva_poligono_lineas& Representacion_primitiva_poligono_line
 	return *this;
 }
 
-Representacion_primitiva_poligono_lineas::Representacion_primitiva_poligono_lineas(const std::vector<punto>& puntos, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva_poligono_base(puntos, pr, pg, pb)
+Representacion_primitiva_poligono_lineas::Representacion_primitiva_poligono_lineas(const std::vector<punto>& puntos, ColorRGBA c)
+	:Representacion_primitiva_poligono_base(puntos, c)
 {
 
 }

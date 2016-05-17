@@ -3,8 +3,7 @@
 using namespace DLibV;
 
 Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const SDL_Rect& p_pos, const ColorRGBA& c)
-	//TODO...
-	:Representacion_primitiva(c.r, c.g, c.b)
+	:Representacion_primitiva(c)
 {
 	establecer_posicion(p_pos);
 	this->preparar_posicion();
@@ -22,20 +21,12 @@ Representacion_primitiva_caja_base& Representacion_primitiva_caja_base::operator
 	return *this;
 }
 
-Representacion_primitiva_caja_base::~Representacion_primitiva_caja_base()
-{
-
-}
-
 void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 {
-	SDL_Rect pos=acc_posicion();
-
-	//TODO: This is stupid as hell.
-	struct punto{int x, y;};
+	const SDL_Rect& pos=acc_posicion();
 
 	//TODO: This should be storeed.
-	std::vector<punto> puntos{ {pos.x, pos.y},
+	std::vector<Representacion_primitiva::punto> puntos{ {pos.x, pos.y},
 		{pos.x+pos.w, pos.y}, 
 		{pos.x+pos.w, pos.y+pos.h}, 
 		{pos.x, pos.y+pos.h} };
@@ -43,11 +34,8 @@ void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
-	//TODO: Alpha no funciona.
-	//TODO: Fix the hell color...
-	glColor4f(0.25f, 1.f, 0.25f, 1.f); //Demodular color...
-	glDisable(GL_TEXTURE_2D);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
