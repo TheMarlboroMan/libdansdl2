@@ -66,14 +66,14 @@ void Representacion_primitiva_puntos::generar_posicion()
 	}
 }
 
-bool Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer)
+void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer)
 {
-	return true;
+	//TODO...
 }
 
-bool Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
+void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
-	return true;
+	//TODO...
 }
 
 void Representacion_primitiva_puntos::preparar_posicion()

@@ -67,13 +67,8 @@ Sería posible hacerlo "acumulativo" sin muchos problemas de modo que los valore
 se sumen y resten dentro del rango 0-255.
 */
 
-bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
+void Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
 {
-	if(!this->es_visible())
-	{
-		return false;
-	}
-
 	std::vector<Representacion *>::iterator 	inicio=this->grupo.begin(),
 							fin=this->grupo.end();
 
@@ -118,17 +113,10 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
 
 		++inicio;
 	}
-
-	return true;
 }
 
-bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
+void Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
 {
-	if(!this->es_visible())
-	{
-		return false;
-	}
-
 	std::vector<Representacion *>::iterator 	inicio=this->grupo.begin(),
 							fin=this->grupo.end();
 
@@ -142,7 +130,6 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect&
 
 	unsigned int alpha_a=0;
 	unsigned int modo_blend_a=0;
-
 
 	while(inicio < fin)
 	{
@@ -176,8 +163,6 @@ bool Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect&
 
 		++inicio;
 	}
-
-	return true;
 }
 
 bool Representacion_agrupada::insertar_representacion(Representacion * p_rep)

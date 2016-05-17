@@ -33,8 +33,8 @@ class Representacion_bitmap_patron:
 
 	protected:
 
-	virtual bool 			volcado(SDL_Renderer *);
-	virtual bool 			volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double zoom);
+	virtual void 			volcado(SDL_Renderer *);
+	virtual void 			volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double zoom);
 
 	private:
 

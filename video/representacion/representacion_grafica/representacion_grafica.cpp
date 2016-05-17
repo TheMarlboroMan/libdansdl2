@@ -49,14 +49,14 @@ bool Representacion_grafica::realizar_render(SDL_Renderer * p_renderer, SDL_Rect
 	return true;
 }
 
-bool Representacion_grafica::volcado(SDL_Renderer * p_renderer)
+void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 {
-	return true;
+	//TODO...
 }
 
-bool Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
+void Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
 {
-	return true;
+	//TODO...
 }
 
 

@@ -14,42 +14,9 @@ class Representacion
 	public:
 
 	enum blends {BLEND_NADA,BLEND_ALPHA,BLEND_SUMA,BLEND_MODULAR};
-
-	private:
-
-	bool 			estatica;
-	 	//Indica si sería afectada por la cámara. Es la única diferencia entre algunas clases.
-		//Hay que entenderlo en el contexto de que puede dibujarse "dentro" de una cámara
-		//pero por más que esta mueva su enfoque se mantendrá siempre en el mismo lugar.
-	bool 			visible;
-	Uint8 			alpha;
-	unsigned short int 	modo_blend;
-	unsigned short int 	mod_color_r;
-	unsigned short int 	mod_color_g;
-	unsigned short int 	mod_color_b;
-
-	SDL_Rect 		posicion; 	//Lugar en que se muestra de la pantalla.
-	SDL_Rect 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
-
-	protected:
-
-	void 			reiniciar_posicion();
-	void 			reiniciar_recorte();
-	void 			reiniciar_rect(SDL_Rect&);
-
-
-				Representacion();
-	//			Representacion(Uint8);
-				Representacion(const Representacion&);
-	Representacion& 	operator=(const Representacion &);
-
-	virtual bool 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double)=0;
-	virtual bool 		volcado(SDL_Renderer *)=0;
-	
-	public:
+	enum FLAGS_RECT{FRECT_X=1, FRECT_Y=2, FRECT_W=4, FRECT_H=8};
 
 	virtual 		~Representacion();
-	enum FLAGS_RECT{FRECT_X=1, FRECT_Y=2, FRECT_W=4, FRECT_H=8};
 
 	bool 			es_estatica() const {return estatica;}
 	void			hacer_estatica() {estatica=true;}
@@ -99,12 +66,12 @@ class Representacion
 	bool 			es_visible() const {return this->visible;}
 
 	//Se pasa el rectángulo de pantalla... Básicamente se comprueba si está dentro. Estática o no.
-	bool 			volcar(SDL_Renderer *, const SDL_Rect&);
-	bool 			volcar(SDL_Renderer *, const Camara&);
-	bool 			volcar(const Pantalla&, const Camara&);
-	bool 			volcar(const Pantalla&);
-	bool 			volcar(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
-	bool 			volcar(SDL_Renderer *);
+	void 			volcar(SDL_Renderer *, const SDL_Rect&);
+	void 			volcar(SDL_Renderer *, const Camara&);
+	void 			volcar(const Pantalla&, const Camara&);
+	void 			volcar(const Pantalla&);
+	void 			volcar(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
+	void 			volcar(SDL_Renderer *);
 
 	void 			establecer_alpha(Uint8 p_valor) {this->alpha=p_valor;}
 	Uint8 			acc_alpha() const {return this->alpha;}
@@ -122,6 +89,37 @@ class Representacion
 		mod_color_g=pg;
 		mod_color_b=pb;
 	}
+
+	private:
+
+	bool 			estatica;
+	 	//Indica si sería afectada por la cámara. Es la única diferencia entre algunas clases.
+		//Hay que entenderlo en el contexto de que puede dibujarse "dentro" de una cámara
+		//pero por más que esta mueva su enfoque se mantendrá siempre en el mismo lugar.
+	bool 			visible;
+	Uint8 			alpha;
+	unsigned short int 	modo_blend;
+	unsigned short int 	mod_color_r;
+	unsigned short int 	mod_color_g;
+	unsigned short int 	mod_color_b;
+
+	SDL_Rect 		posicion; 	//Lugar en que se muestra de la pantalla.
+	SDL_Rect 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
+
+	protected:
+
+	void 			reiniciar_posicion();
+	void 			reiniciar_recorte();
+	void 			reiniciar_rect(SDL_Rect&);
+
+
+				Representacion();
+	//			Representacion(Uint8);
+				Representacion(const Representacion&);
+	Representacion& 	operator=(const Representacion &);
+
+	virtual void 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double)=0;
+	virtual void 		volcado(SDL_Renderer *)=0;
 };
 
 } //Fin namespace DLibV

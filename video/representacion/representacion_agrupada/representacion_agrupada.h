@@ -53,8 +53,8 @@ class Representacion_agrupada:public Representacion
 
 	std::vector<Representacion *> 	grupo;
 
-	bool 				volcado(SDL_Renderer *);
-	bool 				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
+	void 				volcado(SDL_Renderer *);
+	void 				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
 
 
 };

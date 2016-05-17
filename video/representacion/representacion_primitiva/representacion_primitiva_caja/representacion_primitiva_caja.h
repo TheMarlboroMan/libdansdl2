@@ -19,8 +19,8 @@ class Representacion_primitiva_caja_base
 
 	virtual bool 		es_rellena() const=0;
 
-	bool 			volcado(SDL_Renderer *);
-	bool 			volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double); 
+	virtual void 		volcado(SDL_Renderer *);
+	virtual void 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double); 
 
 	protected:
 

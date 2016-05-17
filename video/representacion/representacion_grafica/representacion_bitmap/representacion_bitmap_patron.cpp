@@ -47,14 +47,14 @@ void Representacion_bitmap_patron::establecer_pincel(SDL_Rect r)
 * único render para la cuenta de pantalla, pero me da igual.
 */
 
-bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer)
+void Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer)
 {
-	return true;
+	//TODO...
 }
 
-bool Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_Rect& caja_a, const SDL_Rect& caja_b, double zoom)
+void Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_Rect& caja_a, const SDL_Rect& caja_b, double zoom)
 {
-	return true;
+	//TODO...
 }
 
 /*

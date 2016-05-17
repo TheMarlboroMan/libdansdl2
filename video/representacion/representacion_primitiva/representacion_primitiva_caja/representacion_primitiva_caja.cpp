@@ -27,9 +27,8 @@ Representacion_primitiva_caja_base::~Representacion_primitiva_caja_base()
 
 }
 
-bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
+void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 {
-	if(!es_visible()) return false;
 	SDL_Rect pos=acc_posicion();
 
 	//TODO: This is stupid as hell.
@@ -59,13 +58,11 @@ bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 	glVertexPointer(2, GL_FLOAT, 0, puntos.data());
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	return true;
 }
 
-bool Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
+void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
-	return true;
+	//TODO...
 }
 
 void Representacion_primitiva_caja_base::preparar_posicion()

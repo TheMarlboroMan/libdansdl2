@@ -169,8 +169,8 @@ class Representacion_grafica:public Representacion
 	void 			anular_textura() {textura=nullptr;}
 	void 			actualizar_caja_rotacion();
 
-	virtual bool 		volcado(SDL_Renderer *);
-	virtual bool 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
+	virtual void 		volcado(SDL_Renderer *);
+	virtual void 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
 };
 
 } //Fin namespace DLibV

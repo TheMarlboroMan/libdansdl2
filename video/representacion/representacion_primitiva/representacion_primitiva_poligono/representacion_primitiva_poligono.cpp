@@ -27,13 +27,8 @@ Representacion_primitiva_poligono_base::~Representacion_primitiva_poligono_base(
 
 }
 
-bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
+void Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
 {
-	//TODO: This should be in the screen function...
-
-//	if(!es_visible()) return false;
-//	SDL_Rect pos=acc_posicion();
-
 	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -49,14 +44,11 @@ bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_POLYGON, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	return true;
 }
 
-bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
+void Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
 	//TODO...
-	return true;
 }
 
 void Representacion_primitiva_poligono_base::preparar_posicion()
