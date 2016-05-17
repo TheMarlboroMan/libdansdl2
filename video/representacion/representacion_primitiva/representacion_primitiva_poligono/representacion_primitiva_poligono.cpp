@@ -3,16 +3,9 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<punto>& puntos, Uint8 pr, Uint8 pg, Uint8 pb)
-	:Representacion_primitiva(pr, pg, pb)
+Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<punto>& pt, Uint8 pr, Uint8 pg, Uint8 pb)
+	:Representacion_primitiva(pr, pg, pb), puntos(pt)
 {
-	//Crear array de puntos...
-	for(const auto& p : puntos)
-	{
-		puntos_x.push_back(p.x);
-		puntos_y.push_back(p.y);
-	}
-
 	//Calcular el rectángulo de posición para clip de cámara...
 	this->preparar_posicion();
 }
@@ -36,28 +29,47 @@ Representacion_primitiva_poligono_base::~Representacion_primitiva_poligono_base(
 
 bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer)
 {
+	//TODO: This should be in the screen function...
+
+//	if(!es_visible()) return false;
+//	SDL_Rect pos=acc_posicion();
+
+	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//TODO: Tesellation is fucked up.
+
+	glMatrixMode(GL_MODELVIEW);
+	//TODO: Alpha no funciona.
+	//TODO: Fix the hell color...
+	glColor4f(0.25f, 1.f, 0.25f, 1.f); //Demodular color...
+	glDisable(GL_TEXTURE_2D);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_INT, 0, puntos.data());
+	glDrawArrays(GL_POLYGON, 0, puntos.size());
+	glDisableClientState(GL_VERTEX_ARRAY);
+
 	return true;
 }
 
 bool Representacion_primitiva_poligono_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
 {
+	//TODO...
 	return true;
 }
 
 void Representacion_primitiva_poligono_base::preparar_posicion()
 {
-	int x=puntos_x[0], y=puntos_y[0], maxx=x, maxy=y;
+	int x=puntos[0].x, y=puntos[0].y, maxx=x, maxy=y;
 
-	for(const auto& px : puntos_x)
+	for(const auto& p : puntos)
 	{
-		if(px < x) x=px;
-		else if(px > maxx) maxx=px;
-	}
+		if(p.x < x) x=p.x;
+		else if(p.x > maxx) maxx=p.x;
 
-	for(const auto& py : puntos_y)
-	{
-		if(py < y) y=py;
-		else if(py > maxy) maxy=py;
+		if(p.y < y) y=p.y;
+		else if(p.y > maxy) maxy=p.y;
 	}
 
 	SDL_Rect p_pos {x, y, maxx-x, maxy-y};

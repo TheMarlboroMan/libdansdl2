@@ -6,7 +6,7 @@ C++ Wrappers for SDL2 and OpenGL.
 - Think again about the renderer part...
 - Remove the two different rendering functions (with and without camera).
 - Integrate the zooming better.
-- Remove the need to return something from the rendering.
+- Remove the need a return value from the rendering.
 - Maybe get rid of most of the hierarchy: it's way too convoluted and the whole position and clipping is a bit rancid.
 - Get rid of filled vs wireframe classes?. The only difference is at rendering and doesn't make much sense.
 - Integrate box with polygon in the primitives?????.

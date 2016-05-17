@@ -35,8 +35,7 @@ class Representacion_primitiva_poligono_base
 
 	private:
 
-	std::vector<Sint16>		puntos_x,
-					puntos_y;
+	std::vector<punto>		puntos;
 };
 
 class Representacion_primitiva_poligono
