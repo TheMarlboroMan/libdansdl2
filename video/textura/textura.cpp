@@ -2,7 +2,6 @@
 
 using namespace DLibV;
 
-//TODO: No more renderer!!!!. Maximum fuck up again.
 Textura::Textura(const SDL_Renderer * renderer, SDL_Surface * superficie):
 	textura(DLibV::Utilidades_graficas_SDL::cargar_textura_desde_superficie(renderer, superficie)),
 	renderer(renderer), formato(0), w(0), h(0), acceso(0)
