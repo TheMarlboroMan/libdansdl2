@@ -32,18 +32,13 @@ void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 	SDL_Rect pos=acc_posicion();
 
 	//TODO: This is stupid as hell.
-	struct punto{float x, y;};
-	auto itof=[](int x, int y)
-	{
-		return punto{(float)x, (float)y};
-	};
+	struct punto{int x, y;};
 
-	//TODO... This should be somewhere else.
-	//TODO... This whole class could be a subclass of a polygon.
-	std::vector<punto> puntos{ itof(pos.x, pos.y), 
-		itof(pos.x+pos.w, pos.y), 
-		itof(pos.x+pos.w, pos.y+pos.h), 
-		itof(pos.x, pos.y+pos.h) };
+	//TODO: This should be storeed.
+	std::vector<punto> puntos{ {pos.x, pos.y},
+		{pos.x+pos.w, pos.y}, 
+		{pos.x+pos.w, pos.y+pos.h}, 
+		{pos.x, pos.y+pos.h} };
 
 	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -55,7 +50,7 @@ void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 	glDisable(GL_TEXTURE_2D);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_FLOAT, 0, puntos.data());
+	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
