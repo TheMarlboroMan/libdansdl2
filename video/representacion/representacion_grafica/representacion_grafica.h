@@ -153,6 +153,7 @@ class Representacion_grafica:public Representacion
 
 	Representacion_grafica_transformacion transformacion;
 
+	//TODO: Change this for a reference.
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
 	mutable bool preparada; //Indica si la pantalla puede volcar o tiene que hacer una preparación propia.
 	SDL_Rect 		posicion_rotada; 	//Copia de posición alterada según rotación.
