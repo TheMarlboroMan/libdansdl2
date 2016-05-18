@@ -15,8 +15,8 @@ class Imagen:public Superficie
 	public:
 
 	Imagen(SDL_Surface *);
-	Imagen(char const *, SDL_Window *);
 	Imagen(std::string const&, SDL_Window *);
+	Imagen(std::string const&);
 	Imagen(const Imagen&);
 	Imagen& operator=(const Imagen&);
 	virtual ~Imagen();

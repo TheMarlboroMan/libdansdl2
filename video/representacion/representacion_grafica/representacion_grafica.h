@@ -122,7 +122,6 @@ class Representacion_grafica:public Representacion
 	bool 			es_preparada() const {return this->preparada;}
 	SDL_Rect 		copia_posicion_rotada() const;
 	Textura * ref_textura() const {return this->textura ? this->textura : NULL;}
-	SDL_Texture * 		ref_textura_sdl() {return this->textura ? this->textura->ref_textura() : NULL;}
 	virtual SDL_Rect	obtener_caja_clip() const {return acc_posicion();}
 	int			acc_w_textura() const {return textura->acc_w();}
 	int			acc_h_textura() const {return textura->acc_h();}			

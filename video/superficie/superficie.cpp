@@ -2,7 +2,12 @@
 
 using namespace DLibV;
 
-Superficie::Superficie():color_transparencia(0), transparencia_activa(false)
+Superficie::Superficie(SDL_Surface * s):superficie(s), color_transparencia(0), transparencia_activa(false)
+{
+
+}
+
+Superficie::Superficie():superficie(nullptr), color_transparencia(0), transparencia_activa(false)
 {
 
 }

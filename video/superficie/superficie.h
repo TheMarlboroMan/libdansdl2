@@ -15,17 +15,12 @@ namespace DLibV
 
 class Superficie
 {
-	protected:
-
-	SDL_Surface * superficie;
-	Uint32 color_transparencia;
-	bool transparencia_activa;
-
 	public:
 
 	enum T_TIPOS{T_IMAGEN=1, T_LIENZO=2};
 	
 	Superficie();
+	Superficie(SDL_Surface *);
 	virtual ~Superficie();
 	Superficie& operator=(const Superficie&);
 	
@@ -51,6 +46,12 @@ class Superficie
 	//Resulta ridículo que esto es lo único que hace abstracta a esta clase :D.
 	virtual int obtener_tipo()=0;
 	virtual bool es_preparado()=0;
+
+	protected:
+
+	SDL_Surface * superficie;
+	Uint32 color_transparencia;
+	bool transparencia_activa;
 };
 
 } //Fin namespace DLibV

@@ -36,6 +36,7 @@ class Utilidades_graficas_SDL
 	static SDL_Surface * copiar_superficie(const SDL_Surface * origen);
 	static SDL_Surface * copiar_superficie(const SDL_Surface * origen, const SDL_Rect& caja, Uint32 flags=0, Uint32 color=0);
 	static SDL_Surface * cargar_imagen(const char *, const SDL_Window * ventana);
+	static SDL_Surface * cargar_imagen(const char *);
 	static SDL_Texture * copiar_textura(const SDL_Renderer * renderer, const SDL_Texture * textura);
 	static SDL_Texture * cargar_textura_desde_superficie(const SDL_Renderer * renderer, const SDL_Surface * superficie);
 	static SDL_Texture * crear_textura(const SDL_Renderer * renderer, int pw, int ph, Uint32 pformat, int paccess=SDL_TEXTUREACCESS_TARGET);

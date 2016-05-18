@@ -70,7 +70,7 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
 	{
 		if(!ventana) 
 		{
-			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_ARGB8888, 0);
+			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_RGBA8888, 0);
 	      	        SDL_FreeSurface(temporal);
 			return optimizada;
 		}
@@ -81,6 +81,18 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
 			return optimizada;
 		}
 	}
+}
+
+SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena)
+{
+        SDL_Surface * temporal=IMG_Load(cadena);
+        if (!temporal) 
+        {
+		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:"<<cadena<<std::endl;
+                return nullptr;
+        }
+
+	return temporal;
 }
 
 void Utilidades_graficas_SDL::mostrar_ocultar_cursor(bool p_modo)

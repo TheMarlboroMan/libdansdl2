@@ -24,9 +24,6 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)representacion_bitmap.o \
 	$(DIR_O)representacion_bitmap_patron.o \
 	$(DIR_O)representacion_ttf.o \
-	$(DIR_O)representacion_texto.o \
-	$(DIR_O)representacion_texto_fija.o \
-	$(DIR_O)representacion_texto_auto.o \
 	$(DIR_O)gestor_mapa_static.o \
 	$(DIR_O)gestor_mapa_instanciable.o \
 	$(DIR_O)gestor_vector_static.o \
@@ -162,24 +159,6 @@ $(DIR_O)camara.o: \
 $(DIR_CLASS_V)camara/camara.h \
 $(DIR_CLASS_V)camara/camara.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)camara/camara.cpp -o $(DIR_O)camara.o $(INCLUDES)
-
-$(DIR_O)representacion_texto_auto.o: \
-$(DIR_O)representacion_texto.o \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto_auto.h \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto_auto.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto_auto.cpp -o $(DIR_O)representacion_texto_auto.o $(INCLUDES)
-
-$(DIR_O)representacion_texto_fija.o: \
-$(DIR_O)representacion_texto.o \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto_fija.h \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto_fija.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto_fija.cpp -o $(DIR_O)representacion_texto_fija.o $(INCLUDES)
-
-$(DIR_O)representacion_texto.o: \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto.h \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto.cpp \
-$(DIR_O)representacion_grafica.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_texto/representacion_texto.cpp -o $(DIR_O)representacion_texto.o $(INCLUDES)
 
 $(DIR_O)representacion_ttf.o: \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_ttf/representacion_ttf.h \
