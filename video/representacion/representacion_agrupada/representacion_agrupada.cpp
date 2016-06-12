@@ -75,13 +75,13 @@ void Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
 	SDL_Rect pos=acc_posicion();
 	int px=pos.x, py=pos.y;
 	unsigned int alpha_p=acc_alpha();
-	unsigned int modo_blend_p=acc_modo_blend();
+	auto modo_blend_p=acc_modo_blend();
 //	unsigned int mod_color_r=acc_mod_color_r();
 //	unsigned int mod_color_g=acc_mod_color_g();
 //	unsigned int mod_color_b=acc_mod_color_b();
 
 	unsigned int alpha_a=0;
-	unsigned int modo_blend_a=0;
+	auto modo_blend_a=Representacion::blends::BLEND_NADA;
 
 	while(inicio < fin)
 	{
@@ -123,17 +123,16 @@ void Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect&
 	SDL_Rect pos=acc_posicion();
 	int px=pos.x, py=pos.y;
 	unsigned int alpha_p=acc_alpha();
-	unsigned int modo_blend_p=acc_modo_blend();
+	auto modo_blend_p=acc_modo_blend();
 //	unsigned int mod_color_r=acc_mod_color_r();
 //	unsigned int mod_color_g=acc_mod_color_g();
 //	unsigned int mod_color_b=acc_mod_color_b();
 
 	unsigned int alpha_a=0;
-	unsigned int modo_blend_a=0;
+	auto modo_blend_a=Representacion::blends::BLEND_NADA;
 
 	while(inicio < fin)
 	{
-
 //		unsigned int mod_color_r_a=acc_mod_color_r();
 //		unsigned int mod_color_g_a=acc_mod_color_g();
 //		unsigned int mod_color_b_a=acc_mod_color_b();

@@ -2,11 +2,13 @@
 
 using namespace DLibV;
 
+//Entra 0-255 sale 0-1
 float DLibV::colorfi(int v)
 {
 	return (float)v / 255.f;
 }
 
+//Entra 0-1 sale 0-255
 unsigned int DLibV::colorif(float v)
 {
 	return v * 255.f;

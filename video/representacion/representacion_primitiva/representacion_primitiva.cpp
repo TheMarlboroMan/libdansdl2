@@ -72,16 +72,17 @@ bool Representacion_primitiva::determinar_caja_dibujo_final(SDL_Rect &p_caja, SD
 void Representacion_primitiva::preparar_color()
 {
 	const auto c=acc_rgba();
-	if(c.a)
+	switch(acc_modo_blend())
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glColor4f(c.r, c.g, c.b, c.a);
-	}
-	else
-	{
-		glColor3f(c.r, c.g, c.b);
-		glDisable(GL_BLEND);
+		case Representacion::blends::BLEND_NADA:
+			glDisable(GL_BLEND);
+			glColor3f(c.r, c.g, c.b);
+		break;
+		case Representacion::blends::BLEND_ALPHA:
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glColor4f(c.r, c.g, c.b, c.a);
+		break;
 	}
 
 	glDisable(GL_TEXTURE_2D);

@@ -6,7 +6,7 @@ using namespace DLibV;
 
 Representacion::Representacion():
 	visible(true),
-	modo_blend(BLEND_NADA), 
+	modo_blend(blends::BLEND_NADA), 
 	rgba{1.f, 1.f, 1.f, 0.f}
 {
 	this->reiniciar_posicion();
@@ -15,7 +15,7 @@ Representacion::Representacion():
 
 Representacion::Representacion(ColorRGBA c):
 	visible(true),
-	modo_blend(BLEND_NADA), 
+	modo_blend(blends::BLEND_NADA), 
 	rgba(c)
 {
 	this->reiniciar_posicion();
@@ -24,7 +24,7 @@ Representacion::Representacion(ColorRGBA c):
 
 Representacion::Representacion(const Representacion& p_otra):
 	visible(p_otra.visible), 
-	modo_blend(BLEND_NADA),
+	modo_blend(blends::BLEND_NADA),
 	rgba(p_otra.rgba),
 	posicion(p_otra.posicion), recorte(p_otra.recorte)
 {

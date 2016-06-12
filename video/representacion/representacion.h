@@ -14,7 +14,7 @@ class Representacion
 {
 	public:
 
-	enum blends {BLEND_NADA,BLEND_ALPHA,BLEND_SUMA,BLEND_MODULAR};
+	enum class blends {BLEND_NADA,BLEND_ALPHA};
 	enum FLAGS_RECT{FRECT_X=1, FRECT_Y=2, FRECT_W=4, FRECT_H=8};
 
 				Representacion();
@@ -58,12 +58,12 @@ class Representacion
 	void 			volcar(SDL_Renderer *);
 
 	void			mut_rgba(ColorRGBA v) {rgba=v;}
-	void 			establecer_alpha(unsigned int v) {rgba.a=colorif(v);}
+	void 			establecer_alpha(unsigned int v) {rgba.a=colorfi(v);}
 	void 			establecer_color(unsigned int pr, unsigned int pg, unsigned int pb)
 	{
-		rgba.r=colorif(pr);
-		rgba.g=colorif(pg);
-		rgba.b=colorif(pb);
+		rgba.r=colorfi(pr);
+		rgba.g=colorfi(pg);
+		rgba.b=colorfi(pb);
 	}
 
 	ColorRGBA		acc_rgba() const {return rgba;}
@@ -72,8 +72,8 @@ class Representacion
 	unsigned short int 	acc_color_g() const {return colorfi(rgba.g);}
 	unsigned short int 	acc_color_b() const {return colorfi(rgba.b);}
 
-	void 			establecer_modo_blend(unsigned short int v) {this->modo_blend=v;}
-	unsigned short int 	acc_modo_blend() const {return this->modo_blend;}
+	void 			establecer_modo_blend(blends v) {this->modo_blend=v;}
+	blends		 	acc_modo_blend() const {return this->modo_blend;}
 
 	//TODO: Ya veremos...
 	static void 		procesar_zoom(SDL_Rect& pos, const SDL_Rect& p_posicion, const SDL_Rect& p_enfoque);
@@ -82,7 +82,7 @@ class Representacion
 	private:
 
 	bool 			visible;
-	unsigned short int 	modo_blend;
+	blends		 	modo_blend;
 	ColorRGBA		rgba;
 	SDL_Rect 		posicion; 	//Lugar en que se muestra de la pantalla.
 	SDL_Rect 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.

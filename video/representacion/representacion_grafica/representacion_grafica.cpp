@@ -92,7 +92,6 @@ void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 
 	glMatrixMode(GL_MODELVIEW);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
-	glEnable(GL_BLEND);
 
 	glBindTexture(GL_TEXTURE_2D, textura->acc_indice());
 	glEnable(GL_TEXTURE_2D);
@@ -100,6 +99,21 @@ void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
 
+	//Alpha...
+	const auto c=acc_rgba();
+	switch(acc_modo_blend())
+	{
+		case Representacion::blends::BLEND_NADA:
+			glDisable(GL_BLEND);
+			glColor3f(c.r, c.g, c.b);
+		break;
+		case Representacion::blends::BLEND_ALPHA:
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glColor4f(c.r, c.g, c.b, c.a);
+		break;
+	}
+		
 	glTranslatef(pos.x, pos.y, 0.f);
 
 	if(transformacion.angulo_rotacion != 0.f)
