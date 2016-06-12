@@ -21,6 +21,7 @@ Representacion_primitiva_caja_base& Representacion_primitiva_caja_base::operator
 	return *this;
 }
 
+//TODO: Fuck the renderer parameter.
 void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 {
 	const SDL_Rect& pos=acc_posicion();

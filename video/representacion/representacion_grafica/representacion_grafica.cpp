@@ -1,5 +1,4 @@
 #include "representacion_grafica.h"
-
 #include <algorithm>
 #include "../../../herramientas/poligono_2d/poligono_2d.h"
 
@@ -44,14 +43,98 @@ void Representacion_grafica::recorte_a_medidas_textura()
 	establecer_recorte(0,0, textura->acc_w(), textura->acc_h());
 }
 
-bool Representacion_grafica::realizar_render(SDL_Renderer * p_renderer, SDL_Rect& rec, SDL_Rect& pos)
-{
-	return true;
-}
-
+//TODO: Fuck the renderer parameter.
 void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 {
-	//TODO...
+	const SDL_Rect& pos=acc_posicion();
+	const SDL_Rect& recor=acc_recorte();
+
+	//TODO: This should be stored when set.
+	struct punto{int x, y;};
+	punto puntos[]={{0, 0},
+		{pos.w, 0}, 
+		{pos.w, pos.h}, 
+		{0, pos.h} };
+
+
+	//TODO: This is a fucking disaster. Store it somewhere when it's set.
+	float w_tex=textura->acc_w(), h_tex=textura->acc_h();
+	struct puntotex {GLfloat x, y;};
+
+	//Samplear los puntos centrales. De momento no buscamos el centro del texel.
+	puntotex ptex[]={
+		{(GLfloat)recor.x, 			(GLfloat)recor.y},
+		{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y},
+		{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y+(GLfloat)recor.h},
+		{(GLfloat)recor.x, 			(GLfloat)recor.y+(GLfloat)recor.h}};
+
+	//Invertir y resamplear puntos...
+	if(transformacion.invertir_horizontal)
+	{
+		std::swap(ptex[0].x, ptex[1].x);
+		std::swap(ptex[2].x, ptex[3].x);
+		for(auto &p: ptex) p.x-=0.5f;		
+	}
+
+	//Invertir y resamplear puntos...
+	if(transformacion.invertir_vertical)
+	{
+		std::swap(ptex[0].y, ptex[2].y);
+		std::swap(ptex[1].y, ptex[3].y); 
+		for(auto &p: ptex) p.y-=0.5f;
+	}
+
+	for(auto &p : ptex)
+	{
+		p.x/=w_tex; 
+		p.y/=h_tex;
+	}
+
+	glMatrixMode(GL_MODELVIEW);
+	glColor4f(1.f, 1.f, 1.f, 1.f);
+	glEnable(GL_BLEND);
+
+	glBindTexture(GL_TEXTURE_2D, textura->acc_indice());
+	glEnable(GL_TEXTURE_2D);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
+
+	glTranslatef(pos.x, pos.y, 0.f);
+
+	if(transformacion.angulo_rotacion != 0.f)
+	{
+		//Translación adicional para poder colocar el centro de rotación.
+		glTranslatef(transformacion.x_centro_rotacion, transformacion.y_centro_rotacion, 0.f);
+
+		//Actualización de los puntos para colocar el centro.
+		for(auto& p : puntos){
+			p.x-=transformacion.x_centro_rotacion;
+			p.y-=transformacion.y_centro_rotacion;
+		}
+
+		//Rotación...
+		glRotatef(transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
+	}
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+
+	glVertexPointer(2, GL_INT, 0, puntos);
+	glTexCoordPointer(2, GL_FLOAT, 0, ptex);
+	glDrawArrays(GL_QUADS, 0, 4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+	glDisable(GL_TEXTURE_2D);
+
+	//Restaurar el estado de opengl.
+	if(transformacion.angulo_rotacion!=0.f)
+	{
+		glRotatef(-transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
+		glTranslatef(-transformacion.x_centro_rotacion, -transformacion.y_centro_rotacion, 0.f);
+	}
+	glTranslatef(-pos.x, -pos.y, 0.f);
 }
 
 void Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
@@ -69,19 +152,19 @@ void Representacion_grafica::liberar_textura()
 	if(this->textura)
 	{
 		delete this->textura;
-		this->textura=NULL;
+		this->textura=nullptr;
 	}
 }
 
 void Representacion_grafica::transformar_rotar(float v) 
 {
-	transformacion.rotar(v);
+	transformacion.angulo_rotacion=v;
 	actualizar_caja_rotacion();
 }
 
 void Representacion_grafica::transformar_cancelar_rotar() 
 {
-	transformacion.cancelar_rotar();
+	transformacion.angulo_rotacion=0.f;
 	actualizar_caja_rotacion();
 }
 
@@ -107,7 +190,9 @@ void Representacion_grafica::actualizar_caja_rotacion()
 	}
 	else
 	{
-		auto c=transformacion.obtener_centro_rotacion();
+		//TODO: Restore... We deleted obtener_centro_rotacion(),
+
+/*		auto c=transformacion.acc_centro_rotacion();
 		DLibH::Poligono_2d_vertices<double> polig(
 			{ 
 				{(double)p.x, (double)p.y},
@@ -117,7 +202,7 @@ void Representacion_grafica::actualizar_caja_rotacion()
 			}, {(double)c.x+p.x, (double)c.y+p.y});
 
 		//Las rotaciones de SDL son "clockwise"... Las reales son "counter-clockwise"...
-		float a=transformacion.obtener_angulo_rotacion();
+		float a=transformacion.acc_angulo_rotacion();
 		polig.rotar(a);
 
 		//Sacar las medidas para la nueva caja...
@@ -128,6 +213,7 @@ void Representacion_grafica::actualizar_caja_rotacion()
 		posicion_rotada.y=*std::min_element(std::begin(ys), std::end(ys));
 		posicion_rotada.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_rotada.x;
 		posicion_rotada.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_rotada.y;
+*/
 	}
 }
 

@@ -1,6 +1,7 @@
 #ifndef REPRESENTACION_GRAFICA_H
 #define REPRESENTACION_GRAFICA_H
 
+#include <GL/gl.h>
 #include "../representacion.h"
 #include "../../textura/textura.h"
 #include "../../../herramientas/log_base/log_base.h"
@@ -17,42 +18,19 @@ namespace DLibV
 
 struct Representacion_grafica_transformacion
 {
-	private:
-
 	bool invertir_horizontal;
 	bool invertir_vertical;
-	bool rotacion;
-	bool cambiar_centro_rotacion;
 
 	float angulo_rotacion;
 	float x_centro_rotacion;
 	float y_centro_rotacion;
 
-	public:
-
-	float acc_x_centro_rotacion() const {return x_centro_rotacion;}
-	float acc_y_centro_rotacion() const {return y_centro_rotacion;}
-
 	Representacion_grafica_transformacion():
-		invertir_horizontal(false), invertir_vertical(false), rotacion(false),
-		cambiar_centro_rotacion(false),
-		angulo_rotacion(0.0), x_centro_rotacion(0.0), y_centro_rotacion(0.0)
+		invertir_horizontal(false), invertir_vertical(false),
+		angulo_rotacion(0.f), x_centro_rotacion(0.f), y_centro_rotacion(0.f)
 	{}
 
-	SDL_RendererFlip obtener_flip() const
-	{
-		int res=SDL_FLIP_NONE;
-
-		if(invertir_horizontal || invertir_vertical)
-		{
-			if(invertir_horizontal && invertir_vertical) res=SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL;
-			else if(invertir_horizontal) res=SDL_FLIP_HORIZONTAL;
-			else res=SDL_FLIP_VERTICAL;
-		}
-
-		return (SDL_RendererFlip)res;
-	}
-
+	//TODO... I don't want SDL here.
 	SDL_Point obtener_centro_rotacion() const
 	{
 		SDL_Point p;
@@ -61,79 +39,50 @@ struct Representacion_grafica_transformacion
 		return p;
 	}
 
-	float obtener_angulo_rotacion() const 
-	{
-		if(rotacion) return angulo_rotacion;
-		else return 0.0;
-	}
-
-	bool es_transformacion() const
-	{
-		return invertir_horizontal || invertir_vertical || rotacion;
-	}
-
-	void rotar(float v)
-	{
-		rotacion=true;
-		angulo_rotacion=v;
-	}
-
-	void cancelar_rotar()
-	{
-		rotacion=false;
-		angulo_rotacion=0.0;
-	}
-
-	bool es_cambia_centro_rotacion() const {return cambiar_centro_rotacion;}
-
-	void establecer_invertir_horizontal(bool v) {invertir_horizontal=v;}
-	void establecer_invertir_vertical(bool v) {invertir_vertical=v;}
-
+	bool es_transformacion() const {return invertir_horizontal || invertir_vertical || angulo_rotacion!=0.f;}
+	bool es_cambia_centro_rotacion() const {return x_centro_rotacion!=0.f || y_centro_rotacion!=0.f;}
 	void centro_rotacion(float px, float py)
 	{
-		cambiar_centro_rotacion=true;
 		x_centro_rotacion=px;
 		y_centro_rotacion=py;
 	}
 
 	void cancelar_centro_rotacion()
 	{
-		cambiar_centro_rotacion=false;
-		x_centro_rotacion=0.0;
-		y_centro_rotacion=0.0;
+		x_centro_rotacion=0.f;
+		y_centro_rotacion=0.f;
 	}
 
 	void reiniciar()
 	{
 		invertir_horizontal=false;
 		invertir_vertical=false;
-		rotacion=false;
-		cambiar_centro_rotacion=false;
-		angulo_rotacion=0.0;
-		x_centro_rotacion=0.0;
-		y_centro_rotacion=0.0;
+		angulo_rotacion=0.f;
+		x_centro_rotacion=0.f;
+		y_centro_rotacion=0.f;
 	}
 };
 
+//TODO: Perhaps we could slowly exorcise SDL_Rects from here...
 class Representacion_grafica:public Representacion
 {
 	public:
-
-	bool 			es_preparada() const {return this->preparada;}
-	SDL_Rect 		copia_posicion_rotada() const;
-	Textura * ref_textura() const {return this->textura ? this->textura : NULL;}
-	virtual SDL_Rect	obtener_caja_clip() const {return acc_posicion();}
-	int			acc_w_textura() const {return textura->acc_w();}
-	int			acc_h_textura() const {return textura->acc_h();}			
 
 				Representacion_grafica();
 				Representacion_grafica(const Representacion_grafica&);
 				Representacion_grafica& operator=(const Representacion_grafica &);
 	virtual 		~Representacion_grafica();
-	
+
+	bool 			es_preparada() const {return this->preparada;}
+	SDL_Rect 		copia_posicion_rotada() const;
+	Textura * ref_textura() const {return textura;}
+	virtual SDL_Rect	obtener_caja_clip() const {return acc_posicion();}
+	int			acc_w_textura() const {return textura->acc_w();}
+	int			acc_h_textura() const {return textura->acc_h();}			
+
 	void 			reiniciar_transformacion() {transformacion.reiniciar();}
-	void 			transformar_invertir_horizontal(bool v) {transformacion.establecer_invertir_horizontal(v);}
-	void 			transformar_invertir_vertical(bool v) {transformacion.establecer_invertir_vertical(v);}
+	void 			transformar_invertir_horizontal(bool v) {transformacion.invertir_horizontal=v;}
+	void 			transformar_invertir_vertical(bool v) {transformacion.invertir_vertical=v;}
 
 	void 			transformar_rotar(float v);
 	void 			transformar_cancelar_rotar();
@@ -144,7 +93,7 @@ class Representacion_grafica:public Representacion
 	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
 	virtual void 		establecer_posicion(SDL_Rect);
 
-	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;};
+	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;}
 
 	virtual void 		establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
 	virtual void		preparar(const SDL_Renderer * renderer);
@@ -153,15 +102,16 @@ class Representacion_grafica:public Representacion
 
 	Representacion_grafica_transformacion transformacion;
 
-	//TODO: Change this for a reference.
+	//TODO: Change this for a reference. Or not: we wouldn't be able to change textures.
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
 	mutable bool preparada; //Indica si la pantalla puede volcar o tiene que hacer una preparación propia.
-	SDL_Rect 		posicion_rotada; 	//Copia de posición alterada según rotación.
 
-	bool 			realizar_render(SDL_Renderer *, SDL_Rect& rec, SDL_Rect& pos);
+	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
+	SDL_Rect 		posicion_rotada;
 
 	protected:
 
+	//TODO: Maybe this is all obsolete???.
 	void 			marcar_como_preparada() {this->preparada=true;}
 	void 			marcar_como_no_preparada() {this->preparada=false;}
 	void 			recorte_a_medidas_textura();

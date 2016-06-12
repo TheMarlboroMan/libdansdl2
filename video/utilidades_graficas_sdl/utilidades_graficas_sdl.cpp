@@ -17,7 +17,7 @@ SDL_Surface * Utilidades_graficas_SDL::nueva_superficie_formato(SDL_Surface cons
 SDL_Surface * Utilidades_graficas_SDL::nueva_superficie_formato(SDL_Surface const * p_origen, const SDL_Rect& p_caja, Uint32 p_flags, Uint32 p_color)
 {
 	SDL_Surface * origen=const_cast <SDL_Surface *> (p_origen);
-	SDL_Surface * copia=NULL;
+	SDL_Surface * copia=nullptr;
 
 	copia=SDL_CreateRGBSurface(
 //		origen->flags|p_flags,
@@ -25,7 +25,7 @@ SDL_Surface * Utilidades_graficas_SDL::nueva_superficie_formato(SDL_Surface cons
 		p_caja.w, p_caja.h, origen->format->BitsPerPixel,
 		origen->format->Rmask, origen->format->Gmask, origen->format->Bmask, origen->format->Amask);
 
-	SDL_FillRect(copia, NULL, p_color);
+	SDL_FillRect(copia, nullptr, p_color);
 
 	return copia;
 }
@@ -52,7 +52,7 @@ SDL_Surface * Utilidades_graficas_SDL::copiar_superficie(SDL_Surface const * p_o
 
 	if(copia)
 	{
-		SDL_BlitSurface(origen, caja, copia, NULL);
+		SDL_BlitSurface(origen, caja, copia, nullptr);
 	}
 
 	return copia;
@@ -64,7 +64,7 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
         if (!temporal) 
         {
 		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:"<<cadena<<std::endl;
-                return NULL;
+                return nullptr;
         }
 	else
 	{
@@ -109,7 +109,7 @@ SDL_Texture * Utilidades_graficas_SDL::cargar_textura_desde_superficie(const SDL
 	if(!textura)
 	{
 		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_textura_desde_superficie() : textura no cargada"<<std::endl;
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -128,7 +128,7 @@ SDL_Texture * Utilidades_graficas_SDL::copiar_textura(const SDL_Renderer * rende
 	if(SDL_QueryTexture(tex, &pformat, &pa, &pw, &ph) < 0)
 	{
 		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : fallo al lanzar QueryTexture"<<std::endl;
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -137,24 +137,24 @@ SDL_Texture * Utilidades_graficas_SDL::copiar_textura(const SDL_Renderer * rende
 		if(!resultado)
 		{
 			DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : fallo al crear textura"<<std::endl;
-			return NULL;
+			return nullptr;
 		}
 		else
 		{
 			if(SDL_SetRenderTarget(ren, resultado) < 0)
 			{
 				DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : error al apuntar textura como target"<<std::endl;
-				return NULL;
+				return nullptr;
 			}
-			else if(SDL_RenderCopy(ren, resultado, NULL, NULL) < 0)
+			else if(SDL_RenderCopy(ren, resultado, nullptr, nullptr) < 0)
 			{
 				DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : fallo volcar textura"<<std::endl;
-				return NULL;
+				return nullptr;
 			}
-			else if(SDL_SetRenderTarget(ren, NULL) < 0)
+			else if(SDL_SetRenderTarget(ren, nullptr) < 0)
 			{
 				DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : error al restaurar target"<<std::endl;
-				return NULL;
+				return nullptr;
 			}
 		}
 

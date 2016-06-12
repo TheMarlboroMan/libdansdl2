@@ -3,8 +3,7 @@
 
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
-#include "../utilidades_graficas_sdl/utilidades_graficas_sdl.h"
-#include "../superficie/imagen.h"
+#include "../superficie/superficie.h"
 
 namespace DLibV
 {
@@ -14,7 +13,6 @@ class Textura
 	public:
 			Textura(const Superficie&);
 			Textura(const Textura& t);
-			Textura(const std::string&);
 			~Textura();
 	Textura& 	operator=(const Textura& t);
 
