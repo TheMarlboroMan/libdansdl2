@@ -55,7 +55,7 @@ void Representacion_primitiva_linea::generar_posicion()
 	establecer_posicion(x, y, w, h);
 }
 
-void Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer)
+void Representacion_primitiva_linea::volcado()
 {
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
@@ -64,11 +64,6 @@ void Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer)
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_LINES, 0, 2);
 	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-void Representacion_primitiva_linea::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
-{
-	//TODO...
 }
 
 void Representacion_primitiva_linea::preparar_posicion()

@@ -2,11 +2,8 @@
 
 using namespace DLibV;
 
-//TODO: Extinguish the renderer. 
-//TODO: This will, in turn, fuck up everything else.
-
 Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
-	ventana(nullptr), renderer(nullptr), volcados(0), 
+	ventana(nullptr), volcados(0), 
 	w(p_w), h(p_h), modo_ventana(p_m), w_logico(w), h_logico(h)
 {
 	this->simulacro_caja.w=0;
@@ -18,7 +15,6 @@ Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
 Pantalla::~Pantalla()
 {
 	if(this->ventana) SDL_DestroyWindow(this->ventana);
-	if(this->renderer) SDL_DestroyRenderer(this->renderer);	 //Esto destruirá texturas asociadas al renderer.
 	SDL_GL_DeleteContext(context); 
 }
 
@@ -50,36 +46,13 @@ void Pantalla::actualizar()
 	SDL_GL_SwapWindow(ventana);
 }
 
-void Pantalla::cortar_caja_a_pantalla(SDL_Rect * p_caja)
-{
-	if(p_caja->x < 0) 
-	{
-		p_caja->w=p_caja->w-p_caja->x;
-		p_caja->x=0;
-	}
-
-	if(p_caja->y < 0) 
-	{
-		p_caja->h=p_caja->h-p_caja->y;
-		p_caja->y=0;
-	}
-
-	if(p_caja->x+p_caja->w > this->w)
-	{
-		p_caja->w=this->w-p_caja->w;
-	}
-
-	if(p_caja->y+p_caja->h > this->h)
-	{
-		p_caja->h=this->h-p_caja->h;
-	}
-}
 /*
 void Pantalla::preparar_para_camara(Camara const& p_camara)
 {
 	if(p_camara.es_con_clip()) this->establecer_clip_para_camara(p_camara);
 }
 */
+
 void Pantalla::configurar(int flags_ventana)
 {
 	if(!ventana)
@@ -99,27 +72,18 @@ void Pantalla::configurar(int flags_ventana)
 		glLoadIdentity();
 
 		//Izquierda, derecha, abajo, arriba, cerca y lejos...
-		//Ahora el punto 0.0 es arriba a la izquierda.
+		//Ahora el punto 0.0 es arriba a la izquierda. Ajustamos a 0.5
+		//para que pille el centro del pixel.
 		glOrtho(-0.5f, (float)w-.5f, (float)h-.5f, -0.5f, 1.f, -1.0f);
 
 		//Establecer el modo a matriz de proyección y cargarla a 1.
 		glMatrixMode(GL_MODELVIEW); 
 		glLoadIdentity();
-
-		//Guardar la matriz de modelo...
-		//glPushMatrix();
 	}
 	else
 	{
+		//TODO: How about this... Does this do anything?.
 		SDL_SetWindowSize(ventana, w, h);
-	}
-
-	//TODO: This shall dissapear.
-	if(!renderer)
-	{
-		//TODO: NO crear renderer si la flag de OpenGL está activa...
-//		renderer=SDL_CreateRenderer(ventana, -1, 0);
-//		establecer_modo_ventana(modo_ventana);
 	}
 
 	establecer_medidas_logicas(w, h);
@@ -152,12 +116,12 @@ void Pantalla::establecer_modo_ventana(unsigned int v)
 
 void Pantalla::reiniciar_clip_completo()
 {
-	SDL_Rect caja;
+/*	Rect caja;
 	caja.x=0; 
 	caja.y=0;
 	caja.w=w;
 	caja.h=h;
-
+*/
 	//TODO: Stencil buffer?
 
 //	SDL_RenderSetClipRect(renderer, &caja);
@@ -166,11 +130,11 @@ void Pantalla::reiniciar_clip_completo()
 void Pantalla::establecer_clip_para_camara(Camara const& p_camara)
 {
 	//TODO: Stencil buffer?
-//	SDL_Rect caja=p_camara.acc_caja_pos();
+//	Rect caja=p_camara.acc_caja_pos();
 //	SDL_RenderSetClipRect(renderer, &caja);
 }
 
-void Pantalla::establecer_clip(SDL_Rect p_caja)
+void Pantalla::establecer_clip(Rect p_caja)
 {
 	//TODO: Stencil buffer?
 //	SDL_RenderSetClipRect(renderer, &p_caja);

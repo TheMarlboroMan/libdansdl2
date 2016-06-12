@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../color/color.h"
+#include "../rect/rect.h"
 #include "../camara/camara.h"
 #include "../pantalla/pantalla.h"
 #include "../../herramientas/herramientas_sdl/herramientas_sdl.h"
@@ -23,22 +24,23 @@ class Representacion
 	Representacion& 	operator=(const Representacion &);
 	virtual 		~Representacion() {}
 
-	bool 			en_toma(const SDL_Rect& p_caja) const {return DLibH::Herramientas_SDL::rectangulos_superpuestos(p_caja, this->posicion, true);} 
+	//TODO: Is this ever used???
+	bool 			en_toma(const Rect& p_caja) const {return posicion.es_en_colision_con(p_caja, true);}
 	bool 			es_en_posicion(Sint16 p_x, Sint16 p_y) const 
 	{
 		return this->posicion.x==p_x && 
 		this->posicion.y==p_y;
 	}
 
-	const SDL_Rect& 	acc_posicion() const {return this->posicion;}
-	SDL_Rect 		copia_posicion() const {return SDL_Rect{posicion.x, posicion.y, posicion.w, posicion.h};}
+	const Rect& 		acc_posicion() const {return this->posicion;}
+	Rect 			copia_posicion() const {return Rect{posicion.x, posicion.y, posicion.w, posicion.h};}
 	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
-	virtual void 		establecer_posicion(SDL_Rect);
+	virtual void 		establecer_posicion(Rect);
 
-	const SDL_Rect& 	acc_recorte() const {return this->recorte;}
-	SDL_Rect 		copia_recorte() const {return SDL_Rect {recorte.x, recorte.y, recorte.w, recorte.h};}
+	const Rect& 		acc_recorte() const {return this->recorte;}
+	Rect 			copia_recorte() const {return Rect {recorte.x, recorte.y, recorte.w, recorte.h};}
 	void 			establecer_recorte(Sint16, Sint16, Uint16, Uint16, int=15);
-	void 			establecer_recorte(SDL_Rect);
+	void 			establecer_recorte(Rect);
 	void 			establecer_dimensiones_posicion_por_recorte();
 
 	virtual void 		ir_a(int x, int y){establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas....
@@ -50,12 +52,9 @@ class Representacion
 	bool 			es_visible() const {return this->visible;}
 
 	//Se pasa el rectángulo de pantalla... Básicamente se comprueba si está dentro. Estática o no.
-	void 			volcar(SDL_Renderer *, const SDL_Rect&);
-	void 			volcar(SDL_Renderer *, const Camara&);
+
 	void 			volcar(const Pantalla&, const Camara&);
 	void 			volcar(const Pantalla&);
-	void 			volcar(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
-	void 			volcar(SDL_Renderer *);
 
 	void			mut_rgba(ColorRGBA v) {rgba=v;}
 	void 			establecer_alpha(unsigned int v) {rgba.a=colorfi(v);}
@@ -76,25 +75,24 @@ class Representacion
 	blends		 	acc_modo_blend() const {return this->modo_blend;}
 
 	//TODO: Ya veremos...
-	static void 		procesar_zoom(SDL_Rect& pos, const SDL_Rect& p_posicion, const SDL_Rect& p_enfoque);
-	static void 		procesar_zoom(SDL_Rect&, double);
+	static void 		procesar_zoom(Rect& pos, const Rect& p_posicion, const Rect& p_enfoque);
+	static void 		procesar_zoom(Rect&, double);
 
 	private:
 
 	bool 			visible;
 	blends		 	modo_blend;
 	ColorRGBA		rgba;
-	SDL_Rect 		posicion; 	//Lugar en que se muestra de la pantalla.
-	SDL_Rect 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
+	Rect 			posicion; 	//Lugar en que se muestra de la pantalla.
+	Rect	 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
 
 	protected:
 
 	void 			reiniciar_posicion();
 	void 			reiniciar_recorte();
-	void 			reiniciar_rect(SDL_Rect&);
+	void 			reiniciar_rect(Rect&);
 
-	virtual void 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double)=0;
-	virtual void 		volcado(SDL_Renderer *)=0;
+	virtual void 		volcado()=0;
 };
 
 } //Fin namespace DLibV

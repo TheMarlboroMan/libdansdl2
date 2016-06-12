@@ -1,6 +1,7 @@
 #ifndef CAJA_MOTOR_H
 #define CAJA_MOTOR_H
 
+#include <SDL2/SDL.h>
 #include "../herramientas/herramientas.h"
 #include "../punto_2d/punto_2d.h"
 
@@ -14,19 +15,29 @@ class Caja
 {
 	public:
 	Punto_2d<T> origen;
+	T& x;
+	T& y;
 	U w;
 	U h;
 
+	Caja(SDL_Rect r):
+		origen{r.x,r.y}, x(origen.x), y(origen.y), w(r.w), h(r.h)
+	{}
+
+	Caja():
+		origen{0,0}, x(origen.x), y(origen.y), w(0), h(0)
+	{}
+
 	Caja(const Punto_2d<T>& p, U pw, U ph)
-		:origen(p), w(pw), h(ph)
+		:origen(p), x(origen.x), y(origen.y), w(pw), h(ph)
 	{}
 
 	Caja(T px, T py, U pw, U ph)
-		:origen(px, py), w(pw), h(ph)
+		:origen(px, py), x(origen.x), y(origen.y), w(pw), h(ph)
 	{}
 
 	Caja(const Caja& c)
-		:origen(c.origen), w(c.w), h(c.h)
+		:origen(c.origen), x(origen.x), y(origen.y), w(c.w), h(c.h)
 	{}
 
 	Caja& operator=(const Caja& c)

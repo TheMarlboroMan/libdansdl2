@@ -51,18 +51,17 @@ void Representacion_grafica::recorte_a_medidas_textura()
 	establecer_recorte(0,0, textura->acc_w(), textura->acc_h());
 }
 
-//TODO: Fuck the renderer parameter.
-void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
+void Representacion_grafica::volcado()
 {
-	const SDL_Rect& pos=acc_posicion();
-	const SDL_Rect& recor=acc_recorte();
+	const Rect& pos=acc_posicion();
+	const Rect& recor=acc_recorte();
 
 	//TODO: This should be stored when set.
 	struct punto{int x, y;};
 	punto puntos[]={{0, 0},
-		{pos.w, 0}, 
-		{pos.w, pos.h}, 
-		{0, pos.h} };
+		{(int)pos.w, 0}, 
+		{(int)pos.w, (int)pos.h}, 
+		{0, (int)pos.h} };
 
 
 	//TODO: This is a fucking disaster. Store it somewhere when it's set.
@@ -104,9 +103,9 @@ void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	glBindTexture(GL_TEXTURE_2D, textura->acc_indice());
 	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	//Alpha...
 	const auto c=acc_rgba();
 	switch(acc_modo_blend())
@@ -158,12 +157,6 @@ void Representacion_grafica::volcado(SDL_Renderer * p_renderer)
 	}
 	glTranslatef(-pos.x, -pos.y, 0.f);
 }
-
-void Representacion_grafica::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
-{
-	//TODO...
-}
-
 
 //Eso sólo deberíamos llamarlo en aquellas para las cuales hemos creado una
 //textura que poseen. Si es parte de un recurso que no es de su propiedad
@@ -245,15 +238,15 @@ void Representacion_grafica::establecer_posicion(int x, int y, int w, int h, int
 	actualizar_caja_rotacion();
 }
 
-void Representacion_grafica::establecer_posicion(SDL_Rect c)
+void Representacion_grafica::establecer_posicion(Rect c)
 {
 	Representacion::establecer_posicion(c);
 	actualizar_caja_rotacion();
 }
 
-SDL_Rect Representacion_grafica::copia_posicion_rotada() const
+Rect Representacion_grafica::copia_posicion_rotada() const
 {
-	return SDL_Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
+	return Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
 }
 
 //TODO: Does this affect us???

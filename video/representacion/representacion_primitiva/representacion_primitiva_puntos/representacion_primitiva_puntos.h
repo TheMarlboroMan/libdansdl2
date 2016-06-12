@@ -17,8 +17,7 @@ class Representacion_primitiva_puntos:
 	virtual 				~Representacion_primitiva_puntos() {}
 						Representacion_primitiva_puntos& operator=(const Representacion_primitiva_puntos&);
 
-	virtual void				volcado(SDL_Renderer *);
-	virtual void				volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double); 
+	virtual void				volcado();
 
 	void 					insertar(int x, int y);
 	void					limpiar_puntos();

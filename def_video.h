@@ -13,6 +13,7 @@
 #include "video/superficie/imagen.h"
 #include "video/superficie/lienzo.h"
 #include "video/color/color.h"
+#include "video/rect/rect.h"
 #include "video/representacion/representacion.h"
 #include "video/representacion/representacion_primitiva/representacion_primitiva.h"
 #include "video/representacion/representacion_primitiva/representacion_primitiva_caja/representacion_primitiva_caja.h"

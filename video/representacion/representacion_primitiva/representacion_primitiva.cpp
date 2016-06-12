@@ -25,7 +25,7 @@ Representacion_primitiva& Representacion_primitiva::operator=(const Representaci
 
 void Representacion_primitiva::recorte_a_posicion()
 {
-	SDL_Rect pos=acc_posicion();
+	Rect pos=acc_posicion();
 
 	//Ojo con esto: si no tiene valor lo ponemos a 1. Esto puede ser
 	//en cuyo caso se calcularía el ancho o alto como cero.
@@ -45,20 +45,20 @@ El primer parámetro es de lectura y escritura: en él se devolverá la caja si 
 dibujable.
 */
 
-bool Representacion_primitiva::determinar_caja_dibujo_final(SDL_Rect &p_caja, SDL_Rect const& p_posicion, SDL_Rect const& p_vista)
+bool Representacion_primitiva::determinar_caja_dibujo_final(Rect &p_caja, Rect const& p_posicion, Rect const& p_vista)
 {
 	//Usando los datos que tenemos calculamos el tamaño de la caja en 
 	//la que vamos a dibujar. Lo hemos hecho con papel cuadriculado y puro empirismo.
 
-	SDL_Rect pos=acc_posicion();
-	SDL_Rect rec=acc_recorte();
+	Rect pos=acc_posicion();
+	Rect rec=acc_recorte();
 
 	int x_caja=p_posicion.x+pos.x+rec.x-p_vista.x;
 	int y_caja=p_posicion.y+pos.y+rec.y-p_vista.y;
-	SDL_Rect p_caja_dibujo=DLibH::Herramientas_SDL::nuevo_sdl_rect(x_caja, y_caja, rec.w, rec.h);
+	Rect p_caja_dibujo=DLibH::Herramientas_SDL::nuevo_sdl_rect(x_caja, y_caja, rec.w, rec.h);
 
 	//Y ahora hacemos la intersección con la parte "dibujable":
-	if(!DLibH::Herramientas_SDL::rectangulos_superpuestos(p_caja_dibujo, p_posicion, p_caja))
+	if(!p_caja_dibujo.es_en_colision_con(p_posicion, p_caja))
 	{
 		//Si no saldría pasamos.
 		return false;

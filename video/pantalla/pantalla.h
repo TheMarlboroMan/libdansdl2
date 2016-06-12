@@ -30,7 +30,6 @@ class Pantalla
 	~Pantalla();
 
 	SDL_Window * acc_ventana() const {return this->ventana;}
-	SDL_Renderer * acc_renderer() const {return this->renderer;}
 	unsigned int acc_volcados() const {return this->volcados;}
 	unsigned int acc_w() const {return w;}
 	unsigned int acc_h() const {return h;}
@@ -51,18 +50,17 @@ class Pantalla
 
 //	void preparar_para_camara(Camara const&);
 	void establecer_clip_para_camara(Camara const&);
-	void establecer_clip(SDL_Rect);
+	void establecer_clip(Rect);
 	void reiniciar_clip_completo();
-	const SDL_Rect acc_simulacro_caja() {return this->simulacro_caja;}
+	const Rect& acc_simulacro_caja() {return this->simulacro_caja;}
 
 	private:
 
 	//Propiedades...	
 
 	SDL_Window * ventana;
-	SDL_Renderer * renderer;
 	SDL_GLContext context;
-	SDL_Rect simulacro_caja; //El simulacro de caja es un rectángulo con las medidas de la pantalla, para controlar lo que se muestra o no.
+	Rect simulacro_caja; //El simulacro de caja es un rectángulo con las medidas de la pantalla, para controlar lo que se muestra o no.
 	unsigned int volcados;	//Volcados desde el último flipe.
 
 	int w; //Ancho y alto de la ventana...
@@ -75,7 +73,6 @@ class Pantalla
 
 	//Métodos privados.
 
-	void cortar_caja_a_pantalla(SDL_Rect *);
 	void configurar(int);
 };
 

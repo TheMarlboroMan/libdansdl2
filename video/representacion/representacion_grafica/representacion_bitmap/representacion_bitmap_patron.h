@@ -26,19 +26,18 @@ class Representacion_bitmap_patron:
 					Representacion_bitmap_patron& operator=(const Representacion_bitmap_patron &);
 					virtual ~Representacion_bitmap_patron();
 
-	void				establecer_pincel(SDL_Rect);
-	SDL_Rect			acc_pincel() const {return pincel;}
-	virtual SDL_Rect		obtener_caja_clip() const {return caja_clip;}
+	void				establecer_pincel(Rect);
+	Rect			acc_pincel() const {return pincel;}
+	virtual Rect		obtener_caja_clip() const {return caja_clip;}
 
 	protected:
 
-	virtual void 			volcado(SDL_Renderer *);
-	virtual void 			volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double zoom);
+	virtual void 			volcado();
 
 	private:
 
-	SDL_Rect			pincel;
-	SDL_Rect			caja_clip;
+	Rect			pincel;
+	Rect			caja_clip;
 	int				pincel_x, pincel_y;
 };
 }

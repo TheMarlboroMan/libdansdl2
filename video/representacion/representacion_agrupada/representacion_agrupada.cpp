@@ -67,12 +67,12 @@ Sería posible hacerlo "acumulativo" sin muchos problemas de modo que los valore
 se sumen y resten dentro del rango 0-255.
 */
 
-void Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
+void Representacion_agrupada::volcado()
 {
 	std::vector<Representacion *>::iterator 	inicio=this->grupo.begin(),
 							fin=this->grupo.end();
 
-	SDL_Rect pos=acc_posicion();
+	Rect pos=acc_posicion();
 	int px=pos.x, py=pos.y;
 	unsigned int alpha_p=acc_alpha();
 	auto modo_blend_p=acc_modo_blend();
@@ -104,56 +104,11 @@ void Representacion_agrupada::volcado(SDL_Renderer * p_renderer)
 		(*inicio)->desplazar(px, py);
 //		(*inicio)->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
-		(*inicio)->volcar(p_renderer);
-
-		(*inicio)->desplazar(-px, -py);
-		if(impone_alpha) (*inicio)->establecer_alpha(alpha_a);
-		if(impone_modo_blend) (*inicio)->establecer_modo_blend(modo_blend_a);
-//		(*inicio)->establecer_mod_color(mod_color_r_a, mod_color_g_a, mod_color_b_a);
-
-		++inicio;
-	}
-}
-
-void Representacion_agrupada::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_foco, const SDL_Rect& p_pos, double zoom)
-{
-	std::vector<Representacion *>::iterator 	inicio=this->grupo.begin(),
-							fin=this->grupo.end();
-
-	SDL_Rect pos=acc_posicion();
-	int px=pos.x, py=pos.y;
-	unsigned int alpha_p=acc_alpha();
-	auto modo_blend_p=acc_modo_blend();
-//	unsigned int mod_color_r=acc_mod_color_r();
-//	unsigned int mod_color_g=acc_mod_color_g();
-//	unsigned int mod_color_b=acc_mod_color_b();
-
-	unsigned int alpha_a=0;
-	auto modo_blend_a=Representacion::blends::BLEND_NADA;
-
-	while(inicio < fin)
-	{
-//		unsigned int mod_color_r_a=acc_mod_color_r();
-//		unsigned int mod_color_g_a=acc_mod_color_g();
-//		unsigned int mod_color_b_a=acc_mod_color_b();
-
-		if(impone_alpha) 
-		{
-			alpha_a=(*inicio)->acc_alpha();
-			(*inicio)->establecer_alpha(alpha_p);
-		}
-
-		if(impone_modo_blend)
-		{
-			modo_blend_a=(*inicio)->acc_modo_blend();
-			(*inicio)->establecer_modo_blend(modo_blend_p);
-		}
-
-		(*inicio)->desplazar(px, py);
-
-//		(*inicio)->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
-
-		(*inicio)->volcar(p_renderer, p_foco, p_pos, zoom);
+//TODO... Where's the screen?. We cannot do this right now. The screen is a neccesary parameter.
+//Maybe we could go with "volcado"... just for this, make it protected.
+//Or maybe we could just think it over a little bit better.
+//Or maybe we could get the screen as a parameter.
+//		(*inicio)->volcar();
 
 		(*inicio)->desplazar(-px, -py);
 		if(impone_alpha) (*inicio)->establecer_alpha(alpha_a);

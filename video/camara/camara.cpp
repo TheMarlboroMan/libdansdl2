@@ -2,7 +2,7 @@
 
 using namespace DLibV;
 
-Camara::Camara(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, unsigned int p_px, unsigned int p_py):
+Camara::Camara(int p_x, int p_y, unsigned int p_w, unsigned int p_h, unsigned int p_px, unsigned int p_py):
 	pos_x(p_px), pos_y(p_py),
 	/*con_clip(true),*/ limitada(false), limite_min_x(0), limite_min_y(0),
 	limite_max_x(0), limite_max_y(0), zoom(1.0)
@@ -26,7 +26,7 @@ void Camara::sincronizar_cajas()
 /*Mueve la posición a la que apunta la cámara en la pantalla. Se usan las
 coordenadas provistas.*/
 
-void Camara::enfocar_a(Sint16 p_x, Sint16 p_y)
+void Camara::enfocar_a(int p_x, int p_y)
 {
 	if(this->limitada)
 	{
@@ -38,8 +38,8 @@ void Camara::enfocar_a(Sint16 p_x, Sint16 p_y)
 			else if(fin > limite_max) blanco=limite_max-dimension;
 		};
 
-		if(caja_foco.w <= limite_max_x - limite_min_x) procesar(p_x, caja_foco.w, limite_min_x, limite_max_x, caja_foco.x);
-		if(caja_foco.h <= limite_max_y - limite_min_y) procesar(p_y, caja_foco.h, limite_min_y, limite_max_y, caja_foco.y);
+		if((int)caja_foco.w <= limite_max_x - limite_min_x) procesar(p_x, caja_foco.w, limite_min_x, limite_max_x, caja_foco.x);
+		if((int)caja_foco.h <= limite_max_y - limite_min_y) procesar(p_y, caja_foco.h, limite_min_y, limite_max_y, caja_foco.y);
 	}
 	else
 	{
@@ -53,7 +53,7 @@ void Camara::enfocar_a(Sint16 p_x, Sint16 p_y)
 /*Mueve la posición a la que apunta la cámara sumando las cantidades provistas
 en los parámetros.*/
 
-void Camara::movimiento_relativo(Sint16 p_x, Sint16 p_y)
+void Camara::movimiento_relativo(int p_x, int p_y)
 {
 	this->enfocar_a(this->caja_foco.x+p_x, this->caja_foco.y+p_y);
 }
@@ -61,7 +61,7 @@ void Camara::movimiento_relativo(Sint16 p_x, Sint16 p_y)
 /*Establece los límites a los que la cámara puede apuntar: es decir, los límites
 máximos para la cámara dentro del "mundo".*/
 
-void Camara::establecer_limites(Sint16 p_min_limite_x, Sint16 p_min_limite_y, Sint16 p_max_limite_x, Sint16 p_max_limite_y)
+void Camara::establecer_limites(int p_min_limite_x, int p_min_limite_y, int p_max_limite_x, int p_max_limite_y)
 {
 	this->limitada=true;
 //	this->limite_max_x=p_max_limite_x-this->caja_foco.w;

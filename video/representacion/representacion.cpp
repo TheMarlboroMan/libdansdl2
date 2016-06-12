@@ -49,7 +49,7 @@ void Representacion::establecer_posicion(int p_x, int p_y, int p_w, int p_h, int
 	if(p_flags & FRECT_H && p_h != -1) this->posicion.h=p_h;
 }
 
-void Representacion::reiniciar_rect(SDL_Rect& r)
+void Representacion::reiniciar_rect(Rect& r)
 {
 	r.x=0;
 	r.y=0;
@@ -73,12 +73,12 @@ void Representacion::reiniciar_recorte()
 	reiniciar_rect(recorte);
 }
 
-void Representacion::establecer_posicion(SDL_Rect p_caja)
+void Representacion::establecer_posicion(Rect p_caja)
 {
 	posicion=p_caja;
 }
 
-void Representacion::establecer_recorte(SDL_Rect p_caja)
+void Representacion::establecer_recorte(Rect p_caja)
 {
 	recorte=p_caja;
 }
@@ -91,44 +91,20 @@ void Representacion::establecer_recorte(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint
 	if(p_flags & FRECT_H) this->recorte.h=p_h;
 }
 
-//Se pasa el rectángulo de pantalla... Básicamente se comprueba si está dentro. Estática o no.
-void Representacion::volcar(SDL_Renderer * renderer, const SDL_Rect& p_pant)
-{
-	if(!visible) return;
-	if(!en_toma(p_pant)) return;
-	this->volcar(renderer);
-}
-
-//Explícito, con cámara... LLama al de abajo pero es más cómodo.
-void Representacion::volcar(SDL_Renderer * renderer, const Camara& p_camara)
-{
-	if(!visible) return;
-	this->volcado(renderer, p_camara.acc_caja_foco(), p_camara.acc_caja_pos(), p_camara.acc_zoom());
-}
-
 //Explícitos, con pantalla...
+//TODO... There's no need for a screen anymore I guess...
+//TODO: How do we render to a different screen?.
 void Representacion::volcar(const Pantalla& p_pantalla, const Camara& p_camara)
 {
 	if(!visible) return;
-	this->volcado(p_pantalla.acc_renderer(), p_camara.acc_caja_foco(), p_camara.acc_caja_pos(), p_camara.acc_zoom() ); //, p_camara.acc_desp_x(), p_camara.acc_desp_y());
+	this->volcado();
 }
 
+//TODO... There's no need for a screen anymore I guess...
 void Representacion::volcar(const Pantalla& p_pantalla)
 {
 	if(!visible) return;
-	this->volcado(p_pantalla.acc_renderer());
-}
-
-void Representacion::volcar(SDL_Renderer * renderer)
-{
-	if(!visible) return;
-	this->volcado(renderer);
-}
-
-void Representacion::volcar(SDL_Renderer * renderer, const SDL_Rect& p_foco, const SDL_Rect& p_posicion, double zoom)
-{
-	if(!visible) return;
-	this->volcado(renderer, p_foco, p_posicion, zoom);
+	this->volcado();
 }
 
 //Se usa para darle un volumen a la posición, que de por si no tiene.
@@ -142,7 +118,7 @@ void Representacion::establecer_dimensiones_posicion_por_recorte()
 	this->posicion.h=this->recorte.h;
 }
 
-void Representacion::procesar_zoom(SDL_Rect& pos, const SDL_Rect& p_posicion, const SDL_Rect& p_enfoque)
+void Representacion::procesar_zoom(Rect& pos, const Rect& p_posicion, const Rect& p_enfoque)
 {
 	float fx=(float) p_posicion.w / (float) p_enfoque.w;
 	float fy=(float) p_posicion.h / (float) p_enfoque.h;
@@ -153,7 +129,7 @@ void Representacion::procesar_zoom(SDL_Rect& pos, const SDL_Rect& p_posicion, co
 	pos.y*=fy;
 }
 
-void Representacion::procesar_zoom(SDL_Rect& pos, double zoom)
+void Representacion::procesar_zoom(Rect& pos, double zoom)
 {
 	if(zoom==1.0) return;
 

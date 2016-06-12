@@ -18,6 +18,7 @@ class Representacion_primitiva:public Representacion
 	public:
 
 	struct punto{int x, y;};
+
 			Representacion_primitiva(ColorRGBA);
 			Representacion_primitiva(const Representacion_primitiva&);
 			Representacion_primitiva& operator=(const Representacion_primitiva&);
@@ -32,7 +33,7 @@ class Representacion_primitiva:public Representacion
 	virtual void 	preparar_posicion()=0; //Este método es obligatorio implementarlo para decirle cómo de grande es la caja.
 
 	void 		preparar_color();
-	bool 		determinar_caja_dibujo_final(SDL_Rect &, SDL_Rect const&, SDL_Rect const&);
+	bool 		determinar_caja_dibujo_final(Rect &, Rect const&, Rect const&);
 
 	private:
 

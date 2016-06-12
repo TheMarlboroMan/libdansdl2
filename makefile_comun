@@ -11,6 +11,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)superficie.o \
 	$(DIR_O)imagen.o \
 	$(DIR_O)color.o \
+	$(DIR_O)rect.o \
 	$(DIR_O)lienzo.o \
 	$(DIR_O)fuente_ttf.o \
 	$(DIR_O)representacion.o \
@@ -289,6 +290,11 @@ $(DIR_O)color.o: \
 $(DIR_CLASS_V)color/color.h \
 $(DIR_CLASS_V)color/color.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
+
+$(DIR_O)rect.o: \
+$(DIR_CLASS_V)rect/rect.h \
+$(DIR_CLASS_V)rect/rect.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
 
 $(DIR_O)gestor_mapa_static.o: \
 $(DIR_CLASS_H)templates/gestor_mapa_static.h \

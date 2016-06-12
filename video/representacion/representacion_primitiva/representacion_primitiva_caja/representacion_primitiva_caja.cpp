@@ -2,7 +2,7 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const SDL_Rect& p_pos, const ColorRGBA& c)
+Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const Rect& p_pos, const ColorRGBA& c)
 	:Representacion_primitiva(c)
 {
 	establecer_posicion(p_pos);
@@ -21,12 +21,13 @@ Representacion_primitiva_caja_base& Representacion_primitiva_caja_base::operator
 	return *this;
 }
 
-//TODO: Fuck the renderer parameter.
-void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
+void Representacion_primitiva_caja_base::volcado()
 {
-	const SDL_Rect& pos=acc_posicion();
+	const Rect& pos=acc_posicion();
 
+	//TODO; I hate this "punto" thing.
 	//TODO: This should be storeed.
+	//TODO: Narrowing.
 	std::vector<Representacion_primitiva::punto> puntos{ {pos.x, pos.y},
 		{pos.x+pos.w, pos.y}, 
 		{pos.x+pos.w, pos.y+pos.h}, 
@@ -44,11 +45,6 @@ void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer)
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void Representacion_primitiva_caja_base::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
-{
-	//TODO...
-}
-
 void Representacion_primitiva_caja_base::preparar_posicion()
 {
 	//No hace nada.
@@ -60,7 +56,7 @@ Representacion_primitiva_caja& Representacion_primitiva_caja::operator=(const Re
 	return *this;
 }
 
-Representacion_primitiva_caja::Representacion_primitiva_caja(const SDL_Rect& p_pos, const ColorRGBA& c)
+Representacion_primitiva_caja::Representacion_primitiva_caja(const Rect& p_pos, const ColorRGBA& c)
 	:Representacion_primitiva_caja_base(p_pos, c)
 {
 
@@ -78,7 +74,7 @@ Representacion_primitiva_caja_lineas& Representacion_primitiva_caja_lineas::oper
 	return *this;
 }
 
-Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const SDL_Rect& p_pos, const ColorRGBA& c)
+Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const Rect& p_pos, const ColorRGBA& c)
 	:Representacion_primitiva_caja_base(p_pos, c)
 {
 

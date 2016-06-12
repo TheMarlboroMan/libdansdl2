@@ -63,7 +63,6 @@ struct Representacion_grafica_transformacion
 	}
 };
 
-//TODO: Perhaps we could slowly exorcise SDL_Rects from here...
 class Representacion_grafica:public Representacion
 {
 	public:
@@ -74,9 +73,9 @@ class Representacion_grafica:public Representacion
 				Representacion_grafica& operator=(const Representacion_grafica &);
 	virtual 		~Representacion_grafica();
 
-	SDL_Rect 		copia_posicion_rotada() const;
+	Rect 		copia_posicion_rotada() const;
 	Textura * ref_textura() const {return textura;}
-	virtual SDL_Rect	obtener_caja_clip() const {return acc_posicion();}
+	virtual Rect		obtener_caja_clip() const {return acc_posicion();}
 	int			acc_w_textura() const {return textura->acc_w();}
 	int			acc_h_textura() const {return textura->acc_h();}			
 
@@ -91,7 +90,7 @@ class Representacion_grafica:public Representacion
 	bool 			es_transformada() const {return transformacion.es_transformacion();}
 
 	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
-	virtual void 		establecer_posicion(SDL_Rect);
+	virtual void 		establecer_posicion(Rect);
 
 	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;}
 
@@ -105,7 +104,7 @@ class Representacion_grafica:public Representacion
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
 
 	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
-	SDL_Rect 		posicion_rotada;
+	Rect	 		posicion_rotada;
 
 	protected:
 
@@ -114,8 +113,7 @@ class Representacion_grafica:public Representacion
 	void 			anular_textura() {textura=nullptr;}
 	void 			actualizar_caja_rotacion();
 
-	virtual void 		volcado(SDL_Renderer *);
-	virtual void 		volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double);
+	virtual void 		volcado();
 };
 
 } //Fin namespace DLibV

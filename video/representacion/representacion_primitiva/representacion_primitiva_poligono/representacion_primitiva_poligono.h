@@ -20,8 +20,7 @@ class Representacion_primitiva_poligono_base
 	virtual 			~Representacion_primitiva_poligono_base() {}
 	virtual bool 			es_rellena() const=0;
 
-	virtual void			volcado(SDL_Renderer *);
-	virtual void			volcado(SDL_Renderer *, const SDL_Rect&, const SDL_Rect&, double); 
+	virtual void			volcado();
 
 	protected:
 

@@ -61,7 +61,7 @@ void Representacion_primitiva_puntos::generar_posicion()
 	}
 }
 
-void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer)
+void Representacion_primitiva_puntos::volcado()
 {
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
@@ -70,11 +70,6 @@ void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer)
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_POINTS, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-void Representacion_primitiva_puntos::volcado(SDL_Renderer * p_renderer, const SDL_Rect& p_enfoque, const SDL_Rect& p_posicion, double zoom)
-{
-	//TODO...
 }
 
 void Representacion_primitiva_puntos::preparar_posicion()
