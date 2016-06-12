@@ -6,8 +6,17 @@ using namespace DLibV;
 
 extern DLibH::Log_base LOG;
 
+
 Representacion_grafica::Representacion_grafica()
-	:Representacion(), textura(nullptr), preparada(false)
+	:Representacion(), textura(nullptr)
+{
+	this->reiniciar_posicion();
+	this->reiniciar_recorte();
+	actualizar_caja_rotacion();
+}
+
+Representacion_grafica::Representacion_grafica(ColorRGBA color)
+	:Representacion(color), textura(nullptr)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
@@ -15,7 +24,7 @@ Representacion_grafica::Representacion_grafica()
 }
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
-	:Representacion(o) ,textura(o.textura), preparada(o.preparada),
+	:Representacion(o) ,textura(o.textura),
 	posicion_rotada(o.posicion_rotada)
 {
 
@@ -25,7 +34,6 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 {
 	Representacion::operator=(o);
 	textura=o.textura;
-	preparada=o.preparada;
 	posicion_rotada=o.posicion_rotada;
 
 	return *this;
@@ -248,8 +256,11 @@ SDL_Rect Representacion_grafica::copia_posicion_rotada() const
 	return SDL_Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
 }
 
+//TODO: Does this affect us???
+/*
 void Representacion_grafica::preparar(const SDL_Renderer * renderer)
 {
 	actualizar_caja_rotacion();
 	marcar_como_preparada();
 }
+*/

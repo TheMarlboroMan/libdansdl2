@@ -69,11 +69,11 @@ class Representacion_grafica:public Representacion
 	public:
 
 				Representacion_grafica();
+				Representacion_grafica(ColorRGBA);
 				Representacion_grafica(const Representacion_grafica&);
 				Representacion_grafica& operator=(const Representacion_grafica &);
 	virtual 		~Representacion_grafica();
 
-	bool 			es_preparada() const {return this->preparada;}
 	SDL_Rect 		copia_posicion_rotada() const;
 	Textura * ref_textura() const {return textura;}
 	virtual SDL_Rect	obtener_caja_clip() const {return acc_posicion();}
@@ -96,7 +96,6 @@ class Representacion_grafica:public Representacion
 	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;}
 
 	virtual void 		establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
-	virtual void		preparar(const SDL_Renderer * renderer);
 
 	private:
 
@@ -104,16 +103,12 @@ class Representacion_grafica:public Representacion
 
 	//TODO: Change this for a reference. Or not: we wouldn't be able to change textures.
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
-	mutable bool preparada; //Indica si la pantalla puede volcar o tiene que hacer una preparación propia.
 
 	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
 	SDL_Rect 		posicion_rotada;
 
 	protected:
 
-	//TODO: Maybe this is all obsolete???.
-	void 			marcar_como_preparada() {this->preparada=true;}
-	void 			marcar_como_no_preparada() {this->preparada=false;}
 	void 			recorte_a_medidas_textura();
 	void 			liberar_textura();
 	void 			anular_textura() {textura=nullptr;}

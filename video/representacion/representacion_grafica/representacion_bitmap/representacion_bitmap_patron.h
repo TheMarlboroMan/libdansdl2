@@ -29,7 +29,6 @@ class Representacion_bitmap_patron:
 	void				establecer_pincel(SDL_Rect);
 	SDL_Rect			acc_pincel() const {return pincel;}
 	virtual SDL_Rect		obtener_caja_clip() const {return caja_clip;}
-	virtual void 			preparar(const SDL_Renderer * renderer);
 
 	protected:
 

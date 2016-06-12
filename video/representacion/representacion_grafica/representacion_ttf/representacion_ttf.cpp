@@ -4,49 +4,29 @@ using namespace DLibV;
 
 extern DLibH::Log_base LOG;
 
-Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, SDL_Color color, const std::string& texto)
-	:Representacion_grafica(), 
+Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color, const std::string& texto)
+	:Representacion_grafica(color), 
 	fuente(&fuente),
-	cadena(texto),
-	color(color)
+	cadena(texto)
 {
-
+	generar_textura();
 }
 
-Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, Uint8 r, Uint8 g, Uint8 b, Uint8 a, const std::string& texto)
-	:Representacion_grafica(), 
+//TODO: Fuck SDL_Color.
+Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color)
+	:Representacion_grafica(color), 
 	fuente(&fuente),
-	cadena(texto),
-	color{r, g, b, a}
+	cadena("")
 {
-
-}
-
-Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, SDL_Color color)
-	:Representacion_grafica(), 
-	fuente(&fuente),
-	cadena(""),
-	color(color)
-{
-
-}
-
-Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-	:Representacion_grafica(), 
-	fuente(&fuente),
-	cadena(""),
-	color{r, g, b, a}
-{
-
+	generar_textura();
 }
 
 Representacion_TTF::Representacion_TTF(const Representacion_TTF& o)
 	:Representacion_grafica(o), 
 	fuente(o.fuente),
-	cadena(o.cadena),
-	color(o.color)
+	cadena(o.cadena)
 {
-	marcar_como_no_preparada();
+	generar_textura();
 }
 
 Representacion_TTF::~Representacion_TTF()
@@ -59,14 +39,13 @@ Representacion_TTF& Representacion_TTF::operator=(const Representacion_TTF& o)
 	Representacion_grafica::operator=(o);
 	fuente=o.fuente;
 	cadena=o.cadena;
-	color=o.color;
-	marcar_como_no_preparada();
+	generar_textura();
 
 	return *this;
 }
 
-void Representacion_TTF::preparar(const SDL_Renderer * renderer)
-{
+void Representacion_TTF::generar_textura()
+{	
 	//Si el texto tiene newlines no va a funcionar: tenemos que montar
 	//nosotros el código. Empezamos por partir el texto en varias líneas...
 	std::vector<std::string> lineas=DLibH::Herramientas::explotar(cadena, '\n');
@@ -81,15 +60,16 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 	}
 
 	total_h=(lineas.size() * h);
-;// TTF_FontLineSkip(const_cast<TTF_Font*>(fuente->acc_fuente()))) + h;
+	// TTF_FontLineSkip(const_cast<TTF_Font*>(fuente->acc_fuente()))) + h;
 	
 	//Podemos preparar una superficie de ese tamaño... Vamos a sacar una
 	//superficie primero para obtener el formato... Es una mierda pero
 	//me vale.
+	auto col=acc_rgba();
+	SDL_Color sdl_col{(Uint8)colorif(col.r), (Uint8)colorif(col.g), (Uint8)colorif(col.b)};
+
 	SDL_Surface * s=TTF_RenderUTF8_Blended
-			(const_cast<TTF_Font*>(fuente->acc_fuente()), 
-			"a",
-			color);
+			(const_cast<TTF_Font*>(fuente->acc_fuente()), "a", sdl_col);
 	std::unique_ptr<DLibV::Lienzo> lienzo(DLibV::Lienzo::generar_nuevo(w, total_h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
 
@@ -103,9 +83,7 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 
 		//TODO: Hay varios tipos de "blend". Podemos ponerlos aquí.
 		SDL_Surface * s=TTF_RenderUTF8_Blended
-			(const_cast<TTF_Font*>(fuente->acc_fuente()), 
-			cad,
-			color);	
+			(const_cast<TTF_Font*>(fuente->acc_fuente()), cad, sdl_col);	
 
 		if(!s)
 		{
@@ -114,31 +92,25 @@ void Representacion_TTF::preparar(const SDL_Renderer * renderer)
 		else
 		{
 			SDL_Rect pos{0, y, 0, 0}; 
-			SDL_BlitSurface(s, NULL, lienzo->acc_superficie(), &pos);
+			SDL_BlitSurface(s, nullptr, lienzo->acc_superficie(), &pos);
 			SDL_FreeSurface(s);
 			y+=h;
 		}		
 	}
 
-//TODO...
-/*
-	DLibV::Textura * tex=new DLibV::Textura(renderer, lienzo->acc_superficie());
-
+	DLibV::Textura * tex=new DLibV::Textura(*lienzo);
 	establecer_textura(tex);
-	establecer_modo_blend(Representacion::BLEND_ALPHA);
+	establecer_modo_blend(Representacion::blends::BLEND_ALPHA);
 
 	establecer_recorte(0,0, tex->acc_w(), tex->acc_h());
 	establecer_posicion(0, 0, tex->acc_w(), tex->acc_h(), FRECT_W|FRECT_H);	//Esto debemos llamarlo aquí, de lo contrario se queda con ancho y alto 0, dando problemas con las cámaras.
-
-	Representacion_grafica::preparar(renderer);
-*/
 }
 
 void Representacion_TTF::modificar_fuente(const Fuente_TTF& f)
 {
 	fuente=&f;
 	liberar_textura();
-	marcar_como_no_preparada();
+	generar_textura();
 }
 
 void Representacion_TTF::asignar(const char c)
@@ -165,7 +137,7 @@ void Representacion_TTF::interno_asignar(const std::string& c)
 	{
 		cadena=c;
 		liberar_textura();
-		marcar_como_no_preparada();
+		generar_textura();
 	}
 }
 

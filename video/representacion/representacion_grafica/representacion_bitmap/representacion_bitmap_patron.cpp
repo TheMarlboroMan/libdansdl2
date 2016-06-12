@@ -67,9 +67,11 @@ void Representacion_bitmap_patron::volcado(SDL_Renderer * p_renderer, const SDL_
 * que se restaura al final de la llamada. Esa copia se usará como caja de clip.
 */
 
+/*
 void Representacion_bitmap_patron::preparar(const SDL_Renderer * renderer)
 {
 	//Super hack..
 	establecer_posicion(pincel_x, pincel_y, pincel.w, pincel.h);
 	Representacion_grafica::preparar(renderer);
 }
+*/
