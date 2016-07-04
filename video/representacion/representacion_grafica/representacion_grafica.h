@@ -100,6 +100,7 @@ class Representacion_grafica:public Representacion
 	private:
 
 	Representacion_grafica_transformacion transformacion;
+	void			calcular_puntos();
 
 	//TODO: Change this for a reference. Or not: we wouldn't be able to change textures.
 	Textura * textura;	//Este es el puntero a su superficie de memoria.
@@ -107,6 +108,12 @@ class Representacion_grafica:public Representacion
 	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
 	Rect	 		posicion_rotada;
 	struct 	{int w, h;}	pincel;
+	struct puntotex {GLfloat x, y;};
+	struct punto{int x, y;};
+
+	std::vector<punto>	puntos;
+	std::vector<puntotex>	final_ptex;
+
 
 	protected:
 

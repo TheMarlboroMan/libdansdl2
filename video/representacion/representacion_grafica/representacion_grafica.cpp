@@ -55,15 +55,6 @@ void Representacion_grafica::recorte_a_medidas_textura()
 void Representacion_grafica::volcado()
 {
 	const Rect& pos=acc_posicion();
-	const Rect& recor=acc_recorte();
-	
-	if(!pincel.w) pincel.w=pos.w;
-	if(!pincel.h) pincel.h=pos.h;
-
-
-	//TODO: This is a fucking disaster. Store it somewhere when it's set.
-	float w_tex=textura->acc_w(), h_tex=textura->acc_h();
-	struct puntotex {GLfloat x, y;};
 
 	glMatrixMode(GL_MODELVIEW);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
@@ -91,57 +82,9 @@ void Representacion_grafica::volcado()
 		
 	glTranslatef(pos.x, pos.y, 0.f);
 
-
-	struct punto{int x, y;};
-
-	//TODO: This should be stored when set.
-	//TODO: When dealing with "pincel" we might as well use stenciling.
-	//TODO: Instead of stenciling, we can calculate the values here with a little more effort.
-	std::vector<punto> puntos;
-	std::vector<puntotex> final_ptex;
-	for(unsigned int x=0; x < pos.w; x+=pincel.w)
+	if(!puntos.size() || final_ptex.size())
 	{
-		for(unsigned int y=0; y < pos.h; y+=pincel.h)
-		{
-
-			//TODO: Control real excess here.
-
-			puntos.push_back({x, y});
-			puntos.push_back({x+pincel.w, y});
-			puntos.push_back({x+pincel.w, y+pincel.h});
-			puntos.push_back({x, y+pincel.h});
-
-			//Samplear los puntos centrales. De momento no buscamos el centro del texel.
-			puntotex ptex[]={
-				{(GLfloat)recor.x, 			(GLfloat)recor.y},
-				{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y},
-				{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y+(GLfloat)recor.h},
-				{(GLfloat)recor.x, 			(GLfloat)recor.y+(GLfloat)recor.h}};
-
-			//Invertir y resamplear puntos...
-			if(transformacion.invertir_horizontal)
-			{
-				std::swap(ptex[0].x, ptex[1].x);
-				std::swap(ptex[2].x, ptex[3].x);
-				for(auto &p: ptex) p.x-=0.5f;
-			}
-
-			//Invertir y resamplear puntos...
-			if(transformacion.invertir_vertical)
-			{
-				std::swap(ptex[0].y, ptex[2].y);
-				std::swap(ptex[1].y, ptex[3].y); 
-				for(auto &p: ptex) p.y-=0.5f;
-			}
-
-			for(auto &p : ptex)
-			{
-				p.x/=w_tex; 
-				p.y/=h_tex;
-			}
-
-			final_ptex.insert(std::end(final_ptex), ptex, ptex+4);
-		}
+		calcular_puntos();
 	}
 
 	if(transformacion.angulo_rotacion != 0.f)
@@ -177,6 +120,79 @@ void Representacion_grafica::volcado()
 		glTranslatef(-transformacion.x_centro_rotacion, -transformacion.y_centro_rotacion, 0.f);
 	}
 	glTranslatef(-pos.x, -pos.y, 0.f);
+}
+
+//Calcula las posiciones de los vértices y los puntos de las texturas.
+//Dado que las posiciones se calculan a partir de 0.0 no debería haber problemas
+//al cambiar la posición.
+//Los valores calculados se almacenan.
+
+void Representacion_grafica::calcular_puntos()
+{
+	const Rect& pos=acc_posicion();
+	const Rect& recor=acc_recorte();
+	
+	if(!pincel.w) pincel.w=pos.w;
+	if(!pincel.h) pincel.h=pos.h;
+
+	float w_tex=textura->acc_w(), h_tex=textura->acc_h();
+
+	puntos.clear();
+	final_ptex.clear();
+
+	int itx=0;
+
+	for(unsigned int x=0; x < pos.w; x+=pincel.w)
+	{
+		int ity=0;
+		const unsigned int dif_x=x+pincel.w > pos.w ? pos.w - (itx * pincel.w)  : pincel.w;
+
+		for(unsigned int y=0; y < pos.h; y+=pincel.h)
+		{
+			const unsigned int dif_y=y+pincel.h > pos.h ? pos.w - (ity * pincel.h) : pincel.h;
+
+			punto pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
+
+			//Samplear los puntos centrales de las cuatro esquinas. De momento no buscamos el centro del texel. 
+			//El cálculo de ptex_fx y ptex_fy está sacando la proporción entre el pincel y la cantidad de espacio
+			//que queda por dibujar (una simple regla de tres). La finalidad es mapear sólo el trozo de textura
+			//necesario.
+ 
+			GLfloat ptex_x=recor.x, ptex_y=recor.y, ptex_fx=ptex_x+( (dif_x * recor.w) / pincel.w), ptex_fy=ptex_y+( (dif_y * recor.h) / pincel.h);
+
+			puntotex ptex[]={
+				{ptex_x,	ptex_y},
+				{ptex_fx,	ptex_y},
+				{ptex_fx,	ptex_fy},
+				{ptex_x,	ptex_fy}};
+
+			//Invertir y resamplear puntos...
+			if(transformacion.invertir_horizontal)
+			{
+				std::swap(ptex[0].x, ptex[1].x);
+				std::swap(ptex[2].x, ptex[3].x);
+				for(auto &p: ptex) p.x-=0.5f;
+			}
+
+			if(transformacion.invertir_vertical)
+			{
+				std::swap(ptex[0].y, ptex[2].y);
+				std::swap(ptex[1].y, ptex[3].y); 
+				for(auto &p: ptex) p.y-=0.5f;
+			}
+
+			for(auto &p : ptex)
+			{
+				p.x/=w_tex; 
+				p.y/=h_tex;
+			}
+
+			final_ptex.insert(std::end(final_ptex), ptex, ptex+4);
+			puntos.insert(std::end(puntos), pts, pts+4);
+			++ity;
+		}
+		++itx;
+	}
 }
 
 //Eso sólo deberíamos llamarlo en aquellas para las cuales hemos creado una
