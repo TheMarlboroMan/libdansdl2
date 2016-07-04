@@ -22,11 +22,11 @@ class Representacion_primitiva_linea:public Representacion_primitiva
 	protected:
 
 	void				generar_posicion();
-	void 				preparar_posicion();
 
 	private:
 
 	std::array<Representacion_primitiva::punto, 2>	puntos;
+	Representacion_primitiva::punto			original;
 };
 
 }

@@ -29,6 +29,7 @@ class Representacion_primitiva_poligono_base
 	private:
 
 	std::vector<Representacion_primitiva::punto>		puntos;
+	Representacion_primitiva::punto				original;	//Guarda el primer punto original sin estar en 0.0.
 };
 
 class Representacion_primitiva_poligono

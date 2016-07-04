@@ -25,7 +25,8 @@ Representacion_grafica::Representacion_grafica(ColorRGBA color)
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
 	:Representacion(o) ,textura(o.textura),
-	posicion_rotada(o.posicion_rotada), pincel(o.pincel)
+	posicion_rotada(o.posicion_rotada), pincel(o.pincel), puntos(o.puntos), 
+	final_ptex(o.final_ptex)
 {
 
 }
@@ -36,6 +37,8 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 	textura=o.textura;
 	posicion_rotada=o.posicion_rotada;
 	pincel=o.pincel;
+	puntos=o.puntos;
+	final_ptex=o.final_ptex;
 
 	return *this;
 }
@@ -142,14 +145,16 @@ void Representacion_grafica::calcular_puntos()
 
 	int itx=0;
 
-	for(unsigned int x=0; x < pos.w; x+=pincel.w)
+//TODO: What the hell is dancing????.
+
+	for(int x=0; x < (int)pos.w; x+=pincel.w)
 	{
 		int ity=0;
-		const unsigned int dif_x=x+pincel.w > pos.w ? pos.w - (itx * pincel.w)  : pincel.w;
+		const int dif_x=x+pincel.w > (int)pos.w ? pos.w - (itx * pincel.w)  : pincel.w;
 
-		for(unsigned int y=0; y < pos.h; y+=pincel.h)
+		for(int y=0; y < (int)pos.h; y+=pincel.h)
 		{
-			const unsigned int dif_y=y+pincel.h > pos.h ? pos.w - (ity * pincel.h) : pincel.h;
+			const int dif_y=y+pincel.h > (int)pos.h ? pos.w - (ity * pincel.h) : pincel.h;
 
 			punto pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
 
@@ -158,7 +163,10 @@ void Representacion_grafica::calcular_puntos()
 			//que queda por dibujar (una simple regla de tres). La finalidad es mapear sólo el trozo de textura
 			//necesario.
  
-			GLfloat ptex_x=recor.x, ptex_y=recor.y, ptex_fx=ptex_x+( (dif_x * recor.w) / pincel.w), ptex_fy=ptex_y+( (dif_y * recor.h) / pincel.h);
+			GLfloat ptex_x=(GLfloat)recor.x,
+				ptex_y=(GLfloat)recor.y, 
+				ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)pincel.w), 
+				ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)pincel.h);
 
 			puntotex ptex[]={
 				{ptex_x,	ptex_y},

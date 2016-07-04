@@ -2,86 +2,48 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const Rect& p_pos, const ColorRGBA& c)
-	:Representacion_primitiva(c)
-{
-	establecer_posicion(p_pos);
-	this->preparar_posicion();
-}
-
-Representacion_primitiva_caja_base::Representacion_primitiva_caja_base(const Representacion_primitiva_caja_base& p_otra)
-	:Representacion_primitiva(p_otra)
+Representacion_primitiva_caja::Representacion_primitiva_caja(const Rect& p_pos, const ColorRGBA& c)
+	:Representacion_primitiva_poligono({ 
+		{p_pos.x, p_pos.y}, 
+		{p_pos.x+(int)p_pos.w, p_pos.y}, 
+		{p_pos.x+(int)p_pos.w, p_pos.y+(int)p_pos.h}, 
+		{p_pos.x, p_pos.y+(int)p_pos.h}}, 
+		c)
 {
 
 }
-
-Representacion_primitiva_caja_base& Representacion_primitiva_caja_base::operator=(const Representacion_primitiva_caja_base& p_otro)
-{
-	Representacion_primitiva::operator=(p_otro);
-	return *this;
-}
-
-void Representacion_primitiva_caja_base::volcado()
-{
-	const Rect& pos=acc_posicion();
-
-	//TODO; I hate this "punto" thing.
-	//TODO: This should be storeed.
-	//TODO: Narrowing.
-	std::vector<Representacion_primitiva::punto> puntos{ {pos.x, pos.y},
-		{pos.x+pos.w, pos.y}, 
-		{pos.x+pos.w, pos.y+pos.h}, 
-		{pos.x, pos.y+pos.h} };
-
-	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	preparar_color();
-	glMatrixMode(GL_MODELVIEW);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_INT, 0, puntos.data());
-	glDrawArrays(GL_QUADS, 0, 4);
-	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
-void Representacion_primitiva_caja_base::preparar_posicion()
-{
-	//No hace nada.
-}	
 
 Representacion_primitiva_caja& Representacion_primitiva_caja::operator=(const Representacion_primitiva_caja& p_otro)
 {
-	Representacion_primitiva_caja_base::operator=(p_otro);
+	Representacion_primitiva_poligono::operator=(p_otro);
 	return *this;
 }
 
-Representacion_primitiva_caja::Representacion_primitiva_caja(const Rect& p_pos, const ColorRGBA& c)
-	:Representacion_primitiva_caja_base(p_pos, c)
+Representacion_primitiva_caja::Representacion_primitiva_caja(const Representacion_primitiva_caja& p_otra)
+	:Representacion_primitiva_poligono(p_otra) 
 {
 
 }
 
-Representacion_primitiva_caja::Representacion_primitiva_caja(const Representacion_primitiva_caja& p_otra)
-	:Representacion_primitiva_caja_base(p_otra) 
+Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const Rect& p_pos, const ColorRGBA& c)
+	:Representacion_primitiva_poligono_lineas({ 
+		{p_pos.x, p_pos.y}, 
+		{p_pos.x+(int)p_pos.w, p_pos.y}, 
+		{p_pos.x+(int)p_pos.w, p_pos.y+(int)p_pos.h}, 
+		{p_pos.x, p_pos.y+(int)p_pos.h}}, 
+		c)
 {
 
 }
 
 Representacion_primitiva_caja_lineas& Representacion_primitiva_caja_lineas::operator=(const Representacion_primitiva_caja_lineas& p_otro)
 {
-	Representacion_primitiva_caja_base::operator=(p_otro);
+	Representacion_primitiva_poligono_lineas::operator=(p_otro);
 	return *this;
 }
 
-Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const Rect& p_pos, const ColorRGBA& c)
-	:Representacion_primitiva_caja_base(p_pos, c)
-{
-
-}
-
 Representacion_primitiva_caja_lineas::Representacion_primitiva_caja_lineas(const Representacion_primitiva_caja_lineas& p_otra)
-	:Representacion_primitiva_caja_base(p_otra) 
+	:Representacion_primitiva_poligono_lineas(p_otra) 
 {
 
 }

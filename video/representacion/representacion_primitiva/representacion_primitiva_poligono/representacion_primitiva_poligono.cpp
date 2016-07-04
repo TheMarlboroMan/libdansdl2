@@ -4,14 +4,21 @@
 using namespace DLibV;
 
 Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<punto>& pt, ColorRGBA c)
-	:Representacion_primitiva(c), puntos(pt)
+	:Representacion_primitiva(c), puntos(pt), original(pt[0])
 { 
+	//Guardarlos de forma que el primero sea 0.0.
+	for(auto& pt : puntos)
+	{
+		pt.x-=original.x;
+		pt.y-=original.y;
+	}	
+
 	//Calcular el rectángulo de posición para clip de cámara...
 	this->preparar_posicion();
 }
 
 Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const Representacion_primitiva_poligono_base& p_otra)
-	:Representacion_primitiva(p_otra)
+	:Representacion_primitiva(p_otra), puntos(p_otra.puntos), original(p_otra.original)
 {
 
 }
@@ -19,29 +26,42 @@ Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(c
 Representacion_primitiva_poligono_base& Representacion_primitiva_poligono_base::operator=(const Representacion_primitiva_poligono_base& p_otro)
 {
 	Representacion_primitiva::operator=(p_otro);
+	puntos=p_otro.puntos;
+	original=p_otro.original;
 	return *this;
 }
 
 void Representacion_primitiva_poligono_base::volcado()
 {
+	const auto& pos=acc_posicion();
+
 	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
 
+	glTranslatef(pos.x, pos.y, 0.f);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_POLYGON, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glTranslatef(-pos.x, -pos.y, 0.f);
 }
 
 void Representacion_primitiva_poligono_base::preparar_posicion()
 {
+	//TODO: Check this...
 	int x=puntos[0].x, y=puntos[0].y, maxx=x, maxy=y;
 
-	for(const auto& p : puntos)
+	for(auto p : puntos)
 	{
+		//Añadir el valor original, porque estos puntos empiezan en 0.0.
+		p.x+=original.x;
+		p.y+=original.y;
+
 		if(p.x < x) x=p.x;
 		else if(p.x > maxx) maxx=p.x;
 

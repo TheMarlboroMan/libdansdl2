@@ -30,8 +30,6 @@ class Representacion_primitiva:public Representacion
 
 	protected:
 	
-	virtual void 	preparar_posicion()=0; //Este método es obligatorio implementarlo para decirle cómo de grande es la caja.
-
 	void 		preparar_color();
 	bool 		determinar_caja_dibujo_final(Rect &, Rect const&, Rect const&);
 

@@ -25,12 +25,12 @@ class Representacion_primitiva_puntos:
 	protected:
 
 	void 					generar_posicion();
-	void 					preparar_posicion();
 
 
 	private:
 
 	std::vector<Representacion_primitiva::punto>			puntos;
+	Representacion_primitiva::punto					original;
 };
 
 }
