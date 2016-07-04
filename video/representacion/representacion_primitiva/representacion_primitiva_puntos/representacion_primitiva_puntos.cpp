@@ -83,5 +83,5 @@ void Representacion_primitiva_puntos::volcado()
 	glDrawArrays(GL_POINTS, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	glTranslatef(-pos.x, -pos.y, 0.f);
+	glLoadIdentity();
 }

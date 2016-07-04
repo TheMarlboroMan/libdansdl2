@@ -48,7 +48,7 @@ void Representacion_primitiva_poligono_base::volcado()
 	glDrawArrays(GL_POLYGON, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	glTranslatef(-pos.x, -pos.y, 0.f);
+	glLoadIdentity();
 }
 
 void Representacion_primitiva_poligono_base::preparar_posicion()

@@ -117,12 +117,15 @@ void Representacion_grafica::volcado()
 	glDisable(GL_TEXTURE_2D);
 
 	//Restaurar el estado de opengl.
-	if(transformacion.angulo_rotacion!=0.f)
-	{
-		glRotatef(-transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
-		glTranslatef(-transformacion.x_centro_rotacion, -transformacion.y_centro_rotacion, 0.f);
-	}
-	glTranslatef(-pos.x, -pos.y, 0.f);
+	//This caused problems... Small movements a pixel wide on objects
+	//drawn after this.
+//	if(transformacion.angulo_rotacion!=0.f)
+//	{
+//		glRotatef(-transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
+//		glTranslatef(-transformacion.x_centro_rotacion, -transformacion.y_centro_rotacion, 0.f);
+//	}
+//	glTranslatef(-pos.x, -pos.y, 0.f);
+	glLoadIdentity();
 }
 
 //Calcula las posiciones de los vértices y los puntos de las texturas.

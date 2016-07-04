@@ -70,5 +70,5 @@ void Representacion_primitiva_linea::volcado()
 	glDrawArrays(GL_LINES, 0, 2);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	glTranslatef(-pos.x, -pos.y, 0.f);
+	glLoadIdentity();
 }
