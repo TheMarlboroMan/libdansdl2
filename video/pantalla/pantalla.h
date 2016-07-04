@@ -53,6 +53,8 @@ class Pantalla
 	void establecer_clip(Rect);
 	void reiniciar_clip_completo();
 	const Rect& acc_simulacro_caja() {return this->simulacro_caja;}
+	void do_stencil_test();
+	void end_stencil_test();
 
 	private:
 

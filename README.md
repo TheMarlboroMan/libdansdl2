@@ -3,6 +3,10 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
+- What about "establecer_posicion" on primitives?. Does it behave?. Should it?.
+	- It should move the origin and recalculate the position. 
+	- Width and height could be ignored or could scale the thing.
+	- Thus, establecer_posicion should be virtual and be reimplemented on these classes :(.
 - Add camera clipping using the stencil buffer.
 - Clear OLD functions with no use. Keep the interface simpler.
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
@@ -16,10 +20,6 @@ C++ Wrappers for SDL2 and OpenGL.
 - In the future, fork for OPENGL 1.4 and the rest.
 - Not libdansdl2 but fix the screen changes in the framework: they don't really work.
 - We could apply rotation to... everything. It should be easy enough now :D.
-- What about "establecer_posicion" on primitives?. Does it behave?. Should it?.
-	- It should move the origin and recalculate the position. 
-	- Width and height could be ignored or could scale the thing.
-	- Thus, establecer_posicion should be virtual :(.
 
 ## DONE:
 - Remove the need a return value from the rendering.

@@ -68,7 +68,7 @@ void Pantalla::configurar(int flags_ventana)
 		glViewport(0.f, 0.f, w, h);
 
 		//Establecer el modo a matriz de proyección y cargarla a 1.
-		glMatrixMode(GL_PROJECTION); 	
+		glMatrixMode(GL_PROJECTION); 
 		glLoadIdentity();
 
 		//Izquierda, derecha, abajo, arriba, cerca y lejos...
@@ -79,6 +79,10 @@ void Pantalla::configurar(int flags_ventana)
 		//Establecer el modo a matriz de proyección y cargarla a 1.
 		glMatrixMode(GL_MODELVIEW); 
 		glLoadIdentity();
+
+		//Esto realmente no hace clear de stencil sino establece el 
+		//valor inicial para cuando se haga clear en ese buffer.
+		glClearStencil(0);
 	}
 	else
 	{
@@ -92,6 +96,128 @@ void Pantalla::configurar(int flags_ventana)
 	this->simulacro_caja.h=h;
 	this->simulacro_caja.x=0;
 	this->simulacro_caja.y=0;
+}
+
+void Pantalla::do_stencil_test()
+{
+	struct punto{int x, y;};
+
+	//TODO: Test this and make it work.
+/*
+	//Limpiar los buffers de color y stencil.
+	//TODO: Maybe this????.
+	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glLoadIdentity();
+
+	 //Disable rendering to the color buffer: the stencil will not be drawn :).
+	//TODO... 
+//	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE ); 
+	//Start using the stencil 
+	glEnable(GL_STENCIL_TEST);
+
+	//Place a 1 where rendered 
+	glStencilFunc(GL_ALWAYS, 1, 1); 
+			
+	//Replace where rendered 
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE); 
+
+	//Render stencil
+
+	//TODO: This is not needed at all...
+	glColor4f(1.f, 1.f, 0.4f, 0.5f);
+	std::vector<punto> puntos{ {100,20}, {200, 20}, {200, 300}, {100, 300}};
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_INT, 0, puntos.data());
+	glDrawArrays(GL_POLYGON, 0, puntos.size());
+	glDisableClientState(GL_VERTEX_ARRAY); 
+
+	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ); 
+
+	//Where a 1 was not rendered 
+	glStencilFunc(GL_EQUAL, 1, 1 ); 	//GL_EQUAL, GL_ALWAYS, GL_NOTEQUAL
+	//Keep the pixel.
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	glLoadIdentity();
+
+	//RENDER SHIT.
+	glColor4f(1.f, 0.f, 0.0f, 1.f);
+	std::vector<punto> puntos2{ {10,50}, {400, 100}, {400, 300}, {10, 100}};
+
+	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_INT, 0, puntos2.data());
+	glDrawArrays(GL_POLYGON, 0, puntos2.size());
+	glDisableClientState(GL_VERTEX_ARRAY); 
+
+	//Finished using stencil
+	glDisable( GL_STENCIL_TEST );
+*/
+
+    //Clear color and stencil buffer
+    glClear( GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+    glLoadIdentity();
+
+    //Disable rendering to the color buffer
+//    glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
+
+    //Start using the stencil
+    glEnable( GL_STENCIL_TEST );
+
+    //Place a 1 where rendered
+    glStencilFunc( GL_ALWAYS, 1, 1 );
+
+    //Replace where rendered
+    glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
+
+	glColor4f(1.f, 1.f, 1.0f, 1.f);
+
+    //Render stencil triangle
+    glTranslatef( 0.f, 0.f, 0.f );
+    glRotatef( 45.f, 0.f, 0.f, 1.f );
+    glBegin( GL_TRIANGLES );
+        glVertex2f(           -0.f / 4.f, -h / 4.f );
+        glVertex2f(   w / 4.f,  h / 4.f );
+        glVertex2f(  -w / 4.f,  h / 4.f );
+    glEnd();
+
+    //Reenable color
+    glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+
+    //Where a 1 was not rendered
+    glStencilFunc( GL_NOTEQUAL, 1, 1 );
+
+    //Keep the pixel
+    glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+
+    //Render stenciled texture
+    glLoadIdentity();
+
+	//RENDER SHIT.
+	glColor4f(1.f, 0.f, 0.0f, 1.f);
+	std::vector<punto> puntos2{ {10,50}, {1000, 100}, {1100, 300}, {10, 100}};
+
+	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_INT, 0, puntos2.data());
+	glDrawArrays(GL_POLYGON, 0, puntos2.size());
+	glDisableClientState(GL_VERTEX_ARRAY); 
+
+    //Finished using stencil
+    glDisable( GL_STENCIL_TEST );
+
+    //Update screen
+//    glutSwapBuffers();
+
+}
+
+void Pantalla::	end_stencil_test()
+{
+	//Finished using stencil: reenable colors.
+//	glDisable(GL_STENCIL_TEST);
 }
 
 void Pantalla::establecer_medidas_logicas(int w, int h)
