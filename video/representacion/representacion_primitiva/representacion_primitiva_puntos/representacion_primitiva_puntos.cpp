@@ -50,8 +50,6 @@ void Representacion_primitiva_puntos::limpiar_puntos()
 
 void Representacion_primitiva_puntos::generar_posicion()
 {
-	//TODO: Check this.
-
 	if(!puntos.size())
 	{
 		establecer_posicion(0, 0, 0, 0);

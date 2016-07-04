@@ -37,8 +37,6 @@ void Representacion_primitiva_linea::generar_posicion()
 {
 	int x, y, w, h;
 
-	//TODO: Check this.
-
 	auto f=[](int v1, int v2, int& pos, int& medida)
 	{
 		if(v1 < v2)

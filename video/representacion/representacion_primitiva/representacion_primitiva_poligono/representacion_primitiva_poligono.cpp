@@ -53,8 +53,9 @@ void Representacion_primitiva_poligono_base::volcado()
 
 void Representacion_primitiva_poligono_base::preparar_posicion()
 {
-	//TODO: Check this...
-	int x=puntos[0].x, y=puntos[0].y, maxx=x, maxy=y;
+	//TODO: WHAT HAPPENS WHEN WE DO "establecer_posicion" on these???.
+
+	int x=puntos[0].x+original.x, y=puntos[0].y+original.y, maxx=x, maxy=y;
 
 	for(auto p : puntos)
 	{
