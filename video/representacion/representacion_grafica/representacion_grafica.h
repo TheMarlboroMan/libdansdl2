@@ -88,6 +88,7 @@ class Representacion_grafica:public Representacion
 	void 			transformar_centro_rotacion(float x, float y);
 	void 			transformar_centro_rotacion_cancelar();
 	bool 			es_transformada() const {return transformacion.es_transformacion();}
+	void			establecer_pincel(int w, int h) {pincel.w=w; pincel.h=h;}
 
 	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
 	virtual void 		establecer_posicion(Rect);
@@ -105,6 +106,7 @@ class Representacion_grafica:public Representacion
 
 	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
 	Rect	 		posicion_rotada;
+	struct 	{int w, h;}	pincel;
 
 	protected:
 

@@ -8,7 +8,7 @@ extern DLibH::Log_base LOG;
 
 
 Representacion_grafica::Representacion_grafica()
-	:Representacion(), textura(nullptr)
+	:Representacion(), textura(nullptr), pincel{0,0}
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
@@ -16,7 +16,7 @@ Representacion_grafica::Representacion_grafica()
 }
 
 Representacion_grafica::Representacion_grafica(ColorRGBA color)
-	:Representacion(color), textura(nullptr)
+	:Representacion(color), textura(nullptr),pincel{0,0}
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
@@ -25,7 +25,7 @@ Representacion_grafica::Representacion_grafica(ColorRGBA color)
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
 	:Representacion(o) ,textura(o.textura),
-	posicion_rotada(o.posicion_rotada)
+	posicion_rotada(o.posicion_rotada), pincel(o.pincel)
 {
 
 }
@@ -35,6 +35,7 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 	Representacion::operator=(o);
 	textura=o.textura;
 	posicion_rotada=o.posicion_rotada;
+	pincel=o.pincel;
 
 	return *this;
 }
@@ -55,47 +56,14 @@ void Representacion_grafica::volcado()
 {
 	const Rect& pos=acc_posicion();
 	const Rect& recor=acc_recorte();
-
-	//TODO: This should be stored when set.
-	struct punto{int x, y;};
-	punto puntos[]={{0, 0},
-		{(int)pos.w, 0}, 
-		{(int)pos.w, (int)pos.h}, 
-		{0, (int)pos.h} };
+	
+	if(!pincel.w) pincel.w=pos.w;
+	if(!pincel.h) pincel.h=pos.h;
 
 
 	//TODO: This is a fucking disaster. Store it somewhere when it's set.
 	float w_tex=textura->acc_w(), h_tex=textura->acc_h();
 	struct puntotex {GLfloat x, y;};
-
-	//Samplear los puntos centrales. De momento no buscamos el centro del texel.
-	puntotex ptex[]={
-		{(GLfloat)recor.x, 			(GLfloat)recor.y},
-		{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y},
-		{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y+(GLfloat)recor.h},
-		{(GLfloat)recor.x, 			(GLfloat)recor.y+(GLfloat)recor.h}};
-
-	//Invertir y resamplear puntos...
-	if(transformacion.invertir_horizontal)
-	{
-		std::swap(ptex[0].x, ptex[1].x);
-		std::swap(ptex[2].x, ptex[3].x);
-		for(auto &p: ptex) p.x-=0.5f;		
-	}
-
-	//Invertir y resamplear puntos...
-	if(transformacion.invertir_vertical)
-	{
-		std::swap(ptex[0].y, ptex[2].y);
-		std::swap(ptex[1].y, ptex[3].y); 
-		for(auto &p: ptex) p.y-=0.5f;
-	}
-
-	for(auto &p : ptex)
-	{
-		p.x/=w_tex; 
-		p.y/=h_tex;
-	}
 
 	glMatrixMode(GL_MODELVIEW);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
@@ -123,6 +91,59 @@ void Representacion_grafica::volcado()
 		
 	glTranslatef(pos.x, pos.y, 0.f);
 
+
+	struct punto{int x, y;};
+
+	//TODO: This should be stored when set.
+	//TODO: When dealing with "pincel" we might as well use stenciling.
+	//TODO: Instead of stenciling, we can calculate the values here with a little more effort.
+	std::vector<punto> puntos;
+	std::vector<puntotex> final_ptex;
+	for(unsigned int x=0; x < pos.w; x+=pincel.w)
+	{
+		for(unsigned int y=0; y < pos.h; y+=pincel.h)
+		{
+
+			//TODO: Control real excess here.
+
+			puntos.push_back({x, y});
+			puntos.push_back({x+pincel.w, y});
+			puntos.push_back({x+pincel.w, y+pincel.h});
+			puntos.push_back({x, y+pincel.h});
+
+			//Samplear los puntos centrales. De momento no buscamos el centro del texel.
+			puntotex ptex[]={
+				{(GLfloat)recor.x, 			(GLfloat)recor.y},
+				{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y},
+				{(GLfloat)recor.x+(GLfloat)recor.w, 	(GLfloat)recor.y+(GLfloat)recor.h},
+				{(GLfloat)recor.x, 			(GLfloat)recor.y+(GLfloat)recor.h}};
+
+			//Invertir y resamplear puntos...
+			if(transformacion.invertir_horizontal)
+			{
+				std::swap(ptex[0].x, ptex[1].x);
+				std::swap(ptex[2].x, ptex[3].x);
+				for(auto &p: ptex) p.x-=0.5f;
+			}
+
+			//Invertir y resamplear puntos...
+			if(transformacion.invertir_vertical)
+			{
+				std::swap(ptex[0].y, ptex[2].y);
+				std::swap(ptex[1].y, ptex[3].y); 
+				for(auto &p: ptex) p.y-=0.5f;
+			}
+
+			for(auto &p : ptex)
+			{
+				p.x/=w_tex; 
+				p.y/=h_tex;
+			}
+
+			final_ptex.insert(std::end(final_ptex), ptex, ptex+4);
+		}
+	}
+
 	if(transformacion.angulo_rotacion != 0.f)
 	{
 		//Translación adicional para poder colocar el centro de rotación.
@@ -141,9 +162,9 @@ void Representacion_grafica::volcado()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
 
-	glVertexPointer(2, GL_INT, 0, puntos);
-	glTexCoordPointer(2, GL_FLOAT, 0, ptex);
-	glDrawArrays(GL_QUADS, 0, 4);
+	glVertexPointer(2, GL_INT, 0, puntos.data());
+	glTexCoordPointer(2, GL_FLOAT, 0, final_ptex.data());
+	glDrawArrays(GL_QUADS, 0, puntos.size());
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);

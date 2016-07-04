@@ -23,7 +23,6 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)representacion_primitiva_poligono.o \
 	$(DIR_O)representacion_primitiva_puntos.o \
 	$(DIR_O)representacion_bitmap.o \
-	$(DIR_O)representacion_bitmap_patron.o \
 	$(DIR_O)representacion_ttf.o \
 	$(DIR_O)gestor_mapa_static.o \
 	$(DIR_O)gestor_mapa_instanciable.o \
@@ -115,12 +114,6 @@ $(DIR_O)representacion.o \
 $(DIR_CLASS_V)representacion/representacion_agrupada/representacion_agrupada.h \
 $(DIR_CLASS_V)representacion/representacion_agrupada/representacion_agrupada.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_agrupada/representacion_agrupada.cpp -o $(DIR_O)representacion_agrupada.o $(INCLUDES)
-
-$(DIR_O)representacion_bitmap_patron.o: \
-$(DIR_O)representacion_bitmap.o \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_bitmap/representacion_bitmap_patron.h \
-$(DIR_CLASS_V)representacion/representacion_grafica/representacion_bitmap/representacion_bitmap_patron.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_bitmap/representacion_bitmap_patron.cpp -o $(DIR_O)representacion_bitmap_patron.o $(INCLUDES) 
 
 $(DIR_O)representacion_bitmap.o: \
 $(DIR_O)representacion_grafica.o \

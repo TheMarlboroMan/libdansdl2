@@ -23,7 +23,6 @@
 #include "video/representacion/representacion_agrupada/representacion_agrupada.h"
 #include "video/representacion/representacion_grafica/representacion_grafica.h"
 #include "video/representacion/representacion_grafica/representacion_bitmap/representacion_bitmap.h"
-#include "video/representacion/representacion_grafica/representacion_bitmap/representacion_bitmap_patron.h"
 #include "video/representacion/representacion_grafica/representacion_ttf/representacion_ttf.h"
 
 #endif
