@@ -57,13 +57,18 @@ void Pantalla::configurar(int flags_ventana)
 {
 	if(!ventana)
 	{	
+		//All these attributes must be set BEFORE creating the window!!.
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		//This is very important...
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
+
 		ventana=SDL_CreateWindow("", 
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
 			w, h, flags_ventana); //Por defecto SDL_WINDOW_OPENGL
 
 		context=SDL_GL_CreateContext(ventana);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
 
 		glViewport(0.f, 0.f, w, h);
 
