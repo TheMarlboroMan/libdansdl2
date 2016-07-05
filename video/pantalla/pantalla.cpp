@@ -116,9 +116,9 @@ void Pantalla::do_stencil_test()
     //Replace where rendered
     glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
 
-	glColor4f(1.f, 1.f, 1.0f, 1.f);
+	glColor4f(0.f, 1.f, 0.0f, 1.f);
 
-	std::vector<punto> puntos{ {10,10}, {90, 10}, {90, 90}, {10, 90}};
+	std::vector<punto> puntos{ {10,10}, {500, 10}, {500, 90}, {10, 90}};
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_POLYGON, 0, puntos.size());
