@@ -5,11 +5,53 @@
 #include "../color/color.h"
 #include "../rect/rect.h"
 #include "../camara/camara.h"
+#include "../info_volcado/info_volcado.h"
 #include "../pantalla/pantalla.h"
 #include "../../herramientas/herramientas_sdl/herramientas_sdl.h"
 
 namespace DLibV
 {
+
+struct Representacion_transformacion
+{
+	float angulo_rotacion;
+	float x_centro_rotacion;
+	float y_centro_rotacion;
+
+	Representacion_transformacion():
+		angulo_rotacion(0.f), x_centro_rotacion(0.f), y_centro_rotacion(0.f)
+	{}
+
+	//TODO... I don't want SDL here.
+	SDL_Point obtener_centro_rotacion() const
+	{
+		SDL_Point p;
+		p.x=x_centro_rotacion;
+		p.y=y_centro_rotacion;
+		return p;
+	}
+
+	bool es_transformacion() const {return angulo_rotacion!=0.f;}
+	bool es_cambia_centro_rotacion() const {return x_centro_rotacion!=0.f || y_centro_rotacion!=0.f;}
+	void centro_rotacion(float px, float py)
+	{
+		x_centro_rotacion=px;
+		y_centro_rotacion=py;
+	}
+
+	void cancelar_centro_rotacion()
+	{
+		x_centro_rotacion=0.f;
+		y_centro_rotacion=0.f;
+	}
+
+	void reiniciar()
+	{
+		angulo_rotacion=0.f;
+		x_centro_rotacion=0.f;
+		y_centro_rotacion=0.f;
+	}
+};
 
 class Representacion
 {
@@ -24,14 +66,14 @@ class Representacion
 	Representacion& 	operator=(const Representacion &);
 	virtual 		~Representacion() {}
 
-	//TODO: Is this ever used???
-	bool 			en_toma(const Rect& p_caja) const {return posicion.es_en_colision_con(p_caja, true);}
+	bool 			en_toma(const Camara& p_cam) const {return posicion.es_en_colision_con(p_cam.acc_caja_pos(), true);}
 	bool 			es_en_posicion(Sint16 p_x, Sint16 p_y) const 
 	{
 		return this->posicion.x==p_x && 
 		this->posicion.y==p_y;
 	}
 
+	Rect 			copia_posicion_rotada() const;
 	const Rect& 		acc_posicion() const {return this->posicion;}
 	Rect 			copia_posicion() const {return Rect{posicion.x, posicion.y, posicion.w, posicion.h};}
 	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
@@ -43,18 +85,17 @@ class Representacion
 	void 			establecer_recorte(Rect);
 	void 			establecer_dimensiones_posicion_por_recorte();
 
-	virtual void 		ir_a(int x, int y){establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas....
-	void 			desplazar(Sint16 p_x, Sint16 p_y);					
+	//TODO: Really???. Check this.
+	virtual void 		ir_a(int x, int y){establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas)....
+	void 			desplazar(Sint16 p_x, Sint16 p_y);
 	void 			hacer_invisible() {this->visible=false;}
 	void 			hacer_visible() {this->visible=true;}
 	void 			intercambiar_visibilidad() {this->visible=!this->visible;}
 	void 			cambiar_visibilidad(bool p_valor) {this->visible=p_valor;}
 	bool 			es_visible() const {return this->visible;}
 
-	//Se pasa el rectángulo de pantalla... Básicamente se comprueba si está dentro. Estática o no.
-
-	void 			volcar(const Pantalla&, const Camara&);
-	void 			volcar(const Pantalla&);
+	void 			volcar(Pantalla&, const Camara&);
+	void 			volcar(Pantalla&);
 
 	void			mut_rgba(ColorRGBA v) {rgba=v;}
 	void 			establecer_alpha(unsigned int v) {rgba.a=colorfi(v);}
@@ -78,21 +119,34 @@ class Representacion
 	static void 		procesar_zoom(Rect& pos, const Rect& p_posicion, const Rect& p_enfoque);
 	static void 		procesar_zoom(Rect&, double);
 
+	virtual void 		reiniciar_transformacion() {transformacion.reiniciar();}
+
+	void 			transformar_rotar(float v);
+	void 			transformar_cancelar_rotar();
+	void 			transformar_centro_rotacion(float x, float y);
+	void 			transformar_centro_rotacion_cancelar();
+	virtual bool 		es_transformada() const {return transformacion.es_transformacion();}
+
 	private:
 
+	Representacion_transformacion transformacion;
+	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
+	//TODO: Maybe this goes somewhere else :D.
 	bool 			visible;
 	blends		 	modo_blend;
 	ColorRGBA		rgba;
 	Rect 			posicion; 	//Lugar en que se muestra de la pantalla.
 	Rect	 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
+	Rect	 		posicion_rotada;
 
 	protected:
 
 	void 			reiniciar_posicion();
 	void 			reiniciar_recorte();
 	void 			reiniciar_rect(Rect&);
+	void 			actualizar_caja_rotacion();
 
-	virtual void 		volcado()=0;
+	virtual void 		volcado(const Info_volcado)=0;
 };
 
 } //Fin namespace DLibV

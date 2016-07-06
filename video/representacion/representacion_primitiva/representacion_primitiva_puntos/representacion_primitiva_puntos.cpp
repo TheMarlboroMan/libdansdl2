@@ -69,19 +69,13 @@ void Representacion_primitiva_puntos::generar_posicion()
 	}
 }
 
-void Representacion_primitiva_puntos::volcado()
+void Representacion_primitiva_puntos::volcado(const Info_volcado)
 {
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
-
-	const auto& pos=acc_posicion();
-
-	glTranslatef(pos.x, pos.y, 0.f);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_POINTS, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glLoadIdentity();
 }

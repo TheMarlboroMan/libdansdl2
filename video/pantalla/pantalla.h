@@ -26,56 +26,53 @@ class Pantalla
 
 	//Interfaz pública.
 
-	Pantalla(int=640, int=400, short unsigned int=M_VENTANA);
-	~Pantalla();
+					Pantalla(int=640, int=400, short unsigned int=M_VENTANA);
+					~Pantalla();
 
-	SDL_Window * acc_ventana() const {return this->ventana;}
-	unsigned int acc_volcados() const {return this->volcados;}
-	unsigned int acc_w() const {return w;}
-	unsigned int acc_h() const {return h;}
-	void establecer_posicion(int, int);
-	void establecer_titulo(const char * p_cadena);
-	void establecer_titulo(const std::string&);
-	unsigned short int acc_modo_ventana() const {return modo_ventana;}
+	SDL_Window * 			acc_ventana() const {return this->ventana;}
+	unsigned int 			acc_w() const {return w;}
+	unsigned int 			acc_h() const {return h;}
+	void 				establecer_posicion(int, int);
+	void  				establecer_titulo(const char * p_cadena);
+	void 				establecer_titulo(const std::string&);
+	unsigned short int 		acc_modo_ventana() const {return modo_ventana;}
 
-	void inicializar(int, int, int=SDL_WINDOW_OPENGL);
-	void establecer_modo_ventana(unsigned int);
-	void establecer_medidas_logicas(int, int);
-	void limpiar(const ColorRGBA&);
-	void actualizar();
+	void 				inicializar(int, int, int=SDL_WINDOW_OPENGL);
+	void 				establecer_modo_ventana(unsigned int);
+	void 				establecer_medidas_logicas(int, int);
+	void 				limpiar(const ColorRGBA&);
+	void 				actualizar();
 
-//TODO?????
-//	SDL_PixelFormat * obtener_formato_pixeles() {return this->superficie->format;}
-//TODO?????
+	void 				asignar_camara(const Camara&);
 
-//	void preparar_para_camara(Camara const&);
-	void establecer_clip_para_camara(Camara const&);
-	void establecer_clip(Rect);
-	void reiniciar_clip_completo();
-	const Rect& acc_simulacro_caja() {return this->simulacro_caja;}
-	void do_stencil_test();
-	void end_stencil_test();
+	void 				establecer_clip(Camara const&);
+	void 				establecer_clip(Rect);
+	void 				reiniciar_clip() {glDisable(GL_STENCIL_TEST); camara_actual=nullptr;}
+	const Rect& 			acc_simulacro_caja() {return this->simulacro_caja;}
+	const Info_volcado		acc_info_volcado() const {return info_volcado;};
 
 	private:
 
-	//Propiedades...	
-
-	SDL_Window * ventana;
-	SDL_GLContext context;
-	Rect simulacro_caja; //El simulacro de caja es un rectángulo con las medidas de la pantalla, para controlar lo que se muestra o no.
-	unsigned int volcados;	//Volcados desde el último flipe.
-
-	int w; //Ancho y alto de la ventana...
-	int h;
-	unsigned short int modo_ventana;
-	bool comprobar_en_toma;
-
-	int w_logico; //Ancho y alto del renderer.
-	int h_logico;
-
 	//Métodos privados.
 
-	void configurar(int);
+	void 				configurar(int);
+
+	//Propiedades...
+
+	SDL_Window * 			ventana;
+	SDL_GLContext 			context;
+	Camara const *			camara_actual;
+	Info_volcado			info_volcado;
+	Rect 				simulacro_caja; //El simulacro de caja es un rectángulo con las medidas de la pantalla, para controlar lo que se muestra o no.
+
+	int 				w,
+					h; //Ancho y alto de la ventana...
+
+	unsigned short int 		modo_ventana;
+	bool 				comprobar_en_toma;
+
+	int 				w_logico, //Ancho y alto del renderer.
+					h_logico;
 };
 
 } //Fin namespace DLibV

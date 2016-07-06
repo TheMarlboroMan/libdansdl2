@@ -3,18 +3,19 @@
 using namespace DLibV;
 
 Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
-	ventana(nullptr), volcados(0), 
+	ventana(nullptr), camara_actual(nullptr), 
+	info_volcado{0,0,0,0},
 	w(p_w), h(p_h), modo_ventana(p_m), w_logico(w), h_logico(h)
 {
-	this->simulacro_caja.w=0;
- 	this->simulacro_caja.h=0;
-	this->simulacro_caja.x=0;
-	this->simulacro_caja.y=0;
+	simulacro_caja.w=0;
+ 	simulacro_caja.h=0;
+	simulacro_caja.x=0;
+	simulacro_caja.y=0;
 }
 
 Pantalla::~Pantalla()
 {
-	if(this->ventana) SDL_DestroyWindow(this->ventana);
+	if(ventana) SDL_DestroyWindow(ventana);
 	SDL_GL_DeleteContext(context); 
 }
 
@@ -44,6 +45,7 @@ void Pantalla::limpiar(const ColorRGBA& c)
 void Pantalla::actualizar()
 {
 	SDL_GL_SwapWindow(ventana);
+	//glDisable(GL_STENCIL_TEST);
 }
 
 /*
@@ -97,75 +99,10 @@ void Pantalla::configurar(int flags_ventana)
 
 	establecer_medidas_logicas(w, h);
 
-	this->simulacro_caja.w=w;
-	this->simulacro_caja.h=h;
-	this->simulacro_caja.x=0;
-	this->simulacro_caja.y=0;
-}
-
-void Pantalla::do_stencil_test()
-{
-	struct punto{int x, y;};
-
-    //Clear color and stencil buffer
-    glLoadIdentity();
-
-    //Disable rendering to the color buffer
-    glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );
-    glDepthMask(GL_FALSE);
-    glEnable( GL_STENCIL_TEST );
-    glClearStencil(0);
-    glClear( GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
-
-    glStencilFunc( GL_ALWAYS, 1, 1 );
-    //Replace where rendered
-    glStencilOp( GL_REPLACE, GL_REPLACE, GL_REPLACE );
-
-	glColor4f(0.f, 1.f, 0.0f, 1.f);
-
-	std::vector<punto> puntos{ {10,10}, {500, 10}, {500, 90}, {10, 90}};
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_INT, 0, puntos.data());
-	glDrawArrays(GL_POLYGON, 0, puntos.size());
-	glDisableClientState(GL_VERTEX_ARRAY); 
-
-	//RENDER OTHER SHIT PART.
-
-    //Reenable color
-    glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-    //Where a 1 was not rendered
-    glStencilFunc( GL_EQUAL, 1, 1 );
-
-    //Keep the pixel
-    glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
-
-    //Render stenciled texture
-    glLoadIdentity();
-
-	//RENDER SHIT.
-	glColor4f(1.f, 0.f, 0.0f, 1.f);
-	std::vector<punto> puntos2{ {10,50}, {1000, 100}, {1100, 300}, {10, 100}};
-
-	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2, GL_INT, 0, puntos2.data());
-	glDrawArrays(GL_POLYGON, 0, puntos2.size());
-	glDisableClientState(GL_VERTEX_ARRAY); 
-
-    //Finished using stencil
-	//TODO: Seems this was the key... How to implement this crap???
-    glDisable( GL_STENCIL_TEST );
-
-    //Update screen
-//    glutSwapBuffers();
-
-}
-
-void Pantalla::	end_stencil_test()
-{
-	//Finished using stencil: reenable colors.
-//	glDisable(GL_STENCIL_TEST);
+	simulacro_caja.w=w;
+	simulacro_caja.h=h;
+	simulacro_caja.x=0;
+	simulacro_caja.y=0;
 }
 
 void Pantalla::establecer_medidas_logicas(int w, int h)
@@ -188,33 +125,57 @@ void Pantalla::establecer_modo_ventana(unsigned int v)
 //	}
 }
 
-void Pantalla::reiniciar_clip_completo()
+void Pantalla::establecer_clip(Camara const& p_camara)
 {
-/*	Rect caja;
-	caja.x=0; 
-	caja.y=0;
-	caja.w=w;
-	caja.h=h;
-*/
-	//TODO: Stencil buffer?
-
-//	SDL_RenderSetClipRect(renderer, &caja);
-}
-
-void Pantalla::establecer_clip_para_camara(Camara const& p_camara)
-{
-	//TODO: Stencil buffer?
-//	Rect caja=p_camara.acc_caja_pos();
-//	SDL_RenderSetClipRect(renderer, &caja);
+	establecer_clip(p_camara.acc_caja_pos());
 }
 
 void Pantalla::establecer_clip(Rect p_caja)
 {
-	//TODO: Stencil buffer?
-//	SDL_RenderSetClipRect(renderer, &p_caja);
+	//Reiniciar matrices...
+	glLoadIdentity();
+
+	//Activar test de stencil, establecer valor de limpieza y limpiar.
+
+	glDepthMask(GL_FALSE); //Realmente no sé si esto hace algo.
+	glEnable(GL_STENCIL_TEST); //Esto se activa aquí... Se desactivaría en algún otro lado.
+	glClearStencil(0);
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	//Nunca renderizar... pero si reemplazar.
+	glStencilFunc(GL_NEVER, 1, 1);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+
+	int	fx=p_caja.x+p_caja.w, 
+		fy=p_caja.y+p_caja.h;
+
+	struct pt {int x, y;};
+	std::vector<pt> puntos{ 
+		{p_caja.x, p_caja.y}, 
+		{fx, p_caja.y}, 
+		{fx, fy}, 
+		{p_caja.x, fy}};
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2, GL_INT, 0, puntos.data());
+	glDrawArrays(GL_POLYGON, 0, puntos.size());
+	glDisableClientState(GL_VERTEX_ARRAY); 
+
+	//Ahora si, sólo renderizamos cuando el valor sea igual y
+	//no cambiaremos el pixel.
+	glStencilFunc(GL_EQUAL, 1, 1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 }
 
 void Pantalla::establecer_posicion(int x, int y)
 {
 	SDL_SetWindowPosition(ventana, x, y);
+}
+
+void Pantalla::asignar_camara(const Camara& c)
+{
+	if(!camara_actual || &c != camara_actual)
+	{
+		establecer_clip(c);
+		camara_actual=&c;
+	}
 }

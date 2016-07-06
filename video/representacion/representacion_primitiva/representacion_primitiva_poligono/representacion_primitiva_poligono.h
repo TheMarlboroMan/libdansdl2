@@ -20,7 +20,7 @@ class Representacion_primitiva_poligono_base
 	virtual 			~Representacion_primitiva_poligono_base() {}
 	virtual bool 			es_rellena() const=0;
 
-	virtual void			volcado();
+	virtual void			volcado(const Info_volcado);
 
 	protected:
 

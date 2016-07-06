@@ -57,18 +57,13 @@ void Representacion_primitiva_linea::generar_posicion()
 	establecer_posicion(x, y, w, h);
 }
 
-void Representacion_primitiva_linea::volcado()
+void Representacion_primitiva_linea::volcado(const Info_volcado)
 {
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
-
-	const auto& pos=acc_posicion();
-	glTranslatef(pos.x, pos.y, 0.f);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_LINES, 0, 2);
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glLoadIdentity();
 }

@@ -53,7 +53,7 @@ class Representacion_agrupada:public Representacion
 
 	std::vector<Representacion *> 	grupo;
 
-	void 				volcado();
+	void 				volcado(const Info_volcado);
 };
 
 }

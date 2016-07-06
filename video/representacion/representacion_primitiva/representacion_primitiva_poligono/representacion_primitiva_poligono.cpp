@@ -31,24 +31,15 @@ Representacion_primitiva_poligono_base& Representacion_primitiva_poligono_base::
 	return *this;
 }
 
-void Representacion_primitiva_poligono_base::volcado()
+void Representacion_primitiva_poligono_base::volcado(const Info_volcado)
 {
-	const auto& pos=acc_posicion();
-
-	if(es_rellena()) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);
 
-	glTranslatef(pos.x, pos.y, 0.f);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
-	glDrawArrays(GL_POLYGON, 0, puntos.size());
+	glDrawArrays(es_rellena() ? GL_POLYGON : GL_LINE_LOOP, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glLoadIdentity();
 }
 
 void Representacion_primitiva_poligono_base::preparar_posicion()

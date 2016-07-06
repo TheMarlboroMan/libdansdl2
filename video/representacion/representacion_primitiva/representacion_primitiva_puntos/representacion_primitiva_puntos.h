@@ -17,7 +17,7 @@ class Representacion_primitiva_puntos:
 	virtual 				~Representacion_primitiva_puntos() {}
 						Representacion_primitiva_puntos& operator=(const Representacion_primitiva_puntos&);
 
-	virtual void				volcado();
+	virtual void				volcado(const Info_volcado);
 
 	void 					insertar(int x, int y);
 	void					limpiar_puntos();

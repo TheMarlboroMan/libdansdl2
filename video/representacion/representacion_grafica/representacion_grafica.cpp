@@ -12,7 +12,6 @@ Representacion_grafica::Representacion_grafica()
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
-	actualizar_caja_rotacion();
 }
 
 Representacion_grafica::Representacion_grafica(ColorRGBA color)
@@ -20,12 +19,11 @@ Representacion_grafica::Representacion_grafica(ColorRGBA color)
 {
 	this->reiniciar_posicion();
 	this->reiniciar_recorte();
-	actualizar_caja_rotacion();
 }
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
 	:Representacion(o) ,textura(o.textura),
-	posicion_rotada(o.posicion_rotada), pincel(o.pincel), puntos(o.puntos), 
+	pincel(o.pincel), puntos(o.puntos), 
 	final_ptex(o.final_ptex)
 {
 
@@ -35,7 +33,6 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 {
 	Representacion::operator=(o);
 	textura=o.textura;
-	posicion_rotada=o.posicion_rotada;
 	pincel=o.pincel;
 	puntos=o.puntos;
 	final_ptex=o.final_ptex;
@@ -55,10 +52,8 @@ void Representacion_grafica::recorte_a_medidas_textura()
 	establecer_recorte(0,0, textura->acc_w(), textura->acc_h());
 }
 
-void Representacion_grafica::volcado()
+void Representacion_grafica::volcado(const Info_volcado iv)
 {
-	const Rect& pos=acc_posicion();
-
 	glMatrixMode(GL_MODELVIEW);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 
@@ -83,26 +78,9 @@ void Representacion_grafica::volcado()
 		break;
 	}
 		
-	glTranslatef(pos.x, pos.y, 0.f);
-
 	if(!puntos.size() || final_ptex.size())
 	{
 		calcular_puntos();
-	}
-
-	if(transformacion.angulo_rotacion != 0.f)
-	{
-		//Translación adicional para poder colocar el centro de rotación.
-		glTranslatef(transformacion.x_centro_rotacion, transformacion.y_centro_rotacion, 0.f);
-
-		//Actualización de los puntos para colocar el centro.
-		for(auto& p : puntos){
-			p.x-=transformacion.x_centro_rotacion;
-			p.y-=transformacion.y_centro_rotacion;
-		}
-
-		//Rotación...
-		glRotatef(transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
 	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -115,17 +93,6 @@ void Representacion_grafica::volcado()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
 	glDisable(GL_TEXTURE_2D);
-
-	//Restaurar el estado de opengl.
-	//This caused problems... Small movements a pixel wide on objects
-	//drawn after this.
-//	if(transformacion.angulo_rotacion!=0.f)
-//	{
-//		glRotatef(-transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
-//		glTranslatef(-transformacion.x_centro_rotacion, -transformacion.y_centro_rotacion, 0.f);
-//	}
-//	glTranslatef(-pos.x, -pos.y, 0.f);
-	glLoadIdentity();
 }
 
 //Calcula las posiciones de los vértices y los puntos de las texturas.
@@ -147,8 +114,6 @@ void Representacion_grafica::calcular_puntos()
 	final_ptex.clear();
 
 	int itx=0;
-
-//TODO: What the hell is dancing????.
 
 	for(int x=0; x < (int)pos.w; x+=pincel.w)
 	{
@@ -219,67 +184,6 @@ void Representacion_grafica::liberar_textura()
 	}
 }
 
-void Representacion_grafica::transformar_rotar(float v) 
-{
-	transformacion.angulo_rotacion=v;
-	actualizar_caja_rotacion();
-}
-
-void Representacion_grafica::transformar_cancelar_rotar() 
-{
-	transformacion.angulo_rotacion=0.f;
-	actualizar_caja_rotacion();
-}
-
-void Representacion_grafica::transformar_centro_rotacion(float x, float y) 
-{
-	transformacion.centro_rotacion(x, y);
-	actualizar_caja_rotacion();
-}
-
-void Representacion_grafica::transformar_centro_rotacion_cancelar() 
-{
-	transformacion.cancelar_centro_rotacion();
-	actualizar_caja_rotacion();
-}
-
-void Representacion_grafica::actualizar_caja_rotacion()
-{
-	const auto& p=acc_posicion();
-
-	if(!transformacion.es_transformacion())
-	{
-		posicion_rotada=p;
-	}
-	else
-	{
-		//TODO: Restore... We deleted obtener_centro_rotacion(),
-
-/*		auto c=transformacion.acc_centro_rotacion();
-		DLibH::Poligono_2d_vertices<double> polig(
-			{ 
-				{(double)p.x, (double)p.y},
-				{(double)(p.x+p.w), (double)p.y},
-				{(double)(p.x+p.w), (double)(p.y+p.h)},
-				{(double)p.x, (double)(p.y+p.h)},        
-			}, {(double)c.x+p.x, (double)c.y+p.y});
-
-		//Las rotaciones de SDL son "clockwise"... Las reales son "counter-clockwise"...
-		float a=transformacion.acc_angulo_rotacion();
-		polig.rotar(a);
-
-		//Sacar las medidas para la nueva caja...
-		std::vector<double> xs={polig.vertice(0).x, polig.vertice(1).x, polig.vertice(2).x, polig.vertice(3).x};
-		std::vector<double> ys={polig.vertice(0).y, polig.vertice(1).y, polig.vertice(2).y, polig.vertice(3).y};
-
-		posicion_rotada.x=*std::min_element(std::begin(xs), std::end(xs));
-		posicion_rotada.y=*std::min_element(std::begin(ys), std::end(ys));
-		posicion_rotada.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_rotada.x;
-		posicion_rotada.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_rotada.y;
-*/
-	}
-}
-
 void Representacion_grafica::establecer_posicion(int x, int y, int w, int h, int f)
 {
 	Representacion::establecer_posicion(x, y, w, h, f);
@@ -290,11 +194,6 @@ void Representacion_grafica::establecer_posicion(Rect c)
 {
 	Representacion::establecer_posicion(c);
 	actualizar_caja_rotacion();
-}
-
-Rect Representacion_grafica::copia_posicion_rotada() const
-{
-	return Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
 }
 
 //TODO: Does this affect us???

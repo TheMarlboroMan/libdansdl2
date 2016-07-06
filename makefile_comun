@@ -29,6 +29,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)gestor_vector_static.o \
 	$(DIR_O)gestor_vector_instanciable.o \
 	$(DIR_O)camara.o \
+	$(DIR_O)info_volcado.o \
 	$(DIR_O)vector_2d.o \
 	$(DIR_O)punto_2d.o \
 	$(DIR_O)poligono_2d.o \
@@ -61,6 +62,7 @@ $(DIR_O)pantalla.o: \
 $(DIR_CLASS_V)pantalla/pantalla.h \
 $(DIR_CLASS_V)pantalla/pantalla.cpp \
 $(DIR_O)utilidades_graficas_sdl.o \
+$(DIR_O)info_volcado.o\
 $(DIR_O)camara.o\
 $(DIR_O)color.o
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)pantalla/pantalla.cpp -o $(DIR_O)pantalla.o $(INCLUDES)
@@ -150,9 +152,15 @@ $(DIR_CLASS_V)textura/textura.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)textura/textura.cpp -o $(DIR_O)textura.o $(INCLUDES)
 
 $(DIR_O)camara.o: \
+$(DIR_O)info_volcado.o \
 $(DIR_CLASS_V)camara/camara.h \
 $(DIR_CLASS_V)camara/camara.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)camara/camara.cpp -o $(DIR_O)camara.o $(INCLUDES)
+
+$(DIR_O)info_volcado.o: \
+$(DIR_CLASS_V)info_volcado/info_volcado.h \
+$(DIR_CLASS_V)info_volcado/info_volcado.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)info_volcado/info_volcado.cpp -o $(DIR_O)info_volcado.o $(INCLUDES)
 
 $(DIR_O)representacion_ttf.o: \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_ttf/representacion_ttf.h \

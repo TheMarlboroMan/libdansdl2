@@ -15,7 +15,7 @@ class Representacion_primitiva_linea:public Representacion_primitiva
 	virtual 			~Representacion_primitiva_linea() {}
 					Representacion_primitiva_linea& operator=(const Representacion_primitiva_linea&);
 
-	virtual void			volcado();
+	virtual void			volcado(const Info_volcado);
 
 	void 				establecer_puntos(int x1, int y1, int x2, int y2);
 

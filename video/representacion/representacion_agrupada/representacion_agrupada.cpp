@@ -67,7 +67,7 @@ Sería posible hacerlo "acumulativo" sin muchos problemas de modo que los valore
 se sumen y resten dentro del rango 0-255.
 */
 
-void Representacion_agrupada::volcado()
+void Representacion_agrupada::volcado(const Info_volcado)
 {
 	std::vector<Representacion *>::iterator 	inicio=this->grupo.begin(),
 							fin=this->grupo.end();

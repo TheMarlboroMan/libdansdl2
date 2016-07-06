@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../rect/rect.h"
+#include "../info_volcado/info_volcado.h"
 #include "../../herramientas/herramientas_sdl/herramientas_sdl.h"
 
 namespace DLibV
@@ -47,10 +48,13 @@ class Camara
 
 	void 			transformar_posicion_raton(int& x, int& y);
 
+	const Info_volcado	acc_info_volcado() const {return info_volcado;}
+
 	private:
 
 	void 			sincronizar_cajas();
 
+	Info_volcado		info_volcado;
 	Rect 			caja_foco;			//La caja a la que se apunta en el "mundo", es decir, estamos apuntado al punto x, y, enfocando w y h del mundo. Si cambian estos w y h haríamos zoom.
 	Rect	 		caja_pos;		//La caja desplazada con pos_x y pos_y, guardada aquí para no crearla again and again. La cámara aparece en pantalla en x e y, con ancho y alto tal.
 	unsigned int 		pos_x;		//La posición X e Y en la que aparece la cámara en pantalla.
