@@ -36,8 +36,7 @@ class Representacion
 {
 	public:
 
-	enum class blends {BLEND_NADA,BLEND_ALPHA};
-	enum FLAGS_RECT{FRECT_X=1, FRECT_Y=2, FRECT_W=4, FRECT_H=8};
+	enum class 		blends {BLEND_NADA,BLEND_ALPHA};
 
 				Representacion();
 				Representacion(ColorRGBA);
@@ -46,23 +45,9 @@ class Representacion
 	virtual 		~Representacion() {}
 
 	bool 			en_toma(const Camara& p_cam) const;
-	bool 			es_en_posicion(Sint16 p_x, Sint16 p_y) const {return posicion.x==p_x && posicion.y==p_y;}
+	const Rect&		acc_posicion_vista() const {return posicion_vista;}
+	Rect 			copia_posicion_vista() {return posicion_vista;}
 
-	Rect 			copia_posicion_rotada() const;
-	const Rect& 		acc_posicion() const {return this->posicion;}
-	Rect 			copia_posicion() const {return Rect{posicion.x, posicion.y, posicion.w, posicion.h};}
-	virtual void		establecer_posicion(int, int, int=-1, int=-1, int=15);
-	virtual void 		establecer_posicion(Rect);
-
-	const Rect& 		acc_recorte() const {return this->recorte;}
-	Rect 			copia_recorte() const {return Rect {recorte.x, recorte.y, recorte.w, recorte.h};}
-	void 			establecer_recorte(Sint16, Sint16, Uint16, Uint16, int=15);
-	void 			establecer_recorte(Rect);
-	void 			establecer_dimensiones_posicion_por_recorte();
-
-	//TODO: Really???. Check this, I mean... the virtual thing.
-	virtual void 		ir_a(int x, int y){establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas)....
-	void 			desplazar(Sint16 p_x, Sint16 p_y);
 	void 			hacer_invisible() {this->visible=false;}
 	void 			hacer_visible() {this->visible=true;}
 	void 			intercambiar_visibilidad() {this->visible=!this->visible;}
@@ -98,6 +83,10 @@ class Representacion
 	void 			transformar_centro_rotacion_cancelar();
 	virtual bool 		es_transformada() const {return transformacion.es_transformacion();}
 
+	//Estas hay que definirlas.
+	virtual void 		ir_a(int x, int y)=0;
+	virtual Punto		obtener_posicion() const=0;
+
 	private:
 
 	void			transformacion_pre_render(const Info_volcado);
@@ -107,18 +96,16 @@ class Representacion
 	bool 			visible;
 	blends		 	modo_blend;
 	ColorRGBA		rgba;
-	Rect 			posicion; 	//Lugar en que se muestra de la pantalla.
-	Rect	 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
-	Rect	 		posicion_rotada;
+
+	Rect	 		posicion_vista;
 
 	protected:
+	
+	void 			actualizar_posicion_vista_rotacion();
 
-	void 			reiniciar_posicion();
-	void 			reiniciar_recorte();
-	void 			reiniciar_rect(Rect&);
-	void 			actualizar_caja_rotacion();
-
+	//Estas hay que definirlas.
 	virtual void 		volcado(const Info_volcado)=0;
+	virtual Rect		obtener_base_posicion_vista() const=0;
 };
 
 } //Fin namespace DLibV

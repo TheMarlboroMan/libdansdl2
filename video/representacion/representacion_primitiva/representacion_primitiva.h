@@ -17,25 +17,21 @@ class Representacion_primitiva:public Representacion
 {
 	public:
 
-	struct punto{int x, y;};
-
 			Representacion_primitiva(ColorRGBA);
 			Representacion_primitiva(const Representacion_primitiva&);
 			Representacion_primitiva& operator=(const Representacion_primitiva&);
 	virtual 	~Representacion_primitiva() {}
 
-	bool 		es_recomponer_recorte_con_posicion() const {return recomponer_recorte_con_posicion;}
-	void 		mut_recomponer_recorte_con_posicion(bool p_valor) {this->recomponer_recorte_con_posicion=p_valor;}	
-	void 		recorte_a_posicion();
+	//Estas hay que definirlas.
+	virtual void 	ir_a(int x, int y)=0;
+	virtual Punto	obtener_posicion() const=0;
 
 	protected:
 	
 	void 		preparar_color();
-	bool 		determinar_caja_dibujo_final(Rect &, Rect const&, Rect const&);
 
-	private:
-
-	bool 		recomponer_recorte_con_posicion;
+	virtual void 	volcado(const Info_volcado)=0;
+	virtual Rect	obtener_base_posicion_vista() const=0;
 };
 
 } //Fin namespace DLibV

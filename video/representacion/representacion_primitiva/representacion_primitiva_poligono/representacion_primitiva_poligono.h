@@ -14,22 +14,24 @@ class Representacion_primitiva_poligono_base
 	:public Representacion_primitiva
 {
 	public:
-					Representacion_primitiva_poligono_base(const std::vector<Representacion_primitiva::punto>&, ColorRGBA);
+					Representacion_primitiva_poligono_base(const std::vector<Punto>&, ColorRGBA);
 					Representacion_primitiva_poligono_base(const Representacion_primitiva_poligono_base&);
 					Representacion_primitiva_poligono_base& operator=(const Representacion_primitiva_poligono_base&);
 	virtual 			~Representacion_primitiva_poligono_base() {}
 	virtual bool 			es_rellena() const=0;
 
 	virtual void			volcado(const Info_volcado);
+	virtual void 			ir_a(int x, int y);
+	virtual Punto			obtener_posicion() const;
 
 	protected:
 
-	void 				preparar_posicion();
+	virtual Rect			obtener_base_posicion_vista() const;
 
 	private:
 
-	std::vector<Representacion_primitiva::punto>		puntos;
-	Representacion_primitiva::punto				original;	//Guarda el primer punto original sin estar en 0.0.
+	std::vector<Punto>		puntos;
+	Punto				original;	//Guarda el primer punto original sin estar en 0.0.
 };
 
 class Representacion_primitiva_poligono
@@ -37,7 +39,7 @@ class Representacion_primitiva_poligono
 {
 	public:
 	
-				Representacion_primitiva_poligono(const std::vector<Representacion_primitiva::punto>&, ColorRGBA);
+				Representacion_primitiva_poligono(const std::vector<Punto>&, ColorRGBA);
 				Representacion_primitiva_poligono(const Representacion_primitiva_poligono& p_otra);
 				Representacion_primitiva_poligono& operator=(const Representacion_primitiva_poligono& p_otro);
 	virtual 		~Representacion_primitiva_poligono() {}
@@ -50,7 +52,7 @@ class Representacion_primitiva_poligono_lineas
 {
 	public:
 
-				Representacion_primitiva_poligono_lineas(const std::vector<Representacion_primitiva::punto>&, ColorRGBA);
+				Representacion_primitiva_poligono_lineas(const std::vector<Punto>&, ColorRGBA);
 				Representacion_primitiva_poligono_lineas(const Representacion_primitiva_poligono_lineas& p_otra);
 				Representacion_primitiva_poligono_lineas& operator=(const Representacion_primitiva_poligono_lineas& p_otro);
 	virtual 		~Representacion_primitiva_poligono_lineas() {}

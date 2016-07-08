@@ -8,93 +8,37 @@ using namespace DLibV;
 Representacion::Representacion():
 	visible(true),
 	modo_blend(blends::BLEND_NADA), 
-	rgba{1.f, 1.f, 1.f, 0.f}
+	rgba{1.f, 1.f, 1.f, 0.f},
+	posicion_vista{0,0,0,0}
 {
-	reiniciar_posicion();
-	reiniciar_recorte();
-	actualizar_caja_rotacion();
+
 }
 
 Representacion::Representacion(ColorRGBA c):
 	visible(true),
 	modo_blend(blends::BLEND_NADA), 
-	rgba(c)
+	rgba(c),
+	posicion_vista{0,0,0,0}
 {
-	reiniciar_posicion();
-	reiniciar_recorte();
-	actualizar_caja_rotacion();
+
 }
 
 Representacion::Representacion(const Representacion& p_otra):
 	visible(p_otra.visible), 
 	modo_blend(blends::BLEND_NADA),
 	rgba(p_otra.rgba),
-	posicion(p_otra.posicion), 
-	recorte(p_otra.recorte),
-	posicion_rotada(p_otra.posicion_rotada)
+	posicion_vista(p_otra.posicion_vista)
 {
 
 }
 
 Representacion& Representacion::operator=(const Representacion& p_otra)
 {
-	posicion=p_otra.posicion;
-	recorte=p_otra.recorte;
 	visible=p_otra.visible;
 	rgba=p_otra.rgba;
-	posicion_rotada=p_otra.posicion_rotada;
+	posicion_vista=p_otra.posicion_vista;
 	modo_blend=p_otra.modo_blend;
 	return *this;
-}
-
-void Representacion::establecer_posicion(int p_x, int p_y, int p_w, int p_h, int p_flags)
-{
-	if(p_flags & FRECT_X) posicion.x=p_x;
-	if(p_flags & FRECT_Y) posicion.y=p_y;
-	if(p_flags & FRECT_W && p_w != -1) posicion.w=p_w;
-	if(p_flags & FRECT_H && p_h != -1) posicion.h=p_h;
-}
-
-void Representacion::reiniciar_rect(Rect& r)
-{
-	r.x=0;
-	r.y=0;
-	r.w=0;
-	r.h=0;
-}
-
-void Representacion::reiniciar_posicion()
-{
-	reiniciar_rect(posicion);
-}
-
-void Representacion::desplazar(Sint16 p_x, Sint16 p_y)
-{
-	posicion.x+=p_x;
-	posicion.y+=p_y;
-}
-
-void Representacion::reiniciar_recorte()
-{
-	reiniciar_rect(recorte);
-}
-
-void Representacion::establecer_posicion(Rect p_caja)
-{
-	posicion=p_caja;
-}
-
-void Representacion::establecer_recorte(Rect p_caja)
-{
-	recorte=p_caja;
-}
-
-void Representacion::establecer_recorte(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, int p_flags)
-{
-	if(p_flags & FRECT_X) recorte.x=p_x;
-	if(p_flags & FRECT_Y) recorte.y=p_y;
-	if(p_flags & FRECT_W) recorte.w=p_w;
-	if(p_flags & FRECT_H) recorte.h=p_h;
 }
 
 //TODO: How do we render to a different screen?.
@@ -122,7 +66,7 @@ void Representacion::volcar(Pantalla& p_pantalla)
 
 void Representacion::transformacion_pre_render(const Info_volcado iv)
 {
-	const Rect& pos=acc_posicion();
+	auto pos=obtener_posicion();
 	int 	x=iv.pos_x+pos.x-iv.rel_x, 
 		y=iv.pos_y+pos.y-iv.rel_y;
 
@@ -150,45 +94,39 @@ void Representacion::transformacion_pre_render(const Info_volcado iv)
 //considera para ver si dibujarla o no. Por defecto podemos pensar que 
 //es el del recorte.
 
-void Representacion::establecer_dimensiones_posicion_por_recorte()
-{
-	posicion.w=recorte.w;
-	posicion.h=recorte.h;
-}
-
 void Representacion::transformar_rotar(float v) 
 {
 	transformacion.angulo_rotacion=v;
-	actualizar_caja_rotacion();
+	actualizar_posicion_vista_rotacion();
 }
 
 void Representacion::transformar_cancelar_rotar() 
 {
 	transformacion.angulo_rotacion=0.f;
-	actualizar_caja_rotacion();
+	actualizar_posicion_vista_rotacion();
 }
 
 void Representacion::transformar_centro_rotacion(float x, float y) 
 {
 	transformacion.centro_rotacion.x=x;
 	transformacion.centro_rotacion.y=y;
-	actualizar_caja_rotacion();
+	actualizar_posicion_vista_rotacion();
 }
 
 void Representacion::transformar_centro_rotacion_cancelar() 
 {
 	transformacion.centro_rotacion.x=0.f;
 	transformacion.centro_rotacion.y=0.f;
-	actualizar_caja_rotacion();
+	actualizar_posicion_vista_rotacion();
 }
 
-void Representacion::actualizar_caja_rotacion()
+void Representacion::actualizar_posicion_vista_rotacion()
 {
-	const auto& p=acc_posicion();
+	const auto p=obtener_base_posicion_vista();
 
 	if(!transformacion.es_transformacion())
 	{
-		posicion_rotada=p;
+		posicion_vista=p;
 	}
 	else
 	{
@@ -209,21 +147,15 @@ void Representacion::actualizar_caja_rotacion()
 		std::vector<double> xs={polig.vertice(0).x, polig.vertice(1).x, polig.vertice(2).x, polig.vertice(3).x};
 		std::vector<double> ys={polig.vertice(0).y, polig.vertice(1).y, polig.vertice(2).y, polig.vertice(3).y};
 
-		posicion_rotada.x=*std::min_element(std::begin(xs), std::end(xs));
-		posicion_rotada.y=*std::min_element(std::begin(ys), std::end(ys));
-		posicion_rotada.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_rotada.x;
-		posicion_rotada.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_rotada.y;
+		posicion_vista.x=*std::min_element(std::begin(xs), std::end(xs));
+		posicion_vista.y=*std::min_element(std::begin(ys), std::end(ys));
+		posicion_vista.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_vista.x;
+		posicion_vista.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_vista.y;
 	}
-}
-
-Rect Representacion::copia_posicion_rotada() const
-{
-	return Rect{posicion_rotada.x, posicion_rotada.y, posicion_rotada.w, posicion_rotada.h};
 }
 
 //Realmente horrible pero comparar la colisión con cajas es rápido.
 bool Representacion::en_toma(const Camara& p_cam) const
 {
-	//TODO: GRAN TIMO!!!!. No es la caja de foco realmente, no?. O si?. Yo que sé...
-	return p_cam.acc_caja_foco().es_en_colision_con(transformacion.angulo_rotacion ? posicion_rotada : posicion, true);
+	return p_cam.acc_caja_foco().es_en_colision_con(posicion_vista, true);
 }

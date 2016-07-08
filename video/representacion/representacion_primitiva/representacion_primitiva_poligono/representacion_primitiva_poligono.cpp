@@ -3,7 +3,7 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<punto>& pt, ColorRGBA c)
+Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const std::vector<Punto>& pt, ColorRGBA c)
 	:Representacion_primitiva(c), puntos(pt), original(pt[0])
 { 
 	//Guardarlos de forma que el primero sea 0.0.
@@ -11,10 +11,7 @@ Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(c
 	{
 		pt.x-=original.x;
 		pt.y-=original.y;
-	}	
-
-	//Calcular el rectángulo de posición para clip de cámara...
-	this->preparar_posicion();
+	}
 }
 
 Representacion_primitiva_poligono_base::Representacion_primitiva_poligono_base(const Representacion_primitiva_poligono_base& p_otra)
@@ -42,10 +39,8 @@ void Representacion_primitiva_poligono_base::volcado(const Info_volcado)
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void Representacion_primitiva_poligono_base::preparar_posicion()
+Rect Representacion_primitiva_poligono_base::obtener_base_posicion_vista() const
 {
-	//TODO: WHAT HAPPENS WHEN WE DO "establecer_posicion" on these???.
-
 	int x=puntos[0].x+original.x, y=puntos[0].y+original.y, maxx=x, maxy=y;
 
 	for(auto p : puntos)
@@ -61,9 +56,44 @@ void Representacion_primitiva_poligono_base::preparar_posicion()
 		else if(p.y > maxy) maxy=p.y;
 	}
 
-	Rect p_pos(x, y, maxx-x, maxy-y);
-	establecer_posicion(p_pos);
-}	
+	return Rect{x, y, (unsigned int)maxx-x, (unsigned int)maxy-y};
+}
+
+
+void Representacion_primitiva_poligono_base::ir_a(int x, int y)
+{
+	original.x=x;
+	original.y=y;
+	actualizar_posicion_vista_rotacion();
+}
+
+Punto Representacion_primitiva_poligono_base::obtener_posicion() const
+{
+	int x=puntos[0].x+original.x, y=puntos[0].y+original.y;
+	for(auto p : puntos)
+	{
+		//Añadir el valor original, porque estos puntos empiezan en 0.0.
+		p.x+=original.x;
+		p.y+=original.y;
+
+		if(p.x < x) x=p.x;
+		if(p.y < y) y=p.y;
+	}
+
+	return Punto{x, y};
+}
+
+Representacion_primitiva_poligono::Representacion_primitiva_poligono(const std::vector<Punto> &puntos, ColorRGBA c)
+	:Representacion_primitiva_poligono_base(puntos, c)
+{
+	actualizar_posicion_vista_rotacion();
+}
+
+Representacion_primitiva_poligono::Representacion_primitiva_poligono(const Representacion_primitiva_poligono& p_otra)
+	:Representacion_primitiva_poligono_base(p_otra) 
+{
+
+}
 
 Representacion_primitiva_poligono& Representacion_primitiva_poligono::operator=(const Representacion_primitiva_poligono& p_otro)
 {
@@ -71,13 +101,13 @@ Representacion_primitiva_poligono& Representacion_primitiva_poligono::operator=(
 	return *this;
 }
 
-Representacion_primitiva_poligono::Representacion_primitiva_poligono(const std::vector<punto> &puntos, ColorRGBA c)
+Representacion_primitiva_poligono_lineas::Representacion_primitiva_poligono_lineas(const std::vector<Punto>& puntos, ColorRGBA c)
 	:Representacion_primitiva_poligono_base(puntos, c)
 {
-
+	actualizar_posicion_vista_rotacion();
 }
 
-Representacion_primitiva_poligono::Representacion_primitiva_poligono(const Representacion_primitiva_poligono& p_otra)
+Representacion_primitiva_poligono_lineas::Representacion_primitiva_poligono_lineas(const Representacion_primitiva_poligono_lineas& p_otra)
 	:Representacion_primitiva_poligono_base(p_otra) 
 {
 
@@ -87,16 +117,4 @@ Representacion_primitiva_poligono_lineas& Representacion_primitiva_poligono_line
 {
 	Representacion_primitiva_poligono_base::operator=(p_otro);
 	return *this;
-}
-
-Representacion_primitiva_poligono_lineas::Representacion_primitiva_poligono_lineas(const std::vector<punto>& puntos, ColorRGBA c)
-	:Representacion_primitiva_poligono_base(puntos, c)
-{
-
-}
-
-Representacion_primitiva_poligono_lineas::Representacion_primitiva_poligono_lineas(const Representacion_primitiva_poligono_lineas& p_otra)
-	:Representacion_primitiva_poligono_base(p_otra) 
-{
-
 }

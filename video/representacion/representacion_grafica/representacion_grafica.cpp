@@ -8,23 +8,25 @@ extern DLibH::Log_base LOG;
 
 
 Representacion_grafica::Representacion_grafica()
-	:Representacion(), textura(nullptr), pincel{0,0}
+	:Representacion(), textura(nullptr), 
+	pincel{0,0}, posicion{0,0,0,0}, recorte{0,0,0,0}
 {
-	this->reiniciar_posicion();
-	this->reiniciar_recorte();
+
 }
 
 Representacion_grafica::Representacion_grafica(ColorRGBA color)
-	:Representacion(color), textura(nullptr),pincel{0,0}
+	:Representacion(color), textura(nullptr),
+	pincel{0,0}, posicion{0,0,0,0}, recorte{0,0,0,0}
 {
-	this->reiniciar_posicion();
-	this->reiniciar_recorte();
+
 }
 
 Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
 	:Representacion(o) ,textura(o.textura),
 	pincel(o.pincel), puntos(o.puntos), 
-	final_ptex(o.final_ptex)
+	final_ptex(o.final_ptex),
+	posicion(o.posicion), 
+	recorte(o.recorte)
 {
 
 }
@@ -33,18 +35,13 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 {
 	Representacion::operator=(o);
 	textura=o.textura;
+	posicion=o.posicion;
+	recorte=o.recorte;
 	pincel=o.pincel;
 	puntos=o.puntos;
 	final_ptex=o.final_ptex;
 
 	return *this;
-}
-
-Representacion_grafica::~Representacion_grafica()
-{
-	//OJO: No se borra el recurso gráfico porque se asume que lo hemos
-	//obtenido de un gestor de recursos. Esta clase base NO gestiona los
-	//recursos asignados. Una superior, en cambio, si podría.
 }
 
 void Representacion_grafica::recorte_a_medidas_textura()
@@ -184,23 +181,48 @@ void Representacion_grafica::liberar_textura()
 	}
 }
 
-void Representacion_grafica::establecer_posicion(int x, int y, int w, int h, int f)
+void Representacion_grafica::establecer_posicion(int p_x, int p_y, int p_w, int p_h, int p_flags)
 {
-	Representacion::establecer_posicion(x, y, w, h, f);
-	actualizar_caja_rotacion();
+	if(p_flags & FRECT_X) posicion.x=p_x;
+	if(p_flags & FRECT_Y) posicion.y=p_y;
+	if(p_flags & FRECT_W && p_w != -1) posicion.w=p_w;
+	if(p_flags & FRECT_H && p_h != -1) posicion.h=p_h;
+	actualizar_posicion_vista_rotacion();
 }
 
 void Representacion_grafica::establecer_posicion(Rect c)
 {
-	Representacion::establecer_posicion(c);
-	actualizar_caja_rotacion();
+	posicion=c;
+	actualizar_posicion_vista_rotacion();
 }
 
-//TODO: Does this affect us???
-/*
-void Representacion_grafica::preparar(const SDL_Renderer * renderer)
+void Representacion_grafica::establecer_recorte(Rect p_caja)
 {
-	actualizar_caja_rotacion();
-	marcar_como_preparada();
+	recorte=p_caja;
 }
-*/
+
+void Representacion_grafica::establecer_recorte(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, int p_flags)
+{
+	if(p_flags & FRECT_X) recorte.x=p_x;
+	if(p_flags & FRECT_Y) recorte.y=p_y;
+	if(p_flags & FRECT_W) recorte.w=p_w;
+	if(p_flags & FRECT_H) recorte.h=p_h;
+}
+
+
+void Representacion_grafica::ir_a(int x, int y)
+{
+	posicion.x=x; 
+	posicion.y=y;
+	actualizar_posicion_vista_rotacion();
+}
+
+Punto Representacion_grafica::obtener_posicion() const
+{
+	return Punto{posicion.x, posicion.y};
+}
+
+Rect Representacion_grafica::obtener_base_posicion_vista() const
+{
+	return posicion;
+}

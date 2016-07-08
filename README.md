@@ -3,11 +3,7 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
-- What about "establecer_posicion" on primitives?. Does it behave?. Should it?.
-	- It should move the origin and recalculate the position. 
-	- Width and height could be ignored or could scale the thing.
-	- Thus, establecer_posicion should be virtual and be reimplemented on these classes :(.
-- Clear OLD functions with no use. Keep the interface simpler.
+- Clear OLD functions with no use. Keep the interface simpler. 
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
 - Keep clearing old SDL_Rect functions.
 	- At least on the video part.
@@ -34,3 +30,7 @@ C++ Wrappers for SDL2 and OpenGL.
 - Restore rotation calculation for stuff, so we can do better camera work.
 - Remove the two different rendering functions (with and without camera): use a default camera value.
 - Integrate the zooming better.
+- What about "establecer_posicion" on primitives?. Does it behave?. Should it?.
+	- It should move the origin and recalculate the position. 
+	- Width and height could be ignored or could scale the thing.
+	- Thus, establecer_posicion should be virtual and be reimplemented on these classes :(.

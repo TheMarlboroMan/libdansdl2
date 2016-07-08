@@ -3,22 +3,21 @@
 using namespace DLibV;
 Representacion_bitmap::Representacion_bitmap():Representacion_grafica()
 {
-
+	actualizar_posicion_vista_rotacion();
 }
 
 Representacion_bitmap::Representacion_bitmap(const Textura * p_rec):Representacion_grafica()
 {
-	this->establecer_textura(p_rec);
-	this->establecer_dimensiones_posicion_por_recorte();
+	establecer_textura(p_rec);
+
+	posicion.w=recorte.w;
+	posicion.h=recorte.h;
+
+	actualizar_posicion_vista_rotacion();
 }
 
 Representacion_bitmap::Representacion_bitmap(const Representacion_bitmap& o)
 	:Representacion_grafica(o)
-{
-
-}
-
-Representacion_bitmap::~Representacion_bitmap()
 {
 
 }
@@ -32,5 +31,5 @@ Representacion_bitmap& Representacion_bitmap::operator=(const Representacion_bit
 void Representacion_bitmap::establecer_textura(Textura const * p_recurso)
 {
 	Representacion_grafica::establecer_textura(p_recurso);
-	this->recorte_a_medidas_textura();
+	recorte_a_medidas_textura();
 }

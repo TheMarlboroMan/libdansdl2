@@ -22,15 +22,17 @@ class Representacion_primitiva_puntos:
 	void 					insertar(int x, int y);
 	void					limpiar_puntos();
 
+	virtual void 				ir_a(int x, int y);
+	virtual Punto				obtener_posicion() const;
+
 	protected:
 
-	void 					generar_posicion();
-
+	virtual Rect				obtener_base_posicion_vista() const;
 
 	private:
 
-	std::vector<Representacion_primitiva::punto>			puntos;
-	Representacion_primitiva::punto					original;
+	std::vector<Punto>			puntos;
+	Punto					original;
 };
 
 }

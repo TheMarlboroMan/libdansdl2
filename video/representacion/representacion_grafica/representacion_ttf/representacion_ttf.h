@@ -17,8 +17,7 @@ class Representacion_TTF:
 {
 	public:
 
-					Representacion_TTF(const Fuente_TTF&, ColorRGBA, const std::string&);
-					Representacion_TTF(const Fuente_TTF&, ColorRGBA);
+					Representacion_TTF(const Fuente_TTF&, ColorRGBA, std::string="");
 					Representacion_TTF(const Representacion_TTF&);
 	virtual				~Representacion_TTF();
 	Representacion_TTF&		operator=(const Representacion_TTF&);
@@ -34,7 +33,7 @@ class Representacion_TTF:
 
 	private:
 
-	void				generar_textura();	
+	void				generar_textura();
 	void				interno_asignar(const std::string&);
 	void				reemplazar(std::string&, const std::string&, const std::string&);
 

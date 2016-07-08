@@ -7,6 +7,7 @@
 namespace DLibV
 {
 typedef DLibH::Caja<int, unsigned int> 	Rect;
+typedef DLibH::Punto_2d<int>		Punto;
 //Rect desde_sdl_rect(SDL_Rect);
 }
 

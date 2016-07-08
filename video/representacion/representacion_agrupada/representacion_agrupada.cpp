@@ -7,8 +7,8 @@ Representacion_agrupada::Representacion_agrupada(bool p_poseer):
 	impone_alpha(true),
 	impone_modo_blend(false)
 {
-	this->reiniciar_posicion();
-	this->reiniciar_recorte();
+//	this->reiniciar_posicion();
+//	this->reiniciar_recorte();
 }
 
 Representacion_agrupada::Representacion_agrupada(const Representacion_agrupada& p_otra):
@@ -19,8 +19,8 @@ Representacion_agrupada::Representacion_agrupada(const Representacion_agrupada& 
 		this->grupo=p_otra.grupo;
 	}
 
-	this->reiniciar_posicion();
-	this->reiniciar_recorte();
+//	this->reiniciar_posicion();
+//	this->reiniciar_recorte();
 }
 
 Representacion_agrupada::~Representacion_agrupada()
@@ -72,7 +72,7 @@ void Representacion_agrupada::volcado(const Info_volcado)
 	std::vector<Representacion *>::iterator 	inicio=this->grupo.begin(),
 							fin=this->grupo.end();
 
-	Rect pos=acc_posicion();
+	auto pos=obtener_posicion();
 	int px=pos.x, py=pos.y;
 	unsigned int alpha_p=acc_alpha();
 	auto modo_blend_p=acc_modo_blend();
@@ -101,7 +101,8 @@ void Representacion_agrupada::volcado(const Info_volcado)
 //		unsigned int mod_color_g_a=acc_mod_color_g();
 //		unsigned int mod_color_b_a=acc_mod_color_b();
 
-		(*inicio)->desplazar(px, py);
+//TODO: Desplazar DOES NOT EXIST ANYMORE.
+//		(*inicio)->desplazar(px, py);
 //		(*inicio)->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
 //TODO... Where's the screen?. We cannot do this right now. The screen is a neccesary parameter.
@@ -110,7 +111,8 @@ void Representacion_agrupada::volcado(const Info_volcado)
 //Or maybe we could get the screen as a parameter.
 //		(*inicio)->volcar();
 
-		(*inicio)->desplazar(-px, -py);
+//TODO: Desplazar DOES NOT EXIST ANYMORE.
+		//(*inicio)->desplazar(-px, -py);
 		if(impone_alpha) (*inicio)->establecer_alpha(alpha_a);
 		if(impone_modo_blend) (*inicio)->establecer_modo_blend(modo_blend_a);
 //		(*inicio)->establecer_mod_color(mod_color_r_a, mod_color_g_a, mod_color_b_a);

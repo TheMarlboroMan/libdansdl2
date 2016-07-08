@@ -4,21 +4,13 @@ using namespace DLibV;
 
 extern DLibH::Log_base LOG;
 
-Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color, const std::string& texto)
+Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color, std::string texto)
 	:Representacion_grafica(color), 
 	fuente(&fuente),
 	cadena(texto)
 {
 	generar_textura();
-}
-
-//TODO: Fuck SDL_Color.
-Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color)
-	:Representacion_grafica(color), 
-	fuente(&fuente),
-	cadena("")
-{
-	generar_textura();
+	actualizar_posicion_vista_rotacion();
 }
 
 Representacion_TTF::Representacion_TTF(const Representacion_TTF& o)
