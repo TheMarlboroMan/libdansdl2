@@ -3,9 +3,6 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
-- Do real camera checking. Now it's fucked up.
-- Restore rotation calculation for stuff, so we can do better camera work.
-- Integrate the zooming better.
 - What about "establecer_posicion" on primitives?. Does it behave?. Should it?.
 	- It should move the origin and recalculate the position. 
 	- Width and height could be ignored or could scale the thing.
@@ -14,7 +11,6 @@ C++ Wrappers for SDL2 and OpenGL.
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
 - Keep clearing old SDL_Rect functions.
 	- At least on the video part.
-- Remove the two different rendering functions (with and without camera): use a default camera value.
 - Maybe get rid of most of the hierarchy: it's way too convoluted and the whole position and clipping is a bit rancid.
 - Get rid of filled vs wireframe classes?. The only difference is at rendering and doesn't make much sense.
 - Cleanup warnings.
@@ -34,3 +30,7 @@ C++ Wrappers for SDL2 and OpenGL.
 - Rotation on a bitmap really fucks things up.
 - Add camera clipping using the stencil buffer.
 - We could apply rotation to... everything. It should be easy enough now :D.
+- Do real camera checking. Now it's fucked up.
+- Restore rotation calculation for stuff, so we can do better camera work.
+- Remove the two different rendering functions (with and without camera): use a default camera value.
+- Integrate the zooming better.

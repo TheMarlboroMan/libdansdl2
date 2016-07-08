@@ -4,7 +4,7 @@ using namespace DLibV;
 
 Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
 	ventana(nullptr), camara_actual(nullptr), 
-	info_volcado{0,0,0,0},
+	info_volcado{0,0,0,0,(int)p_w,(int)p_h,1.0},
 	w(p_w), h(p_h), modo_ventana(p_m), w_logico(w), h_logico(h)
 {
 	simulacro_caja.w=0;
@@ -143,7 +143,10 @@ void Pantalla::establecer_clip(Rect p_caja)
 	glClear(GL_STENCIL_BUFFER_BIT);
 
 	//Nunca renderizar... pero si reemplazar.
+
+//	glColor4f(0.1f, 0.6f, 0.6f, 0.2f);
 	glStencilFunc(GL_NEVER, 1, 1);
+//	glStencilFunc(GL_ALWAYS, 1, 1);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
 	int	fx=p_caja.x+p_caja.w, 

@@ -23,7 +23,7 @@ class Camara
 	Rect 			copia_caja_foco() const {return this->caja_foco;}
 	Rect	 		copia_caja_pos() const {return this->caja_pos;}
 
-	double			acc_zoom() const {return zoom;}
+	double			acc_zoom() const {return info_volcado.zoom;}
 	unsigned int		acc_pos_x() const {return this->pos_x;}
 	unsigned int 		acc_pos_y() const {return this->pos_y;}
 	unsigned int		acc_pos_w() const {return this->caja_pos.w;}
@@ -66,8 +66,6 @@ class Camara
 	int 			limite_min_y;
 	int 			limite_max_x;
 	int 			limite_max_y;
-	double 			zoom;
-
 };
 
 } //Fin namespace DLibV

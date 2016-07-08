@@ -6,7 +6,7 @@
 
 namespace DLibV
 {
-typedef DLibH::Caja<int, unsigned int> Rect;
+typedef DLibH::Caja<int, unsigned int> 	Rect;
 //Rect desde_sdl_rect(SDL_Rect);
 }
 

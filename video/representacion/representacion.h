@@ -7,49 +7,28 @@
 #include "../camara/camara.h"
 #include "../info_volcado/info_volcado.h"
 #include "../pantalla/pantalla.h"
-#include "../../herramientas/herramientas_sdl/herramientas_sdl.h"
+#include "../../herramientas/poligono_2d/poligono_2d.h"
 
 namespace DLibV
 {
 
 struct Representacion_transformacion
 {
-	float angulo_rotacion;
-	float x_centro_rotacion;
-	float y_centro_rotacion;
+	float 				angulo_rotacion;
+	DLibH::Punto_2d<float>		centro_rotacion;
 
 	Representacion_transformacion():
-		angulo_rotacion(0.f), x_centro_rotacion(0.f), y_centro_rotacion(0.f)
+		angulo_rotacion(0.f), centro_rotacion(0.f, 0.f)
 	{}
 
-	//TODO... I don't want SDL here.
-	SDL_Point obtener_centro_rotacion() const
-	{
-		SDL_Point p;
-		p.x=x_centro_rotacion;
-		p.y=y_centro_rotacion;
-		return p;
-	}
+	bool 				es_transformacion() const {return angulo_rotacion!=0.f;}
+	bool 				es_cambia_centro_rotacion() const {return centro_rotacion.x!=0.f || centro_rotacion.y!=0.f;}
 
-	bool es_transformacion() const {return angulo_rotacion!=0.f;}
-	bool es_cambia_centro_rotacion() const {return x_centro_rotacion!=0.f || y_centro_rotacion!=0.f;}
-	void centro_rotacion(float px, float py)
-	{
-		x_centro_rotacion=px;
-		y_centro_rotacion=py;
-	}
-
-	void cancelar_centro_rotacion()
-	{
-		x_centro_rotacion=0.f;
-		y_centro_rotacion=0.f;
-	}
-
-	void reiniciar()
+	void 				reiniciar()
 	{
 		angulo_rotacion=0.f;
-		x_centro_rotacion=0.f;
-		y_centro_rotacion=0.f;
+		centro_rotacion.x=0.f;
+		centro_rotacion.y=0.f;
 	}
 };
 
@@ -66,12 +45,8 @@ class Representacion
 	Representacion& 	operator=(const Representacion &);
 	virtual 		~Representacion() {}
 
-	bool 			en_toma(const Camara& p_cam) const {return posicion.es_en_colision_con(p_cam.acc_caja_pos(), true);}
-	bool 			es_en_posicion(Sint16 p_x, Sint16 p_y) const 
-	{
-		return this->posicion.x==p_x && 
-		this->posicion.y==p_y;
-	}
+	bool 			en_toma(const Camara& p_cam) const;
+	bool 			es_en_posicion(Sint16 p_x, Sint16 p_y) const {return posicion.x==p_x && posicion.y==p_y;}
 
 	Rect 			copia_posicion_rotada() const;
 	const Rect& 		acc_posicion() const {return this->posicion;}
@@ -85,7 +60,7 @@ class Representacion
 	void 			establecer_recorte(Rect);
 	void 			establecer_dimensiones_posicion_por_recorte();
 
-	//TODO: Really???. Check this.
+	//TODO: Really???. Check this, I mean... the virtual thing.
 	virtual void 		ir_a(int x, int y){establecer_posicion(x,y);} //Es virtual porque algunas igual redefinen el comportamiento (especialmente las primitivas)....
 	void 			desplazar(Sint16 p_x, Sint16 p_y);
 	void 			hacer_invisible() {this->visible=false;}
@@ -115,10 +90,6 @@ class Representacion
 	void 			establecer_modo_blend(blends v) {this->modo_blend=v;}
 	blends		 	acc_modo_blend() const {return this->modo_blend;}
 
-	//TODO: Ya veremos...
-	static void 		procesar_zoom(Rect& pos, const Rect& p_posicion, const Rect& p_enfoque);
-	static void 		procesar_zoom(Rect&, double);
-
 	virtual void 		reiniciar_transformacion() {transformacion.reiniciar();}
 
 	void 			transformar_rotar(float v);
@@ -129,9 +100,10 @@ class Representacion
 
 	private:
 
+	void			transformacion_pre_render(const Info_volcado);
+
 	Representacion_transformacion transformacion;
-	//Copia de posición alterada según rotación. La usaremos para ver si estamos en cámara.
-	//TODO: Maybe this goes somewhere else :D.
+
 	bool 			visible;
 	blends		 	modo_blend;
 	ColorRGBA		rgba;

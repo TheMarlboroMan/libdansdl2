@@ -3,9 +3,9 @@
 using namespace DLibV;
 
 Camara::Camara(int p_x, int p_y, unsigned int p_w, unsigned int p_h, unsigned int p_px, unsigned int p_py):
-	info_volcado{(int)p_px, (int)p_py, 0, 0}, pos_x(p_px), pos_y(p_py),
-	/*con_clip(true),*/ limitada(false), limite_min_x(0), limite_min_y(0),
-	limite_max_x(0), limite_max_y(0), zoom(1.0)
+	info_volcado{(int)p_px, (int)p_py, 0, 0, (int)p_w, (int)p_h, 1.0}, pos_x(p_px), pos_y(p_py),
+	limitada(false), limite_min_x(0), limite_min_y(0),
+	limite_max_x(0), limite_max_y(0)
 {
 	caja_foco.x=p_x;
 	caja_foco.y=p_y;
@@ -26,6 +26,8 @@ void Camara::sincronizar_cajas()
 	info_volcado.pos_y=pos_y;
 	info_volcado.rel_x=caja_foco.x;
 	info_volcado.rel_y=caja_foco.y;
+	info_volcado.vista_w=caja_foco.w;
+	info_volcado.vista_h=caja_foco.h;
 }
 
 /*Mueve la posición a la que apunta la cámara en la pantalla. Se usan las
@@ -92,9 +94,11 @@ void Camara::transformar_posicion_raton(int& x, int& y)
 	y=caja_foco.y + (y * (caja_foco.h / (float) caja_pos.h));
 }
 
+//Un valor de 2 significa que todo es 2 veces más grande, ergo la caja de foco es dos veces más pequeña.
 void Camara::mut_zoom(double v)
 {
-	zoom=v;
-	caja_foco.w=caja_pos.w*v;
-	caja_foco.h=caja_pos.h*v;
+	if(v < 0.01) v=0.01;
+	info_volcado.zoom=v;
+	caja_foco.w=caja_pos.w / v;
+	caja_foco.h=caja_pos.h / v;
 }
