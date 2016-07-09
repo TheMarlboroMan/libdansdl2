@@ -40,19 +40,19 @@ void Representacion_agrupada::vaciar_grupo()
 	grupo.clear();
 }
 
-void Representacion_agrupada::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey)
+void Representacion_agrupada::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey, float ang)
 {
-	if(es_visible() && es_en_toma(p_camara.acc_caja_foco(), ex, ey))
+	if(es_visible() && es_en_toma(p_camara.acc_caja_foco(), ex, ey, ang))
 	{
-		volcado_interno(p_pantalla, &p_camara, ex, ey);
+		volcado_interno(p_pantalla, &p_camara, ex, ey, ang);
 	}
 }
 
-void Representacion_agrupada::volcar(Pantalla& p_pantalla, int ex, int ey)
+void Representacion_agrupada::volcar(Pantalla& p_pantalla, int ex, int ey, float ang)
 {
-	if(es_visible() && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey)) 
+	if(es_visible() && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey, ang)) 
 	{
-		volcado_interno(p_pantalla, nullptr, ey, ey);
+		volcado_interno(p_pantalla, nullptr, ey, ey, ang);
 	}
 }
 
@@ -65,7 +65,7 @@ Sería posible hacerlo "acumulativo" sin muchos problemas de modo que los valore
 se sumen y resten dentro del rango 0-255.
 */
 
-void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const * p_camara, int ex, int ey)
+void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const * p_camara, int ex, int ey, float ang)
 {
 	unsigned int alpha_p=acc_alpha();
 	auto modo_blend_p=acc_modo_blend();
@@ -78,7 +78,7 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 
 	//Al asignar se reinician las matrices. Si la asignación ocurre durante 
 	//la iteración podríamos tenemos malos resultados ya que antes ha habido
-	//un translate que no te ha tenido en cuenta.
+	//un translate que no se ha tenido en cuenta.
 	if(p_camara!=nullptr) p_pantalla.asignar_camara(*p_camara);
 
 	for(auto &r : grupo)
@@ -102,63 +102,18 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 //		r->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
 		glMatrixMode(GL_MODELVIEW);
+		auto tr=acc_transformacion_rotacion();
+		do_shit(p_pantalla, p_camara, tr, x, y, ex, ey);
 
-//TODO: This is not accounting for all transformations...
-
-		//Zoom, desplazamiento y rotación...
-/*
-		auto iv=p_camara != nullptr ? p_camara->acc_info_volcado() : p_pantalla.acc_info_volcado();
-		glTranslatef(x*iv.zoom, y*iv.zoom, 0.f);
-
-		//Desplazamiento cámara...
-///		if(p_camara!=nullptr)
-//		{
-//			int 	cx=iv.pos_x+x-iv.rel_x, 
-//				cy=iv.pos_y+y-iv.rel_y;
-//			glTranslatef(cx, cy, 0.f);
-//		}
-
-		const auto& transformacion=acc_transformacion_rotacion();
-		if(transformacion.angulo_rotacion != 0.f)
-		{
-//			glTranslatef(transformacion.centro_rotacion.x, transformacion.centro_rotacion.y, 0.f);
-			glRotatef(transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
-//			glTranslatef(-transformacion.centro_rotacion.x, -transformacion.centro_rotacion.y, 0.f);
-		}
-		*/
-
-/*
-		auto iv=p_camara != nullptr ? p_camara->acc_info_volcado() : p_pantalla.acc_info_volcado();
-		auto pos=Punto{x, y};
-		int 	tx=iv.pos_x+pos.x-iv.rel_x, 
-			ty=iv.pos_y+pos.y-iv.rel_y;
-
-		//En caso de que haya zoom compensamos el movimiento que causa la escala.
-		//Básicamente estamos desplazando la mitad, dos tercios, tres cuartos...
-		if(iv.zoom!=1.0)
-		{
-			glScaled(iv.zoom, iv.zoom, 1.0);
-			//Puro empirismo.
-			glTranslatef((iv.pos_x / iv.zoom) - iv.pos_x, (iv.pos_y / iv.zoom) - iv.pos_y, 0.f);
-		}
-
-		glTranslatef(tx, ty, 0.f);
-
-		const auto& transformacion=acc_transformacion_rotacion();
-		if(transformacion.angulo_rotacion != 0.f)
-		{
-			glTranslatef(transformacion.centro_rotacion.x, transformacion.centro_rotacion.y, 0.f);
-			glRotatef(transformacion.angulo_rotacion, 0.f, 0.f, 1.f);
-			glTranslatef(-transformacion.centro_rotacion.x, -transformacion.centro_rotacion.y, 0.f);
-		}
-*/
 		if(p_camara!=nullptr) 
 		{
-			r->volcar(p_pantalla, *p_camara, x+ex, y+ey);
+//TODO: OPTIMIZE CALCULATIONS.
+			r->volcar(p_pantalla, *p_camara, x+ex, y+ey, tr.angulo_rotacion+ang);
 		}
 		else 
 		{
-			r->volcar(p_pantalla, x+ex, y+ey);
+//TODO: OPTIMIZE CALCULATIONS.
+			r->volcar(p_pantalla, x+ex, y+ey, tr.angulo_rotacion+ang);
 		}
 
 		if(impone_alpha) r->establecer_alpha(alpha_a);

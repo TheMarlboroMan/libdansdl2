@@ -5,6 +5,8 @@
 #include "../../../herramientas/herramientas_sdl/herramientas_sdl.h"
 #include <vector>
 
+void do_shit(DLibV::Pantalla& p_pantalla, DLibV::Camara const * p_camara, DLibV::Representacion_transformacion, int x, int y, int ex, int ey);
+
 namespace DLibV
 {
 
@@ -36,12 +38,12 @@ class Representacion_agrupada:public Representacion
 
 	std::vector<Representacion *>&	obtener_grupo() {return grupo;}
 
-	virtual void		volcar(Pantalla&, const Camara&, int=0, int=0);
-	virtual void		volcar(Pantalla&, int=0, int=0);
+	virtual void		volcar(Pantalla&, const Camara&, int=0, int=0, float=0.f);
+	virtual void		volcar(Pantalla&, int=0, int=0, float=0.f);
 
 	private:
 
-	void			volcado_interno(Pantalla&, Camara const *, int, int);
+	void			volcado_interno(Pantalla&, Camara const *, int, int, float);
 
 	int			x, y;
 	bool			posee_las_representaciones,

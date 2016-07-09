@@ -44,7 +44,7 @@ class Representacion
 	Representacion& 	operator=(const Representacion &);
 	virtual 		~Representacion() {}
 
-	bool 			es_en_toma(const Rect&, int, int) const;
+	bool 			es_en_toma(const Rect&, int, int, float) const;
 	const Rect&		acc_posicion_vista() const {return posicion_vista;}
 	Rect 			copia_posicion_vista() {return posicion_vista;}
 
@@ -55,8 +55,8 @@ class Representacion
 	bool 			es_visible() const {return this->visible;}
 
 	//Virtuales por el caso especial de las agrupadas...
-	virtual void		volcar(Pantalla&, const Camara&, int=0, int=0);
-	virtual void		volcar(Pantalla&, int=0, int=0);
+	virtual void		volcar(Pantalla&, const Camara&, int=0, int=0, float=0.f);
+	virtual void		volcar(Pantalla&, int=0, int=0, float=0.f);
 
 	void			mut_rgba(ColorRGBA v) {rgba=v;}
 	void 			establecer_alpha(unsigned int v) {rgba.a=colorfi(v);}
@@ -102,7 +102,8 @@ class Representacion
 	protected:
 	
 	const Representacion_transformacion& acc_transformacion_rotacion() const {return transformacion;}
-	void 			actualizar_posicion_vista_rotacion();
+	void 			actualizar_posicion_vista_rotacion(float=0.f);
+	Rect			calcular_posicion_vista_rotacion(float) const;
 	virtual void 		volcado()=0;
 	void			transformacion_pre_render(const Info_volcado);
 };

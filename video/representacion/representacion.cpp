@@ -44,11 +44,13 @@ Representacion& Representacion::operator=(const Representacion& p_otra)
 //Realmente horrible pero comparar la colisión con cajas es rápido.
 //Ex y Ey representan un desplazamiento que hacer a la caja para solucionar un
 //problema de las representaciones agrupadas.
-bool Representacion::es_en_toma(const Rect& rect, int ex, int ey) const
+//TODO 
+bool Representacion::es_en_toma(const Rect& rect, int ex, int ey, float ang) const
 {
-	if(ex || ey)
+	if(ex || ey || ang)
 	{
-		auto pos=posicion_vista;
+		//TODO: Maybe don't update always but request it here???
+		auto pos=ang ? posicion_vista : calcular_posicion_vista_rotacion(ang);
 		pos.x+=ex;
 		pos.y+=ey;
 		return rect.es_en_colision_con(pos, true);
@@ -65,9 +67,10 @@ bool Representacion::es_en_toma(const Rect& rect, int ex, int ey) const
 //la posición. Esto causa que salgan "fuera de la cámara". Los parámetros
 //contienen la posición del grupo para añadirlo a la caja de turno.
 
-void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey)
+void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey, float ang)
 {
-	if(visible && es_en_toma(p_camara.acc_caja_foco(), ex, ey)) 
+	//TODO: Just add SKIP TAKE.
+	if(visible && es_en_toma(p_camara.acc_caja_foco(), ex, ey, ang)) 
 	{
 		p_pantalla.asignar_camara(p_camara);
 		transformacion_pre_render(p_camara.acc_info_volcado());
@@ -78,9 +81,10 @@ void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex
 	glLoadIdentity();
 }
 
-void Representacion::volcar(Pantalla& p_pantalla, int ex, int ey)
+void Representacion::volcar(Pantalla& p_pantalla, int ex, int ey, float ang)
 {
-	if(visible && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey)) 
+	//TODO: Guess what... additional rotations ARE NOT TAKEN INTO ACCOUNT!!
+	if(visible && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey, ang)) 
 	{
 		p_pantalla.reiniciar_clip();
 		transformacion_pre_render(p_pantalla.acc_info_volcado());
@@ -149,36 +153,46 @@ void Representacion::transformar_centro_rotacion_cancelar()
 	actualizar_posicion_vista_rotacion();
 }
 
-void Representacion::actualizar_posicion_vista_rotacion()
+//TODO: Añadir extra de rotación para solucionar eso...
+//TODO: Error... Ese extra de rotación se sabe al renderizar. La representación
+//no sabe que la contiene algo que está rotado :S.
+//TODO: Maybe this should return it...
+void Representacion::actualizar_posicion_vista_rotacion(float extra_ang)
 {
-	const auto p=obtener_base_posicion_vista();
-
 	if(!transformacion.es_transformacion())
 	{
-		posicion_vista=p;
+		posicion_vista=obtener_base_posicion_vista();
 	}
 	else
 	{
-		auto c=transformacion.centro_rotacion;
-		DLibH::Poligono_2d_vertices<double> polig(
-			{ 
-				{(double)p.x, (double)p.y},
-				{(double)(p.x+p.w), (double)p.y},
-				{(double)(p.x+p.w), (double)(p.y+p.h)},
-				{(double)p.x, (double)(p.y+p.h)},        
-			}, {(double)c.x+p.x, (double)c.y+p.y});
-
-		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
-		float a=transformacion.angulo_rotacion;
-		polig.rotar(a);
-
-		//Sacar las medidas para la nueva caja...
-		std::vector<double> xs={polig.vertice(0).x, polig.vertice(1).x, polig.vertice(2).x, polig.vertice(3).x};
-		std::vector<double> ys={polig.vertice(0).y, polig.vertice(1).y, polig.vertice(2).y, polig.vertice(3).y};
-
-		posicion_vista.x=*std::min_element(std::begin(xs), std::end(xs));
-		posicion_vista.y=*std::min_element(std::begin(ys), std::end(ys));
-		posicion_vista.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_vista.x;
-		posicion_vista.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_vista.y;
+		posicion_vista=calcular_posicion_vista_rotacion(extra_ang);
 	}
+}
+
+Rect Representacion::calcular_posicion_vista_rotacion(float extra_ang) const
+{
+	const auto p=obtener_base_posicion_vista();
+	auto c=transformacion.centro_rotacion;
+	DLibH::Poligono_2d_vertices<double> polig(
+		{ 
+			{(double)p.x, (double)p.y},
+			{(double)(p.x+p.w), (double)p.y},
+			{(double)(p.x+p.w), (double)(p.y+p.h)},
+			{(double)p.x, (double)(p.y+p.h)},        
+		}, {(double)c.x+p.x, (double)c.y+p.y});
+		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
+	float a=transformacion.angulo_rotacion+extra_ang;
+	polig.rotar(a);
+
+	//Sacar las medidas para la nueva caja...
+	std::vector<double> xs={polig.vertice(0).x, polig.vertice(1).x, polig.vertice(2).x, polig.vertice(3).x};
+	std::vector<double> ys={polig.vertice(0).y, polig.vertice(1).y, polig.vertice(2).y, polig.vertice(3).y};
+
+	Rect res{0,0,0,0};
+	res.x=*std::min_element(std::begin(xs), std::end(xs));
+	res.y=*std::min_element(std::begin(ys), std::end(ys));
+	res.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_vista.x;
+	res.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_vista.y;
+
+	return res;
 }

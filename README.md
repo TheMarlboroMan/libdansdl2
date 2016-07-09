@@ -3,7 +3,8 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
-- Add rotation to groups.
+- Add rotation to groups
+	- After various tries I think it's better to skip the screen check for each single element: it's very problematic with rotations and leads to dirty code.
 - Alpha in groups.
 - Add vector constructor and insert for points.
 - Clear OLD functions with no use. Keep the interface simpler. 
