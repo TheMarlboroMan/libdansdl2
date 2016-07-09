@@ -112,6 +112,7 @@ void Pantalla::establecer_clip(Camara const& p_camara)
 void Pantalla::establecer_clip(Rect p_caja)
 {
 	//Reiniciar matrices...
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	//Activar test de stencil, establecer valor de limpieza y limpiar.

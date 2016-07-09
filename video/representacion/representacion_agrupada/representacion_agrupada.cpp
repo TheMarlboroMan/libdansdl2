@@ -69,11 +69,14 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 
 	unsigned int alpha_a=0;
 	auto modo_blend_a=Representacion::blends::BLEND_NADA;
- 
+
+	//Esto es MUY IMPORTANTE: al asignar se reinician las matrices. Si la
+	//asignación ocurre durante la iteración tenemos malos resultados
+	//garantizados.
+	if(p_camara!=nullptr) p_pantalla.asignar_camara(*p_camara);
+
 	for(auto &r : grupo)
 	{
-		glTranslatef(x, y, 0.f);
-
 		if(impone_alpha)
 		{
 			alpha_a=r->acc_alpha();
@@ -92,13 +95,14 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 
 //		r->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
+		//Sólo puedo hacer esto porque sé que la cámara no se va a reasignar.
+		glTranslatef(x, y, 0.f);
 		if(p_camara!=nullptr) r->volcar(p_pantalla, *p_camara);
 		else r->volcar(p_pantalla);
 
 		if(impone_alpha) r->establecer_alpha(alpha_a);
 		if(impone_modo_blend) r->establecer_modo_blend(modo_blend_a);
 //		r->establecer_mod_color(mod_color_r_a, mod_color_g_a, mod_color_b_a);
-
 	}
 }
 

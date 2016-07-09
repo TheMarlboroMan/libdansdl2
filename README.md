@@ -3,6 +3,9 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
+- Fix groups and camera errors.
+- Add rotation to groups.
+- Add vector constructor and insert for points.
 - Clear OLD functions with no use. Keep the interface simpler. 
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
 - Keep clearing old SDL_Rect functions.
