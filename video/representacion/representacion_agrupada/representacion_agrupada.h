@@ -19,33 +19,34 @@ class Representacion_agrupada:public Representacion
 {
 	public:
 
-				Representacion_agrupada(bool=true);
+				Representacion_agrupada(int, int, bool=true);
 				Representacion_agrupada(const Representacion_agrupada&);
 	virtual 		~Representacion_agrupada();
-	virtual bool 		insertar_representacion(Representacion *);
+	void	 		insertar_representacion(Representacion *);
 
-	bool 			es_preparada() const {return true;}
-
-	void 			imponer_alpha() {impone_alpha=true;}
-	void 			no_imponer_alpha() {impone_alpha=false;}
-	
-	void 			imponer_modo_blend() {impone_modo_blend=true;}
-	void 			no_imponer_modo_blend() {impone_modo_blend=false;}
-
-	void 			poseer_representaciones() {this->posee_las_representaciones=true;}
-	void 			no_poseer_representaciones() {this->posee_las_representaciones=false;}
-	
+	void 			mut_imponer_alpha(bool v) {impone_alpha=v;}
+	void 			mut_imponer_modo_blend(bool v) {impone_modo_blend=v;}
 	void 			vaciar_grupo();
 
 	unsigned int 		obtener_cuenta() const {return grupo.size();}
 
+	virtual void 		ir_a(int x, int y);
+	virtual Punto		obtener_posicion() const;
+	virtual Rect		obtener_base_posicion_vista() const;
+
 	std::vector<Representacion *>&	obtener_grupo() {return grupo;}
+
+	virtual void		volcar(Pantalla&, const Camara&);
+	virtual void		volcar(Pantalla&);
 
 	private:
 
-	bool			posee_las_representaciones;
-	bool 			impone_alpha;
-	bool 			impone_modo_blend;
+	void			volcado_interno(Pantalla&, Camara const *);
+
+	int			x, y;
+	bool			posee_las_representaciones,
+				impone_alpha,
+				impone_modo_blend;
 
 	Representacion_agrupada& 	operator=(const Representacion_agrupada &);	//OJO: Es incopiable!.
 
@@ -53,7 +54,7 @@ class Representacion_agrupada:public Representacion
 
 	std::vector<Representacion *> 	grupo;
 
-	void 				volcado(const Info_volcado);
+	virtual void		volcado();
 };
 
 }

@@ -53,10 +53,6 @@ class Pantalla
 
 	private:
 
-	//Métodos privados.
-
-	void 				configurar(int);
-
 	//Propiedades...
 
 	SDL_Window * 			ventana;

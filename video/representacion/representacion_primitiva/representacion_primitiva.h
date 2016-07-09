@@ -25,13 +25,12 @@ class Representacion_primitiva:public Representacion
 	//Estas hay que definirlas.
 	virtual void 	ir_a(int x, int y)=0;
 	virtual Punto	obtener_posicion() const=0;
+	virtual Rect	obtener_base_posicion_vista() const=0;
 
 	protected:
-	
-	void 		preparar_color();
 
-	virtual void 	volcado(const Info_volcado)=0;
-	virtual Rect	obtener_base_posicion_vista() const=0;
+	void 		preparar_color();
+	virtual void 	volcado()=0;
 };
 
 } //Fin namespace DLibV

@@ -49,7 +49,7 @@ void Representacion_grafica::recorte_a_medidas_textura()
 	establecer_recorte(0,0, textura->acc_w(), textura->acc_h());
 }
 
-void Representacion_grafica::volcado(const Info_volcado iv)
+void Representacion_grafica::volcado()
 {
 	glMatrixMode(GL_MODELVIEW);
 	glColor4f(1.f, 1.f, 1.f, 1.f);

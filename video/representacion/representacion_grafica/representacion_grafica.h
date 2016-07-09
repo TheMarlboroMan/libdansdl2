@@ -75,6 +75,7 @@ class Representacion_grafica:public Representacion
 
 	virtual void 		ir_a(int x, int y);
 	virtual Punto		obtener_posicion() const;
+	virtual Rect		obtener_base_posicion_vista() const;
 
 	private:
 
@@ -101,8 +102,7 @@ class Representacion_grafica:public Representacion
 	void 			liberar_textura();
 	void 			anular_textura() {textura=nullptr;}
 
-	virtual void 		volcado(const Info_volcado);
-	virtual Rect		obtener_base_posicion_vista() const;
+	virtual void 		volcado();
 };
 
 } //Fin namespace DLibV

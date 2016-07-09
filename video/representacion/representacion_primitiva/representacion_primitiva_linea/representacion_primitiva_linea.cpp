@@ -57,7 +57,7 @@ Rect Representacion_primitiva_linea::obtener_base_posicion_vista() const
 	return Rect{x, y, (unsigned int)w, (unsigned int)h};
 }
 
-void Representacion_primitiva_linea::volcado(const Info_volcado)
+void Representacion_primitiva_linea::volcado()
 {
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);

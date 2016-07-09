@@ -70,7 +70,7 @@ Rect Representacion_primitiva_puntos::obtener_base_posicion_vista() const
 	}
 }
 
-void Representacion_primitiva_puntos::volcado(const Info_volcado)
+void Representacion_primitiva_puntos::volcado()
 {
 	preparar_color();
 	glMatrixMode(GL_MODELVIEW);

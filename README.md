@@ -7,11 +7,10 @@ C++ Wrappers for SDL2 and OpenGL.
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
 - Keep clearing old SDL_Rect functions.
 	- At least on the video part.
-- Maybe get rid of most of the hierarchy: it's way too convoluted and the whole position and clipping is a bit rancid.
-- Get rid of filled vs wireframe classes?. The only difference is at rendering and doesn't make much sense.
 - Cleanup warnings.
+- Revise TODOs.
 - In the future, fork for OPENGL 1.4 and the rest.
-- Not libdansdl2 but fix the screen changes in the framework: they don't really work.
+
 
 ## DONE:
 - Remove the need a return value from the rendering.
@@ -34,3 +33,8 @@ C++ Wrappers for SDL2 and OpenGL.
 	- It should move the origin and recalculate the position. 
 	- Width and height could be ignored or could scale the thing.
 	- Thus, establecer_posicion should be virtual and be reimplemented on these classes :(.
+- Maybe get rid of most of the hierarchy: it's way too convoluted and the whole position and clipping is a bit rancid.
+- Not libdansdl2 but fix the screen changes in the framework: they don't really work.
+- Get rid of filled vs wireframe classes?. The only difference is at rendering and doesn't make much sense. 
+	- Yes... Ad an enum class there and go with it.
+- Setup representación agrupada.

@@ -10,54 +10,31 @@
 
 namespace DLibV
 {
-class Representacion_primitiva_poligono_base
+class Representacion_primitiva_poligono
 	:public Representacion_primitiva
 {
 	public:
-					Representacion_primitiva_poligono_base(const std::vector<Punto>&, ColorRGBA);
-					Representacion_primitiva_poligono_base(const Representacion_primitiva_poligono_base&);
-					Representacion_primitiva_poligono_base& operator=(const Representacion_primitiva_poligono_base&);
-	virtual 			~Representacion_primitiva_poligono_base() {}
-	virtual bool 			es_rellena() const=0;
 
-	virtual void			volcado(const Info_volcado);
+	enum class			tipo{relleno, lineas};
+
+					Representacion_primitiva_poligono(tipo, const std::vector<Punto>&, ColorRGBA);
+					Representacion_primitiva_poligono(const Representacion_primitiva_poligono&);
+					Representacion_primitiva_poligono& operator=(const Representacion_primitiva_poligono&);
+	virtual 			~Representacion_primitiva_poligono() {}
+
 	virtual void 			ir_a(int x, int y);
 	virtual Punto			obtener_posicion() const;
+	virtual Rect			obtener_base_posicion_vista() const;
 
 	protected:
 
-	virtual Rect			obtener_base_posicion_vista() const;
+	virtual void			volcado();
 
 	private:
 
 	std::vector<Punto>		puntos;
 	Punto				original;	//Guarda el primer punto original sin estar en 0.0.
-};
-
-class Representacion_primitiva_poligono
-	:public Representacion_primitiva_poligono_base
-{
-	public:
-	
-				Representacion_primitiva_poligono(const std::vector<Punto>&, ColorRGBA);
-				Representacion_primitiva_poligono(const Representacion_primitiva_poligono& p_otra);
-				Representacion_primitiva_poligono& operator=(const Representacion_primitiva_poligono& p_otro);
-	virtual 		~Representacion_primitiva_poligono() {}
-
-	bool 			es_rellena() const {return true;}
-};
-
-class Representacion_primitiva_poligono_lineas
-	:public Representacion_primitiva_poligono_base
-{
-	public:
-
-				Representacion_primitiva_poligono_lineas(const std::vector<Punto>&, ColorRGBA);
-				Representacion_primitiva_poligono_lineas(const Representacion_primitiva_poligono_lineas& p_otra);
-				Representacion_primitiva_poligono_lineas& operator=(const Representacion_primitiva_poligono_lineas& p_otro);
-	virtual 		~Representacion_primitiva_poligono_lineas() {}
-
-	bool 			es_rellena() const {return false;}
+	tipo				tipo_relleno;
 };
 
 }

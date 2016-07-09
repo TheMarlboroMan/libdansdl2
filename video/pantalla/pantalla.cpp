@@ -19,12 +19,6 @@ Pantalla::~Pantalla()
 	SDL_GL_DeleteContext(context); 
 }
 
-void Pantalla::inicializar(int p_w, int p_h, int flags_ventana)
-{
-	w=p_w;
-	h=p_h;
-	configurar(flags_ventana);
-}
 
 void Pantalla::establecer_titulo(const char * p_cadena)
 {
@@ -45,18 +39,13 @@ void Pantalla::limpiar(const ColorRGBA& c)
 void Pantalla::actualizar()
 {
 	SDL_GL_SwapWindow(ventana);
-	//glDisable(GL_STENCIL_TEST);
 }
 
-/*
-void Pantalla::preparar_para_camara(Camara const& p_camara)
+void Pantalla::inicializar(int p_w, int p_h, int flags_ventana)
 {
-	if(p_camara.es_con_clip()) this->establecer_clip_para_camara(p_camara);
-}
-*/
+	w=p_w;
+	h=p_h;
 
-void Pantalla::configurar(int flags_ventana)
-{
 	if(!ventana)
 	{	
 		//All these attributes must be set BEFORE creating the window!!.
@@ -70,34 +59,13 @@ void Pantalla::configurar(int flags_ventana)
 			w, h, flags_ventana); //Por defecto SDL_WINDOW_OPENGL
 
 		context=SDL_GL_CreateContext(ventana);
-
-
-		glViewport(0.f, 0.f, w, h);
-
-		//Establecer el modo a matriz de proyección y cargarla a 1.
-		glMatrixMode(GL_PROJECTION); 
-		glLoadIdentity();
-
-		//Izquierda, derecha, abajo, arriba, cerca y lejos...
-		//Ahora el punto 0.0 es arriba a la izquierda. Ajustamos a 0.5
-		//para que pille el centro del pixel.
-		glOrtho(-0.5f, (float)w-.5f, (float)h-.5f, -0.5f, 1.f, -1.0f);
-
-		//Establecer el modo a matriz de proyección y cargarla a 1.
-		glMatrixMode(GL_MODELVIEW); 
-		glLoadIdentity();
-
-		//Esto realmente no hace clear de stencil sino establece el 
-		//valor inicial para cuando se haga clear en ese buffer.
-		glClearStencil(0);
+		establecer_medidas_logicas(w, h);
 	}
 	else
 	{
-		//TODO: How about this... Does this do anything?.
+		//Cambia el tamaño de la ventana pero jode completamente el viewport.
 		SDL_SetWindowSize(ventana, w, h);
 	}
-
-	establecer_medidas_logicas(w, h);
 
 	simulacro_caja.w=w;
 	simulacro_caja.h=h;
@@ -105,17 +73,28 @@ void Pantalla::configurar(int flags_ventana)
 	simulacro_caja.y=0;
 }
 
-void Pantalla::establecer_medidas_logicas(int w, int h)
+void Pantalla::establecer_medidas_logicas(int pw, int ph)
 {
-	//TODO: This will be opengl stuff.
-	w_logico=w;
-	h_logico=h;
-//	SDL_RenderSetLogicalSize(renderer, w_logico, h_logico);
+	//Establecer el modo a matriz de proyección y cargarla a 1.
+	glMatrixMode(GL_PROJECTION); 
+	glLoadIdentity();
+
+	w_logico=pw;
+	h_logico=ph;
+	glViewport(0.f, 0.f, w, h);
+
+	//Izquierda, derecha, abajo, arriba, cerca y lejos...
+	//Ahora el punto 0.0 es arriba a la izquierda. Ajustamos a 0.5
+	//para que pille el centro del pixel.
+	glOrtho(-0.5f, (float)w_logico-.5f, (float)h_logico-.5f, -0.5f, 1.f, -1.0f);
+
+	glMatrixMode(GL_MODELVIEW); 
+	glLoadIdentity();
 }
 
 void Pantalla::establecer_modo_ventana(unsigned int v)
 {
-//TODO...
+//TODO... These SDL functions may very well fuck everything up as will mess with the viewport.
 //	modo_ventana=v;
 //	switch(modo_ventana)
 //	{

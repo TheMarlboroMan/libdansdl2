@@ -54,8 +54,9 @@ class Representacion
 	void 			cambiar_visibilidad(bool p_valor) {this->visible=p_valor;}
 	bool 			es_visible() const {return this->visible;}
 
-	void 			volcar(Pantalla&, const Camara&);
-	void 			volcar(Pantalla&);
+	//Virtuales por el caso especial de las agrupadas...
+	virtual void		volcar(Pantalla&, const Camara&);
+	virtual void		volcar(Pantalla&);
 
 	void			mut_rgba(ColorRGBA v) {rgba=v;}
 	void 			establecer_alpha(unsigned int v) {rgba.a=colorfi(v);}
@@ -67,10 +68,10 @@ class Representacion
 	}
 
 	ColorRGBA		acc_rgba() const {return rgba;}
-	unsigned short int	acc_alpha() const {return colorfi(rgba.a);}
-	unsigned short int 	acc_color_r() const {return colorfi(rgba.r);}
-	unsigned short int 	acc_color_g() const {return colorfi(rgba.g);}
-	unsigned short int 	acc_color_b() const {return colorfi(rgba.b);}
+	int			acc_alpha() const {return colorif(rgba.a);}
+	int 			acc_color_r() const {return colorif(rgba.r);}
+	int 			acc_color_g() const {return colorif(rgba.g);}
+	int		 	acc_color_b() const {return colorif(rgba.b);}
 
 	void 			establecer_modo_blend(blends v) {this->modo_blend=v;}
 	blends		 	acc_modo_blend() const {return this->modo_blend;}
@@ -86,10 +87,9 @@ class Representacion
 	//Estas hay que definirlas.
 	virtual void 		ir_a(int x, int y)=0;
 	virtual Punto		obtener_posicion() const=0;
+	virtual Rect		obtener_base_posicion_vista() const=0;
 
 	private:
-
-	void			transformacion_pre_render(const Info_volcado);
 
 	Representacion_transformacion transformacion;
 
@@ -102,10 +102,8 @@ class Representacion
 	protected:
 	
 	void 			actualizar_posicion_vista_rotacion();
-
-	//Estas hay que definirlas.
-	virtual void 		volcado(const Info_volcado)=0;
-	virtual Rect		obtener_base_posicion_vista() const=0;
+	virtual void 		volcado()=0;
+	void			transformacion_pre_render(const Info_volcado);
 };
 
 } //Fin namespace DLibV

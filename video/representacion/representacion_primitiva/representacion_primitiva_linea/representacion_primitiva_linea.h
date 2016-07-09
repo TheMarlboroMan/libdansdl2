@@ -17,13 +17,13 @@ class Representacion_primitiva_linea:public Representacion_primitiva
 
 	virtual void 			ir_a(int x, int y);
 	virtual Punto			obtener_posicion() const;
-	virtual void			volcado(const Info_volcado);
+	virtual Rect			obtener_base_posicion_vista() const;
 
 	void 				establecer_puntos(int x1, int y1, int x2, int y2);
 
 	protected:
 
-	virtual Rect			obtener_base_posicion_vista() const;
+	virtual void			volcado();
 
 	private:
 

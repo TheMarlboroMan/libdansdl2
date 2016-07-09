@@ -8,7 +8,7 @@ using namespace DLibV;
 Representacion::Representacion():
 	visible(true),
 	modo_blend(blends::BLEND_NADA), 
-	rgba{1.f, 1.f, 1.f, 0.f},
+	rgba{1.f, 1.f, 1.f, 1.f},
 	posicion_vista{0,0,0,0}
 {
 
@@ -41,7 +41,6 @@ Representacion& Representacion::operator=(const Representacion& p_otra)
 	return *this;
 }
 
-//TODO: How do we render to a different screen?.
 void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara)
 {
 	if(!visible || !en_toma(p_camara)) return;
@@ -49,7 +48,7 @@ void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara)
 	p_pantalla.asignar_camara(p_camara);
 
 	transformacion_pre_render(p_camara.acc_info_volcado());
-	volcado(p_camara.acc_info_volcado());
+	volcado();
 	glLoadIdentity();
 }
 
@@ -60,7 +59,7 @@ void Representacion::volcar(Pantalla& p_pantalla)
 	p_pantalla.reiniciar_clip();
 
 	transformacion_pre_render(p_pantalla.acc_info_volcado());
-	volcado(p_pantalla.acc_info_volcado());
+	volcado();
 	glLoadIdentity();
 }
 
