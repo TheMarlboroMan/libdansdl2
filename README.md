@@ -3,13 +3,12 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
-- Alpha in groups.
+- Test in Windows...
 - Add vector constructor and insert for points.
 - Clear OLD functions with no use. Keep the interface simpler. 
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
 - Keep clearing old SDL_Rect functions.
 	- At least on the video part.
-- Cleanup warnings.
 - Revise TODOs.
 - In the future, fork for OPENGL 1.4 and the rest.
 
@@ -46,3 +45,5 @@ C++ Wrappers for SDL2 and OpenGL.
 	- Or add the distance to the check across the calls.
 - Add rotation to groups
 	- After various tries I think it's better to skip the screen check for each single element: it's very problematic with rotations and leads to dirty code.
+- Cleanup warnings.
+- Alpha in groups.

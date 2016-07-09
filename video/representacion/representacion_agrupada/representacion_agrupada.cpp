@@ -2,10 +2,8 @@
 
 using namespace DLibV;
 
-Representacion_agrupada::Representacion_agrupada(int px, int py, bool p_poseer)
-	:Representacion(), x(px), y(py), posee_las_representaciones(p_poseer),
-	impone_alpha(true),
-	impone_modo_blend(false)
+Representacion_agrupada::Representacion_agrupada(Punto p, bool p_poseer)
+	:Representacion(), posicion{p}, posee_las_representaciones(p_poseer)
 {
 	actualizar_posicion_vista_rotacion();
 }
@@ -67,15 +65,6 @@ se sumen y resten dentro del rango 0-255.
 
 void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const * p_camara)
 {
-	unsigned int alpha_p=acc_alpha();
-	auto modo_blend_p=acc_modo_blend();
-//	unsigned int mod_color_r=acc_mod_color_r();
-//	unsigned int mod_color_g=acc_mod_color_g();
-//	unsigned int mod_color_b=acc_mod_color_b();
-
-	unsigned int alpha_a=0;
-	auto modo_blend_a=Representacion::blends::BLEND_NADA;
-
 	//Al asignar se reinician las matrices. Si la asignación ocurre durante 
 	//la iteración podríamos tenemos malos resultados ya que antes ha habido
 	//un translate que no se ha tenido en cuenta.
@@ -83,31 +72,13 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 
 	for(auto &r : grupo)
 	{
-		if(impone_alpha)
-		{
-			alpha_a=r->acc_alpha();
-			r->establecer_alpha(alpha_p);
-		}
-
-		if(impone_modo_blend)
-		{
-			modo_blend_a=r->acc_modo_blend();
-			r->establecer_modo_blend(modo_blend_p);
-		}
-
-//		unsigned int mod_color_r_a=acc_mod_color_r();
-//		unsigned int mod_color_g_a=acc_mod_color_g();
-//		unsigned int mod_color_b_a=acc_mod_color_b();
-
-//		r->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
-
 		glMatrixMode(GL_MODELVIEW);
 
 		//Traslación propia del grupo, rotaciones...
 		auto tr=acc_transformacion_rotacion();
 		auto iv=p_camara != nullptr ? p_camara->acc_info_volcado() : p_pantalla.acc_info_volcado();
 
-		glTranslatef(x*iv.zoom, y*iv.zoom, 0.f);
+		glTranslatef(posicion.x*iv.zoom, posicion.y*iv.zoom, 0.f);
 
 		if(p_camara!=nullptr)
 		{
@@ -132,13 +103,19 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 			}
 		}
 
+		int alpha_original=r->acc_alpha();
+		auto blend_original=r->acc_modo_blend();
+
+		int calculado=acc_alpha() ? (alpha_original * acc_alpha()) / alpha_max : alpha_min;
+		r->establecer_modo_blend(Representacion::blends::alpha);
+		r->establecer_alpha(calculado);
+
 		//Indicamos que vamos a saltar el check de en toma.
 		if(p_camara!=nullptr) r->volcar(p_pantalla, *p_camara, true);
 		else r->volcar(p_pantalla, true);
 
-		if(impone_alpha) r->establecer_alpha(alpha_a);
-		if(impone_modo_blend) r->establecer_modo_blend(modo_blend_a);
-//		r->establecer_mod_color(mod_color_r_a, mod_color_g_a, mod_color_b_a);
+		r->establecer_modo_blend(blend_original);
+		r->establecer_alpha(alpha_original);
 	}
 }
 
@@ -155,14 +132,13 @@ void Representacion_agrupada::insertar_representacion(Representacion * p_rep)
 
 void  Representacion_agrupada::ir_a(int px, int py)
 {
-	x=px;
-	y=py;
+	posicion={px, py};
 	actualizar_posicion_vista_rotacion();
 }
 
 Punto Representacion_agrupada::obtener_posicion() const
 {
-	return Punto{x, y};
+	return posicion;
 }
 
 Rect Representacion_agrupada::obtener_base_posicion_vista() const
@@ -175,8 +151,8 @@ Rect Representacion_agrupada::obtener_base_posicion_vista() const
 	{
 		Rect res=grupo[0]->obtener_base_posicion_vista();
 
-		res.x+=x;
-		res.y+=y;
+		res.x+=posicion.x;
+		res.y+=posicion.y;
 
 		int 	fx=res.x+res.w,
 			fy=res.y+res.h;
@@ -185,8 +161,8 @@ Rect Representacion_agrupada::obtener_base_posicion_vista() const
 		{
 			Rect pr=r->obtener_base_posicion_vista();
 
-			pr.x+=x;
-			pr.y+=y;
+			pr.x+=posicion.x;
+			pr.y+=posicion.y;
 
 			if(pr.x < res.x) res.x=pr.y;
 			if(pr.y < res.y) res.y=pr.y;

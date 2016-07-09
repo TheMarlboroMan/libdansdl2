@@ -11,7 +11,7 @@ struct ColorRGBA
 
 ColorRGBA rgba8(int, int, int, int);
 float colorfi(int);
-unsigned int colorif(float);
+int colorif(float);
 
 }
 

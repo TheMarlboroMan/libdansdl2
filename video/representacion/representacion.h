@@ -36,7 +36,8 @@ class Representacion
 {
 	public:
 
-	enum class 		blends {BLEND_NADA,BLEND_ALPHA};
+	enum class 		blends{nada, alpha};
+	enum 			alpha{alpha_min=0, alpha_max=255};
 
 				Representacion();
 				Representacion(ColorRGBA);
@@ -85,6 +86,7 @@ class Representacion
 	virtual bool 		es_transformada() const {return transformacion.es_transformacion();}
 
 	//Estas hay que definirlas.
+	void 			ir_a(Punto p) {ir_a(p.x, p.y);}
 	virtual void 		ir_a(int x, int y)=0;
 	virtual Punto		obtener_posicion() const=0;
 	virtual Rect		obtener_base_posicion_vista() const=0;

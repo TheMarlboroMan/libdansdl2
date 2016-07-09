@@ -92,7 +92,7 @@ void Representacion_TTF::generar_textura()
 
 	DLibV::Textura * tex=new DLibV::Textura(*lienzo);
 	establecer_textura(tex);
-	establecer_modo_blend(Representacion::blends::BLEND_ALPHA);
+	establecer_modo_blend(Representacion::blends::alpha);
 
 	establecer_recorte(0,0, tex->acc_w(), tex->acc_h());
 	establecer_posicion(0, 0, tex->acc_w(), tex->acc_h(), FRECT_W|FRECT_H);	//Esto debemos llamarlo aquí, de lo contrario se queda con ancho y alto 0, dando problemas con las cámaras.

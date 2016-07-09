@@ -9,7 +9,7 @@ float DLibV::colorfi(int v)
 }
 
 //Entra 0-1 sale 0-255
-unsigned int DLibV::colorif(float v)
+int DLibV::colorif(float v)
 {
 	return v * 255.f;
 }
