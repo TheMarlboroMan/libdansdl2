@@ -40,19 +40,19 @@ void Representacion_agrupada::vaciar_grupo()
 	grupo.clear();
 }
 
-void Representacion_agrupada::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey, float ang)
+void Representacion_agrupada::volcar(Pantalla& p_pantalla, const Camara& p_camara, bool saltar_toma)
 {
-	if(es_visible() && es_en_toma(p_camara.acc_caja_foco(), ex, ey, ang))
+	if(es_visible() && (saltar_toma || es_en_toma(p_camara.acc_caja_foco())))
 	{
-		volcado_interno(p_pantalla, &p_camara, ex, ey, ang);
+		volcado_interno(p_pantalla, &p_camara);
 	}
 }
 
-void Representacion_agrupada::volcar(Pantalla& p_pantalla, int ex, int ey, float ang)
+void Representacion_agrupada::volcar(Pantalla& p_pantalla, bool saltar_toma)
 {
-	if(es_visible() && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey, ang)) 
+	if(es_visible() && es_en_toma(p_pantalla.acc_simulacro_caja()))
 	{
-		volcado_interno(p_pantalla, nullptr, ey, ey, ang);
+		volcado_interno(p_pantalla, nullptr);
 	}
 }
 
@@ -65,7 +65,7 @@ Sería posible hacerlo "acumulativo" sin muchos problemas de modo que los valore
 se sumen y resten dentro del rango 0-255.
 */
 
-void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const * p_camara, int ex, int ey, float ang)
+void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const * p_camara)
 {
 	unsigned int alpha_p=acc_alpha();
 	auto modo_blend_p=acc_modo_blend();
@@ -102,19 +102,39 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 //		r->establecer_mod_color(mod_color_r, mod_color_g, mod_color_b);
 
 		glMatrixMode(GL_MODELVIEW);
-		auto tr=acc_transformacion_rotacion();
-		do_shit(p_pantalla, p_camara, tr, x, y, ex, ey);
 
-		if(p_camara!=nullptr) 
+		//Traslación propia del grupo, rotaciones...
+		auto tr=acc_transformacion_rotacion();
+		auto iv=p_camara != nullptr ? p_camara->acc_info_volcado() : p_pantalla.acc_info_volcado();
+
+		glTranslatef(x*iv.zoom, y*iv.zoom, 0.f);
+
+		if(p_camara!=nullptr)
 		{
-//TODO: OPTIMIZE CALCULATIONS.
-			r->volcar(p_pantalla, *p_camara, x+ex, y+ey, tr.angulo_rotacion+ang);
+			//De nuevo, puro empirismo. No tengo ni idea de qué hace esto.
+			if(tr.angulo_rotacion != 0.f)
+			{
+				float 	tx=iv.pos_x+((tr.centro_rotacion.x-iv.rel_x)*iv.zoom),
+					ty=iv.pos_y+((tr.centro_rotacion.y-iv.rel_y)*iv.zoom);
+
+				glTranslatef(tx, ty, 0.f);
+				glRotatef(tr.angulo_rotacion, 0.f, 0.f, 1.f);
+				glTranslatef(-tx, -ty, 0.f);
+			}
 		}
-		else 
+		else
 		{
-//TODO: OPTIMIZE CALCULATIONS.
-			r->volcar(p_pantalla, x+ex, y+ey, tr.angulo_rotacion+ang);
+			if(tr.angulo_rotacion != 0.f)
+			{
+				glTranslatef(tr.centro_rotacion.x, tr.centro_rotacion.y, 0.f);
+				glRotatef(tr.angulo_rotacion, 0.f, 0.f, 1.f);
+				glTranslatef(-tr.centro_rotacion.x, -tr.centro_rotacion.y, 0.f);
+			}
 		}
+
+		//Indicamos que vamos a saltar el check de en toma.
+		if(p_camara!=nullptr) r->volcar(p_pantalla, *p_camara, true);
+		else r->volcar(p_pantalla, true);
 
 		if(impone_alpha) r->establecer_alpha(alpha_a);
 		if(impone_modo_blend) r->establecer_modo_blend(modo_blend_a);

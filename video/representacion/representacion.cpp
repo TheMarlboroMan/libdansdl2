@@ -41,36 +41,17 @@ Representacion& Representacion::operator=(const Representacion& p_otra)
 	return *this;
 }
 
-//Realmente horrible pero comparar la colisión con cajas es rápido.
-//Ex y Ey representan un desplazamiento que hacer a la caja para solucionar un
-//problema de las representaciones agrupadas.
-//TODO 
-bool Representacion::es_en_toma(const Rect& rect, int ex, int ey, float ang) const
-{
-	if(ex || ey || ang)
-	{
-		//TODO: Maybe don't update always but request it here???
-		auto pos=ang ? posicion_vista : calcular_posicion_vista_rotacion(ang);
-		pos.x+=ex;
-		pos.y+=ey;
-		return rect.es_en_colision_con(pos, true);
-	}
-	else
-	{
-		return rect.es_en_colision_con(posicion_vista, true);
-	}
-}
+//El parámetro saltar_toma indica que es posible no comprobar si la 
+//representación está en la toma. Tiene su sentido en las representaciones 
+//agrupadas, que son problemáticas de comprobar cuando al propio grupo se le
+//aplica una rotación (no se tiene un cuenta la misma a la hora de comprobar
+//si está en toma). Para solucionarlo se pueden añadir varios parámetros a
+//estas funciones y las dependientes (posición del grupo y rotación) para 
+//calcular pero el código es menos limpio.
 
-//Los parámetros ex y ey sirven para solucionar el problema con las 
-//representaciones agrupadas. Cada una de las representaciones dentro del grupo
-//tiene sus coordenadas en base 0.0 mientras que el grupo es el que establece
-//la posición. Esto causa que salgan "fuera de la cámara". Los parámetros
-//contienen la posición del grupo para añadirlo a la caja de turno.
-
-void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey, float ang)
+void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, bool saltar_toma)
 {
-	//TODO: Just add SKIP TAKE.
-	if(visible && es_en_toma(p_camara.acc_caja_foco(), ex, ey, ang)) 
+	if(visible && (saltar_toma || es_en_toma(p_camara.acc_caja_foco()))) 
 	{
 		p_pantalla.asignar_camara(p_camara);
 		transformacion_pre_render(p_camara.acc_info_volcado());
@@ -81,10 +62,9 @@ void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex
 	glLoadIdentity();
 }
 
-void Representacion::volcar(Pantalla& p_pantalla, int ex, int ey, float ang)
+void Representacion::volcar(Pantalla& p_pantalla, bool saltar_toma)
 {
-	//TODO: Guess what... additional rotations ARE NOT TAKEN INTO ACCOUNT!!
-	if(visible && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey, ang)) 
+	if(visible && (saltar_toma || es_en_toma(p_pantalla.acc_simulacro_caja())))
 	{
 		p_pantalla.reiniciar_clip();
 		transformacion_pre_render(p_pantalla.acc_info_volcado());
@@ -153,11 +133,7 @@ void Representacion::transformar_centro_rotacion_cancelar()
 	actualizar_posicion_vista_rotacion();
 }
 
-//TODO: Añadir extra de rotación para solucionar eso...
-//TODO: Error... Ese extra de rotación se sabe al renderizar. La representación
-//no sabe que la contiene algo que está rotado :S.
-//TODO: Maybe this should return it...
-void Representacion::actualizar_posicion_vista_rotacion(float extra_ang)
+void Representacion::actualizar_posicion_vista_rotacion()
 {
 	if(!transformacion.es_transformacion())
 	{
@@ -165,11 +141,11 @@ void Representacion::actualizar_posicion_vista_rotacion(float extra_ang)
 	}
 	else
 	{
-		posicion_vista=calcular_posicion_vista_rotacion(extra_ang);
+		posicion_vista=calcular_posicion_vista_rotacion();
 	}
 }
 
-Rect Representacion::calcular_posicion_vista_rotacion(float extra_ang) const
+Rect Representacion::calcular_posicion_vista_rotacion() const
 {
 	const auto p=obtener_base_posicion_vista();
 	auto c=transformacion.centro_rotacion;
@@ -181,7 +157,7 @@ Rect Representacion::calcular_posicion_vista_rotacion(float extra_ang) const
 			{(double)p.x, (double)(p.y+p.h)},        
 		}, {(double)c.x+p.x, (double)c.y+p.y});
 		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
-	float a=transformacion.angulo_rotacion+extra_ang;
+	float a=transformacion.angulo_rotacion;
 	polig.rotar(a);
 
 	//Sacar las medidas para la nueva caja...
