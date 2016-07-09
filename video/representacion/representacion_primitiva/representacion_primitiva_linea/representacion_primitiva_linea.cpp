@@ -60,8 +60,6 @@ Rect Representacion_primitiva_linea::obtener_base_posicion_vista() const
 void Representacion_primitiva_linea::volcado()
 {
 	preparar_color();
-	glMatrixMode(GL_MODELVIEW);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_LINES, 0, 2);

@@ -36,12 +36,12 @@ class Representacion_agrupada:public Representacion
 
 	std::vector<Representacion *>&	obtener_grupo() {return grupo;}
 
-	virtual void		volcar(Pantalla&, const Camara&);
-	virtual void		volcar(Pantalla&);
+	virtual void		volcar(Pantalla&, const Camara&, int=0, int=0);
+	virtual void		volcar(Pantalla&, int=0, int=0);
 
 	private:
 
-	void			volcado_interno(Pantalla&, Camara const *);
+	void			volcado_interno(Pantalla&, Camara const *, int, int);
 
 	int			x, y;
 	bool			posee_las_representaciones,

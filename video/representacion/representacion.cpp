@@ -41,30 +41,60 @@ Representacion& Representacion::operator=(const Representacion& p_otra)
 	return *this;
 }
 
-void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara)
+//Realmente horrible pero comparar la colisión con cajas es rápido.
+//Ex y Ey representan un desplazamiento que hacer a la caja para solucionar un
+//problema de las representaciones agrupadas.
+bool Representacion::es_en_toma(const Rect& rect, int ex, int ey) const
 {
-	if(!visible || !en_toma(p_camara)) return;
+	if(ex || ey)
+	{
+		auto pos=posicion_vista;
+		pos.x+=ex;
+		pos.y+=ey;
+		return rect.es_en_colision_con(pos, true);
+	}
+	else
+	{
+		return rect.es_en_colision_con(posicion_vista, true);
+	}
+}
 
-	p_pantalla.asignar_camara(p_camara);
+//Los parámetros ex y ey sirven para solucionar el problema con las 
+//representaciones agrupadas. Cada una de las representaciones dentro del grupo
+//tiene sus coordenadas en base 0.0 mientras que el grupo es el que establece
+//la posición. Esto causa que salgan "fuera de la cámara". Los parámetros
+//contienen la posición del grupo para añadirlo a la caja de turno.
 
-	transformacion_pre_render(p_camara.acc_info_volcado());
-	volcado();
+void Representacion::volcar(Pantalla& p_pantalla, const Camara& p_camara, int ex, int ey)
+{
+	if(visible && es_en_toma(p_camara.acc_caja_foco(), ex, ey)) 
+	{
+		p_pantalla.asignar_camara(p_camara);
+		transformacion_pre_render(p_camara.acc_info_volcado());
+		volcado();
+	}
+
+	//Es importante que esto siempre esté presente...
 	glLoadIdentity();
 }
 
-void Representacion::volcar(Pantalla& p_pantalla)
+void Representacion::volcar(Pantalla& p_pantalla, int ex, int ey)
 {
-	if(!visible) return;
+	if(visible && es_en_toma(p_pantalla.acc_simulacro_caja(), ex, ey)) 
+	{
+		p_pantalla.reiniciar_clip();
+		transformacion_pre_render(p_pantalla.acc_info_volcado());
+		volcado();
+	}
 
-	p_pantalla.reiniciar_clip();
-
-	transformacion_pre_render(p_pantalla.acc_info_volcado());
-	volcado();
+	//Es importante que esto siempre esté presente...
 	glLoadIdentity();
 }
 
 void Representacion::transformacion_pre_render(const Info_volcado iv)
 {
+	glMatrixMode(GL_MODELVIEW);
+	
 	auto pos=obtener_posicion();
 	int 	x=iv.pos_x+pos.x-iv.rel_x, 
 		y=iv.pos_y+pos.y-iv.rel_y;
@@ -151,10 +181,4 @@ void Representacion::actualizar_posicion_vista_rotacion()
 		posicion_vista.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_vista.x;
 		posicion_vista.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_vista.y;
 	}
-}
-
-//Realmente horrible pero comparar la colisión con cajas es rápido.
-bool Representacion::en_toma(const Camara& p_cam) const
-{
-	return p_cam.acc_caja_foco().es_en_colision_con(posicion_vista, true);
 }

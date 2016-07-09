@@ -34,8 +34,6 @@ Representacion_primitiva_poligono& Representacion_primitiva_poligono::operator=(
 void Representacion_primitiva_poligono::volcado()
 {
 	preparar_color();
-	glMatrixMode(GL_MODELVIEW);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(tipo_relleno==tipo::relleno ? GL_POLYGON : GL_LINE_LOOP, 0, puntos.size());

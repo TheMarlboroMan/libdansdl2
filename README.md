@@ -3,8 +3,8 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
-- Fix groups and camera errors.
 - Add rotation to groups.
+- Alpha in groups.
 - Add vector constructor and insert for points.
 - Clear OLD functions with no use. Keep the interface simpler. 
 	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
@@ -41,3 +41,7 @@ C++ Wrappers for SDL2 and OpenGL.
 - Get rid of filled vs wireframe classes?. The only difference is at rendering and doesn't make much sense. 
 	- Yes... Ad an enum class there and go with it.
 - Setup representación agrupada.
+- Check screen boundaries for rendering.
+- Fix groups and camera errors: the items are not in focus since they're not displaced.
+	- Either skip the check if the whole group is in position...
+	- Or add the distance to the check across the calls.

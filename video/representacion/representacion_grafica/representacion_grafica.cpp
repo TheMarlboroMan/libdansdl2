@@ -51,7 +51,6 @@ void Representacion_grafica::recorte_a_medidas_textura()
 
 void Representacion_grafica::volcado()
 {
-	glMatrixMode(GL_MODELVIEW);
 	glColor4f(1.f, 1.f, 1.f, 1.f);
 
 	glBindTexture(GL_TEXTURE_2D, textura->acc_indice());
