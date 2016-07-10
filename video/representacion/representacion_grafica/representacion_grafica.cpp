@@ -4,16 +4,16 @@
 
 using namespace DLibV;
 
-Representacion_grafica::Representacion_grafica(Rect pos, Rect rec)
+Representacion_grafica::Representacion_grafica(Rect pos, Rect rec, sampling ts)
 	:Representacion(), textura(nullptr), 
-	pincel{0,0}, posicion(pos), recorte(rec)
+	pincel{0,0}, tipo_sampling(ts), posicion(pos), recorte(rec)
 {
 
 }
 
-Representacion_grafica::Representacion_grafica(ColorRGBA color, Rect pos, Rect rec)
+Representacion_grafica::Representacion_grafica(ColorRGBA color, Rect pos, Rect rec, sampling ts)
 	:Representacion(color), textura(nullptr),
-	pincel{0,0}, posicion(pos), recorte(rec)
+	pincel{0,0}, tipo_sampling(ts), posicion(pos), recorte(rec)
 {
 
 }
@@ -22,6 +22,7 @@ Representacion_grafica::Representacion_grafica(const Representacion_grafica& o)
 	:Representacion(o) ,textura(o.textura),
 	pincel(o.pincel), puntos(o.puntos), 
 	final_ptex(o.final_ptex),
+	tipo_sampling(o.tipo_sampling),
 	posicion(o.posicion), 
 	recorte(o.recorte)
 {
@@ -37,6 +38,7 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 	pincel=o.pincel;
 	puntos=o.puntos;
 	final_ptex=o.final_ptex;
+	tipo_sampling=o.tipo_sampling;
 
 	return *this;
 }
@@ -54,8 +56,11 @@ void Representacion_grafica::volcado()
 	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 	//Alpha...
 	const auto c=acc_rgba();
 	switch(acc_modo_blend())
@@ -140,14 +145,33 @@ void Representacion_grafica::calcular_puntos()
 			{
 				std::swap(ptex[0].x, ptex[1].x);
 				std::swap(ptex[2].x, ptex[3].x);
-				for(auto &p: ptex) p.x-=0.5f;
+
+				if(tipo_sampling==sampling::atlas) for(auto &p: ptex) p.x-=0.5f;
+			}
+			else 
+			{
+				if(tipo_sampling==sampling::atlas)
+				{
+					for(auto &p: ptex) p.x+=0.5f;
+				}
 			}
 
 			if(transformacion.invertir_vertical)
 			{
 				std::swap(ptex[0].y, ptex[2].y);
-				std::swap(ptex[1].y, ptex[3].y); 
-				for(auto &p: ptex) p.y-=0.5f;
+				std::swap(ptex[1].y, ptex[3].y);
+
+				if(tipo_sampling==sampling::atlas)
+				{ 
+					for(auto &p: ptex) p.y-=0.5f;
+				}
+			}
+			else
+			{
+				if(tipo_sampling==sampling::atlas) 
+				{
+					for(auto &p: ptex) p.y+=0.5f;
+				}
 			}
 
 			for(auto &p : ptex)

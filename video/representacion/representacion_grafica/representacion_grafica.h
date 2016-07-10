@@ -42,9 +42,12 @@ class Representacion_grafica:public Representacion
 	public:
 
 	enum 			FLAGS_RECT{FRECT_X=1, FRECT_Y=2, FRECT_W=4, FRECT_H=8};
+	enum class		sampling{
+					atlas, 	//Añade medio píxel al sampling.
+					completo}; //No añade nada.
 
-				Representacion_grafica(Rect={0,0,0,0}, Rect={0,0,0,0});
-				Representacion_grafica(ColorRGBA, Rect={0,0,0,0}, Rect={0,0,0,0});
+				Representacion_grafica(Rect={0,0,0,0}, Rect={0,0,0,0}, sampling=sampling::completo);
+				Representacion_grafica(ColorRGBA, Rect={0,0,0,0}, Rect={0,0,0,0}, sampling=sampling::completo);
 				Representacion_grafica(const Representacion_grafica&);
 				Representacion_grafica& operator=(const Representacion_grafica &);
 	virtual 		~Representacion_grafica() {}
@@ -71,6 +74,8 @@ class Representacion_grafica:public Representacion
 	void 			establecer_recorte(Sint16, Sint16, Uint16, Uint16, int=15);
 	void 			establecer_recorte(Rect);
 	void 			establecer_dimensiones_posicion_por_recorte();
+	//TODO: Crep que esto debe vaciar final_ptex.
+	void			establecer_tipo_sampling(sampling v) {tipo_sampling=v;}
 
 	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;}
 
@@ -92,6 +97,7 @@ class Representacion_grafica:public Representacion
 
 	std::vector<Punto>	puntos;
 	std::vector<puntotex>	final_ptex;
+	sampling		tipo_sampling;
 
 
 	protected:

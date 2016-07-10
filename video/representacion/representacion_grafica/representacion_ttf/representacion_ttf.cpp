@@ -3,7 +3,7 @@
 using namespace DLibV;
 
 Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color, std::string texto)
-	:Representacion_grafica(color), 
+	:Representacion_grafica(color, Rect{0,0,0,0}, Rect{0,0,0,0}, sampling::completo), 
 	fuente(&fuente),
 	cadena(texto)
 {
