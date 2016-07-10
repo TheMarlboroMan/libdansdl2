@@ -4,9 +4,6 @@
 
 using namespace DLibV;
 
-extern DLibH::Log_base LOG;
-
-
 Representacion_grafica::Representacion_grafica(Rect pos, Rect rec)
 	:Representacion(), textura(nullptr), 
 	pincel{0,0}, posicion(pos), recorte(rec)

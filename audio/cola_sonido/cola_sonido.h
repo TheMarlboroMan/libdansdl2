@@ -6,10 +6,6 @@
 #include "../sonido/sonido.h"
 #include "../controlador_audio_sdl/controlador_audio_sdl.h"
 
-#include "../../herramientas/log_base/log_base.h"
-
-extern DLibH::Log_base LOG;
-
 /*
 La cola de sonido no es más que una envoltura para una cola de punteros a 
 Sonido. El gestor de audio puede solicitar a la cola que le cuente cosas por
@@ -33,25 +29,25 @@ objetos de ese tipo, con los valores por defecto.
 
 namespace DLibA
 {
-	class Cola_sonido
-	{
-		private:
+class Cola_sonido
+{
+	public:
 
-		//std::queue<Estructura_sonido> cola;
-		std::vector<Estructura_sonido> cola;
-		void vaciar();
-		Controlador_audio_SDL * controlador;
+				Cola_sonido();
+				~Cola_sonido();
 
-		public:
+	void	 		inicializar();
+	void 			insertar(const Estructura_sonido&);
+	Estructura_sonido 	obtener_primero();
+	void 			eliminar_primero();
+	void 			procesar_cola(bool descartar=true); //Indica si los sonidos que no se puedan procesar se descartan o vuelven a la cola.
 
-		Cola_sonido();
-		~Cola_sonido();
+	private:
 
-		void inicializar();
-		void insertar(const Estructura_sonido&);
-		Estructura_sonido obtener_primero();
-		void eliminar_primero();
-		void procesar_cola(bool descartar=true); //Indica si los sonidos que no se puedan procesar se descartan o vuelven a la cola.
-	};
+	void 				vaciar();
+
+	std::vector<Estructura_sonido> 	cola;
+	Controlador_audio_SDL * 	controlador;
+};
 }
 #endif

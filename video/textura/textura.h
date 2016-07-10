@@ -15,7 +15,6 @@ class Textura
 {
 	public:
 			Textura(const Superficie&);
-			Textura(const Textura& t);
 			~Textura();
 	Textura& 	operator=(const Textura& t);
 

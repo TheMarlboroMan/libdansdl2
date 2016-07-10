@@ -9,11 +9,6 @@ Controles_SDL::Controles_SDL():
 {
 	SDL_StopTextInput();
 
-	//Esto traga memoria, pero que le den.
-	this->teclas_up=new char[SDL_NUM_SCANCODES];
-	this->teclas_down=new char[SDL_NUM_SCANCODES];
-	this->teclas_down_bloqueo=new char[SDL_NUM_SCANCODES];
-
 	this->inicializar_teclas(true);
 	this->inicializar_joysticks();
 
@@ -30,9 +25,6 @@ Controles_SDL::Controles_SDL():
 
 Controles_SDL::~Controles_SDL()
 {
-	if(this->teclas_up) delete[] this->teclas_up;
-	if(this->teclas_down) delete[] this->teclas_down;
-	if(this->teclas_down_bloqueo) delete[] this->teclas_down_bloqueo;
 	this->cerrar_joysticks();
 
 }
@@ -78,9 +70,7 @@ void Controles_SDL::cerrar_joysticks()
 
 void Controles_SDL::inicializar_teclas(bool con_bloqueo)
 {
-	memset(this->teclas_up, 0, SDL_NUM_SCANCODES);
-	memset(this->teclas_down, 0, SDL_NUM_SCANCODES);
-	if(con_bloqueo) memset(this->teclas_down_bloqueo, 0, SDL_NUM_SCANCODES);
+	teclado.inicializar_teclas(con_bloqueo);
 }
 
 bool Controles_SDL::bombear_eventos_manual(SDL_Event &p_evento, bool p_procesar)
@@ -233,11 +223,11 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 				}
 			}
 
-			if(!this->teclas_down_bloqueo[indice])
+			if(!teclado.teclas_down_bloqueo[indice])
 			{
 				hay_eventos_teclado_down=true;
-				this->teclas_down[indice]=1;
-				this->teclas_down_bloqueo[indice]=1;
+				teclado.teclas_down[indice]=1;
+				teclado.teclas_down_bloqueo[indice]=1;
 			}
 		}
 		break;
@@ -247,8 +237,8 @@ void Controles_SDL::procesar_evento(SDL_Event& evento)
 			unsigned int indice=evento.key.keysym.scancode;
 
 			hay_eventos_teclado_up=true;
-			this->teclas_up[indice]=1;
-			this->teclas_down_bloqueo[indice]=0;
+			teclado.teclas_up[indice]=1;
+			teclado.teclas_down_bloqueo[indice]=0;
 		}
 		break;
 
@@ -403,7 +393,7 @@ int Controles_SDL::obtener_tecla_down() const
 	int i=0;
 	while(i < SDL_NUM_SCANCODES)
 	{
-		if(teclas_down[i]) return i;
+		if(teclado.teclas_down[i]) return i;
 		++i;
 	}
 	

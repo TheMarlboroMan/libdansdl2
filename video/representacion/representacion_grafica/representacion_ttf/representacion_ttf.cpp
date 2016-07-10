@@ -2,8 +2,6 @@
 
 using namespace DLibV;
 
-extern DLibH::Log_base LOG;
-
 Representacion_TTF::Representacion_TTF(const Fuente_TTF& fuente, ColorRGBA color, std::string texto)
 	:Representacion_grafica(color), 
 	fuente(&fuente),
@@ -40,7 +38,30 @@ void Representacion_TTF::generar_textura()
 {	
 	//Si el texto tiene newlines no va a funcionar: tenemos que montar
 	//nosotros el código. Empezamos por partir el texto en varias líneas...
-	std::vector<std::string> lineas=DLibH::Herramientas::explotar(cadena, '\n');
+
+	auto explotar=[](const std::string& cadena, char p_delimitador)
+	{
+		std::vector<std::string> resultado;
+		std::string temp;
+
+		for(const char& c : cadena) 
+		{
+			if(c==p_delimitador) 
+			{	
+				resultado.push_back(temp);
+				temp="";
+			}
+			else
+			{
+				temp+=c;
+			}
+		}
+
+		resultado.push_back(temp);
+		return resultado;
+	};
+
+	std::vector<std::string> lineas=explotar(cadena, '\n');
 
 	//Y ahora medimos el que sería el tamaño total de la superficie del texto.
 	int total_h=0, h=0, w=0, tw=0;
@@ -73,9 +94,8 @@ void Representacion_TTF::generar_textura()
 		reemplazar(c, "\t", "    ");
 		const char * cad=c.size() ? c.c_str() : " \0";
 
-		//TODO: Hay varios tipos de "blend". Podemos ponerlos aquí.
 		SDL_Surface * s=TTF_RenderUTF8_Blended
-			(const_cast<TTF_Font*>(fuente->acc_fuente()), cad, sdl_col);	
+			(const_cast<TTF_Font*>(fuente->acc_fuente()), cad, sdl_col);
 
 		if(!s)
 		{

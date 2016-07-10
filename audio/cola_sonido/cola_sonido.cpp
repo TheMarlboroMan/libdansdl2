@@ -10,12 +10,12 @@ lo podemos dejar así pero me gustaría estudiarlo en el futuro.
 
 Cola_sonido::Cola_sonido()
 {
-	this->inicializar();
+	inicializar();
 }
 
 Cola_sonido::~Cola_sonido()
 {
-	this->vaciar();
+	vaciar();
 }
 
 /*
@@ -26,41 +26,34 @@ de audio sdl.
 
 void Cola_sonido::inicializar()
 {
-	this->controlador=Controlador_audio_SDL::obtener();
+	controlador=Controlador_audio_SDL::obtener();
 }
 
 void Cola_sonido::vaciar()
 {
-	/*while(!this->cola.empty())
-	{
-		this->cola.pop();
-	}*/
-
-		cola.clear();
+	cola.clear();
 }
 
 //Los sonidos se insertan, preparados o no.
 
 void Cola_sonido::insertar(const Estructura_sonido& p_e)
 {
-	//this->cola.push(p_e);
-	this->cola.push_back(p_e);
+	cola.push_back(p_e);
 }
 	
 Estructura_sonido Cola_sonido::obtener_primero()
 {
-	return this->cola.front();
+	return cola.front();
 }
 
 void Cola_sonido::eliminar_primero()
 {
-	//this->cola.pop();
 	cola.erase(cola.begin());
 }
 
 void Cola_sonido::procesar_cola(bool descartar)
 {
-	if(this->controlador)
+	if(controlador)
 	{
 		//Los sonidos que NO se pueden reproducir se descartan o se
 		//insertan en la parte trasera de la cola de nuevo. 

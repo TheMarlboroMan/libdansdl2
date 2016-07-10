@@ -10,11 +10,11 @@
 #include "../../../herramientas/log_base/log_base.h"
 
 /*
-Es la clase base de todas las representaciones que usan un SDL_Texture 
-(encapsulado en un recurso) para ser representado. 
+Es la clase base de todas las representaciones que usan una textura
+(encapsulada en un recurso) para ser representado. 
 
-Viene acompañada de una estructura de transformación que aprovecha algunas de las cualidades
-de SDL_2*/
+Viene acompañada de una estructura de transformación para su rotación.
+*/
 
 namespace DLibV
 {
@@ -85,8 +85,7 @@ class Representacion_grafica:public Representacion
 	Representacion_grafica_transformacion transformacion;
 	void			calcular_puntos();
 
-	//TODO: Change this for a reference. Or not: we wouldn't be able to change textures.
-	Textura * textura;	//Este es el puntero a su superficie de memoria.
+	Textura * textura;	//Este es el puntero a su superficie de memoria. Es un puntero y no una referencia para permitir cambiarlo.
 
 	struct 	{int w, h;}	pincel;
 	struct puntotex {GLfloat x, y;};

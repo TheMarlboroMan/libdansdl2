@@ -29,9 +29,9 @@ class Sonido
 	Sonido(const char * p_ruta);
 	~Sonido();
 
-	std::string acc_ruta() const {return this->ruta;}
+	std::string acc_ruta() const {return ruta;}
 	bool es_preparado() const {return preparado;}
-	Mix_Chunk * acc_datos() {return this->p_sonido;}
+	Mix_Chunk * acc_datos() {return p_sonido;}
 };
 
 struct Estructura_sonido

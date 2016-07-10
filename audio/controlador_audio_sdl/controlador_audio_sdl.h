@@ -10,10 +10,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "../../herramientas/log_base/log_base.h"
-
-extern DLibH::Log_base LOG;
-
 /*
 Esta clase está implementada como un singleton... No es por gusto, es porque
 la función de callback para cuando un sonido termina de escucharse necesita

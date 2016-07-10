@@ -7,6 +7,7 @@
 #include <cstdlib> //Para abs en windows.
 #include <vector>
 #include <map>
+#include <array>
 #include <string>
 #include "../../herramientas/log_base/log_base.h"
 
@@ -28,16 +29,33 @@ class Controles_SDL
 	//El bloque de control es quien interactúa realmente con la capa inferior de la SDL.
 	class Teclado
 	{
-		private:
-		const Uint8 * teclas_pulsadas; //Lo manejaremos todo manualmente...
-
 		public:
-		Teclado() {teclas_pulsadas=nullptr;}
-		//TODO: Esto es un leak???
-		~Teclado() {teclas_pulsadas=nullptr;}
-		void mut_teclas_pulsadas(const Uint8 * teclas)  {teclas_pulsadas=teclas;}
-		Uint8 const * acc_teclas_pulsadas() const {return teclas_pulsadas;}
-		bool es_tecla_pulsada(int p_tecla) const {return this->teclas_pulsadas[p_tecla];}
+					Teclado()
+			:teclas_pulsadas(nullptr)
+		{
+
+		}
+			
+		void 			mut_teclas_pulsadas(const Uint8 * teclas)  {teclas_pulsadas=teclas;}
+		Uint8 const * 		acc_teclas_pulsadas() const {return teclas_pulsadas;}
+		bool 			es_tecla_pulsada(int p_tecla) const {return teclas_pulsadas[p_tecla];}
+		void			inicializar_teclas(bool con_bloqueo)
+		{
+			memset(teclas_up.data(), 0, SDL_NUM_SCANCODES);
+			memset(teclas_down.data(), 0, SDL_NUM_SCANCODES);
+			if(con_bloqueo) memset(teclas_down_bloqueo.data(), 0, SDL_NUM_SCANCODES);
+		}
+
+		std::array<char, SDL_NUM_SCANCODES>	teclas_up,
+							teclas_down,
+							teclas_down_bloqueo;
+
+
+		private:
+
+		//No es un leak: la estructura pertenece a SDL.
+		const Uint8 * 		teclas_pulsadas;
+
 	};
 
 	//Aquí dentro se guarda todo lo que tiene que ver con el raton.
@@ -58,36 +76,25 @@ class Controles_SDL
 
 		bool movimiento;
 
-		char * botones_up;
-		char * botones_down;
-		char * botones_pulsados;
+		static const unsigned int MAX_BOTONES=6;
+		std::array<char, MAX_BOTONES>	botones_up,
+						botones_down,
+						botones_pulsados;
 
-		static const unsigned int MAX_BOTONES=6;	
 	
 		Raton():
 			posicion(),
 			x(posicion.x), y(posicion.y),
 			movimiento(false)
 		{
-			this->botones_up=new char[MAX_BOTONES];	//0 no es nada, 5 es la última rueda...
-			this->botones_down=new char[MAX_BOTONES];
-
-			this->botones_pulsados=new char[MAX_BOTONES];
-			memset(this->botones_pulsados, 0, MAX_BOTONES);
-		}
-
-		~Raton()
-		{
-			delete [] this->botones_up;
-			delete [] this->botones_down;
-			delete [] this->botones_pulsados;
+			memset(botones_pulsados.data(), 0, MAX_BOTONES);
 		}
 
 		void inicializar_estado()
 		{
-			memset(this->botones_up, 0, MAX_BOTONES);
-			memset(this->botones_down, 0, MAX_BOTONES);
-			this->movimiento=false;
+			memset(botones_up.data(), 0, MAX_BOTONES);
+			memset(botones_down.data(), 0, MAX_BOTONES);
+			movimiento=false;
 		}
 	};
 
@@ -129,11 +136,6 @@ class Controles_SDL
 		* de forma que se borra y se liberaría la estructura si la emplazamos
 		* en el constructor. La solución de momento es pasar la estructura 
 		* después de construido el objeto.
-		* TODO: Probar deleter...
-std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
-{
-    SDL_FreeSurface(surface);
-});
 		*/
 
 		void inicializar(SDL_Joystick * joy)
@@ -221,21 +223,21 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 		{
 			if(v_tipo==0)
 			{
-				this->botones_down[v_boton]=true;
-				this->botones_pulsados[v_boton]=true;
-				this->botones_soltados[v_boton]=false;
+				botones_down[v_boton]=true;
+				botones_pulsados[v_boton]=true;
+				botones_soltados[v_boton]=false;
 			}
 			else
 			{
-				this->botones_up[v_boton]=true;
-				this->botones_soltados[v_boton]=true;
-				this->botones_pulsados[v_boton]=false;
+				botones_up[v_boton]=true;
+				botones_soltados[v_boton]=true;
+				botones_pulsados[v_boton]=false;
 			}
 		}
 	
 		void registrar_eje(unsigned int v_eje, Sint16 v_valor)
 		{
-			this->ejes[v_eje]=v_valor;
+			ejes[v_eje]=v_valor;
 
 			if(ejes_virtualizados)
 			{
@@ -317,7 +319,7 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 				}
 			}
 		}
-
+/*
 		void debug()
 		{
 			std::cout<<std::endl<<"UP\t";
@@ -330,10 +332,10 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 			for(auto v : botones_soltados) std::cout<<(int(v));
 			std::cout<<std::endl;
 		}
-
+*/
 		void inicializar_estado()
 		{
-			if(this->botones)
+			if(botones)
 			{
 				std::fill(std::begin(botones_up), std::end(botones_up), false);
 				std::fill(std::begin(botones_down), std::end(botones_down), false);
@@ -375,21 +377,21 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 
 		void recibir_input(bool p_foco, Uint8 p_estado)
 		{
-			this->foco=p_foco;
-			this->estado=p_estado;
-			this->registrado_evento_actividad=true;
+			foco=p_foco;
+			estado=p_estado;
+			registrado_evento_actividad=true;
 		}
 
 		void reiniciar()
 		{
-			this->registrado_evento_actividad=false;
-			this->foco=false;
-			this->estado=0;
+			registrado_evento_actividad=false;
+			foco=false;
+			estado=0;
 		}
 	
-		bool es_registrado_evento_actividad() const {return this->registrado_evento_actividad;}
-		bool es_foco() const {return this->foco;}
-		Uint8 acc_estado() const {return this->estado;}
+		bool es_registrado_evento_actividad() const {return registrado_evento_actividad;}
+		bool es_foco() const {return foco;}
+		Uint8 acc_estado() const {return estado;}
 	};
 
 	private:
@@ -405,11 +407,6 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 
 	bool 				senal_salida; //SDL_QUIT; básicamente...
 	unsigned short int 		cantidad_joysticks;
-
-	//TODO: Esto debería ser cosa del teclado...
-	char * 				teclas_down;
-	char * 				teclas_down_bloqueo;
-	char * 				teclas_up;
 
 	void 				inicializar_teclas(bool con_bloqueo=false);
 	void 				inicializar_joysticks();
@@ -454,8 +451,8 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	bool 			es_input_texto_activo() const {return SDL_IsTextInputActive();}
 
 	bool 			bombear_eventos_manual(SDL_Event &, bool=true);
-	const Teclado& 		acc_teclado() const {return this->teclado;}
-	const SDL_Event& 	acc_eventos() const {return this->eventos;}
+//	const Teclado& 		acc_teclado() const {return teclado;}
+	const SDL_Event& 	acc_eventos() const {return eventos;}
 	const Raton& 		acc_raton() const {return raton;}
 	const Joystick& 	acc_joystick(int indice) const {return joysticks.at(indice);}
 	Joystick& 		acc_joystick(int indice) {return joysticks.at(indice);}
@@ -518,13 +515,13 @@ std::shared_ptr<SDL_Surface>(SDL_LoadBMP(....), [=](SDL_Surface* surface)
 	void 			limpiar_para_nueva_recogida();
 	void 			procesar_evento(SDL_Event &);
 	void 			mover_raton(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
-	bool 			es_tecla_pulsada(int p_tecla) const {return this->teclado.es_tecla_pulsada(p_tecla);}
-	bool 			es_tecla_down(int p_tecla) const {return this->teclas_down[p_tecla];}
-	bool 			es_tecla_up(int p_tecla) const {return this->teclas_up[p_tecla];}
-	bool 			es_boton_up(int p_boton) const {return this->raton.botones_up[p_boton];}
-	bool			es_boton_down(int p_boton) const {return this->raton.botones_down[p_boton];}
-	bool 			es_boton_pulsado(int p_boton) const {return this->raton.botones_pulsados[p_boton];}
-	bool 			es_movimiento_raton() const {return this->raton.movimiento;}
+	bool 			es_tecla_pulsada(int p_tecla) const {return teclado.es_tecla_pulsada(p_tecla);}
+	bool 			es_tecla_down(int p_tecla) const {return teclado.teclas_down[p_tecla];}
+	bool 			es_tecla_up(int p_tecla) const {return teclado.teclas_up[p_tecla];}
+	bool 			es_boton_up(int p_boton) const {return raton.botones_up[p_boton];}
+	bool			es_boton_down(int p_boton) const {return raton.botones_down[p_boton];}
+	bool 			es_boton_pulsado(int p_boton) const {return raton.botones_pulsados[p_boton];}
+	bool 			es_movimiento_raton() const {return raton.movimiento;}
 	bool 			es_joystick_boton_down(unsigned int, unsigned int) const;
 	bool 			es_joystick_boton_up(unsigned int, unsigned int) const;
 	bool 			es_joystick_boton_pulsado(unsigned int, unsigned int) const;

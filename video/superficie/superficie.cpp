@@ -1,4 +1,5 @@
 #include "superficie.h"
+#include <stdexcept>
 
 using namespace DLibV;
 
@@ -45,7 +46,7 @@ void Superficie::establecer_transparencia(Uint32 color)
 	}
 	else 
 	{
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Superficie::establecer_transparencia(Uint8, Uint8, Uint8, bool) : No hay superficie para recurso"<<std::endl;
+		throw std::runtime_error("Superficie::establecer_transparencia(Uint8, Uint8, Uint8, bool) : No hay superficie para recurso");
 	}
 }
 
@@ -62,7 +63,7 @@ void Superficie::rellenar(Uint8 r, Uint8 g, Uint8 b)
 	}
 	else
 	{
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Superficie::rellenar(Uint8, Uint8, Uint8) : No hay superficie para recurso"<<std::endl;
+		throw std::runtime_error("Superficie::rellenar(Uint8, Uint8, Uint8) : No hay superficie para recurso");
 	}
 }
 
@@ -70,11 +71,11 @@ void Superficie::rellenar(Uint32 c)
 {
 	if(this->superficie) 
 	{
-		SDL_FillRect(this->superficie, NULL, c);
+		SDL_FillRect(this->superficie, nullptr, c);
 	}
 	else 
 	{
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Superficie::rellenar(Uint32) : No hay superficie para recurso"<<std::endl;
+		throw std::runtime_error("Superficie::rellenar(Uint32) : No hay superficie para recurso");
 	}
 }
 
@@ -88,7 +89,7 @@ void Superficie::limpiar_transparencia()
 	}
 	else 
 	{
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Superficie::limpiar_transparencia() : No hay superficie para recurso"<<std::endl;
+		throw std::runtime_error("Superficie::limpiar_transparencia() : No hay superficie para recurso");
 	}
 }
 

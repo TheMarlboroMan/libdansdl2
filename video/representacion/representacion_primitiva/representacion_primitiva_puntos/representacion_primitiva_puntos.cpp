@@ -3,11 +3,18 @@
 
 using namespace DLibV;
 
-Representacion_primitiva_puntos::Representacion_primitiva_puntos(int x, int y, ColorRGBA c)
+Representacion_primitiva_puntos::Representacion_primitiva_puntos(Punto p, ColorRGBA c)
 	:Representacion_primitiva(c), original{0,0}
 {
-	insertar(x, y);
+	insertar_interno(p, false);
 	actualizar_posicion_vista_rotacion();
+}
+
+Representacion_primitiva_puntos::Representacion_primitiva_puntos(const std::vector<Punto>& pts, ColorRGBA c)
+	:Representacion_primitiva(c), original{0,0}
+{
+	insertar(pts);
+//	actualizar_posicion_vista_rotacion();
 }
 
 Representacion_primitiva_puntos::Representacion_primitiva_puntos(ColorRGBA c)
@@ -30,15 +37,17 @@ Representacion_primitiva_puntos& Representacion_primitiva_puntos::operator=(cons
 	return *this;
 }
 
-void Representacion_primitiva_puntos::insertar(int x, int y)
+void Representacion_primitiva_puntos::insertar(const std::vector<Punto>& pts)
 {
-	if(!puntos.size())
-	{
-		original={x, y};
-	}
-
-	puntos.push_back({x-original.x, y-original.y});
+	for(const auto& p : pts) insertar_interno(p, false);
 	actualizar_posicion_vista_rotacion();
+}
+
+void Representacion_primitiva_puntos::insertar_interno(Punto p, bool actualizar_estado)
+{
+	if(!puntos.size()) original=p;
+	puntos.push_back({p.x-original.x, p.y-original.y});
+	if(actualizar_estado) actualizar_posicion_vista_rotacion();
 }
 
 void Representacion_primitiva_puntos::limpiar_puntos()

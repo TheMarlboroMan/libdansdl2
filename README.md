@@ -3,17 +3,11 @@ C++ Wrappers for SDL2 and OpenGL.
 
 ## TODO: 
 
-- Test in Windows...
-- Add vector constructor and insert for points.
-- Clear OLD functions with no use. Keep the interface simpler. 
-	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
-- Keep clearing old SDL_Rect functions.
-	- At least on the video part.
-- Revise TODOs.
+- Revise uppercase constants.
 - In the future, fork for OPENGL 1.4 and the rest.
 
-
 ## DONE:
+
 - Remove the need a return value from the rendering.
 - Get rid of static vs dynamic.
 - Re-think the RGBA part, see how we can integrate it with the alpha thing.
@@ -47,3 +41,15 @@ C++ Wrappers for SDL2 and OpenGL.
 	- After various tries I think it's better to skip the screen check for each single element: it's very problematic with rotations and leads to dirty code.
 - Cleanup warnings.
 - Alpha in groups.
+- Test in Windows...
+- Keep clearing old SDL_Rect functions.
+	- At least on the video part.
+- Add vector constructor and insert for points.
+- Remove mapa_colision_bitmap
+- Clear OLD functions with no use. Keep the interface simpler. 
+	- Delete old functions using SDL_Texture.
+	- Take a look at "herramientas" and clear it. There's a lot of things belonging in herramientas_proyecto now.
+	- We should actually take a look at the whole code... There's a lot of things that are only defined and never used.
+- Put the logger with the herramientas_proyecto. Just throw when something fails.
+	- I can't: there are real use cases in the input systems.
+- Revise TODOs.

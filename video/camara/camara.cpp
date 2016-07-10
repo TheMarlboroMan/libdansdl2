@@ -2,16 +2,13 @@
 
 using namespace DLibV;
 
-Camara::Camara(int p_x, int p_y, unsigned int p_w, unsigned int p_h, unsigned int p_px, unsigned int p_py):
-	info_volcado{(int)p_px, (int)p_py, 0, 0, (int)p_w, (int)p_h, 1.0}, pos_x(p_px), pos_y(p_py),
+Camara::Camara(Rect foco, Punto pos):
+	info_volcado{pos.x, pos.y, foco.x, foco.y, (int)foco.w, (int)foco.h, 1.0}, 
+	caja_foco(foco),
+	posicion(pos),
 	limitada(false), limite_min_x(0), limite_min_y(0),
 	limite_max_x(0), limite_max_y(0)
 {
-	caja_foco.x=p_x;
-	caja_foco.y=p_y;
-	caja_foco.w=p_w;
-	caja_foco.h=p_h;
-
 	sincronizar_cajas();
 	caja_pos.w=caja_foco.w;
 	caja_pos.h=caja_foco.h;
@@ -19,11 +16,11 @@ Camara::Camara(int p_x, int p_y, unsigned int p_w, unsigned int p_h, unsigned in
 
 void Camara::sincronizar_cajas()
 {
-	caja_pos.x=pos_x;
-	caja_pos.y=pos_y;
+	caja_pos.x=posicion.x;
+	caja_pos.y=posicion.y;
 
-	info_volcado.pos_x=pos_x;
-	info_volcado.pos_y=pos_y;
+	info_volcado.pos_x=posicion.x;
+	info_volcado.pos_y=posicion.y;
 	info_volcado.rel_x=caja_foco.x;
 	info_volcado.rel_y=caja_foco.y;
 	info_volcado.vista_w=caja_foco.w;
@@ -33,7 +30,7 @@ void Camara::sincronizar_cajas()
 /*Mueve la posición a la que apunta la cámara en la pantalla. Se usan las
 coordenadas provistas.*/
 
-void Camara::enfocar_a(int p_x, int p_y)
+void Camara::enfocar_a(Punto p)
 {
 	if(limitada)
 	{
@@ -45,13 +42,13 @@ void Camara::enfocar_a(int p_x, int p_y)
 			else if(fin > limite_max) blanco=limite_max-dimension;
 		};
 
-		if((int)caja_foco.w <= limite_max_x - limite_min_x) procesar(p_x, caja_foco.w, limite_min_x, limite_max_x, caja_foco.x);
-		if((int)caja_foco.h <= limite_max_y - limite_min_y) procesar(p_y, caja_foco.h, limite_min_y, limite_max_y, caja_foco.y);
+		if((int)caja_foco.w <= limite_max_x - limite_min_x) procesar(p.x, caja_foco.w, limite_min_x, limite_max_x, caja_foco.x);
+		if((int)caja_foco.h <= limite_max_y - limite_min_y) procesar(p.y, caja_foco.h, limite_min_y, limite_max_y, caja_foco.y);
 	}
 	else
 	{
-		caja_foco.x=p_x;
-		caja_foco.y=p_y;
+		caja_foco.x=p.x;
+		caja_foco.y=p.y;
 	}
 
 	sincronizar_cajas();
@@ -62,7 +59,7 @@ en los parámetros.*/
 
 void Camara::movimiento_relativo(int p_x, int p_y)
 {
-	enfocar_a(caja_foco.x+p_x, caja_foco.y+p_y);
+	enfocar_a({caja_foco.x+p_x, caja_foco.y+p_y});
 }
 
 /*Establece los límites a los que la cámara puede apuntar: es decir, los límites
@@ -88,10 +85,12 @@ void Camara::limpiar_limite()
 	limite_min_y=0;
 }
 
-void Camara::transformar_posicion_raton(int& x, int& y)
+Punto Camara::transformar_posicion_raton(Punto p) const
 {
-	x=caja_foco.x + (x * (caja_foco.w / (float) caja_pos.w));
-	y=caja_foco.y + (y * (caja_foco.h / (float) caja_pos.h));
+	Punto res(p);
+	res.x=caja_foco.x + (p.x * (caja_foco.w / (float) caja_pos.w));
+	res.y=caja_foco.y + (p.y * (caja_foco.h / (float) caja_pos.h));
+	return res;
 }
 
 //Un valor de 2 significa que todo es 2 veces más grande, ergo la caja de foco es dos veces más pequeña.

@@ -70,7 +70,7 @@ int Controlador_audio_SDL::Canal_audio_real::iniciar_reproduccion(const Estructu
 	
 	if(e.volumen!=-1) establecer_volumen(e.volumen);
 
-//TODO: SUPERBUG????		
+//Enorme bug de windows encontrado hace tiempo...
 #ifndef WINCOMPIL
 	if(e.vol_izq!=-1 && e.vol_der!=-1) 
 	{

@@ -44,7 +44,6 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)sonido.o \
 	$(DIR_O)musica.o \
 	$(DIR_O)cola_sonido.o \
-	$(DIR_O)mapa_colision_bitmap.o \
 	$(DIR_O)utilidades_graficas_sdl.o
 
 all: libDanSDL2.a
@@ -190,12 +189,6 @@ $(DIR_O)controlador_fps_sdl.o: \
 $(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.h \
 $(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp -o $(DIR_O)controlador_fps_sdl.o $(INCLUDES)
-
-$(DIR_O)mapa_colision_bitmap.o: \
-$(DIR_O)utilidades_graficas_sdl.o \
-$(DIR_CLASS_V)mapa_colision_bitmap/mapa_colision_bitmap.h \
-$(DIR_CLASS_V)mapa_colision_bitmap/mapa_colision_bitmap.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)mapa_colision_bitmap/mapa_colision_bitmap.cpp -o $(DIR_O)mapa_colision_bitmap.o $(INCLUDES)
 
 $(DIR_O)utilidades_graficas_sdl.o: \
 $(DIR_O)herramientas.o \

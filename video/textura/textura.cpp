@@ -8,18 +8,8 @@ Textura::Textura(const Superficie& s):
 	cargar(s.acc_superficie());
 }
 
-Textura::Textura(const Textura& t):
-	indice(t.indice), w(t.w), h(t.h)
-{
-
-}
-
 Textura::~Textura()
 {
-	//TODO: Cosas terribles ocurrirán si alguna vez copiamos una textura.
-	//Deberíamos duplicar la textura en el constructor de copia y en el
-	//operador de asignación.
-
 	glDeleteTextures(1, &indice);
 }
 	

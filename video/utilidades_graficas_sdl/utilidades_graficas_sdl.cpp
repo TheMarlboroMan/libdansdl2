@@ -1,4 +1,5 @@
 #include "utilidades_graficas_sdl.h"
+#include <stdexcept>
 
 using namespace DLibV;
 
@@ -63,23 +64,20 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
         SDL_Surface * temporal=IMG_Load(cadena);
         if (!temporal) 
         {
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:"<<cadena<<std::endl;
-                return nullptr;
+		throw std::runtime_error(std::string("Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:")+cadena);
         }
+
+	if(!ventana) 
+	{
+		SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_RGBA8888, 0);
+      	        SDL_FreeSurface(temporal);
+		return optimizada;
+	}
 	else
 	{
-		if(!ventana) 
-		{
-			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_RGBA8888, 0);
-	      	        SDL_FreeSurface(temporal);
-			return optimizada;
-		}
-		else
-		{
-			SDL_Surface * optimizada=SDL_ConvertSurface(temporal, SDL_GetWindowSurface(const_cast<SDL_Window *>(ventana))->format, 0);
-	      	        SDL_FreeSurface(temporal);
-			return optimizada;
-		}
+		SDL_Surface * optimizada=SDL_ConvertSurface(temporal, SDL_GetWindowSurface(const_cast<SDL_Window *>(ventana))->format, 0);
+      	        SDL_FreeSurface(temporal);
+		return optimizada;
 	}
 }
 
@@ -88,85 +86,10 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena)
         SDL_Surface * temporal=IMG_Load(cadena);
         if (!temporal) 
         {
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:"<<cadena<<std::endl;
-                return nullptr;
+		throw std::runtime_error(std::string("Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:")+cadena);
         }
 
 	return temporal;
-}
-
-void Utilidades_graficas_SDL::mostrar_ocultar_cursor(bool p_modo)
-{
-	SDL_ShowCursor(p_modo);
-}
-
-SDL_Texture * Utilidades_graficas_SDL::cargar_textura_desde_superficie(const SDL_Renderer * renderer, const SDL_Surface * superficie)
-{
-	SDL_Renderer * ren=const_cast<SDL_Renderer *>(renderer);
-	SDL_Surface * sur=const_cast<SDL_Surface *>(superficie);
-	SDL_Texture * textura=SDL_CreateTextureFromSurface(ren, sur);
-
-	if(!textura)
-	{
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_textura_desde_superficie() : textura no cargada"<<std::endl;
-		return nullptr;
-	}
-	else
-	{
-		return textura;
-	}
-}
-
-SDL_Texture * Utilidades_graficas_SDL::copiar_textura(const SDL_Renderer * renderer, const SDL_Texture * textura)
-{	
-	SDL_Renderer * ren=const_cast<SDL_Renderer *>(renderer);
-	SDL_Texture * tex=const_cast<SDL_Texture *>(textura);
-
-	Uint32 pformat=0;
-	int pa=0, pw=0, ph=0;
-
-	if(SDL_QueryTexture(tex, &pformat, &pa, &pw, &ph) < 0)
-	{
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : fallo al lanzar QueryTexture"<<std::endl;
-		return nullptr;
-	}
-	else
-	{
-		SDL_Texture * resultado=SDL_CreateTexture(ren, pformat, SDL_TEXTUREACCESS_TARGET, pw, ph);
-
-		if(!resultado)
-		{
-			DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : fallo al crear textura"<<std::endl;
-			return nullptr;
-		}
-		else
-		{
-			if(SDL_SetRenderTarget(ren, resultado) < 0)
-			{
-				DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : error al apuntar textura como target"<<std::endl;
-				return nullptr;
-			}
-			else if(SDL_RenderCopy(ren, resultado, nullptr, nullptr) < 0)
-			{
-				DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : fallo volcar textura"<<std::endl;
-				return nullptr;
-			}
-			else if(SDL_SetRenderTarget(ren, nullptr) < 0)
-			{
-				DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::copiar textura : error al restaurar target"<<std::endl;
-				return nullptr;
-			}
-		}
-
-		return resultado;
-	}
-}
-
-SDL_Texture * Utilidades_graficas_SDL::crear_textura(const SDL_Renderer * renderer, int pw, int ph, Uint32 pformat, int paccess)
-{
-	SDL_Renderer * ren=const_cast<SDL_Renderer *>(renderer);
-	SDL_Texture * resultado=SDL_CreateTexture(ren, pformat, paccess, pw, ph);
-	return resultado;
 }
 
 Uint32 Utilidades_graficas_SDL::SDL_GetPixel(SDL_Surface *surface, int x, int y)
