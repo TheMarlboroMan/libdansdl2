@@ -2,6 +2,9 @@
 #define TEXTURA_SDL_H
 
 #include <GL/gl.h>
+#ifdef WINCOMPIL
+#include <GL/glext.h>
+#endif
 #include <SDL2/SDL.h>
 #include "../superficie/superficie.h"
 

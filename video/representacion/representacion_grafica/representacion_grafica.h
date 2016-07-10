@@ -2,6 +2,9 @@
 #define REPRESENTACION_GRAFICA_H
 
 #include <GL/gl.h>
+#ifdef WINCOMPIL
+#include <GL/glext.h>
+#endif
 #include "../representacion.h"
 #include "../../textura/textura.h"
 #include "../../../herramientas/log_base/log_base.h"
@@ -40,8 +43,8 @@ class Representacion_grafica:public Representacion
 
 	enum 			FLAGS_RECT{FRECT_X=1, FRECT_Y=2, FRECT_W=4, FRECT_H=8};
 
-				Representacion_grafica();
-				Representacion_grafica(ColorRGBA);
+				Representacion_grafica(Rect={0,0,0,0}, Rect={0,0,0,0});
+				Representacion_grafica(ColorRGBA, Rect={0,0,0,0}, Rect={0,0,0,0});
 				Representacion_grafica(const Representacion_grafica&);
 				Representacion_grafica& operator=(const Representacion_grafica &);
 	virtual 		~Representacion_grafica() {}

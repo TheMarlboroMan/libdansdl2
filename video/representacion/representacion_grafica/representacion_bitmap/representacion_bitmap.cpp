@@ -6,7 +6,8 @@ Representacion_bitmap::Representacion_bitmap():Representacion_grafica()
 	actualizar_posicion_vista_rotacion();
 }
 
-Representacion_bitmap::Representacion_bitmap(const Textura * p_rec):Representacion_grafica()
+Representacion_bitmap::Representacion_bitmap(const Textura * p_rec, Rect pos, Rect rec)
+	:Representacion_grafica(pos, rec)
 {
 	establecer_textura(p_rec);
 

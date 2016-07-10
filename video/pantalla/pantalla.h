@@ -3,6 +3,9 @@
 
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
+#ifdef WINCOMPIL
+#include <GL/glext.h>
+#endif
 #include <iostream>
 #include <string>
 //#include <vector>

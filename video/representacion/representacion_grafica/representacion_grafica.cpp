@@ -7,16 +7,16 @@ using namespace DLibV;
 extern DLibH::Log_base LOG;
 
 
-Representacion_grafica::Representacion_grafica()
+Representacion_grafica::Representacion_grafica(Rect pos, Rect rec)
 	:Representacion(), textura(nullptr), 
-	pincel{0,0}, posicion{0,0,0,0}, recorte{0,0,0,0}
+	pincel{0,0}, posicion(pos), recorte(rec)
 {
 
 }
 
-Representacion_grafica::Representacion_grafica(ColorRGBA color)
+Representacion_grafica::Representacion_grafica(ColorRGBA color, Rect pos, Rect rec)
 	:Representacion(color), textura(nullptr),
-	pincel{0,0}, posicion{0,0,0,0}, recorte{0,0,0,0}
+	pincel{0,0}, posicion(pos), recorte(rec)
 {
 
 }
