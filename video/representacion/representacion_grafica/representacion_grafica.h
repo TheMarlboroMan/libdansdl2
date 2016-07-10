@@ -89,9 +89,8 @@ class Representacion_grafica:public Representacion
 
 	struct 	{int w, h;}	pincel;
 	struct puntotex {GLfloat x, y;};
-	struct punto{int x, y;};
 
-	std::vector<punto>	puntos;
+	std::vector<Punto>	puntos;
 	std::vector<puntotex>	final_ptex;
 
 
@@ -100,6 +99,7 @@ class Representacion_grafica:public Representacion
 	Rect 			posicion; 	//Lugar en que se muestra de la pantalla.
 	Rect	 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
 
+	void			liberar_calculos();
 	void 			recorte_a_medidas_textura();
 	void 			liberar_textura();
 	void 			anular_textura() {textura=nullptr;}

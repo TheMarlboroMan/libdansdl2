@@ -10,9 +10,9 @@ Representacion_bitmap::Representacion_bitmap(const Textura * p_rec, Rect pos, Re
 	:Representacion_grafica(pos, rec)
 {
 	establecer_textura(p_rec);
-
-	posicion.w=recorte.w;
-	posicion.h=recorte.h;
+	
+	if(!pos.w) posicion.w=recorte.w;
+	if(!pos.h) posicion.h=recorte.h;
 
 	actualizar_posicion_vista_rotacion();
 }

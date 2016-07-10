@@ -74,7 +74,7 @@ void Representacion_TTF::generar_textura()
 
 	total_h=(lineas.size() * h);
 	// TTF_FontLineSkip(const_cast<TTF_Font*>(fuente->acc_fuente()))) + h;
-	
+
 	//Podemos preparar una superficie de ese tamaño... Vamos a sacar una
 	//superficie primero para obtener el formato... Es una mierda pero
 	//me vale.
@@ -114,7 +114,7 @@ void Representacion_TTF::generar_textura()
 	establecer_textura(tex);
 	establecer_modo_blend(Representacion::blends::alpha);
 
-	establecer_recorte(0,0, tex->acc_w(), tex->acc_h());
+	establecer_recorte({0,0, tex->acc_w(), tex->acc_h()});
 	establecer_posicion(0, 0, tex->acc_w(), tex->acc_h(), FRECT_W|FRECT_H);	//Esto debemos llamarlo aquí, de lo contrario se queda con ancho y alto 0, dando problemas con las cámaras.
 }
 
@@ -149,6 +149,7 @@ void Representacion_TTF::interno_asignar(const std::string& c)
 	{
 		cadena=c;
 		liberar_textura();
+		liberar_calculos();
 		generar_textura();
 	}
 }

@@ -117,7 +117,7 @@ void Representacion_grafica::calcular_puntos()
 		{
 			const int dif_y=y+pincel.h > (int)pos.h ? pos.w - (ity * pincel.h) : pincel.h;
 
-			punto pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
+			Punto pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
 
 			//Samplear los puntos centrales de las cuatro esquinas. De momento no buscamos el centro del texel. 
 			//El cálculo de ptex_fx y ptex_fy está sacando la proporción entre el pincel y la cantidad de espacio
@@ -195,6 +195,7 @@ void Representacion_grafica::establecer_posicion(Rect c)
 void Representacion_grafica::establecer_recorte(Rect p_caja)
 {
 	recorte=p_caja;
+	liberar_calculos();
 }
 
 void Representacion_grafica::establecer_recorte(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, int p_flags)
@@ -203,8 +204,8 @@ void Representacion_grafica::establecer_recorte(Sint16 p_x, Sint16 p_y, Uint16 p
 	if(p_flags & FRECT_Y) recorte.y=p_y;
 	if(p_flags & FRECT_W) recorte.w=p_w;
 	if(p_flags & FRECT_H) recorte.h=p_h;
+	liberar_calculos();
 }
-
 
 void Representacion_grafica::ir_a(int x, int y)
 {
@@ -221,4 +222,11 @@ Punto Representacion_grafica::obtener_posicion() const
 Rect Representacion_grafica::obtener_base_posicion_vista() const
 {
 	return posicion;
+}
+
+void Representacion_grafica::liberar_calculos()
+{
+	pincel={0,0};
+	puntos.clear();
+	final_ptex.clear();
 }
