@@ -28,6 +28,7 @@ Representacion_primitiva_linea& Representacion_primitiva_linea::operator=(const 
 void Representacion_primitiva_linea::establecer_puntos(int px1, int py1, int px2, int py2)
 {
 	//Guardar como 0.0...
+	original={px1, py1};
 	puntos[0]={px1-original.x, py1-original.y};
 	puntos[1]={px2-original.x, py2-original.y};
 	actualizar_posicion_vista_rotacion();

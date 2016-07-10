@@ -67,6 +67,7 @@ void Pantalla::inicializar(int p_w, int p_h, int flags_ventana)
 		SDL_SetWindowSize(ventana, w, h);
 	}
 
+	info_volcado={0,0,0,0,w,h,1.0};
 	simulacro_caja.w=w;
 	simulacro_caja.h=h;
 	simulacro_caja.x=0;

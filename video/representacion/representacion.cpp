@@ -66,7 +66,10 @@ void Representacion::volcar(Pantalla& p_pantalla, bool saltar_toma)
 {
 	if(visible && (saltar_toma || es_en_toma(p_pantalla.acc_simulacro_caja())))
 	{
-		p_pantalla.reiniciar_clip();
+		if(p_pantalla.es_con_camara())
+		{
+			p_pantalla.reiniciar_clip();
+		}
 		transformacion_pre_render(p_pantalla.acc_info_volcado());
 		volcado();
 	}

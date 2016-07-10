@@ -47,10 +47,17 @@ class Pantalla
 	void 				actualizar();
 
 	void 				asignar_camara(const Camara&);
+	bool				es_con_camara() const {return camara_actual!=nullptr;}
 
 	void 				establecer_clip(Camara const&);
 	void 				establecer_clip(Rect);
-	void 				reiniciar_clip() {glDisable(GL_STENCIL_TEST); camara_actual=nullptr;}
+	void 				reiniciar_clip() 
+	{
+		glDisable(GL_STENCIL_TEST); 
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		camara_actual=nullptr;
+	}
 	const Rect& 			acc_simulacro_caja() {return this->simulacro_caja;}
 	const Info_volcado		acc_info_volcado() const {return info_volcado;};
 
