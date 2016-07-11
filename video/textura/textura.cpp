@@ -16,6 +16,18 @@ Textura::~Textura()
 //TODO: Either invalidate copies or make it generate a new texture.
 Textura& Textura::operator=(const Textura& t)
 {
+	//TODO: Check if texture exists before doing any of this...*/
+	/*
+	This should get the image data. Later we could put it somewhere.
+	
+		void glGetTexImage (GLenum target,
+                    GLint       level,
+                    GLenum      format, // GL will convert to this format
+                    GLenum      type,   // Using this data type per-pixel
+                    GLvoid *    img);
+                    
+	*/
+	
 	w=t.w;
 	h=t.h;
 	indice=t.indice;
