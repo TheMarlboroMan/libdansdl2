@@ -21,6 +21,7 @@ class Textura
 	unsigned int 	acc_w() const {return w;}
 	unsigned int 	acc_h() const {return h;}
 	GLuint		acc_indice() const {return indice;}
+	void		reemplazar(const SDL_Surface *);
 
 	private:
 
