@@ -54,6 +54,7 @@ class Representacion_grafica:public Representacion
 
 	Textura * ref_textura() const {return textura;}
 
+	//TODO: Will fail when no texture is set!.
 	int			acc_w_textura() const {return textura->acc_w();}
 	int			acc_h_textura() const {return textura->acc_h();}
 
