@@ -12,7 +12,8 @@ Textura::~Textura()
 {
 	glDeleteTextures(1, &indice);
 }
-	
+
+//TODO: Either invalidate copies or make it generate a new texture.
 Textura& Textura::operator=(const Textura& t)
 {
 	w=t.w;
@@ -21,15 +22,9 @@ Textura& Textura::operator=(const Textura& t)
 	return *this;
 }
 
-void Textura::reemplazar(const SDL_Surface * superficie)
+void Textura::reemplazar(const Superficie& s)
 {
-	w=superficie->w;
-	h=superficie->h;
-	glBindTexture(GL_TEXTURE_2D, indice);
-
-	int mode=GL_RGB;
- 	if(superficie->format->BytesPerPixel==4) mode=GL_RGBA;
-	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, superficie->pixels);
+	cargar(s.acc_superficie());
 }
 
 void Textura::cargar(const SDL_Surface * superficie)
@@ -37,13 +32,19 @@ void Textura::cargar(const SDL_Surface * superficie)
 	w=superficie->w;
 	h=superficie->h;
 
-	glGenTextures(1, &indice);
+	//Si el índice no existe se pide una nueva textura a OpenGL. En caso contrario
+	//se trabaja sobre la original.
+	if(!indice)
+	{
+		glGenTextures(1, &indice);
+	}
+	
 	glBindTexture(GL_TEXTURE_2D, indice);
 
 	int mode=GL_RGB;
  	if(superficie->format->BytesPerPixel==4) mode=GL_RGBA;
 
-	glTexImage2D(GL_TEXTURE_2D, 0, mode, superficie->w, superficie->h, 0, mode, GL_UNSIGNED_BYTE, superficie->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, superficie->pixels);
 	
 	//TODO: This should go somewhere else.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
