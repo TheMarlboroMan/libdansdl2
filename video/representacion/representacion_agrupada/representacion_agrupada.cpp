@@ -1,4 +1,5 @@
 #include "representacion_agrupada.h"
+#include "../representacion_primitiva/representacion_primitiva_caja/representacion_primitiva_caja.h"
 
 using namespace DLibV;
 
@@ -69,6 +70,12 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 	//la iteración podríamos tenemos malos resultados ya que antes ha habido
 	//un translate que no se ha tenido en cuenta.
 	if(p_camara!=nullptr) p_pantalla.asignar_camara(*p_camara);
+
+	//TODO: PERHAPS TRACE ITS OWN BOX..
+	auto rect=calcular_posicion_vista_rotacion();
+	Representacion_primitiva_caja cosa(Representacion_primitiva_caja::tipo::relleno, rect, rgba8(255, 0, 0, 64));
+	cosa.establecer_modo_blend(blends::alpha);
+	cosa.volcar(p_pantalla);
 
 	//TODO: La primera del grupo hace siempre un raro.
 
@@ -143,11 +150,12 @@ Punto Representacion_agrupada::obtener_posicion() const
 	return posicion;
 }
 
+//TODO: This is failing.
 Rect Representacion_agrupada::obtener_base_posicion_vista() const
 {
 	if(!grupo.size())
 	{
-		return Rect{0,0,0,0};
+		return Rect{posicion.x,posicion.y,0,0};
 	}
 	else
 	{
