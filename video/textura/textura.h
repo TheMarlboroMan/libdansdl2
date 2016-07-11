@@ -15,8 +15,9 @@ class Textura
 {
 	public:
 			Textura(const Superficie&);
+			Textura(const Textura&)=delete;
 			~Textura();
-	Textura& 	operator=(const Textura& t);
+	Textura& 	operator=(const Textura& t)=delete;
 
 	unsigned int 	acc_w() const {return w;}
 	unsigned int 	acc_h() const {return h;}
@@ -28,8 +29,9 @@ class Textura
 	void		cargar(const SDL_Surface *);
 
 	GLuint		indice;
-	int 		w;
-	int 		h;
+	int 		mode, 
+			w,
+	 		h;
 };
 
 }

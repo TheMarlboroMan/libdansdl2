@@ -52,7 +52,7 @@ class Representacion_grafica:public Representacion
 				Representacion_grafica& operator=(const Representacion_grafica &);
 	virtual 		~Representacion_grafica() {}
 
-	Textura * ref_textura() const {return textura;}
+	Textura * 		ptr_textura() const {return textura;}
 
 	//TODO: Will fail when no texture is set!.
 	int			acc_w_textura() const {return textura->acc_w();}

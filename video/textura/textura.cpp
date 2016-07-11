@@ -1,9 +1,11 @@
 #include "textura.h"
+#include <vector>
+#include <cstdint>
 
 using namespace DLibV;
 
 Textura::Textura(const Superficie& s):
-	indice(0), w(0), h(0)
+	indice(0), mode(GL_RGB), w(0), h(0)
 {
 	cargar(s.acc_superficie());
 }
@@ -13,26 +15,51 @@ Textura::~Textura()
 	glDeleteTextures(1, &indice);
 }
 
-//TODO: Either invalidate copies or make it generate a new texture.
+/*
+Textura::Textura(const Textura& t)
+	:indice(0), mode(t.mode), w(t.w), h(t.h)
+{
+
+	//TODO: This isn't working.
+	glBindTexture(GL_TEXTURE_2D, t.indice);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, mode, 0, 0, w, h, 0);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	std::vector<uint8_t> raw_img;
+
+	//TODO: Test this with other sizes.
+	int bpp=mode==GL_RGBA ? 4 : 3;
+	raw_img.reserve((w*h)*bpp);
+
+	glGetTexImage(GL_TEXTURE_2D, 0, mode, GL_UNSIGNED_BYTE, raw_img.data());
+	glGenTextures(1, &indice);
+	glBindTexture(GL_TEXTURE_2D, indice);
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, raw_img.data());
+}
+
 Textura& Textura::operator=(const Textura& t)
 {
-	//TODO: Check if texture exists before doing any of this...*/
-	/*
-	This should get the image data. Later we could put it somewhere.
-	
-		void glGetTexImage (GLenum target,
-                    GLint       level,
-                    GLenum      format, // GL will convert to this format
-                    GLenum      type,   // Using this data type per-pixel
-                    GLvoid *    img);
-                    
-	*/
-	
+	//TODO: This isn't working.
+	mode=t.mode;
 	w=t.w;
 	h=t.h;
-	indice=t.indice;
+
+	glBindTexture(GL_TEXTURE_2D, t.indice);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, mode, 0, 0, w, h, 0);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	std::vector<uint8_t> raw_img;
+
+	//TODO: Test this with other sizes.
+	int bpp=mode==GL_RGBA ? 4 : 3;
+	raw_img.reserve((w*h)*bpp);
+
+	glGetTexImage(GL_TEXTURE_2D, 0, mode, GL_UNSIGNED_BYTE, raw_img.data());
+	glGenTextures(1, &indice);
+	glBindTexture(GL_TEXTURE_2D, indice);
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, raw_img.data());
+
 	return *this;
 }
+*/
 
 void Textura::reemplazar(const Superficie& s)
 {
@@ -53,12 +80,8 @@ void Textura::cargar(const SDL_Surface * superficie)
 	
 	glBindTexture(GL_TEXTURE_2D, indice);
 
-	int mode=GL_RGB;
  	if(superficie->format->BytesPerPixel==4) mode=GL_RGBA;
+	else mode=GL_RGB;
 
 	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, superficie->pixels);
-	
-	//TODO: This should go somewhere else.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }

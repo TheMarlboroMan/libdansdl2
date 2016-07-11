@@ -70,6 +70,8 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 	//un translate que no se ha tenido en cuenta.
 	if(p_camara!=nullptr) p_pantalla.asignar_camara(*p_camara);
 
+	//TODO: La primera del grupo hace siempre un raro.
+
 	for(auto &r : grupo)
 	{
 		glMatrixMode(GL_MODELVIEW);
