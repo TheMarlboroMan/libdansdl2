@@ -70,6 +70,26 @@ void Representacion::volcar(Pantalla& p_pantalla, bool saltar_toma)
 		{
 			p_pantalla.reiniciar_clip();
 		}
+
+		//TODO: TRACE OWN BOX...
+/*
+		auto rect=calcular_posicion_vista_rotacion();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(1.f, 0.f, 0.f, 0.25f);
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		std::vector<Punto> puntos{ {rect.x, rect.y},
+					{rect.x+rect.w, rect.y},
+					{rect.x+rect.w, rect.y+rect.h},
+					{rect.x, rect.y+rect.h}};
+
+		glVertexPointer(2, GL_INT, 0, puntos.data());
+		glDrawArrays(GL_POLYGON, 0, puntos.size());
+		glDisableClientState(GL_VERTEX_ARRAY);
+*/
+		//TODO: End tracing.
+
 		transformacion_pre_render(p_pantalla.acc_info_volcado());
 		volcado();
 	}
@@ -161,6 +181,7 @@ Rect Representacion::calcular_posicion_vista_rotacion() const
 		}, {(double)c.x+p.x, (double)c.y+p.y});
 		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
 	float a=transformacion.angulo_rotacion;
+
 	polig.rotar(a);
 
 	//Sacar las medidas para la nueva caja...

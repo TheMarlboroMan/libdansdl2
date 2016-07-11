@@ -1,5 +1,4 @@
 #include "representacion_agrupada.h"
-#include "../representacion_primitiva/representacion_primitiva_caja/representacion_primitiva_caja.h"
 
 using namespace DLibV;
 
@@ -71,11 +70,21 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 	//un translate que no se ha tenido en cuenta.
 	if(p_camara!=nullptr) p_pantalla.asignar_camara(*p_camara);
 
-	//TODO: PERHAPS TRACE ITS OWN BOX..
-	auto rect=calcular_posicion_vista_rotacion();
-	Representacion_primitiva_caja cosa(Representacion_primitiva_caja::tipo::relleno, rect, rgba8(255, 0, 0, 64));
-	cosa.establecer_modo_blend(blends::alpha);
-	cosa.volcar(p_pantalla);
+//TODO: Trace own box.
+		auto rect=calcular_posicion_vista_rotacion();
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(1.f, 0.f, 0.f, 0.25f);
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		std::vector<Punto> puntos{ {rect.x, rect.y},
+					{rect.x+rect.w, rect.y},
+					{rect.x+rect.w, rect.y+rect.h},
+					{rect.x, rect.y+rect.h}};
+
+		glVertexPointer(2, GL_INT, 0, puntos.data());
+		glDrawArrays(GL_POLYGON, 0, puntos.size());
+		glDisableClientState(GL_VERTEX_ARRAY);
 
 	//TODO: La primera del grupo hace siempre un raro.
 
@@ -150,7 +159,6 @@ Punto Representacion_agrupada::obtener_posicion() const
 	return posicion;
 }
 
-//TODO: This is failing.
 Rect Representacion_agrupada::obtener_base_posicion_vista() const
 {
 	if(!grupo.size())
@@ -161,20 +169,15 @@ Rect Representacion_agrupada::obtener_base_posicion_vista() const
 	{
 		Rect res=grupo[0]->obtener_base_posicion_vista();
 
-		res.x+=posicion.x;
-		res.y+=posicion.y;
-
 		int 	fx=res.x+res.w,
 			fy=res.y+res.h;
 
 		for(const auto& r : grupo)
 		{
+
 			Rect pr=r->obtener_base_posicion_vista();
 
-			pr.x+=posicion.x;
-			pr.y+=posicion.y;
-
-			if(pr.x < res.x) res.x=pr.y;
+			if(pr.x < res.x) res.x=pr.x;
 			if(pr.y < res.y) res.y=pr.y;
 
 			int 	prfx=pr.x+pr.w,
@@ -186,6 +189,9 @@ Rect Representacion_agrupada::obtener_base_posicion_vista() const
 
 		res.w=fx-res.x;
 		res.h=fy-res.y;
+
+		res.x+=posicion.x;
+		res.y+=posicion.y;
 
 		return res;
 	}

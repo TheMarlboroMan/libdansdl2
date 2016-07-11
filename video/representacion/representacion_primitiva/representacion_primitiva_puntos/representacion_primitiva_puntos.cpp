@@ -75,7 +75,10 @@ Rect Representacion_primitiva_puntos::obtener_base_posicion_vista() const
 		auto min_y=*std::min_element(std::begin(puntos), std::end(puntos), fy);
 		auto max_y=*std::max_element(std::begin(puntos), std::end(puntos), fy);
 
-		return Rect{min_x.x+original.x, min_y.y+original.y, (unsigned int)max_x.x-min_x.x+original.x, (unsigned int)max_y.y-min_y.y+original.y};
+		Rect res{min_x.x, min_y.y, (unsigned int)max_x.x-min_x.x, (unsigned int)max_y.y-min_y.y};
+		res.x+=original.x;
+		res.y+=original.y;
+		return res;
 	}
 }
 
