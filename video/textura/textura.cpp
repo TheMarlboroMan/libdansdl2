@@ -21,6 +21,17 @@ Textura& Textura::operator=(const Textura& t)
 	return *this;
 }
 
+void Textura::reemplazar(const SDL_Surface * superficie)
+{
+	w=superficie->w;
+	h=superficie->h;
+	glBindTexture(GL_TEXTURE_2D, indice);
+
+	int mode=GL_RGB;
+ 	if(superficie->format->BytesPerPixel==4) mode=GL_RGBA;
+	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, superficie->pixels);
+}
+
 void Textura::cargar(const SDL_Surface * superficie)
 {
 	w=superficie->w;
@@ -31,7 +42,10 @@ void Textura::cargar(const SDL_Surface * superficie)
 
 	int mode=GL_RGB;
  	if(superficie->format->BytesPerPixel==4) mode=GL_RGBA;
+
 	glTexImage2D(GL_TEXTURE_2D, 0, mode, superficie->w, superficie->h, 0, mode, GL_UNSIGNED_BYTE, superficie->pixels);
+	
+	//TODO: This should go somewhere else.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
