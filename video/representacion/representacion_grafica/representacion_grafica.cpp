@@ -46,6 +46,8 @@ Representacion_grafica& Representacion_grafica::operator=(const Representacion_g
 void Representacion_grafica::recorte_a_medidas_textura()
 {
 	establecer_recorte(0,0, textura->acc_w(), textura->acc_h());
+	posicion.w=recorte.w;
+	posicion.h=recorte.h;
 }
 
 void Representacion_grafica::volcado()
