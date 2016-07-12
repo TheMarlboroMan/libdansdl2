@@ -161,14 +161,13 @@ struct Segmento_2d
 template<typename T>
 struct Proyeccion_poligono
 {
-	T 			min, max;	
+	T 			min, max;
 };
 
-//TODO: Parametrizar roce es colision????
 template<typename T>
-bool	hay_superposicion(const Proyeccion_poligono<T>& pa, const Proyeccion_poligono<T>& pb)
+bool	hay_superposicion(const Proyeccion_poligono<T>& pa, const Proyeccion_poligono<T>& pb, bool roce_es_colision=false)
 {
-	return Herramientas::segmentos_superpuestos(pa.min, pa.max, pb.min, pb.max);
+	return Herramientas::segmentos_superpuestos(pa.min, pa.max, pb.min, pb.max, roce_es_colision);
 }
 
 /**
@@ -331,9 +330,7 @@ bool segmentos_intersectan(const Segmento_2d<T>& a, const Segmento_2d<T>& b)
 	//Son parte de la misma línea.
 	if(uNumerator==0.0 && denominator==0.0) 
 	{
-	
-		//Si alguno de los puntos son el mismo... TODO: Supongo que no podemos
-		//moverlo más arriba, al principio de la comprobación????.
+		//Si alguno de los puntos son el mismo...
 		if(a.v1==b.v1 || a.v1==b.v2 || a.v2==b.v1 || a.v2==b.v2)
 		{
 			return true;

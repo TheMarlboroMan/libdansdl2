@@ -89,11 +89,6 @@ void Controles_SDL::recoger()
 	{
 		this->procesar_evento(eventos);
 	}
-
-	//TODO: Actualizar stuff...
-	//for(auto& j: joysticks) j.second.debug();
-
-//	raton.manejador();
 }
 
 /*

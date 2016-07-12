@@ -16,7 +16,6 @@ class Representacion_bitmap:public Representacion_grafica
 	Representacion_bitmap& operator=(const Representacion_bitmap &);
 
 	void establecer_recurso_sin_recortar(Textura const * r){Representacion_grafica::establecer_textura(r);}
-	virtual void establecer_textura(Textura const *);
 };
 
 } //Fin namespace DLibV

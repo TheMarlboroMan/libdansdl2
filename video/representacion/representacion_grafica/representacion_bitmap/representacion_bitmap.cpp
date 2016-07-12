@@ -29,15 +29,3 @@ Representacion_bitmap& Representacion_bitmap::operator=(const Representacion_bit
 	Representacion_grafica::operator=(p_otra);
 	return *this;
 }
-
-void Representacion_bitmap::establecer_textura(Textura const * p_recurso)
-{
-	Representacion_grafica::establecer_textura(p_recurso);
-
-	//TODO: Es esto buena práctica o es sólo hand-holding???.
-	//TODO: Una solución interesante sería hacer recorte_a_medidas_textura público.
-	if(recorte.w==0 && recorte.h==0) 
-	{
-		recorte_a_medidas_textura();
-	}
-}

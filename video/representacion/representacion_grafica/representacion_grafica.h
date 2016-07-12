@@ -54,9 +54,8 @@ class Representacion_grafica:public Representacion
 
 	Textura * 		ptr_textura() const {return textura;}
 
-	//TODO: Will fail when no texture is set!.
-	int			acc_w_textura() const {return textura->acc_w();}
-	int			acc_h_textura() const {return textura->acc_h();}
+	int			acc_w_textura() const {return textura!=nullptr ? textura->acc_w() : -1;}
+	int			acc_h_textura() const {return textura!=nullptr ? textura->acc_h() : -1;}
 
 	void 			transformar_invertir_horizontal(bool v) {transformacion.invertir_horizontal=v;}
 	void 			transformar_invertir_vertical(bool v) {transformacion.invertir_vertical=v;}
@@ -65,22 +64,21 @@ class Representacion_grafica:public Representacion
 
 	void			establecer_pincel(int w, int h) {pincel.w=w; pincel.h=h;}
 
-	const Rect& 		acc_posicion() const {return this->posicion;}
-	Rect 			copia_posicion() const {return Rect{posicion.x, posicion.y, posicion.w, posicion.h};}
+	const Rect& 		acc_posicion() const {return posicion;}
+	Rect 			acc_posicion() {return posicion;}
 	void			establecer_posicion(int, int, int=-1, int=-1, int=15);
 	void 			establecer_posicion(Rect);
 
-	const Rect& 		acc_recorte() const {return this->recorte;}
-	Rect 			copia_recorte() const {return Rect {recorte.x, recorte.y, recorte.w, recorte.h};}
+	const Rect& 		acc_recorte() const {return recorte;}
+	Rect 			acc_recorte() {return recorte;}
 	void 			establecer_recorte(Sint16, Sint16, Uint16, Uint16, int=15);
 	void 			establecer_recorte(Rect);
-	void 			establecer_dimensiones_posicion_por_recorte();
-	//TODO: Crep que esto debe vaciar final_ptex.
-	void			establecer_tipo_sampling(sampling v) {tipo_sampling=v;}
+	void 			recorte_a_medidas_textura();
+	void			establecer_tipo_sampling(sampling v) {liberar_calculos(); tipo_sampling=v;}
 
 	Representacion_grafica_transformacion& acc_transformacion() {return transformacion;}
 
-	virtual void 		establecer_textura(Textura const * p_textura) {this->textura=const_cast <Textura *> (p_textura);}
+	void 			establecer_textura(Textura const * p_textura) {textura=const_cast <Textura *> (p_textura);}
 
 	virtual void 		ir_a(int x, int y);
 	virtual Punto		obtener_posicion() const;
@@ -100,14 +98,12 @@ class Representacion_grafica:public Representacion
 	std::vector<puntotex>	final_ptex;
 	sampling		tipo_sampling;
 
-
 	protected:
 
 	Rect 			posicion; 	//Lugar en que se muestra de la pantalla.
 	Rect	 		recorte;	//Considerando la dimensión total de la representación, la parte que mostramos.
 
 	void			liberar_calculos();
-	void 			recorte_a_medidas_textura();
 	void 			liberar_textura();
 	void 			anular_textura() {textura=nullptr;}
 
