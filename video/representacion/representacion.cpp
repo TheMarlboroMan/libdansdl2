@@ -71,31 +71,33 @@ void Representacion::volcar(Pantalla& p_pantalla, bool saltar_toma)
 			p_pantalla.reiniciar_clip();
 		}
 
-		//TODO: TRACE OWN BOX...
-/*
-		auto rect=calcular_posicion_vista_rotacion();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glColor4f(1.f, 0.f, 0.f, 0.25f);
-		glEnableClientState(GL_VERTEX_ARRAY);
-
-		std::vector<Punto> puntos{ {rect.x, rect.y},
-					{rect.x+rect.w, rect.y},
-					{rect.x+rect.w, rect.y+rect.h},
-					{rect.x, rect.y+rect.h}};
-
-		glVertexPointer(2, GL_INT, 0, puntos.data());
-		glDrawArrays(GL_POLYGON, 0, puntos.size());
-		glDisableClientState(GL_VERTEX_ARRAY);
-*/
-		//TODO: End tracing.
-
 		transformacion_pre_render(p_pantalla.acc_info_volcado());
 		volcado();
 	}
 
 	//Es importante que esto siempre esté presente...
 	glLoadIdentity();
+}
+
+void Representacion::debug_trazar_caja() const
+{
+	auto rect=calcular_posicion_vista_rotacion();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(1.f, 0.f, 0.f, 0.25f);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	int 	fx=rect.x+rect.w,
+		fy=rect.y+rect.h;
+
+	std::vector<Punto> puntos{ {rect.x, rect.y},
+			{fx, rect.y},
+			{fx, fy},
+			{rect.x, fy}};
+
+	glVertexPointer(2, GL_INT, 0, puntos.data());
+	glDrawArrays(GL_POLYGON, 0, puntos.size());
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void Representacion::transformacion_pre_render(const Info_volcado iv)
@@ -132,7 +134,7 @@ void Representacion::transformacion_pre_render(const Info_volcado iv)
 
 void Representacion::transformar_rotar(float v) 
 {
-	transformacion.angulo_rotacion=v;
+	transformacion.angulo_rotacion=fmod(v, 360.f);
 	actualizar_posicion_vista_rotacion();
 }
 
@@ -171,14 +173,17 @@ void Representacion::actualizar_posicion_vista_rotacion()
 Rect Representacion::calcular_posicion_vista_rotacion() const
 {
 	const auto p=obtener_base_posicion_vista();
+	const auto pos=obtener_posicion();
+
 	auto c=transformacion.centro_rotacion;
+
 	DLibH::Poligono_2d_vertices<double> polig(
 		{ 
 			{(double)p.x, (double)p.y},
 			{(double)(p.x+p.w), (double)p.y},
 			{(double)(p.x+p.w), (double)(p.y+p.h)},
 			{(double)p.x, (double)(p.y+p.h)},        
-		}, {(double)c.x+p.x, (double)c.y+p.y});
+		}, {(double)c.x+pos.x, (double)c.y+pos.y});
 		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
 	float a=transformacion.angulo_rotacion;
 
@@ -191,8 +196,10 @@ Rect Representacion::calcular_posicion_vista_rotacion() const
 	Rect res{0,0,0,0};
 	res.x=*std::min_element(std::begin(xs), std::end(xs));
 	res.y=*std::min_element(std::begin(ys), std::end(ys));
-	res.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_vista.x;
-	res.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_vista.y;
+//	res.w=*std::max_element(std::begin(xs), std::end(xs))-posicion_vista.x;
+//	res.h=*std::max_element(std::begin(ys), std::end(ys))-posicion_vista.y;
+	res.w=*std::max_element(std::begin(xs), std::end(xs))-res.x;
+	res.h=*std::max_element(std::begin(ys), std::end(ys))-res.y;
 
 	return res;
 }

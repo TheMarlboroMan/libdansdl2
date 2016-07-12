@@ -90,6 +90,7 @@ class Representacion
 	virtual void 		ir_a(int x, int y)=0;
 	virtual Punto		obtener_posicion() const=0;
 	virtual Rect		obtener_base_posicion_vista() const=0;
+	void			debug_trazar_caja() const;
 
 	private:
 

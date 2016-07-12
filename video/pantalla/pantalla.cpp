@@ -163,3 +163,9 @@ void Pantalla::asignar_camara(const Camara& c)
 		camara_actual=&c;
 	}
 }
+
+void Pantalla::reiniciar_clip()
+{
+	glDisable(GL_STENCIL_TEST); 
+	camara_actual=nullptr;
+}

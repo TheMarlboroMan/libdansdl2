@@ -70,24 +70,6 @@ void Representacion_agrupada::volcado_interno(Pantalla& p_pantalla, Camara const
 	//un translate que no se ha tenido en cuenta.
 	if(p_camara!=nullptr) p_pantalla.asignar_camara(*p_camara);
 
-//TODO: Trace own box.
-		auto rect=calcular_posicion_vista_rotacion();
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glColor4f(1.f, 0.f, 0.f, 0.25f);
-		glEnableClientState(GL_VERTEX_ARRAY);
-
-		std::vector<Punto> puntos{ {rect.x, rect.y},
-					{rect.x+rect.w, rect.y},
-					{rect.x+rect.w, rect.y+rect.h},
-					{rect.x, rect.y+rect.h}};
-
-		glVertexPointer(2, GL_INT, 0, puntos.data());
-		glDrawArrays(GL_POLYGON, 0, puntos.size());
-		glDisableClientState(GL_VERTEX_ARRAY);
-
-	//TODO: La primera del grupo hace siempre un raro.
-
 	for(auto &r : grupo)
 	{
 		glMatrixMode(GL_MODELVIEW);

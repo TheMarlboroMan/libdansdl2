@@ -51,13 +51,8 @@ class Pantalla
 
 	void 				establecer_clip(Camara const&);
 	void 				establecer_clip(Rect);
-	void 				reiniciar_clip() 
-	{
-		glDisable(GL_STENCIL_TEST); 
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		camara_actual=nullptr;
-	}
+	void 				reiniciar_clip();
+
 	const Rect& 			acc_simulacro_caja() {return this->simulacro_caja;}
 	const Info_volcado		acc_info_volcado() const {return info_volcado;};
 
