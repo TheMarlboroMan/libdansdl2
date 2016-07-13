@@ -29,8 +29,7 @@ class Representacion_primitiva_poligono
 	protected:
 
 	virtual void			volcado();
-
-	private:
+	void				normalizar();
 
 	std::vector<Punto>		puntos;
 	Punto				original;	//Guarda el primer punto original sin estar en 0.0.

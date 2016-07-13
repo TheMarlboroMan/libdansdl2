@@ -7,11 +7,7 @@ Representacion_primitiva_poligono::Representacion_primitiva_poligono(tipo t, con
 	:Representacion_primitiva(c), puntos(pt), original(pt[0]), tipo_relleno(t)
 { 
 	//Guardarlos de forma que el primero sea 0.0.
-	for(auto& pt : puntos)
-	{
-		pt.x-=original.x;
-		pt.y-=original.y;
-	}
+	normalizar();
 
 	actualizar_posicion_vista_rotacion();
 }
@@ -29,6 +25,15 @@ Representacion_primitiva_poligono& Representacion_primitiva_poligono::operator=(
 	original=o.original;
 	tipo_relleno=o.tipo_relleno;
 	return *this;
+}
+
+void Representacion_primitiva_poligono::normalizar()
+{
+	for(auto& pt : puntos)
+	{
+		pt.x-=original.x;
+		pt.y-=original.y;
+	}
 }
 
 void Representacion_primitiva_poligono::volcado()
