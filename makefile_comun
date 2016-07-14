@@ -285,6 +285,7 @@ $(DIR_CLASS_H)linea/linea.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)linea/linea.cpp -o $(DIR_O)linea.o $(INCLUDES)
 
 ### I HAVE DONE BELOW THIS POINT ###############################################
+### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
 
 $(DIR_O)point_2d.o: \
 $(DIR_CLASS_H)point_2d/point_2d.h \
