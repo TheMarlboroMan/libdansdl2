@@ -8,6 +8,8 @@ namespace DLibV
 {
 
 
+//TODO: This should stop being static.
+
 class Gestor_superficies:public DLibH::Gestor_mapa_static<int, DLibV::Superficie *>
 {
 	public:

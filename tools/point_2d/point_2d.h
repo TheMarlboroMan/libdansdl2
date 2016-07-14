@@ -8,83 +8,83 @@ namespace ldt
 {
 
 template<typename T>
-struct Point_2d
+struct point_2d
 {
 	public:
 
 	T x,y;
 
-	Point_2d(): x(0), y(0) {}
-	Point_2d(T px, T py):x(px), y(py) {}
-	Point_2d(const Point_2d<T>& p):x(p.x), y(p.y) {}
-	Point_2d& operator=(const Point_2d<T>& p)
+	point_2d(): x(0), y(0) {}
+	point_2d(T px, T py):x(px), y(py) {}
+	point_2d(const point_2d<T>& p):x(p.x), y(p.y) {}
+	point_2d& operator=(const point_2d<T>& p)
 	{
 		x=p.x;
 		y=p.y;
 		return *this;
 	}
 
-	Point_2d operator+(const Point_2d<T>& p) const
+	point_2d operator+(const point_2d<T>& p) const
 	{
-		return Point_2d<T> {x+p.x, y+p.y};
+		return point_2d<T> {x+p.x, y+p.y};
 	}
 
-	Point_2d operator*(T p) const
+	point_2d operator*(T p) const
 	{
-		return Point_2d<T> {x*p, y*p};
+		return point_2d<T> {x*p, y*p};
 	}
 
-	Point_2d operator*=(T p)
+	point_2d operator*=(T p)
 	{
 		x*=p;
 		y*=p;
 		return *this;
 	}
 
-	Point_2d operator/=(T p)
+	point_2d operator/=(T p)
 	{
 		x/=p;
 		y/=p;
 		return *this;
 	}
 
-	Point_2d operator/(T p) const
+	point_2d operator/(T p) const
 	{
-		return Point_2d<T> {x/p, y/p};
+		return point_2d<T> {x/p, y/p};
 	}
 
-	Point_2d operator-(const Point_2d& p) const
+	point_2d operator-(const point_2d& p) const
 	{
-		return Point_2d<T> {x-p.x, y-p.y};
+		return point_2d<T> {x-p.x, y-p.y};
 	}
 
-	Point_2d& operator+=(const Point_2d<T>& p)
+	point_2d& operator+=(const point_2d<T>& p)
 	{
 		x+=p.x;
 		y+=p.y;
 		return *this;
 	}
 
-	Point_2d& operator-=(const Point_2d& p)
+	point_2d& operator-=(const point_2d& p)
 	{
 		x-=p.x;
 		y-=p.y;
 		return *this;
 	}
 
-	bool 		operator==(const Point_2d& p) const
+	bool operator==(const point_2d& p) const
 	{
 		return p.x==x && p.y==y;
 	}
 
-	T distance_to(const Point_2d<T>& p) const
+	T distance_to(const point_2d<T>& p) const
 	{
 		T x=(this->x-p.x)*(this->x-p.x);
 		T y=(this->y-p.y)*(this->y-p.y);
 		return sqrt(x+y);
 	}
 
-	static T distance_between(const Point_2d<T>& p1, const Point_2d<T>& p2)
+	static T distance_between(const point_2d<T>& p1, const point_2d<T>& p2)
 	{
 		T x=(p1.x-p2.x)*(p1.x-p2.x);
 		T y=(p1.y-p2.y)*(p1.y-p2.y);
@@ -92,7 +92,7 @@ struct Point_2d
 	}
 
 	//La rotación es negativa si va en sentido de las agujas del reloj...
-	void rotate(T grados, const Point_2d<T> centro)
+	void rotate(T grados, const point_2d<T> centro)
 	{
 		//Llevar a origen...
 		T ox=x - centro.x;

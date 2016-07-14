@@ -7,6 +7,7 @@
 namespace DLibV
 {
 
+//TODO: This should stop being static.
 
 class Gestor_texturas:public DLibH::Gestor_mapa_static<int, DLibV::Textura *>
 {

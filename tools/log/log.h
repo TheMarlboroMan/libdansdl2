@@ -12,7 +12,7 @@
 /*Esto es para sustituir y al guardián. Es más de lo mismo pero está un poco
 más actualizado. Básicamente va guardando lo que se meta con el operador <<
 pero adicionalmente permite recibir por medio de ese operador los dos structs
-Log_base_n y Log_base_m, que van cambiando el nivel de "error".
+log_base_n y log_base_m, que van cambiando el nivel de "error".
 
 Por defecto está en nivel de error 10. Todo aquello que esté por encima del 
 nivel de error no sólo se guardará en un archivo, sino que se almacenará en una
@@ -22,7 +22,7 @@ cadena.
 La cadena la podemos usar para mostrarla por cout o por medio de alguna 
 representación de SDL.
 
-Se incluye además una clase Log_motor, que es una aplicación singleton de esta.
+Se incluye además una clase log_motor, que es una aplicación singleton de esta.
 Se usará dentro del motor para notificar los posibles errores.
 
 
@@ -31,19 +31,19 @@ Se usará dentro del motor para notificar los posibles errores.
 namespace ldt
 {
 
-enum class Lin{error, warning, operation};
-enum class Lcut{error, warning, operation, all};
-enum class Lop{lock, unlock};
-enum class Ltime{now};
+enum class lin{error, warning, operation};
+enum class lcut{error, warning, operation, all};
+enum class lop{lock, unlock};
+enum class ltime{now};
 
-class Log
+class log
 {
 	public:
 
 	//This enum just bitwises the levels.
-	enum Levels{all=0, operation=1, warning=2, error=3};
+	enum levels{all=0, operation=1, warning=2, error=3};
 
-	Lcut	int_to_lcut(int v)
+	lcut	int_to_lcut(int v)
 	{
 		if(v < 0 || v > 3)
 		{
@@ -52,35 +52,35 @@ class Log
 	
 		switch(v)
 		{
-			case error: 	return Lcut::error; break;
-			case warning: 	return Lcut::warning; break;
-			case operation: return Lcut::operation; break;
-			case all: 	return Lcut::all; break;
+			case error: 	return lcut::error; break;
+			case warning: 	return lcut::warning; break;
+			case operation: return lcut::operation; break;
+			case all: 	return lcut::all; break;
 		}	
 
 		//Compiler: just shut up.
-		return Lcut::all;
+		return lcut::all;
 	}
 
-	Log()
-		:s(), entry_level(Levels::all), min_level(Levels::all), 
+	log()
+		:s(), entry_level(levels::all), min_level(levels::all), 
 		active(false)
 	{
 
 	}
 
-	Log(const char * filename)
-		:s(), entry_level(Levels::all), min_level(Levels::all), 
+	log(const char * filename)
+		:s(), entry_level(levels::all), min_level(levels::all), 
 		active(true)
 	{
 		init(filename);
 	}
 
-	~Log()
+	~log()
 	{
 		if(is_usable())
 		{
-			(*this)<<"Session ends "<<Ltime::now<<std::endl;
+			(*this)<<"Session ends "<<ltime::now<<std::endl;
 			s.close();
 		}
 	}
@@ -90,14 +90,14 @@ class Log
 		active=true;
 		if(is_usable())
 		{
-			(*this)<<"Session starts "<<Ltime::now<<std::endl;
+			(*this)<<"Session starts "<<ltime::now<<std::endl;
 		}
 	}
 	void deactivate() 
 	{
 		if(is_usable())
 		{
-			(*this)<<"Session ends "<<Ltime::now<<std::endl;
+			(*this)<<"Session ends "<<ltime::now<<std::endl;
 		}
 
 		active=false;
@@ -109,13 +109,13 @@ class Log
 
 		if(is_usable())
 		{
-			(*this)<<"Session starts "<<Ltime::now<<std::endl;
+			(*this)<<"Session starts "<<ltime::now<<std::endl;
 		}
 	}
 
 	//Esta es la entrada para todo lo que hay... Si el nivel actual es 
 	//mayor o igual que el nivel mínimo se logueará también en la cadena.
-	template <class X> Log& operator<<(const X &input)
+	template <class X> log& operator<<(const X &input)
 	{
 		if(is_usable() && check_levels())
 		{
@@ -125,30 +125,30 @@ class Log
 		return *this;
 	}
 	
-	Log& operator<<(Lop op)
+	log& operator<<(lop op)
 	{
 		switch(op)
 		{
-			case Lop::lock: 	mtx.lock(); break;
-			case Lop::unlock: 	mtx.unlock(); break;
+			case lop::lock: 	mtx.lock(); break;
+			case lop::unlock: 	mtx.unlock(); break;
 		}
 		return *this;
 	}
 
 	//Establece el nivel de los mensajes entrantes.
-	Log& operator<<(Lin lvl)
+	log& operator<<(lin lvl)
 	{
 		switch(lvl)
 		{
-			case Lin::error:
+			case lin::error:
 				s<<"[ERROR] ";
 				entry_level=error; 
 			break;
-			case Lin::warning:
+			case lin::warning:
 				s<<"[WARNING] ";
 				entry_level=warning; 
 			break;
-			case Lin::operation:
+			case lin::operation:
 				s<<"[INFO] ";
 				entry_level=operation; 
 			break;
@@ -156,26 +156,26 @@ class Log
 		return *this;
 	}
 
-	Log& operator<<(Lcut lvl)
+	log& operator<<(lcut lvl)
 	{
 		switch(lvl)
 		{
-			case Lcut::error: 	min_level=error; break;
-			case Lcut::warning:	min_level=warning; break;
-			case Lcut::operation:	min_level=operation; break;
-			case Lcut::all:		min_level=all; break;
+			case lcut::error: 	min_level=error; break;
+			case lcut::warning:	min_level=warning; break;
+			case lcut::operation:	min_level=operation; break;
+			case lcut::all:		min_level=all; break;
 		}
 		return *this;
 	}
 
 	//Coloca la hora.
-	Log& operator<<(Ltime v)
+	log& operator<<(ltime v)
 	{
 		if(is_usable())
 	 	{
 			switch(v)
 			{
-				case Ltime::now:
+				case ltime::now:
 				{
 					char * t=new char[14];
 					memset(t, '\0', 14);
@@ -191,7 +191,7 @@ class Log
 		return *this;
 	}
 
-	Log& operator<<(std::ostream& ( *pf )(std::ostream&))
+	log& operator<<(std::ostream& ( *pf )(std::ostream&))
 	{
 		if(is_usable() && check_levels())
 		{
@@ -200,7 +200,7 @@ class Log
 		return *this;
 	}
 
-	Log& operator<<(std::ios& ( *pf )(std::ios&))
+	log& operator<<(std::ios& ( *pf )(std::ios&))
 	{
 		if(is_usable() && check_levels())
 		{
@@ -209,7 +209,7 @@ class Log
 		return *this;
 	}
 
-	Log& operator<<(std::ios_base& ( *pf )(std::ios_base&))
+	log& operator<<(std::ios_base& ( *pf )(std::ios_base&))
 	{
 		if(is_usable() && check_levels())
 		{
@@ -231,26 +231,22 @@ class Log
 };
 
 /*Incluimos un singleton aquí, para uso del motor. Sería algo así
-como DLibH::Log_motor::L()<<"aquí tu log";
+como DLibH::log_motor::L()<<"aquí tu log";
 
 Un detalle: cuando se inicia está inactive. Hay que habilitarlo manualmente 
-haciendo Log_motor::L().arrancar();
+haciendo log_motor::L().arrancar();
 */
 
 
-class Log_lsdl
+class log_lsdl
 {
-	private:
-
-	static Log * l;
-	
 	public:
 
-	static Log& L()
+	static log& L()
 	{
 		if(!l) 
 		{
-			l=new Log();
+			l=new log();
 		}
 		
 		return *l;
@@ -260,7 +256,7 @@ class Log_lsdl
 	{
 		if(!l) 
 		{
-			l=new Log();
+			l=new log();
 		}
 
 		l->init(path.c_str());
@@ -272,9 +268,14 @@ class Log_lsdl
 		if(l)
 		{
 			delete l;
-			l=NULL;
+			l=nullptr;
 		}
 	}
+
+	private:
+
+	static log * l;
+
 };
 
 }
