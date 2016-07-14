@@ -24,10 +24,6 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)representacion_primitiva_puntos.o \
 	$(DIR_O)representacion_bitmap.o \
 	$(DIR_O)representacion_ttf.o \
-	$(DIR_O)gestor_mapa_static.o \
-	$(DIR_O)gestor_mapa_instanciable.o \
-	$(DIR_O)gestor_vector_static.o \
-	$(DIR_O)gestor_vector_instanciable.o \
 	$(DIR_O)camara.o \
 	$(DIR_O)info_volcado.o \
 	$(DIR_O)vector_2d.o \
@@ -289,26 +285,6 @@ $(DIR_O)rect.o: \
 $(DIR_CLASS_V)rect/rect.h \
 $(DIR_CLASS_V)rect/rect.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
-
-$(DIR_O)gestor_mapa_static.o: \
-$(DIR_CLASS_H)templates/gestor_mapa_static.h \
-$(DIR_CLASS_H)templates/gestor_mapa_static.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)templates/gestor_mapa_static.cpp -o $(DIR_O)gestor_mapa_static.o $(INCLUDES)
-
-$(DIR_O)gestor_mapa_instanciable.o: \
-$(DIR_CLASS_H)templates/gestor_mapa_instanciable.h \
-$(DIR_CLASS_H)templates/gestor_mapa_instanciable.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)templates/gestor_mapa_instanciable.cpp -o $(DIR_O)gestor_mapa_instanciable.o $(INCLUDES)
-
-$(DIR_O)gestor_vector_static.o: \
-$(DIR_CLASS_H)templates/gestor_vector_static.h \
-$(DIR_CLASS_H)templates/gestor_vector_static.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)templates/gestor_vector_static.cpp -o $(DIR_O)gestor_vector_static.o $(INCLUDES)
-
-$(DIR_O)gestor_vector_instanciable.o: \
-$(DIR_CLASS_H)templates/gestor_vector_instanciable.h \
-$(DIR_CLASS_H)templates/gestor_vector_instanciable.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)templates/gestor_vector_instanciable.cpp -o $(DIR_O)gestor_vector_instanciable.o $(INCLUDES)
 
 $(DIR_O)log.o: \
 $(DIR_CLASS_H)log/log.h \
