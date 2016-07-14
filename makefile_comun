@@ -27,7 +27,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)camara.o \
 	$(DIR_O)info_volcado.o \
 	$(DIR_O)vector_2d.o \
-	$(DIR_O)punto_2d.o \
+	$(DIR_O)point_2d.o \
 	$(DIR_O)poligono_2d.o \
 	$(DIR_O)caja.o \
 	$(DIR_O)linea.o \
@@ -124,6 +124,12 @@ $(DIR_CLASS_V)superficie/lienzo.h \
 $(DIR_CLASS_V)superficie/lienzo.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/lienzo.cpp -o $(DIR_O)lienzo.o $(INCLUDES)
 
+$(DIR_O)rect.o:\
+$(DIR_O)caja.o \
+$(DIR_CLASS_V)rect/rect.h \
+$(DIR_CLASS_V)rect/rect.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
+
 $(DIR_O)imagen.o: \
 $(DIR_O)superficie.o \
 $(DIR_CLASS_V)superficie/imagen.h \
@@ -157,6 +163,11 @@ $(DIR_CLASS_V)info_volcado/info_volcado.h \
 $(DIR_CLASS_V)info_volcado/info_volcado.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)info_volcado/info_volcado.cpp -o $(DIR_O)info_volcado.o $(INCLUDES)
 
+$(DIR_O)color.o: \
+$(DIR_CLASS_V)color/color.h \
+$(DIR_CLASS_V)color/color.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
+
 $(DIR_O)representacion_ttf.o: \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_ttf/representacion_ttf.h \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_ttf/representacion_ttf.cpp \
@@ -180,11 +191,6 @@ $(DIR_O)pantalla.o \
 $(DIR_CLASS_V)representacion/representacion.h \
 $(DIR_CLASS_V)representacion/representacion.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion.cpp -o $(DIR_O)representacion.o $(INCLUDES)
-
-$(DIR_O)controlador_fps_sdl.o: \
-$(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.h \
-$(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp -o $(DIR_O)controlador_fps_sdl.o $(INCLUDES)
 
 $(DIR_O)utilidades_graficas_sdl.o: \
 $(DIR_O)tools.o \
@@ -240,22 +246,25 @@ $(DIR_CLASS_I)controles_sdl/controles_sdl.cpp
 ################################################################################
 # HERRAMIENTAS
 
-$(DIR_O)linea.o: \
-$(DIR_CLASS_H)linea/linea.h \
-$(DIR_CLASS_H)linea/linea.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)linea/linea.cpp -o $(DIR_O)linea.o $(INCLUDES)
+$(DIR_O)controlador_fps_sdl.o: \
+$(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.h \
+$(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp -o $(DIR_O)controlador_fps_sdl.o $(INCLUDES)
+
 
 $(DIR_O)poligono_2d.o: \
-$(DIR_O)punto_2d.o \
+$(DIR_O)point_2d.o \
 $(DIR_O)tools.o \
 $(DIR_CLASS_H)poligono_2d/poligono_2d.h \
 $(DIR_CLASS_H)poligono_2d/poligono_2d.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)poligono_2d/poligono_2d.cpp -o $(DIR_O)poligono_2d.o $(INCLUDES)
 
-$(DIR_O)punto_2d.o: \
-$(DIR_CLASS_H)punto_2d/punto_2d.h \
-$(DIR_CLASS_H)punto_2d/punto_2d.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)punto_2d/punto_2d.cpp -o $(DIR_O)punto_2d.o $(INCLUDES)
+$(DIR_O)caja.o: \
+$(DIR_O)tools.o \
+$(DIR_O)point_2d.o \
+$(DIR_CLASS_H)caja/caja.h \
+$(DIR_CLASS_H)caja/caja.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)caja/caja.cpp -o $(DIR_O)caja.o $(INCLUDES)
 
 $(DIR_O)vector_2d.o: \
 $(DIR_O)tools.o \
@@ -269,22 +278,16 @@ $(DIR_CLASS_H)herramientas_sdl/herramientas_sdl.h \
 $(DIR_CLASS_H)herramientas_sdl/herramientas_sdl.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)herramientas_sdl/herramientas_sdl.cpp -o $(DIR_O)herramientas_sdl.o $(INCLUDES)
 
-$(DIR_O)caja.o: \
-$(DIR_O)tools.o \
-$(DIR_O)punto_2d.o \
-$(DIR_CLASS_H)caja/caja.h \
-$(DIR_CLASS_H)caja/caja.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)caja/caja.cpp -o $(DIR_O)caja.o $(INCLUDES)
 
-$(DIR_O)color.o: \
-$(DIR_CLASS_V)color/color.h \
-$(DIR_CLASS_V)color/color.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
+$(DIR_O)linea.o: \
+$(DIR_CLASS_H)linea/linea.h \
+$(DIR_CLASS_H)linea/linea.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)linea/linea.cpp -o $(DIR_O)linea.o $(INCLUDES)
 
-$(DIR_O)rect.o: \
-$(DIR_CLASS_V)rect/rect.h \
-$(DIR_CLASS_V)rect/rect.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
+$(DIR_O)point_2d.o: \
+$(DIR_CLASS_H)point_2d/point_2d.h \
+$(DIR_CLASS_H)point_2d/point_2d.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)point_2d/point_2d.cpp -o $(DIR_O)point_2d.o $(INCLUDES)
 
 $(DIR_O)log.o: \
 $(DIR_CLASS_H)log/log.h \
