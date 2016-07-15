@@ -216,15 +216,15 @@ $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.h \
 $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp -o $(DIR_O)controlador_audio_sdl.o $(INCLUDES)
 
+### I HAVE DONE BELOW THIS POINT ###############################################
+### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+
 $(DIR_O)audio_resource_manager.o: \
 $(DIR_O)sound.o \
 $(DIR_O)music.o \
 $(DIR_CLASS_A)resource_manager/resource_manager.h \
 $(DIR_CLASS_A)resource_manager/resource_manager.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)resource_manager/resource_manager.cpp -o $(DIR_O)audio_resource_manager.o $(INCLUDES)
-
-### I HAVE DONE BELOW THIS POINT ###############################################
-### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
 
 $(DIR_O)music.o: \
 $(DIR_CLASS_A)music/music.h \
