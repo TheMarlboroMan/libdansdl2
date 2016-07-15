@@ -11,7 +11,7 @@ SDL_Mixer. La clase Estructura sonido envuelve a sound y le añade volumen,
 repeticiones y otras historias para poder pasarlo a un canal y que haga 
 todo lo que tenga que hacer.*/
 
-namespace dla
+namespace lda
 {
 class sound
 {
@@ -45,7 +45,7 @@ struct sound_struct
 	int 			volume_right;
 	int 			ms_fade;
 	
-	bool es_preparado() 	{return sound_ref.is_ready();}
+	bool 			is_ready() 	{return sound_ref.is_ready();}
 
 	sound_struct(sound& s, int v=-1, int r=0, int pvi=127, int pvd=127, int msf=0):
 		sound_ref(s), volume(v), repeat(r), 

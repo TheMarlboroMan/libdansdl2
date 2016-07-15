@@ -38,7 +38,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)controlador_audio_sdl.o \
 	$(DIR_O)gestor_recursos_audio.o \
 	$(DIR_O)sound.o \
-	$(DIR_O)musica.o \
+	$(DIR_O)music.o \
 	$(DIR_O)cola_sonido.o \
 	$(DIR_O)utilidades_graficas_sdl.o
 
@@ -211,26 +211,26 @@ $(DIR_CLASS_A)cola_sonido/cola_sonido.cpp
 
 $(DIR_O)controlador_audio_sdl.o: \
 $(DIR_O)sound.o \
-$(DIR_O)musica.o \
+$(DIR_O)music.o \
 $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.h \
 $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp -o $(DIR_O)controlador_audio_sdl.o $(INCLUDES)
 
 $(DIR_O)gestor_recursos_audio.o: \
 $(DIR_O)sound.o \
-$(DIR_O)musica.o \
+$(DIR_O)music.o \
 $(DIR_O)gestor_mapa_static.o \
 $(DIR_CLASS_A)gestor_recursos_audio/gestor_recursos_audio.h \
 $(DIR_CLASS_A)gestor_recursos_audio/gestor_recursos_audio.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)gestor_recursos_audio/gestor_recursos_audio.cpp -o $(DIR_O)gestor_recursos_audio.o $(INCLUDES)
 
-$(DIR_O)musica.o: \
-$(DIR_CLASS_A)musica/musica.h \
-$(DIR_CLASS_A)musica/musica.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)musica/musica.cpp -o $(DIR_O)musica.o $(INCLUDES)
-
 ### I HAVE DONE BELOW THIS POINT ###############################################
 ### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+
+$(DIR_O)music.o: \
+$(DIR_CLASS_A)music/music.h \
+$(DIR_CLASS_A)music/music.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)music/music.cpp -o $(DIR_O)music.o $(INCLUDES)
 
 $(DIR_O)sound.o: \
 $(DIR_O)log.o \
