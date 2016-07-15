@@ -37,7 +37,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)sdl_input.o \
 	$(DIR_O)controlador_audio_sdl.o \
 	$(DIR_O)gestor_recursos_audio.o \
-	$(DIR_O)sonido.o \
+	$(DIR_O)sound.o \
 	$(DIR_O)musica.o \
 	$(DIR_O)cola_sonido.o \
 	$(DIR_O)utilidades_graficas_sdl.o
@@ -204,20 +204,20 @@ $(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.cpp
 
 $(DIR_O)cola_sonido.o: \
 $(DIR_O)controlador_audio_sdl.o \
-$(DIR_O)sonido.o \
+$(DIR_O)sound.o \
 $(DIR_CLASS_A)cola_sonido/cola_sonido.h \
 $(DIR_CLASS_A)cola_sonido/cola_sonido.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)cola_sonido/cola_sonido.cpp -o $(DIR_O)cola_sonido.o $(INCLUDES)
 
 $(DIR_O)controlador_audio_sdl.o: \
-$(DIR_O)sonido.o \
+$(DIR_O)sound.o \
 $(DIR_O)musica.o \
 $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.h \
 $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp -o $(DIR_O)controlador_audio_sdl.o $(INCLUDES)
 
 $(DIR_O)gestor_recursos_audio.o: \
-$(DIR_O)sonido.o \
+$(DIR_O)sound.o \
 $(DIR_O)musica.o \
 $(DIR_O)gestor_mapa_static.o \
 $(DIR_CLASS_A)gestor_recursos_audio/gestor_recursos_audio.h \
@@ -229,11 +229,14 @@ $(DIR_CLASS_A)musica/musica.h \
 $(DIR_CLASS_A)musica/musica.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)musica/musica.cpp -o $(DIR_O)musica.o $(INCLUDES)
 
-$(DIR_O)sonido.o: \
+### I HAVE DONE BELOW THIS POINT ###############################################
+### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+
+$(DIR_O)sound.o: \
 $(DIR_O)log.o \
-$(DIR_CLASS_A)sonido/sonido.h \
-$(DIR_CLASS_A)sonido/sonido.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)sonido/sonido.cpp -o $(DIR_O)sonido.o $(INCLUDES)
+$(DIR_CLASS_A)sound/sound.h \
+$(DIR_CLASS_A)sound/sound.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)sound/sound.cpp -o $(DIR_O)sound.o $(INCLUDES)
 
 ################################################################################
 # INPUT 
@@ -242,10 +245,6 @@ $(DIR_O)sdl_input.o: \
 $(DIR_CLASS_I)sdl_input/sdl_input.h \
 $(DIR_CLASS_I)sdl_input/sdl_input.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_I)sdl_input/sdl_input.cpp -o $(DIR_O)sdl_input.o $(INCLUDES)
-
-### I HAVE DONE BELOW THIS POINT ###############################################
-### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
-
 
 ################################################################################
 # HERRAMIENTAS

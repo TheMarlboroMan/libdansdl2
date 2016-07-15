@@ -526,6 +526,14 @@ class sdl_input
 	unsigned short int 	get_joysticks_size() const {return joysticks_size;}
 	mouse_position 		get_mouse_position() const {return device_mouse.get_position();}
 	bool 			is_exit_signal() const {return exit_signal;}
+	bool 			is_event_activity() const {return activity_event_instance.is_activity_event_registered();}
+	bool 			is_event_activity_focus() const {return activity_event_instance.is_focused();}
+	Uint8 			get_activity_event() const {return activity_event_instance.get_state();}
+	int			get_key_down_index() const;
+	int			get_mouse_button_down_index() const;
+	int			get_joystick_button_down_index(int) const;
+
+	//Quick cache access.
 	bool 			is_event_text() const {return events_cache[text];}
 	bool 			is_event_mouse() const {return events_cache[mousemove] || events_cache[mouseclick];}
 	bool 			is_event_mouse_movement() const {return events_cache[mousemove];}
@@ -540,13 +548,6 @@ class sdl_input
 	bool 			is_event_joystick_button_up() const {return events_cache[joystick_button_up];}
 	bool 			is_event_joystick_button_down() const {return events_cache[joystick_button_down];}
 	bool 			is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
-	bool 			is_event_activity() const {return activity_event_instance.is_activity_event_registered();}
-	bool 			is_event_activity_focus() const {return activity_event_instance.is_focused();}
-	Uint8 			get_activity_event() const {return activity_event_instance.get_state();}
-
-	int			get_key_down_index() const;
-	int			get_mouse_button_down_index() const;
-	int			get_joystick_button_down_index(int) const;
 };
 
 } //Fin namespace DLibI
