@@ -17,26 +17,6 @@ float ldt::percent(float p_part, float p_total)
 	else return (p_part * 100) / p_total;
 }
 
-bool ldt::point_in_box(int cx, int cy, unsigned int cw, unsigned int ch, int px, int py)
-{
-        return  (cx <= px && (int)(cx+cw) >= px)
-        &&
-        (cy <= py && (int)(cy+ch) >= py);
-}
-
-bool ldt::box_in_box(int pqx, int pqy, unsigned int pqw, unsigned int pqh, int grx, int gry, unsigned int grw, unsigned int grh)
-{
-	int big_xf=grx+grw,
-	small_xf=pqx+pqw,
-	big_yf=gry+grh,
-	small_yf=pqy+pqh;
-
-	return (grx <= pqx
-	&& big_xf >= small_xf
-	&& gry <= pqy
-	&& big_yf >= small_yf);
-}
-
 float ldt::degree_360(float a)
 {
 	if(a < 0.f)

@@ -242,7 +242,7 @@ class log_lsdl
 {
 	public:
 
-	static log& L()
+	static log& get()
 	{
 		if(!l) 
 		{

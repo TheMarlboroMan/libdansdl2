@@ -79,9 +79,7 @@ struct point_2d
 
 	T distance_to(const point_2d<T>& p) const
 	{
-		T x=(this->x-p.x)*(this->x-p.x);
-		T y=(this->y-p.y)*(this->y-p.y);
-		return sqrt(x+y);
+		return distance_between(*this, p);
 	}
 
 	static T distance_between(const point_2d<T>& p1, const point_2d<T>& p2)

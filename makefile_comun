@@ -4,7 +4,7 @@ DIR_CLASS_H=./tools/
 DIR_CLASS_I=./input/
 DIR_O=./objects/
 OBJETOS=$(DIR_O)pantalla.o \
-	$(DIR_O)controlador_fps_sdl.o \
+	$(DIR_O)fps_counter.o \
 	$(DIR_O)gestor_texturas.o \
 	$(DIR_O)gestor_superficies.o \
 	$(DIR_O)textura.o \
@@ -28,13 +28,13 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)info_volcado.o \
 	$(DIR_O)vector_2d.o \
 	$(DIR_O)point_2d.o \
-	$(DIR_O)poligono_2d.o \
-	$(DIR_O)caja.o \
-	$(DIR_O)linea.o \
+	$(DIR_O)polygon_2d.o \
+	$(DIR_O)box.o \
+	$(DIR_O)line.o \
 	$(DIR_O)log.o \
-	$(DIR_O)herramientas_sdl.o \
+	$(DIR_O)sdl_tools.o \
 	$(DIR_O)tools.o \
-	$(DIR_O)controles_sdl.o \
+	$(DIR_O)sdl_input.o \
 	$(DIR_O)controlador_audio_sdl.o \
 	$(DIR_O)gestor_recursos_audio.o \
 	$(DIR_O)sonido.o \
@@ -185,7 +185,7 @@ $(DIR_O)utilidades_graficas_sdl.o
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_grafica.cpp -o $(DIR_O)representacion_grafica.o $(INCLUDES)
 
 $(DIR_O)representacion.o: \
-$(DIR_O)herramientas_sdl.o \
+$(DIR_O)sdl_tools.o \
 $(DIR_O)camara.o \
 $(DIR_O)pantalla.o \
 $(DIR_CLASS_V)representacion/representacion.h \
@@ -238,33 +238,29 @@ $(DIR_CLASS_A)sonido/sonido.cpp
 ################################################################################
 # INPUT 
 
-$(DIR_O)controles_sdl.o: \
-$(DIR_CLASS_I)controles_sdl/controles_sdl.h \
-$(DIR_CLASS_I)controles_sdl/controles_sdl.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_I)controles_sdl/controles_sdl.cpp -o $(DIR_O)controles_sdl.o $(INCLUDES)
+$(DIR_O)sdl_input.o: \
+$(DIR_CLASS_I)sdl_input/sdl_input.h \
+$(DIR_CLASS_I)sdl_input/sdl_input.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_I)sdl_input/sdl_input.cpp -o $(DIR_O)sdl_input.o $(INCLUDES)
+
+### I HAVE DONE BELOW THIS POINT ###############################################
+### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+
 
 ################################################################################
 # HERRAMIENTAS
 
-$(DIR_O)controlador_fps_sdl.o: \
-$(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.h \
-$(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)controlador_fps_sdl/controlador_fps_sdl.cpp -o $(DIR_O)controlador_fps_sdl.o $(INCLUDES)
-
-
-$(DIR_O)poligono_2d.o: \
+$(DIR_O)polygon_2d.o: \
 $(DIR_O)point_2d.o \
 $(DIR_O)tools.o \
-$(DIR_CLASS_H)poligono_2d/poligono_2d.h \
-$(DIR_CLASS_H)poligono_2d/poligono_2d.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)poligono_2d/poligono_2d.cpp -o $(DIR_O)poligono_2d.o $(INCLUDES)
+$(DIR_CLASS_H)polygon_2d/polygon_2d.h \
+$(DIR_CLASS_H)polygon_2d/polygon_2d.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)polygon_2d/polygon_2d.cpp -o $(DIR_O)polygon_2d.o $(INCLUDES)
 
-$(DIR_O)caja.o: \
-$(DIR_O)tools.o \
-$(DIR_O)point_2d.o \
-$(DIR_CLASS_H)caja/caja.h \
-$(DIR_CLASS_H)caja/caja.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)caja/caja.cpp -o $(DIR_O)caja.o $(INCLUDES)
+$(DIR_O)fps_counter.o: \
+$(DIR_CLASS_H)fps_counter/fps_counter.h \
+$(DIR_CLASS_H)fps_counter/fps_counter.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)fps_counter/fps_counter.cpp -o $(DIR_O)fps_counter.o $(INCLUDES)
 
 $(DIR_O)vector_2d.o: \
 $(DIR_O)tools.o \
@@ -272,20 +268,19 @@ $(DIR_CLASS_H)vector_2d/vector_2d.h \
 $(DIR_CLASS_H)vector_2d/vector_2d.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)vector_2d/vector_2d.cpp -o $(DIR_O)vector_2d.o $(INCLUDES)
 
-$(DIR_O)herramientas_sdl.o: \
+$(DIR_O)box.o: \
 $(DIR_O)tools.o \
-$(DIR_CLASS_H)herramientas_sdl/herramientas_sdl.h \
-$(DIR_CLASS_H)herramientas_sdl/herramientas_sdl.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)herramientas_sdl/herramientas_sdl.cpp -o $(DIR_O)herramientas_sdl.o $(INCLUDES)
+$(DIR_O)point_2d.o \
+$(DIR_CLASS_H)box/box.h \
+$(DIR_CLASS_H)box/box.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)box/box.cpp -o $(DIR_O)box.o $(INCLUDES)
 
-
-$(DIR_O)linea.o: \
-$(DIR_CLASS_H)linea/linea.h \
-$(DIR_CLASS_H)linea/linea.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)linea/linea.cpp -o $(DIR_O)linea.o $(INCLUDES)
-
-### I HAVE DONE BELOW THIS POINT ###############################################
-### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+$(DIR_O)line.o: \
+$(DIR_O)box.o \
+$(DIR_O)point_2d.o \
+$(DIR_CLASS_H)line/line.h \
+$(DIR_CLASS_H)line/line.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)line/line.cpp -o $(DIR_O)line.o $(INCLUDES)
 
 $(DIR_O)point_2d.o: \
 $(DIR_CLASS_H)point_2d/point_2d.h \
@@ -296,6 +291,11 @@ $(DIR_O)log.o: \
 $(DIR_CLASS_H)log/log.h \
 $(DIR_CLASS_H)log/log.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)log/log.cpp -o $(DIR_O)log.o $(INCLUDES)
+
+$(DIR_O)sdl_tools.o: \
+$(DIR_CLASS_H)sdl_tools/sdl_tools.h \
+$(DIR_CLASS_H)sdl_tools/sdl_tools.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)sdl_tools/sdl_tools.cpp -o $(DIR_O)sdl_tools.o $(INCLUDES)
 
 $(DIR_O)tools.o: \
 $(DIR_CLASS_H)tools/tools.templates.cpp \

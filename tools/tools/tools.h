@@ -49,11 +49,8 @@ template <typename T, typename U> bool rects_overlap(T, T, U, U, T, T, U, U, T&,
 template <typename T, typename U> void position_dimension_segments(T, T, T, T, T&, U&);
 template <typename T, typename U> void position_dimension_segments_partial_solution(T, T, T, T, T&, U&);
 template <typename T, typename U> void position_dimension_segments_complete_solution(T, T, T, T, T&, U&);
-
-//TODO: Hacer esto con templates...
-bool box_in_box(int, int, unsigned int, unsigned int, int, int, unsigned int, unsigned int);
-bool point_in_box(int, int, unsigned int, unsigned int, int, int);
-
+template <typename T, typename U> bool box_in_box(T, T, U, U, T, T, U, U);
+template <typename T, typename U> bool point_in_box(T, T, U, U, T, T);
 }
 
 #include "tools.templates.cpp"

@@ -1,7 +1,7 @@
 using namespace ldt;
 
-template<typename T, typename U> bool ldt::rects_overlap(T x1, T y1, U w1, U h1, T x2, T y2, U w2, U h2, bool unit_is_collision)
-//template<typename T> bool ldt::rects_overlap(T x1, T y1, T w1, T h1, T x2, T y2, T w2, T h2, bool unit_is_collision)
+template<typename T, typename U> 
+bool ldt::rects_overlap(T x1, T y1, U w1, U h1, T x2, T y2, U w2, U h2, bool unit_is_collision)
 {
         bool in_x;
         bool in_y;
@@ -48,7 +48,8 @@ template<typename T, typename U> bool ldt::rects_overlap(T x1, T y1, U w1, U h1,
         return in_x&&in_y;
 }
 
-template <typename T, typename U> bool ldt::rects_overlap(
+template <typename T, typename U> 
+bool ldt::rects_overlap(
 	T x1, T y1, U w1, U h1, 
 	T x2, T y2, U w2, U h2, 
 	T& rx, T& ry, U& rw, U& rh, 
@@ -88,7 +89,8 @@ En el archivo tests_ejemplos/test_01.cpp tenemos un ejemplillo de todo esto
 y las explicaciones pertintentes...
 */
 
-template <typename T, typename U> void ldt::position_dimension_segments(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
+template <typename T, typename U> 
+void ldt::position_dimension_segments(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
 {
 	bool c1=aini < bini;
 	bool c2=afin < bfin;
@@ -132,7 +134,8 @@ Un segmento está parcialmente dentro de otro, como en este ejemplo:
 			     |-------- SEGMENTO B ------|
 */
 
-template <typename T, typename U> void ldt::position_dimension_segments_partial_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
+template <typename T, typename U> 
+void ldt::position_dimension_segments_partial_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
 //template <typename T> void ldt::position_dimension_segments_partial_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, T &resultado_dim)
 {
 	resultado_pos=bini;
@@ -145,10 +148,32 @@ template <typename T, typename U> void ldt::position_dimension_segments_partial_
 	|-------XXXX SEGMENTO B XXXXX ---|
 */
 
-template <typename T, typename U> void ldt::position_dimension_segments_complete_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
+template <typename T, typename U> 
+void ldt::position_dimension_segments_complete_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
 //template <typename T> void ldt::position_dimension_segments_complete_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, T &resultado_dim)
 {
 	resultado_pos=aini;
 	resultado_dim=afin-aini;
 }
 
+template <typename T, typename U> 
+bool ldt::point_in_box(T cx, T cy, U cw, U ch, T px, T py)
+{
+        return  (cx <= px && (T)(cx+cw) >= px)
+        &&
+        (cy <= py && (T)(cy+ch) >= py);
+}
+
+template <typename T, typename U> 
+bool ldt::box_in_box(T pqx, T pqy, U pqw, U pqh, T grx, T gry, U grw, U grh)
+{
+	T big_xf=grx+grw,
+	small_xf=pqx+pqw,
+	big_yf=gry+grh,
+	small_yf=pqy+pqh;
+
+	return (grx <= pqx
+	&& big_xf >= small_xf
+	&& gry <= pqy
+	&& big_yf >= small_yf);
+}
