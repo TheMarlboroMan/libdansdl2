@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace dla;
+using namespace lda;
 
 sound::sound()
 	:ready(false)
