@@ -65,7 +65,7 @@ void raster_representation::do_draw()
 
 	//Alpha...
 	const auto c=get_rgba();
-	switch(get_blend_mode())
+	switch(get_blend())
 	{
 		case representation::blends::none:
 			glDisable(GL_BLEND);

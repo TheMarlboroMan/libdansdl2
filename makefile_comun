@@ -17,20 +17,20 @@ OBJETOS=$(DIR_O)screen.o \
 	$(DIR_O)representation.o \
 	$(DIR_O)raster_representation.o \
 	$(DIR_O)group_representation.o \
-	$(DIR_O)representation_primitiva.o \
-	$(DIR_O)representation_primitiva_caja.o \
-	$(DIR_O)representation_primitiva_linea.o \
-	$(DIR_O)representation_primitiva_poligono.o \
-	$(DIR_O)representation_primitiva_puntos.o \
+	$(DIR_O)primitive_representation.o \
+	$(DIR_O)box_primitive.o \
+	$(DIR_O)line_primitive.o \
+	$(DIR_O)polygon_primitive.o \
+	$(DIR_O)point_primitive.o \
 	$(DIR_O)bitmap_representation.o \
 	$(DIR_O)ttf_representation.o \
 	$(DIR_O)camera.o \
 	$(DIR_O)draw_info.o \
-	$(DIR_O)vector_2d.o \
-	$(DIR_O)point_2d.o \
-	$(DIR_O)polygon_2d.o \
-	$(DIR_O)box.o \
-	$(DIR_O)line.o \
+	$(DIR_CLASS_H)vector_2d/vector_2d.h \
+	$(DIR_CLASS_H)point_2d/point_2d.h \
+	$(DIR_CLASS_H)polygon_2d/polygon_2d.h \
+	$(DIR_CLASS_H)box/box.h \
+	$(DIR_CLASS_H)line/line.h \
 	$(DIR_O)log.o \
 	$(DIR_O)sdl_tools.o \
 	$(DIR_O)tools.o \
@@ -53,44 +53,36 @@ clean:
 ################################################################################
 # VIDEO
 
-#####
-### If you've reached this point, why don't you check all the templates
-### and remove their useless cpp files?. They are adding nothing to the 
-### project except maintenance overhead. Check, for example, box, line, vector,
-### and so on... Most of that crap is in "tools".
 
-$(DIR_O)representation_primitiva_linea.o :\
-$(DIR_O)representation_primitiva.o \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_linea/representation_primitiva_linea.h \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_linea/representation_primitiva_linea.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_linea/representation_primitiva_linea.cpp -o $(DIR_O)representation_primitiva_linea.o $(INCLUDES)
+$(DIR_O)line_primitive.o :\
+$(DIR_O)primitive_representation.o \
+$(DIR_CLASS_V)representation/primitive/line/line_primitive.h \
+$(DIR_CLASS_V)representation/primitive/line/line_primitive.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/line/line_primitive.cpp -o $(DIR_O)line_primitive.o $(INCLUDES)
 
-$(DIR_O)representation_primitiva_puntos.o :\
-$(DIR_O)representation_primitiva.o \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_puntos/representation_primitiva_puntos.h \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_puntos/representation_primitiva_puntos.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_puntos/representation_primitiva_puntos.cpp -o $(DIR_O)representation_primitiva_puntos.o $(INCLUDES)
+$(DIR_O)point_primitive.o :\
+$(DIR_O)primitive_representation.o \
+$(DIR_CLASS_V)representation/primitive/point/point_primitive.h \
+$(DIR_CLASS_V)representation/primitive/point/point_primitive.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/point/point_primitive.cpp -o $(DIR_O)point_primitive.o $(INCLUDES)
 
-$(DIR_O)representation_primitiva_poligono.o :\
-$(DIR_O)representation_primitiva.o \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_poligono/representation_primitiva_poligono.h \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_poligono/representation_primitiva_poligono.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_poligono/representation_primitiva_poligono.cpp -o $(DIR_O)representation_primitiva_poligono.o $(INCLUDES)
+$(DIR_O)polygon_primitive.o :\
+$(DIR_O)primitive_representation.o \
+$(DIR_CLASS_V)representation/primitive/polygon/polygon_primitive.h \
+$(DIR_CLASS_V)representation/primitive/polygon/polygon_primitive.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/polygon/polygon_primitive.cpp -o $(DIR_O)polygon_primitive.o $(INCLUDES)
 
-$(DIR_O)representation_primitiva_caja.o :\
-$(DIR_O)representation_primitiva.o \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_caja/representation_primitiva_caja.h \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_caja/representation_primitiva_caja.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva_caja/representation_primitiva_caja.cpp -o $(DIR_O)representation_primitiva_caja.o $(INCLUDES)
+$(DIR_O)box_primitive.o :\
+$(DIR_O)primitive_representation.o \
+$(DIR_CLASS_V)representation/primitive/box/box_primitive.h \
+$(DIR_CLASS_V)representation/primitive/box/box_primitive.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/box/box_primitive.cpp -o $(DIR_O)box_primitive.o $(INCLUDES)
 
-$(DIR_O)representation_primitiva.o :\
+$(DIR_O)primitive_representation.o :\
 $(DIR_O)representation.o \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva.h \
-$(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation_primitiva/representation_primitiva.cpp -o $(DIR_O)representation_primitiva.o $(INCLUDES)
-
-### I HAVE DONE ALL BELOW THIS POINT ###########################################
-### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+$(DIR_CLASS_V)representation/primitive/primitive_representation.h \
+$(DIR_CLASS_V)representation/primitive/primitive_representation.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/primitive_representation.cpp -o $(DIR_O)primitive_representation.o $(INCLUDES)
 
 $(DIR_O)group_representation.o :\
 $(DIR_O)representation.o \
@@ -180,7 +172,7 @@ $(DIR_CLASS_V)camera/camera.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)camera/camera.cpp -o $(DIR_O)camera.o $(INCLUDES)
 
 $(DIR_O)rect.o:\
-$(DIR_O)box.o \
+$(DIR_CLASS_H)box/box.h \
 $(DIR_CLASS_V)rect/rect.h \
 $(DIR_CLASS_V)rect/rect.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
@@ -253,42 +245,10 @@ $(DIR_CLASS_I)sdl_input/sdl_input.cpp
 ################################################################################
 # HERRAMIENTAS
 
-$(DIR_O)polygon_2d.o: \
-$(DIR_O)point_2d.o \
-$(DIR_O)tools.o \
-$(DIR_CLASS_H)polygon_2d/polygon_2d.h \
-$(DIR_CLASS_H)polygon_2d/polygon_2d.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)polygon_2d/polygon_2d.cpp -o $(DIR_O)polygon_2d.o $(INCLUDES)
-
 $(DIR_O)fps_counter.o: \
 $(DIR_CLASS_H)fps_counter/fps_counter.h \
 $(DIR_CLASS_H)fps_counter/fps_counter.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)fps_counter/fps_counter.cpp -o $(DIR_O)fps_counter.o $(INCLUDES)
-
-$(DIR_O)vector_2d.o: \
-$(DIR_O)tools.o \
-$(DIR_CLASS_H)vector_2d/vector_2d.h \
-$(DIR_CLASS_H)vector_2d/vector_2d.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)vector_2d/vector_2d.cpp -o $(DIR_O)vector_2d.o $(INCLUDES)
-
-$(DIR_O)box.o: \
-$(DIR_O)tools.o \
-$(DIR_O)point_2d.o \
-$(DIR_CLASS_H)box/box.h \
-$(DIR_CLASS_H)box/box.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)box/box.cpp -o $(DIR_O)box.o $(INCLUDES)
-
-$(DIR_O)line.o: \
-$(DIR_O)box.o \
-$(DIR_O)point_2d.o \
-$(DIR_CLASS_H)line/line.h \
-$(DIR_CLASS_H)line/line.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)line/line.cpp -o $(DIR_O)line.o $(INCLUDES)
-
-$(DIR_O)point_2d.o: \
-$(DIR_CLASS_H)point_2d/point_2d.h \
-$(DIR_CLASS_H)point_2d/point_2d.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)point_2d/point_2d.cpp -o $(DIR_O)point_2d.o $(INCLUDES)
 
 $(DIR_O)log.o: \
 $(DIR_CLASS_H)log/log.h \

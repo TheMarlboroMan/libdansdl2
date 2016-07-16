@@ -19,10 +19,10 @@
 #include "video/representation/raster/bitmap_representation/bitmap_representation.h"
 #include "video/representation/raster/representation_ttf/representation_ttf.h"
 #include "video/representation/group/group_representation.h"
-#include "video/representation/primitive/representation_primitiva.h"
-#include "video/representation/primitive/representation_primitiva_caja/representation_primitiva_caja.h"
-#include "video/representation/primitive/representation_primitiva_linea/representation_primitiva_linea.h"
-#include "video/representation/primitive/representation_primitiva_poligono/representation_primitiva_poligono.h"
-#include "video/representation/primitive/representation_primitiva_puntos/representation_primitiva_puntos.h"
+#include "video/representation/primitive/primitive_representation.h"
+#include "video/representation/primitive/box/box_representation.h"
+#include "video/representation/primitive/line/line_representation.h"
+#include "video/representation/primitive/polygon/polygon_representation.h"
+#include "video/representation/primitive/point/point_representation.h"
 
 #endif
