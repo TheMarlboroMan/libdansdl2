@@ -35,11 +35,11 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)sdl_tools.o \
 	$(DIR_O)tools.o \
 	$(DIR_O)sdl_input.o \
-	$(DIR_O)controlador_audio_sdl.o \
+	$(DIR_O)audio_controller.o \
 	$(DIR_O)audio_resource_manager.o \
 	$(DIR_O)sound.o \
 	$(DIR_O)music.o \
-	$(DIR_O)cola_sonido.o \
+	$(DIR_O)sound_queue.o \
 	$(DIR_O)utilidades_graficas_sdl.o
 
 all: libDanSDL2.a
@@ -199,25 +199,26 @@ $(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.h \
 $(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.cpp -o $(DIR_O)utilidades_graficas_sdl.o $(INCLUDES)
 
+### I HAVE DONE BELOW THIS POINT ###############################################
+### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+
+
 ################################################################################
 # AUDIO
 
-$(DIR_O)cola_sonido.o: \
-$(DIR_O)controlador_audio_sdl.o \
+$(DIR_O)sound_queue.o: \
+$(DIR_O)audio_controller.o \
 $(DIR_O)sound.o \
-$(DIR_CLASS_A)cola_sonido/cola_sonido.h \
-$(DIR_CLASS_A)cola_sonido/cola_sonido.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)cola_sonido/cola_sonido.cpp -o $(DIR_O)cola_sonido.o $(INCLUDES)
+$(DIR_CLASS_A)sound_queue/sound_queue.h \
+$(DIR_CLASS_A)sound_queue/sound_queue.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)sound_queue/sound_queue.cpp -o $(DIR_O)sound_queue.o $(INCLUDES)
 
-$(DIR_O)controlador_audio_sdl.o: \
+$(DIR_O)audio_controller.o: \
 $(DIR_O)sound.o \
 $(DIR_O)music.o \
-$(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.h \
-$(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)controlador_audio_sdl/controlador_audio_sdl.cpp -o $(DIR_O)controlador_audio_sdl.o $(INCLUDES)
-
-### I HAVE DONE BELOW THIS POINT ###############################################
-### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
+$(DIR_CLASS_A)audio_controller/audio_controller.h \
+$(DIR_CLASS_A)audio_controller/audio_controller.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)audio_controller/audio_controller.cpp -o $(DIR_O)audio_controller.o $(INCLUDES)
 
 $(DIR_O)audio_resource_manager.o: \
 $(DIR_O)sound.o \

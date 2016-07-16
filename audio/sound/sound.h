@@ -38,18 +38,20 @@ class sound
 
 struct sound_struct
 {
-	sound&	 		sound_ref;
+	sound *	 		sound_ptr; //This has to be copy constructible, ergo the pointer.
 	short int 		volume;	//El volumen -1 es "no hagas cambios".
 	short int 		repeat;
 	int 			volume_left;
 	int 			volume_right;
 	int 			ms_fade;
 	
-	bool 			is_ready() 	{return sound_ref.is_ready();}
+	bool 			is_ready() 	{return sound_ptr->is_ready();}
 
-	sound_struct(sound& s, int v=-1, int r=0, int pvi=127, int pvd=127, int msf=0):
-		sound_ref(s), volume(v), repeat(r), 
-		volume_left(pvi), volume_right(pvd), ms_fade(msf) {}
+	sound_struct(sound& s, int v=-1, int r=0, int pvi=127, int pvd=127, int msf=0)
+		:sound_ptr(&s), volume(v), repeat(r), 
+		volume_left(pvi), volume_right(pvd), ms_fade(msf) 
+	{
+	}
 };
 
 }

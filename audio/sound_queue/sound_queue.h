@@ -1,10 +1,9 @@
-#ifndef COLA_SONIDO_H
-#define COLA_SONIDO_H
+#ifndef LIBDANSDL2_SOUND_QUEUE_H
+#define LIBDANSDL2_SOUND_QUEUE_H
 
-//#include <queue>
 #include <vector>
-#include "../sonido/sonido.h"
-#include "../controlador_audio_sdl/controlador_audio_sdl.h"
+#include "../sound/sound.h"
+#include "../audio_controller/audio_controller.h"
 
 /*
 La cola de sonido no es más que una envoltura para una cola de punteros a 
@@ -27,27 +26,26 @@ Cuando hemos creado la Estructura_sonido hacemos cambios para que esto gestione
 objetos de ese tipo, con los valores por defecto.
 */
 
-namespace DLibA
+namespace lda
 {
-class Cola_sonido
+class sound_queue
 {
 	public:
 
-				Cola_sonido();
-				~Cola_sonido();
+				sound_queue();
+				~sound_queue();
 
-	void	 		inicializar();
-	void 			insertar(const Estructura_sonido&);
-	Estructura_sonido 	obtener_primero();
-	void 			eliminar_primero();
-	void 			procesar_cola(bool descartar=true); //Indica si los sonidos que no se puedan procesar se descartan o vuelven a la cola.
+	void 			insert(const sound_struct&);
+	sound_struct	 	front();
+	void 			erase_front();
+	void 			process();
 
 	private:
 
-	void 				vaciar();
+	void 				clear();
 
-	std::vector<Estructura_sonido> 	cola;
-	Controlador_audio_SDL * 	controlador;
+	std::vector<sound_struct> 	queue;
+	audio_controller * 		controller;
 };
 }
 #endif
