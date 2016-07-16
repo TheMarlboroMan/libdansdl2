@@ -1,15 +1,15 @@
-#ifndef COLOR_LIBDANSDL2_H
-#define COLOR_LIBDANSDL2_H
+#ifndef LIBDANSDL2_COLOR_H
+#define LIBDANSDL2_COLOR_H
 
-namespace DLibV
+namespace ldv
 {
 
-struct ColorRGBA
+struct rgba_color
 {
 	float r, g, b, a;
 };
 
-ColorRGBA rgba8(int, int, int, int);
+rgba_color rgba8(int, int, int, int);
 float colorfi(int);
 int colorif(float);
 

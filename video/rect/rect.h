@@ -2,13 +2,12 @@
 #define LIDBANSDL2_RECT_H
 
 #include <SDL2/SDL.h>
-#include "../../herramientas/caja/caja.h"
+#include "../../tools/box/box.h"
 
-namespace DLibV
+namespace ldv
 {
-typedef DLibH::Caja<int, unsigned int> 	Rect;
-typedef DLibH::Punto_2d<int>		Punto;
-//Rect desde_sdl_rect(SDL_Rect);
+typedef ldt::box<int, unsigned int> 	rect;
+typedef ldt::point_2d<int>		point;
 }
 
 #endif

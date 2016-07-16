@@ -13,7 +13,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)color.o \
 	$(DIR_O)rect.o \
 	$(DIR_O)lienzo.o \
-	$(DIR_O)fuente_ttf.o \
+	$(DIR_O)ttf_font.o \
 	$(DIR_O)representacion.o \
 	$(DIR_O)representacion_grafica.o \
 	$(DIR_O)representacion_agrupada.o \
@@ -25,7 +25,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)representacion_bitmap.o \
 	$(DIR_O)representacion_ttf.o \
 	$(DIR_O)camara.o \
-	$(DIR_O)info_volcado.o \
+	$(DIR_O)draw_info.o \
 	$(DIR_O)vector_2d.o \
 	$(DIR_O)point_2d.o \
 	$(DIR_O)polygon_2d.o \
@@ -40,7 +40,7 @@ OBJETOS=$(DIR_O)pantalla.o \
 	$(DIR_O)sound.o \
 	$(DIR_O)music.o \
 	$(DIR_O)sound_queue.o \
-	$(DIR_O)utilidades_graficas_sdl.o
+	$(DIR_O)sdl_video_tools.o
 
 all: libDanSDL2.a
 
@@ -53,28 +53,11 @@ clean:
 ################################################################################
 # VIDEO
 
-$(DIR_O)pantalla.o: \
-$(DIR_CLASS_V)pantalla/pantalla.h \
-$(DIR_CLASS_V)pantalla/pantalla.cpp \
-$(DIR_O)utilidades_graficas_sdl.o \
-$(DIR_O)info_volcado.o\
-$(DIR_O)camara.o\
-$(DIR_O)color.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)pantalla/pantalla.cpp -o $(DIR_O)pantalla.o $(INCLUDES)
-
-$(DIR_O)gestor_superficies.o: \
-$(DIR_CLASS_V)gestores/gestor_superficies.h \
-$(DIR_CLASS_V)gestores/gestor_superficies.cpp \
-$(DIR_O)superficie.o \
-$(DIR_O)gestor_vector_static.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)gestores/gestor_superficies.cpp -o $(DIR_O)gestor_superficies.o $(INCLUDES)
-
-$(DIR_O)gestor_texturas.o: \
-$(DIR_CLASS_V)gestores/gestor_texturas.h \
-$(DIR_CLASS_V)gestores/gestor_texturas.cpp \
-$(DIR_O)textura.o \
-$(DIR_O)gestor_vector_static.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)gestores/gestor_texturas.cpp -o $(DIR_O)gestor_texturas.o $(INCLUDES)
+#####
+### If you've reached this point, why don't you check all the templates
+### and remove their useless cpp files?. They are adding nothing to the 
+### project except maintenance overhead. Check, for example, box, line, vector,
+### and so on... Most of that crap is in "tools".
 
 $(DIR_O)representacion_primitiva_linea.o :\
 $(DIR_O)representacion_primitiva.o \
@@ -118,56 +101,6 @@ $(DIR_CLASS_V)representacion/representacion_grafica/representacion_bitmap/repres
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_bitmap/representacion_bitmap.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_bitmap/representacion_bitmap.cpp -o $(DIR_O)representacion_bitmap.o $(INCLUDES) 
 
-$(DIR_O)lienzo.o: \
-$(DIR_O)superficie.o \
-$(DIR_CLASS_V)superficie/lienzo.h \
-$(DIR_CLASS_V)superficie/lienzo.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/lienzo.cpp -o $(DIR_O)lienzo.o $(INCLUDES)
-
-$(DIR_O)rect.o:\
-$(DIR_O)caja.o \
-$(DIR_CLASS_V)rect/rect.h \
-$(DIR_CLASS_V)rect/rect.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
-
-$(DIR_O)imagen.o: \
-$(DIR_O)superficie.o \
-$(DIR_CLASS_V)superficie/imagen.h \
-$(DIR_CLASS_V)superficie/imagen.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/imagen.cpp -o $(DIR_O)imagen.o $(INCLUDES)
-
-$(DIR_O)superficie.o: \
-$(DIR_CLASS_V)superficie/superficie.h \
-$(DIR_CLASS_V)superficie/superficie.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/superficie.cpp -o $(DIR_O)superficie.o $(INCLUDES)
-
-$(DIR_O)fuente_ttf.o: \
-$(DIR_CLASS_V)fuente_ttf/fuente_ttf.h \
-$(DIR_CLASS_V)fuente_ttf/fuente_ttf.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)fuente_ttf/fuente_ttf.cpp -o $(DIR_O)fuente_ttf.o $(INCLUDES)
-
-$(DIR_O)textura.o: \
-$(DIR_O)utilidades_graficas_sdl.o \
-$(DIR_CLASS_V)textura/textura.h \
-$(DIR_CLASS_V)textura/textura.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)textura/textura.cpp -o $(DIR_O)textura.o $(INCLUDES)
-
-$(DIR_O)camara.o: \
-$(DIR_O)info_volcado.o \
-$(DIR_CLASS_V)camara/camara.h \
-$(DIR_CLASS_V)camara/camara.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)camara/camara.cpp -o $(DIR_O)camara.o $(INCLUDES)
-
-$(DIR_O)info_volcado.o: \
-$(DIR_CLASS_V)info_volcado/info_volcado.h \
-$(DIR_CLASS_V)info_volcado/info_volcado.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)info_volcado/info_volcado.cpp -o $(DIR_O)info_volcado.o $(INCLUDES)
-
-$(DIR_O)color.o: \
-$(DIR_CLASS_V)color/color.h \
-$(DIR_CLASS_V)color/color.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
-
 $(DIR_O)representacion_ttf.o: \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_ttf/representacion_ttf.h \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_ttf/representacion_ttf.cpp \
@@ -181,7 +114,7 @@ $(DIR_CLASS_V)representacion/representacion_grafica/representacion_grafica.h \
 $(DIR_CLASS_V)representacion/representacion_grafica/representacion_grafica.cpp \
 $(DIR_O)textura.o \
 $(DIR_O)representacion.o \
-$(DIR_O)utilidades_graficas_sdl.o
+$(DIR_O)sdl_video_tools.o
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion_grafica/representacion_grafica.cpp -o $(DIR_O)representacion_grafica.o $(INCLUDES)
 
 $(DIR_O)representacion.o: \
@@ -192,16 +125,88 @@ $(DIR_CLASS_V)representacion/representacion.h \
 $(DIR_CLASS_V)representacion/representacion.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representacion/representacion.cpp -o $(DIR_O)representacion.o $(INCLUDES)
 
-$(DIR_O)utilidades_graficas_sdl.o: \
-$(DIR_O)tools.o \
-$(DIR_O)log.o \
-$(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.h \
-$(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)utilidades_graficas_sdl/utilidades_graficas_sdl.cpp -o $(DIR_O)utilidades_graficas_sdl.o $(INCLUDES)
+$(DIR_O)gestor_superficies.o: \
+$(DIR_CLASS_V)gestores/gestor_superficies.h \
+$(DIR_CLASS_V)gestores/gestor_superficies.cpp \
+$(DIR_O)superficie.o \
+$(DIR_O)gestor_vector_static.o
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)gestores/gestor_superficies.cpp -o $(DIR_O)gestor_superficies.o $(INCLUDES)
 
-### I HAVE DONE BELOW THIS POINT ###############################################
+$(DIR_O)gestor_texturas.o: \
+$(DIR_CLASS_V)gestores/gestor_texturas.h \
+$(DIR_CLASS_V)gestores/gestor_texturas.cpp \
+$(DIR_O)textura.o \
+$(DIR_O)gestor_vector_static.o
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)gestores/gestor_texturas.cpp -o $(DIR_O)gestor_texturas.o $(INCLUDES)
+
+$(DIR_O)lienzo.o: \
+$(DIR_O)superficie.o \
+$(DIR_CLASS_V)superficie/lienzo.h \
+$(DIR_CLASS_V)superficie/lienzo.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/lienzo.cpp -o $(DIR_O)lienzo.o $(INCLUDES)
+
+$(DIR_O)imagen.o: \
+$(DIR_O)superficie.o \
+$(DIR_CLASS_V)superficie/imagen.h \
+$(DIR_CLASS_V)superficie/imagen.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/imagen.cpp -o $(DIR_O)imagen.o $(INCLUDES)
+
+$(DIR_O)textura.o: \
+$(DIR_O)sdl_video_tools.o \
+$(DIR_CLASS_V)textura/textura.h \
+$(DIR_CLASS_V)textura/textura.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)textura/textura.cpp -o $(DIR_O)textura.o $(INCLUDES)
+
+$(DIR_O)superficie.o: \
+$(DIR_CLASS_V)superficie/superficie.h \
+$(DIR_CLASS_V)superficie/superficie.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)superficie/superficie.cpp -o $(DIR_O)superficie.o $(INCLUDES)
+
+$(DIR_O)pantalla.o: \
+$(DIR_CLASS_V)pantalla/pantalla.h \
+$(DIR_CLASS_V)pantalla/pantalla.cpp \
+$(DIR_O)sdl_video_tools.o \
+$(DIR_O)draw_info.o\
+$(DIR_O)camara.o\
+$(DIR_O)color.o
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)pantalla/pantalla.cpp -o $(DIR_O)pantalla.o $(INCLUDES)
+
+$(DIR_O)camara.o: \
+$(DIR_O)draw_info.o \
+$(DIR_CLASS_V)camara/camara.h \
+$(DIR_CLASS_V)camara/camara.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)camara/camara.cpp -o $(DIR_O)camara.o $(INCLUDES)
+
+### I HAVE DONE ALL BELOW THIS POINT ###########################################
 ### I HAVE YET TO TRANSLATE AND DECAPITALIZE ALL OF THE ABOVE ##################
 
+$(DIR_O)rect.o:\
+$(DIR_O)box.o \
+$(DIR_CLASS_V)rect/rect.h \
+$(DIR_CLASS_V)rect/rect.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
+
+$(DIR_O)ttf_font.o: \
+$(DIR_CLASS_V)ttf_font/ttf_font.h \
+$(DIR_CLASS_V)ttf_font/ttf_font.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)ttf_font/ttf_font.cpp -o $(DIR_O)ttf_font.o $(INCLUDES)
+
+$(DIR_O)color.o: \
+$(DIR_CLASS_V)color/color.h \
+$(DIR_CLASS_V)color/color.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
+
+$(DIR_O)draw_info.o: \
+$(DIR_CLASS_V)draw_info/draw_info.h \
+$(DIR_CLASS_V)draw_info/draw_info.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)draw_info/draw_info.cpp -o $(DIR_O)draw_info.o $(INCLUDES)
+
+$(DIR_O)sdl_video_tools.o: \
+$(DIR_O)tools.o \
+$(DIR_O)log.o \
+$(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.h \
+$(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp -o $(DIR_O)sdl_video_tools.o $(INCLUDES)
 
 ################################################################################
 # AUDIO
