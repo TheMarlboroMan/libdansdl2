@@ -1,9 +1,9 @@
-#include "box_primitive.h"
+#include "box_representation.h"
 
 using namespace ldv;
 
-box_primitive::box_primitive(polygon_primitive::type t,const rect& p_pos, const rgba_color& c)
-	:polygon_primitive(t, { 
+box_representation::box_representation(polygon_representation::type t,const rect& p_pos, const rgba_color& c)
+	:polygon_representation(t, { 
 		{p_pos.origin.x, p_pos.origin.y}, 
 		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y}, 
 		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h}, 
@@ -13,19 +13,19 @@ box_primitive::box_primitive(polygon_primitive::type t,const rect& p_pos, const 
 
 }
 
-box_primitive& box_primitive::operator=(const box_primitive& p_otro)
+box_representation& box_representation::operator=(const box_representation& p_otro)
 {
-	polygon_primitive::operator=(p_otro);
+	polygon_representation::operator=(p_otro);
 	return *this;
 }
 
-box_primitive::box_primitive(const box_primitive& p_otra)
-	:polygon_primitive(p_otra) 
+box_representation::box_representation(const box_representation& p_otra)
+	:polygon_representation(p_otra) 
 {
 
 }
 
-void box_primitive::set_dimensions(int w, int h)
+void box_representation::set_dimensions(int w, int h)
 {
 	int 	nx=points[0].x+w,
 		ny=points[0].y+h;
@@ -38,7 +38,7 @@ void box_primitive::set_dimensions(int w, int h)
 	update_view_position();
 }
 
-void box_primitive::set_location(const rect& r)
+void box_representation::set_location(const rect& r)
 {
 	points.clear();
 

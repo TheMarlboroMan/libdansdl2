@@ -1,8 +1,8 @@
-#include "polygon_primitive.h"
+#include "polygon_representation.h"
 
 using namespace ldv;
 
-polygon_primitive::polygon_primitive(type t, const std::vector<point>& pt, rgba_color c)
+polygon_representation::polygon_representation(type t, const std::vector<point>& pt, rgba_color c)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 { 
 	//Guardarlos de forma que el primero sea 0.0.
@@ -11,13 +11,13 @@ polygon_primitive::polygon_primitive(type t, const std::vector<point>& pt, rgba_
 	update_view_position();
 }
 
-polygon_primitive::polygon_primitive(const polygon_primitive& o)
+polygon_representation::polygon_representation(const polygon_representation& o)
 	:primitive_representation(o), points(o.points), origin(o.origin), filltype(o.filltype)
 {
 
 }
 
-polygon_primitive& polygon_primitive::operator=(const polygon_primitive& o)
+polygon_representation& polygon_representation::operator=(const polygon_representation& o)
 {
 	primitive_representation::operator=(o);
 	points=o.points;
@@ -26,7 +26,7 @@ polygon_primitive& polygon_primitive::operator=(const polygon_primitive& o)
 	return *this;
 }
 
-void polygon_primitive::normalize()
+void polygon_representation::normalize()
 {
 	for(auto& pt : points)
 	{
@@ -35,7 +35,7 @@ void polygon_primitive::normalize()
 	}
 }
 
-void polygon_primitive::do_draw()
+void polygon_representation::do_draw()
 {
 	do_color();
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -44,7 +44,7 @@ void polygon_primitive::do_draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-rect polygon_primitive::calculate_view_position() const
+rect polygon_representation::calculate_view_position() const
 {
 	int x=points[0].x+origin.x, y=points[0].y+origin.y, maxx=x, maxy=y;
 
@@ -65,7 +65,7 @@ rect polygon_primitive::calculate_view_position() const
 }
 
 
-void polygon_primitive::go_to(int x, int y)
+void polygon_representation::go_to(int x, int y)
 {
 	origin.x=x;
 	origin.y=y;
@@ -73,7 +73,7 @@ void polygon_primitive::go_to(int x, int y)
 }
 
 //Position is the first point.
-point polygon_primitive::get_position() const
+point polygon_representation::get_position() const
 {
 	return point{origin.x, origin.y};
 }

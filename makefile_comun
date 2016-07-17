@@ -18,10 +18,10 @@ OBJETOS=$(DIR_O)screen.o \
 	$(DIR_O)raster_representation.o \
 	$(DIR_O)group_representation.o \
 	$(DIR_O)primitive_representation.o \
-	$(DIR_O)box_primitive.o \
-	$(DIR_O)line_primitive.o \
-	$(DIR_O)polygon_primitive.o \
-	$(DIR_O)point_primitive.o \
+	$(DIR_O)box_representation.o \
+	$(DIR_O)line_representation.o \
+	$(DIR_O)polygon_representation.o \
+	$(DIR_O)point_representation.o \
 	$(DIR_O)bitmap_representation.o \
 	$(DIR_O)ttf_representation.o \
 	$(DIR_O)camera.o \
@@ -54,29 +54,29 @@ clean:
 # VIDEO
 
 
-$(DIR_O)line_primitive.o :\
+$(DIR_O)line_representation.o :\
 $(DIR_O)primitive_representation.o \
-$(DIR_CLASS_V)representation/primitive/line/line_primitive.h \
-$(DIR_CLASS_V)representation/primitive/line/line_primitive.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/line/line_primitive.cpp -o $(DIR_O)line_primitive.o $(INCLUDES)
+$(DIR_CLASS_V)representation/primitive/line/line_representation.h \
+$(DIR_CLASS_V)representation/primitive/line/line_representation.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/line/line_representation.cpp -o $(DIR_O)line_representation.o $(INCLUDES)
 
-$(DIR_O)point_primitive.o :\
+$(DIR_O)point_representation.o :\
 $(DIR_O)primitive_representation.o \
-$(DIR_CLASS_V)representation/primitive/point/point_primitive.h \
-$(DIR_CLASS_V)representation/primitive/point/point_primitive.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/point/point_primitive.cpp -o $(DIR_O)point_primitive.o $(INCLUDES)
+$(DIR_CLASS_V)representation/primitive/point/point_representation.h \
+$(DIR_CLASS_V)representation/primitive/point/point_representation.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/point/point_representation.cpp -o $(DIR_O)point_representation.o $(INCLUDES)
 
-$(DIR_O)polygon_primitive.o :\
+$(DIR_O)polygon_representation.o :\
 $(DIR_O)primitive_representation.o \
-$(DIR_CLASS_V)representation/primitive/polygon/polygon_primitive.h \
-$(DIR_CLASS_V)representation/primitive/polygon/polygon_primitive.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/polygon/polygon_primitive.cpp -o $(DIR_O)polygon_primitive.o $(INCLUDES)
+$(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.h \
+$(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.cpp -o $(DIR_O)polygon_representation.o $(INCLUDES)
 
-$(DIR_O)box_primitive.o :\
+$(DIR_O)box_representation.o :\
 $(DIR_O)primitive_representation.o \
-$(DIR_CLASS_V)representation/primitive/box/box_primitive.h \
-$(DIR_CLASS_V)representation/primitive/box/box_primitive.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/box/box_primitive.cpp -o $(DIR_O)box_primitive.o $(INCLUDES)
+$(DIR_CLASS_V)representation/primitive/box/box_representation.h \
+$(DIR_CLASS_V)representation/primitive/box/box_representation.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/box/box_representation.cpp -o $(DIR_O)box_representation.o $(INCLUDES)
 
 $(DIR_O)primitive_representation.o :\
 $(DIR_O)representation.o \

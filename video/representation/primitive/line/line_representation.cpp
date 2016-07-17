@@ -1,21 +1,21 @@
-#include "line_primitive.h"
+#include "line_representation.h"
 
 using namespace ldv;
 
-primitive_line::primitive_line(int px1, int py1, int px2, int py2, rgba_color c)
+line_representation::line_representation(int px1, int py1, int px2, int py2, rgba_color c)
 	:primitive_representation(c), origin{px1, py1}
 {
 	set_points(px1, py1, px2, py2);
 	update_view_position();
 }
 
-primitive_line::primitive_line(const primitive_line& o)
+line_representation::line_representation(const line_representation& o)
 	:primitive_representation(o), points(o.points), origin(o.origin)
 {
 
 }
 
-primitive_line& primitive_line::operator=(const primitive_line& o)
+line_representation& line_representation::operator=(const line_representation& o)
 {
 	primitive_representation::operator=(o);
 	points=o.points;
@@ -23,7 +23,7 @@ primitive_line& primitive_line::operator=(const primitive_line& o)
 	return *this;
 }
 
-void primitive_line::set_points(int px1, int py1, int px2, int py2)
+void line_representation::set_points(int px1, int py1, int px2, int py2)
 {
 	//Guardar como 0.0...
 	origin={px1, py1};
@@ -32,7 +32,7 @@ void primitive_line::set_points(int px1, int py1, int px2, int py2)
 	update_view_position();
 }
 
-rect primitive_line::get_base_view_position() const
+rect line_representation::get_base_view_position() const
 {
 	int x, y, w, h;
 
@@ -56,7 +56,7 @@ rect primitive_line::get_base_view_position() const
 	return rect{x, y, (unsigned int)w, (unsigned int)h};
 }
 
-void primitive_line::do_draw()
+void line_representation::do_draw()
 {
 	do_color();
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -65,7 +65,7 @@ void primitive_line::do_draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void primitive_line::go_to(int x, int y)
+void line_representation::go_to(int x, int y)
 {
 	origin.x=x;
 	origin.y=y;
@@ -73,7 +73,7 @@ void primitive_line::go_to(int x, int y)
 }
 
 //El punto más arriba y más a la izquierda.
-point primitive_line::get_position() const
+point line_representation::get_position() const
 {
 	int x, y;
 

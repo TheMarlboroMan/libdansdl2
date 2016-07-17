@@ -1,5 +1,5 @@
-#ifndef LIBDANSDL2_POLYGON_PRIMTIVE_H
-#define LIBDANSDL2_POLYGON_PRIMTIVE_H
+#ifndef LIBDANSDL2_POLYGON_REPRESENTATION_H
+#define LIBDANSDL2_POLYGON_REPRESENTATION_H
 
 /*
 */
@@ -10,17 +10,17 @@
 
 namespace ldv
 {
-class polygon_primitive
+class polygon_representation
 	:public primitive_representation
 {
 	public:
 
 	enum class			type{fill, line};
 
-					polygon_primitive(type, const std::vector<point>&, rgba_color);
-					polygon_primitive(const polygon_primitive&);
-					polygon_primitive& operator=(const polygon_primitive&);
-	virtual 			~polygon_primitive() {}
+					polygon_representation(type, const std::vector<point>&, rgba_color);
+					polygon_representation(const polygon_representation&);
+					polygon_representation& operator=(const polygon_representation&);
+	virtual 			~polygon_representation() {}
 
 	virtual void 			go_to(int x, int y);
 	virtual point			get_position() const;

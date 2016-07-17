@@ -1,35 +1,35 @@
-#include "point_primitive.h"
+#include "point_representation.h"
 #include <algorithm>
 
 using namespace ldv;
 
-point_primitive::point_primitive(point p, rgba_color c)
+point_representation::point_representation(point p, rgba_color c)
 	:primitive_representation(c), origin{0,0}
 {
 	internal_insert(p, false);
 	update_view_position();
 }
 
-point_primitive::point_primitive(const std::vector<point>& pts, rgba_color c)
+point_representation::point_representation(const std::vector<point>& pts, rgba_color c)
 	:primitive_representation(c), origin{0,0}
 {
 	insert(pts);
 //	update_view_position();
 }
 
-point_primitive::point_primitive(rgba_color c)
+point_representation::point_representation(rgba_color c)
 	:primitive_representation(c), origin{0,0}
 {
 	update_view_position();
 }
 
-point_primitive::point_primitive(const point_primitive& p_otra)
+point_representation::point_representation(const point_representation& p_otra)
 	:primitive_representation(p_otra), points(p_otra.points), origin(p_otra.origin)
 {
 
 }
 
-point_primitive& point_primitive::operator=(const point_primitive& p_otro)
+point_representation& point_representation::operator=(const point_representation& p_otro)
 {
 	primitive_representation::operator=(p_otro);
 	points=p_otro.points;
@@ -37,27 +37,27 @@ point_primitive& point_primitive::operator=(const point_primitive& p_otro)
 	return *this;
 }
 
-void point_primitive::insert(const std::vector<point>& pts)
+void point_representation::insert(const std::vector<point>& pts)
 {
 	for(const auto& p : pts) internal_insert(p, false);
 	update_view_position();
 }
 
-void point_primitive::internal_insert(point p, bool update_state)
+void point_representation::internal_insert(point p, bool update_state)
 {
 	if(!points.size()) origin=p;
 	points.push_back({p.x-origin.x, p.y-origin.y});
 	if(update_state) update_view_position();
 }
 
-void point_primitive::clear()
+void point_representation::clear()
 {
 	points.clear();
 	origin={0,0};
 	update_view_position();
 }	
 
-rect point_primitive::get_base_view_position() const
+rect point_representation::get_base_view_position() const
 {
 	if(!points.size())
 	{
@@ -82,7 +82,7 @@ rect point_primitive::get_base_view_position() const
 	}
 }
 
-void point_primitive::do_draw()
+void point_representation::do_draw()
 {
 	do_color();
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -91,14 +91,14 @@ void point_primitive::do_draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void point_primitive::go_to(int x, int y)
+void point_representation::go_to(int x, int y)
 {
 	origin.x=x;
 	origin.y=y;
 	update_view_position();
 }
 
-point point_primitive::get_position() const
+point point_representation::get_position() const
 {
 	struct {bool operator() (point a, point b) {return a.x < b.x;}}fx;
 	struct {bool operator() (point a, point b) {return a.y < b.y;}}fy;
