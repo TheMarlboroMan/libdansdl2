@@ -1,5 +1,5 @@
 #ifndef LIBDANSDL2_TTF_FONT_H
-#define LIBDANSDL2_TTF_FONTFUENTE_TTF_H
+#define LIBDANSDL2_TTF_FONT_H
 
 #include <memory>
 #include <stdexcept>
