@@ -44,7 +44,7 @@ void polygon_representation::do_draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-rect polygon_representation::calculate_view_position() const
+rect polygon_representation::get_base_view_position() const
 {
 	int x=points[0].x+origin.x, y=points[0].y+origin.y, maxx=x, maxy=y;
 
