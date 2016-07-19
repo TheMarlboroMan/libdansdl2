@@ -79,7 +79,7 @@ struct audio_controller_config
 	Uint16 				format;
 
 	audio_controller_config()
-		:ratio(44100), out(2), buffer(1024), channels(8),
+		:ratio(44100), out(2), buffers(1024), channels(8),
 		initial_volume(128), format(AUDIO_S16SYS)
 	{
 	}

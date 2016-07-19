@@ -8,9 +8,10 @@ de sonido que incluyan cosas como el canal, el volumen o lo que sea. De momento
 lo podemos dejar así pero me gustaría estudiarlo en el futuro.
 */
 
-sound_queue::sound_queue()
+sound_queue::sound_queue(audio_controller& ac)
+	:controller(&ac)
 {
-	controller=audio_controller::get();
+
 }
 
 sound_queue::~sound_queue()

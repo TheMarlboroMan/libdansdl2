@@ -127,9 +127,9 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	}
 
 	//Fill the callback channel static object.
-	for(const &c : channels)
+	for(auto&c : channels)
 	{
-		callback_channels[c.get_index]=&c;
+		callback_channels[c.get_index()]=&c;
 	}
 
 	//Comprobar que el audio está arrancado.
@@ -157,7 +157,7 @@ audio_controller::~audio_controller()
 
 	for(const auto& c: channels)
 	{
-		callback_channels.erase(c.get_index);
+		callback_channels.erase(c.get_index());
 	}
 
 	channels.clear();
@@ -169,11 +169,14 @@ audio_controller::~audio_controller()
 	}
 }
 
+//The sdl audio system needs a callback for the channel. We provide it in way
+//that still allows for singletons to be avoided.
+
 void lda::audio_play_callback(int pchannel)
 {
-	if(callback_channels.count(pchannel)
+	if(audio_controller::callback_channels.count(pchannel))
 	{
-		callback_channels[pchannel].do_callback();
+		audio_controller::callback_channels[pchannel]->do_callback();
 	}
 }
 

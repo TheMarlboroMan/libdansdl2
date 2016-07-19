@@ -12,13 +12,13 @@ cada turno y volcaría sonidos mientras hubiera canales disponibles. O
 algo así. La se supone que el primer sonido en entrar es el primer sonido en 
 salir (FIFO).
 
-Esta es una clase amiga del controlador_audio_sdl, que está implementada como
-un singleton. Al ser amiga puede tener un miembro "turno" que se encargue
-de conectar con la instancia del controlador de audio, darle los sonidos y 
-eliminarlos de la cola si procede... Tenemos acceso a los métodos manuales
-o a "turno", que lo haría por nosotros. Bien pensado no hace falta que sea
-clase amiga, pero bueno, ya que está lo dejamos, por si en el futuro es 
-aplicable para acceder a los canales y todo eso.
+Esta es una clase amiga del controlador_audio_sdl,. Al ser amiga puede 
+tener un miembro "turno" que se encargue de conectar con la instancia del 
+controlador de audio, darle los sonidos y eliminarlos de la cola si procede... 
+Tenemos acceso a los métodos manuales o a "turno", que lo haría por nosotros. 
+Bien pensado no hace falta que sea clase amiga, pero bueno, ya que está lo 
+dejamos, por si en el futuro es  aplicable para acceder a los canales y todo 
+eso.
 
 Para un uso seguro se supone que los sonidos están en el gestor de audio.
 
@@ -32,7 +32,7 @@ class sound_queue
 {
 	public:
 
-				sound_queue();
+				sound_queue(audio_controller&);
 				~sound_queue();
 
 	void 			insert(const sound_struct&);
