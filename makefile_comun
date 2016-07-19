@@ -5,8 +5,7 @@ DIR_CLASS_I=./input/
 DIR_O=./objects/
 OBJETOS=$(DIR_O)screen.o \
 	$(DIR_O)fps_counter.o \
-	$(DIR_O)video_texture_manager.o \
-	$(DIR_O)video_surface_manager.o \
+	$(DIR_O)video_resource_manager.o \
 	$(DIR_O)texture.o \
 	$(DIR_O)surface.o \
 	$(DIR_O)image.o \
@@ -120,17 +119,12 @@ $(DIR_CLASS_V)representation/representation.h \
 $(DIR_CLASS_V)representation/representation.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation.cpp -o $(DIR_O)representation.o $(INCLUDES)
 
-$(DIR_O)video_surface_manager.o: \
-$(DIR_CLASS_V)manager/surface_manager.h \
-$(DIR_CLASS_V)manager/surface_manager.cpp \
-$(DIR_O)surface.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)manager/surface_manager.cpp -o $(DIR_O)video_surface_manager.o $(INCLUDES)
-
-$(DIR_O)video_texture_manager.o: \
-$(DIR_CLASS_V)manager/texture_manager.h \
-$(DIR_CLASS_V)manager/texture_manager.cpp \
+$(DIR_O)video_resource_manager.o: \
+$(DIR_CLASS_V)resource_manager/resource_manager.h \
+$(DIR_CLASS_V)resource_manager/resource_manager.cpp \
+$(DIR_O)surface.o\
 $(DIR_O)texture.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)manager/texture_manager.cpp -o $(DIR_O)video_texture_manager.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)resource_manager/resource_manager.cpp -o $(DIR_O)video_resource_manager.o $(INCLUDES)
 
 $(DIR_O)canvas.o: \
 $(DIR_O)surface.o \

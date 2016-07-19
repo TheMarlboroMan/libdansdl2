@@ -119,7 +119,7 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	music_playing(false)
 {
 	
-	int i=0;
+	int i=callback_channels.size();
 	//Create all channels.
 	while(i < requested_channels)
 	{

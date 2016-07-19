@@ -24,6 +24,9 @@ class resource_manager
 	music& 		get_music(int);
 	sound&		get_sound(int);
 
+	size_t		size_music() const {return musics.size();}
+	size_t		size_sound() const {return sounds.size();}
+
 	private:
 
 	std::map<int, std::unique_ptr<sound>>			sounds;

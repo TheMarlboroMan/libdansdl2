@@ -3,8 +3,7 @@
 
 #include "video/sdl_video_tools/sdl_video_tools.h"
 #include "video/camera/camera.h"
-#include "video/manager/texture_manager.h"
-#include "video/manager/surface_manager.h"
+#include "video/resource_manager/resource__manager.h"
 #include "video/screen/screen.h"
 #include "video/texture/texture.h"
 #include "video/ttf_font/ttf_font.h"

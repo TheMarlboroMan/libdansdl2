@@ -37,7 +37,6 @@ class fps_counter
 	float 		get_delta_for_time(Uint32) const;	//Esto es para obtener el valor delta después de turno();
 
 	void 		set_apply(bool v) {apply=v;}
-	//TODO: Have this named tic.
 	void 		tic();		//Esto lo llamamos justo después del render (o antes, lo que sea).
 
 	//Nueva interface...
