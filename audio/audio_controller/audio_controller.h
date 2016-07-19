@@ -11,16 +11,6 @@
 #include "../sound/sound.h"
 #include "../music/music.h"
 
-/*
-Esta clase está implementada como un singleton... No es por gusto, es porque
-la función de callback para cuando un sonido termina de escucharse necesita
-recibir un método global y no habría otra forma de obtener qué controlador
-de audio es el que ha finalizado.
-
-Para implementar toda esta historia hemos creado un método amigo de esta clase,
-que es el callback en si No es tan vergonzoso en realidad.
-*/
-
 namespace lda
 {
 
@@ -30,9 +20,7 @@ class sound_queue;			//Re-f-f-f-forward!.
 /*
 Sobre el Controlador_audio:
 
-Es un singleton... Podemos "montarlo" mediante el método "obtener", que nos
-daría la instancia del controlador. Antes de montarlo se puede configurar
-mediante los distintos métodos configurar_XXXX.
+No hay mucho que decir. Antes era un singleton.
 
 Sobre el audio_channel.
 
@@ -82,13 +70,19 @@ otro objeto audio_channel.
 
 struct audio_controller_config
 {
-	int 				config_ratio,
-	 				config_out,
-	 				config_buffers,
-	 				config_channels,
-					config_initial_volume;
+	int 				ratio,
+	 				out,
+	 				buffers,
+	 				channels,
+					initial_volume;
  
-	Uint16 				config_format;
+	Uint16 				format;
+
+	audio_controller_config()
+		:ratio(44100), out(2), buffer(1024), channels(8),
+		initial_volume(128), format(AUDIO_S16SYS)
+	{
+	}
 
 };
 
@@ -129,7 +123,6 @@ class real_audio_channel
 
 	private:
 
-	//TODO: How about providing a reference to the other controller...
 					real_audio_channel(int, const audio_controller&);
 
 	int 				index,
@@ -155,10 +148,9 @@ class audio_controller
 	public:
 
 	//Init and state.
-	static audio_controller * 		get(const audio_controller_config&);
-	static audio_controller * 		get();
-	void 					mount();
-	void	 				dismount();
+
+						audio_controller(const audio_controller_config&);
+						~audio_controller();
 
 	//Sounds...	
 	void 					play_sound(sound_struct&, int=-1);
@@ -191,7 +183,6 @@ class audio_controller
 
 	private:
 
-						audio_controller(const audio_controller_config&);
 	int 					get_free_channel_index(int=0, int=-1);
 	void					check_channel(int);
 
@@ -206,9 +197,8 @@ class audio_controller
 
 	bool 					music_playing; 	
 
-	static audio_controller * 		instance;
-
 	std::vector<real_audio_channel> 	channels;
+	static std::map<int, real_audio_channel *>	callback_channels;
 
 	///////////////////////////////////////
 	// Amigos.

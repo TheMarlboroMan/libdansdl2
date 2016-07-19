@@ -44,7 +44,7 @@ float fps_counter::get_delta_for_time(Uint32 p_ticks) const
 	return delta;
 }
 
-void fps_counter::turn()
+void fps_counter::tic()
 {
 	if(!apply) return;
 

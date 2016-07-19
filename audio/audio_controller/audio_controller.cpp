@@ -107,43 +107,74 @@ void real_audio_channel::resume()
 Inicio de implementación de audio_controller...
 */
 
+std::map<int, real_audio_channel *> audio_controller::callback_channels;
+
 audio_controller::audio_controller(const audio_controller_config& c):
-	main_sound_volume(c.config_initial_volume),
-	ratio(c.config_ratio), //22050), 
-	out(c.config_out), 
-	buffers(c.config_buffers), //1024), //2048), 
-	requested_channels(c.config_channels), 
-	format(c.config_format), 
+	main_sound_volume(c.initial_volume),
+	ratio(c.ratio), //22050), 
+	out(c.out), 
+	buffers(c.buffers), //1024), //2048), 
+	requested_channels(c.channels), 
+	format(c.format), 
 	music_playing(false)
 {
-}
-
-audio_controller * audio_controller::get(const audio_controller_config& c)
-{
-	if(!audio_controller::instance)
+	
+	int i=0;
+	//Create all channels.
+	while(i < requested_channels)
 	{
-		audio_controller::instance=new audio_controller(c);
-	}	
+		channels.push_back(std::move(real_audio_channel(i++, *this)));
+	}
 
-	return audio_controller::instance;
-}
-
-audio_controller * audio_controller::get()
-{
-	return get({44100, 2, 1024, 8, 128, AUDIO_S16SYS});
-}
-
-void audio_controller::dismount()
-{
-	audio_controller::instance->stop_sound(-1);
-	audio_controller::instance->stop_music();
-	Mix_CloseAudio();
-
-	if(audio_controller::instance)
+	//Fill the callback channel static object.
+	for(const &c : channels)
 	{
-		delete audio_controller::instance;
-		audio_controller::instance=nullptr;
-	}	
+		callback_channels[c.get_index]=&c;
+	}
+
+	//Comprobar que el audio está arrancado.
+	if(SDL_WasInit(SDL_INIT_AUDIO)==0)
+	{
+		if(SDL_InitSubSystem(SDL_INIT_AUDIO)==-1)
+		{
+			throw std::runtime_error("Unable to init audio system");
+		}
+	}
+
+	if(Mix_OpenAudio(ratio, format, out, buffers) == -1)
+	{
+		throw std::runtime_error("Unable to open audio device");
+	}
+
+	Mix_ChannelFinished(audio_play_callback);
+}
+
+
+audio_controller::~audio_controller()
+{
+	stop_sound(-1);
+	stop_music();
+
+	for(const auto& c: channels)
+	{
+		callback_channels.erase(c.get_index);
+	}
+
+	channels.clear();
+
+	//Check if there are still channels before closing the mixer.	
+	if(!callback_channels.size())
+	{
+		Mix_CloseAudio();
+	}
+}
+
+void lda::audio_play_callback(int pchannel)
+{
+	if(callback_channels.count(pchannel)
+	{
+		callback_channels[pchannel].do_callback();
+	}
 }
 
 void audio_controller::play_sound(sound_struct& pstruct, int pchannel)
@@ -237,31 +268,6 @@ void audio_controller::set_music_volume(int p_vol)
 	Mix_VolumeMusic(p_vol);
 }
 
-void audio_controller::mount()
-{
-	channels.clear();
-	int i=0;
-	while(i < requested_channels)
-	{
-		channels.push_back(std::move(real_audio_channel(i++, *this)));
-	}
-
-	//Comprobar que el audio está arrancado.
-	if(SDL_WasInit(SDL_INIT_AUDIO)==0)
-	{
-		if(SDL_InitSubSystem(SDL_INIT_AUDIO)==-1)
-		{
-			throw std::runtime_error("Unable to init audio system");
-		}
-	}
-
-	if(Mix_OpenAudio(ratio, format, out, buffers) == -1)
-	{
-		throw std::runtime_error("Unable to open audio device");
-	}
-
-	Mix_ChannelFinished(audio_play_callback);
-}
 
 void audio_controller::debug_state()
 {
@@ -302,13 +308,4 @@ void audio_controller::resume_sound()
 void audio_controller::stop_sound()
 {
 	for(real_audio_channel c : channels) c.stop();
-}
-
-void lda::audio_play_callback(int pchannel)
-{
-	if(audio_controller::instance)
-	{
-		audio_controller::instance->check_channel(pchannel);
-		audio_controller::instance->channels.at(pchannel).do_callback();
-	}
 }
