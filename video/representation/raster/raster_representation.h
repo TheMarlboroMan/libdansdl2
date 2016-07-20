@@ -73,7 +73,7 @@ class raster_representation:
 	void 			set_location(rect);
 	void 			set_clip(Sint16, Sint16, Uint16, Uint16, int=15);
 	void 			set_clip(rect);
-	void 			set_texture(texture const * v) {texture_instance=const_cast <texture *> (v);}
+	void 			set_texture(const texture& v) {texture_instance=&const_cast <texture&> (v);}
 
 	virtual void 		reset_transform() {representation::reset_transform(); transformation.reset();}
 

@@ -424,7 +424,7 @@ class sdl_input
 
 	//TODO: This could very well be some map.
 	enum events_index{text, 
-		mousemove, mouseclick, 
+		mousemove, mousedown, mouseup,
 		keyboard_down, keyboard_up,
 		joystick_axis, joystick_hat, joystick_button_up, joystick_button_down, joystick_connected, 
 		max_cache_index};
@@ -535,12 +535,14 @@ class sdl_input
 
 	//Quick cache access.
 	bool 			is_event_text() const {return events_cache[text];}
-	bool 			is_event_mouse() const {return events_cache[mousemove] || events_cache[mouseclick];}
+	bool 			is_event_mouse() const {return events_cache[mousemove] || events_cache[mousedown] || events_cache[mouseup];}
 	bool 			is_event_mouse_movement() const {return events_cache[mousemove];}
-	bool 			is_event_mouse_click() const {return events_cache[mouseclick];}
+	bool 			is_event_mouse_button_down() const {return events_cache[mousedown];}
+	bool 			is_event_mouse_button_up() const {return events_cache[mouseup];}
 	bool 			is_event_keyboard() const {return events_cache[keyboard_up] || events_cache[keyboard_down];}
 	bool 			is_event_keyboard_down() const {return events_cache[keyboard_down];}
 	bool 			is_event_keyboard_up() const {return events_cache[keyboard_up];}
+
 	bool 			is_event_joystick() const {return events_cache[joystick_axis] || events_cache[joystick_hat] || events_cache[joystick_button_up] || events_cache[joystick_button_down] ;}
 	bool 			is_event_joystick_axis() const {return events_cache[joystick_axis];}
 	bool 			is_event_joystick_hat() const {return events_cache[joystick_hat];}

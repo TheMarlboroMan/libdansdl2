@@ -113,7 +113,7 @@ void ttf_representation::create_texture()
 	if(!get_texture())
 	{
 		ldv::texture * tex=new ldv::texture(*cnv);
-		set_texture(tex);
+		set_texture(*tex);
 	}
 	else
 	{

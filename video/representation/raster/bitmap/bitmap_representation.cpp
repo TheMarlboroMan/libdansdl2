@@ -8,7 +8,7 @@ bitmap_representation::bitmap_representation()
 	update_view_position();
 }
 
-bitmap_representation::bitmap_representation(const texture * p_rec, rect pos, rect rec, sampling s)
+bitmap_representation::bitmap_representation(const texture& p_rec, rect pos, rect rec, sampling s)
 	:raster_representation(pos, rec, s)
 {
 	set_texture(p_rec);

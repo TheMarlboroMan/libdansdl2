@@ -98,13 +98,13 @@ void sdl_input::process_event(SDL_Event& event)
 		break;
 
 		case SDL_MOUSEBUTTONDOWN:
-			events_cache[mouseclick]=true;
+			events_cache[mousedown]=true;
 			device_mouse.buttons_down[event.button.button]=1;
 			device_mouse.buttons_pressed[event.button.button]=1;
 		break;
 
 		case SDL_MOUSEBUTTONUP:
-			events_cache[mouseclick]=true;
+			events_cache[mouseup]=true;
 			device_mouse.buttons_pressed[event.button.button]=1;
 			device_mouse.buttons_pressed[event.button.button]=0;
 		break;
