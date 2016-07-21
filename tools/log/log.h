@@ -180,7 +180,7 @@ class log
 					char * t=new char[14];
 					memset(t, '\0', 14);
 					time_t tiempo=time(NULL);
-					strftime(t, 14, "%H:%M:%S >> ", localtime(&tiempo));
+					strftime(t, 14, "%H:%M:%S", localtime(&tiempo));
 					s<<"["<<t<<"]";
 					delete [] t ;
 				}

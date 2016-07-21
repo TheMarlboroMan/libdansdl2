@@ -119,6 +119,8 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	music_playing(false)
 {
 	
+	ldt::log_lsdl::get()<<"Init audio controller with "<<requested_channels<<" channels, "<<buffers<<" buffers, "<<out<<" outputs and a ratio of "<<ratio<<std::endl;
+
 	int i=callback_channels.size();
 	//Create all channels.
 	while(i < requested_channels)
@@ -135,17 +137,20 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	//Comprobar que el audio está arrancado.
 	if(SDL_WasInit(SDL_INIT_AUDIO)==0)
 	{
+		ldt::log_lsdl::get()<<"Starting sdl audio subsystem."<<std::endl;
 		if(SDL_InitSubSystem(SDL_INIT_AUDIO)==-1)
 		{
 			throw std::runtime_error("Unable to init audio system");
 		}
 	}
 
+
 	if(Mix_OpenAudio(ratio, format, out, buffers) == -1)
 	{
 		throw std::runtime_error("Unable to open audio device");
 	}
 
+	ldt::log_lsdl::get()<<"Starting sdl mixer and setting callback function."<<std::endl;
 	Mix_ChannelFinished(audio_play_callback);
 }
 
@@ -155,16 +160,21 @@ audio_controller::~audio_controller()
 	stop_sound(-1);
 	stop_music();
 
+	ldt::log_lsdl::get()<<"Unmounting audio controller..."<<std::endl;
+
 	for(const auto& c: channels)
 	{
 		callback_channels.erase(c.get_index());
 	}
+
+	ldt::log_lsdl::get()<<callback_channels.size()<<" callback channels remain."<<std::endl;
 
 	channels.clear();
 
 	//Check if there are still channels before closing the mixer.	
 	if(!callback_channels.size())
 	{
+		ldt::log_lsdl::get()<<"Closing sdl mixer."<<std::endl;
 		Mix_CloseAudio();
 	}
 }
@@ -225,7 +235,7 @@ void audio_controller::check_channel(int pchannel)
 {
 	if(pchannel < 0 || pchannel >= (int)channels.size())
 	{
-		throw std::runtime_error("Unable access channel out of bounds");	
+		throw std::runtime_error("Unable access channel out of bounds");
 	}
 }
 

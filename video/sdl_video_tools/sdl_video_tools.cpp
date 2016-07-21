@@ -3,6 +3,10 @@
 
 using namespace ldv;
 
+void ldv::set_cursor_visible(bool v) 
+{
+	SDL_ShowCursor(v);
+}
 
 SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin)
 {

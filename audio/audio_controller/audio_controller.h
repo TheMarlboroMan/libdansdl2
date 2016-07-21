@@ -166,7 +166,7 @@ class audio_controller
 
 	//Volume...
 	void 					set_main_sound_volume(int);
-	void 					set_sound_volume(int p_vol, int pchannel=-1); //p_vol de 0 a 128.
+	void 					set_sound_volume(int p_vol, int pchannel); //p_vol de 0 a 128.
 	void 					set_music_volume(int);
 
 	//Getters.
