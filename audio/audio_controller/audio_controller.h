@@ -184,6 +184,9 @@ class audio_controller
 
 	private:
 
+						audio_controller(const audio_controller&)=delete;
+						audio_controller& operator=(const audio_controller&)=delete;
+
 	int 					get_free_channel_index(int=0, int=-1);
 	void					check_channel(int);
 

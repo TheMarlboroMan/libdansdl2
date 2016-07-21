@@ -157,13 +157,13 @@ audio_controller::audio_controller(const audio_controller_config& c):
 
 audio_controller::~audio_controller()
 {
-	stop_sound(-1);
-	stop_music();
-
 	ldt::log_lsdl::get()<<"Unmounting audio controller..."<<std::endl;
+
+	stop_music();
 
 	for(const auto& c: channels)
 	{
+		stop_sound(c.get_index());
 		callback_channels.erase(c.get_index());
 	}
 
