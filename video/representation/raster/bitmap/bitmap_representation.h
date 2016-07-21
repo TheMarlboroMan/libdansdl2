@@ -16,8 +16,7 @@ class bitmap_representation:
 			bitmap_representation(const bitmap_representation&);
 			bitmap_representation& operator=(const bitmap_representation &);
 
-	//TODO: What kind of name is this???
-	void 		set_texture_skip_clip(const texture& r){raster_representation::set_texture(r);}
+	void 		set_texture_no_clip(const texture& r){raster_representation::set_texture(r);}
 };
 
 } //Fin namespace DLibV

@@ -422,7 +422,6 @@ class sdl_input
 	/*Esto registra simplemente si hay algún evento de este tipo por cada
 	ciclo de eventos.*/
 
-	//TODO: This could very well be some map.
 	enum events_index{text, 
 		mousemove, mousedown, mouseup,
 		keyboard_down, keyboard_up,
