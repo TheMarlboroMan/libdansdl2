@@ -170,6 +170,7 @@ struct vector_2d_screen:
 	}
 
 						vector_2d_screen(const vector_2d_screen<T>& v)
+		:vector_2d<T>()
 	{
 		this->x=v.x;
 		this->y=v.x;
@@ -452,7 +453,7 @@ vector_2d_screen<T> for_points_screen(T p_xa, T p_ya, T p_xb, T p_yb, bool norma
 	{
 		r.x=p_xa-p_xb;
 		r.y=p_ya-p_yb;
-		r.normalize();
+		if(normalize) r.normalize();
 	}
 
 	return r;
