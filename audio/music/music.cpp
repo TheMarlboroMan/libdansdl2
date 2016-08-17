@@ -9,10 +9,10 @@ music::music():
 
 }
 
-music::music(const std::string& path)
+music::music(const std::string& ppath)
 	:ready(false)
 {
-	load(path);
+	load(ppath);
 }
 
 music::~music()

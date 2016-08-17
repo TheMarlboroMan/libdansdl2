@@ -11,10 +11,10 @@ sound::sound()
 
 }
 
-sound::sound(const std::string& path)
+sound::sound(const std::string& ppath)
 	:ready(false)
 {
-	load(path);
+	load(ppath);
 }
 
 sound::~sound()

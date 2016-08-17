@@ -31,90 +31,27 @@ Se usará dentro del motor para notificar los posibles errores.
 namespace ldt
 {
 
-enum class lin{error, warning, operation};
-enum class lcut{error, warning, operation, all};
+enum class lin{error, warning, info};
+enum class lcut{error, warning, info, all};
 enum class lop{lock, unlock};
-enum class ltime{now};
+enum class ltime{date, time, datetime};
 
 class log
 {
 	public:
 
 	//This enum just bitwises the levels.
-	enum levels{all=0, operation=1, warning=2, error=3};
+	enum levels{all=0, info=1, warning=2, error=3};
 
-	lcut	int_to_lcut(int v)
-	{
-		if(v < 0 || v > 3)
-		{
-			throw std::runtime_error("Invalid cut level "+std::to_string(v)+" specified for int_to_lcut");
-		}
-	
-		switch(v)
-		{
-			case error: 	return lcut::error; break;
-			case warning: 	return lcut::warning; break;
-			case operation: return lcut::operation; break;
-			case all: 	return lcut::all; break;
-		}	
+	lcut	int_to_lcut(int v);
+	log();
+	log(const char * filename);
+	~log();
 
-		//Compiler: just shut up.
-		return lcut::all;
-	}
+	void activate();
+	void deactivate();
+	void init(const char * filename);
 
-	log()
-		:s(), entry_level(levels::all), min_level(levels::all), 
-		active(false)
-	{
-
-	}
-
-	log(const char * filename)
-		:s(), entry_level(levels::all), min_level(levels::all), 
-		active(true)
-	{
-		init(filename);
-	}
-
-	~log()
-	{
-		if(is_usable())
-		{
-			(*this)<<"Session ends "<<ltime::now<<std::endl;
-			s.close();
-		}
-	}
-
-	void activate() 
-	{
-		active=true;
-		if(is_usable())
-		{
-			(*this)<<"Session starts "<<ltime::now<<std::endl;
-		}
-	}
-	void deactivate() 
-	{
-		if(is_usable())
-		{
-			(*this)<<"Session ends "<<ltime::now<<std::endl;
-		}
-
-		active=false;
-	}
-
-	void init(const char * filename)
-	{
-		s.open(filename);
-
-		if(is_usable())
-		{
-			(*this)<<"Session starts "<<ltime::now<<std::endl;
-		}
-	}
-
-	//Esta es la entrada para todo lo que hay... Si el nivel actual es 
-	//mayor o igual que el nivel mínimo se logueará también en la cadena.
 	template <class X> log& operator<<(const X &input)
 	{
 		if(is_usable() && check_levels())
@@ -124,104 +61,21 @@ class log
 		}
 		return *this;
 	}
-	
-	log& operator<<(lop op)
-	{
-		switch(op)
-		{
-			case lop::lock: 	mtx.lock(); break;
-			case lop::unlock: 	mtx.unlock(); break;
-		}
-		return *this;
-	}
 
-	//Establece el nivel de los mensajes entrantes.
-	log& operator<<(lin lvl)
-	{
-		switch(lvl)
-		{
-			case lin::error:
-				s<<"[ERROR] ";
-				entry_level=error; 
-			break;
-			case lin::warning:
-				s<<"[WARNING] ";
-				entry_level=warning; 
-			break;
-			case lin::operation:
-				s<<"[INFO] ";
-				entry_level=operation; 
-			break;
-		}
-		return *this;
-	}
-
-	log& operator<<(lcut lvl)
-	{
-		switch(lvl)
-		{
-			case lcut::error: 	min_level=error; break;
-			case lcut::warning:	min_level=warning; break;
-			case lcut::operation:	min_level=operation; break;
-			case lcut::all:		min_level=all; break;
-		}
-		return *this;
-	}
-
-	//Coloca la hora.
-	log& operator<<(ltime v)
-	{
-		if(is_usable())
-	 	{
-			switch(v)
-			{
-				case ltime::now:
-				{
-					char * t=new char[14];
-					memset(t, '\0', 14);
-					time_t tiempo=time(NULL);
-					strftime(t, 14, "%H:%M:%S", localtime(&tiempo));
-					s<<"["<<t<<"]";
-					delete [] t ;
-				}
-				break;
-			}
-		}
-		
-		return *this;
-	}
-
-	log& operator<<(std::ostream& ( *pf )(std::ostream&))
-	{
-		if(is_usable() && check_levels())
-		{
-			s<<pf;
-		}
-		return *this;
-	}
-
-	log& operator<<(std::ios& ( *pf )(std::ios&))
-	{
-		if(is_usable() && check_levels())
-		{
-			s<<pf;
-		}
-		return *this;
-	}
-
-	log& operator<<(std::ios_base& ( *pf )(std::ios_base&))
-	{
-		if(is_usable() && check_levels())
-		{
-			s<<pf;
-		}
-		return *this;
-	}
+	log& operator<<(lop);
+	log& operator<<(lin);
+	log& operator<<(lcut);
+	log& operator<<(ltime);
+	log& operator<<(std::ostream& ( *pf )(std::ostream&));
+	log& operator<<(std::ios& ( *pf )(std::ios&));
+	log& operator<<(std::ios_base& ( *pf )(std::ios_base&));
 
 	private:
 
 	bool					check_levels() {return entry_level >= min_level;}
 	bool 					is_usable() {return active && s.is_open();}
+	std::string				date() const;
+	std::string				time() const;
 
 	std::mutex				mtx;
 	std::ofstream 				s;	

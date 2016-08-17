@@ -122,8 +122,8 @@ class sdl_input
 		int		threshold_virtual_axis_button;
 				
 
-		joystick(SDL_JoystickID id, int device_id)
-			:structure(nullptr), id(id), device_id(device_id), 
+		joystick(SDL_JoystickID pid, int pdevice_id)
+			:structure(nullptr), id(pid), device_id(pdevice_id), 
 			buttons(0), axis_size(0), hats_size(0),
 			virtualized_hats(0), virtualized_axis(0),
 			threshold_virtual_axis_button(0)

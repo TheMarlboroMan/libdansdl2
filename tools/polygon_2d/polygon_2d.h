@@ -188,8 +188,8 @@ class polygon_2d:
 		axis.normalize();
 
 		//Precálculo...
-		const auto &v=this->vertexes[0];
-		T vmin=cross_product(vector_2d<T>{v.x, v.y}, axis), vmax=vmin;
+		const auto &vertex=this->vertexes[0];
+		T vmin=cross_product(vector_2d<T>{vertex.x, vertex.y}, axis), vmax=vmin;
 
 		for(const auto& v : this->vertexes)
 		{
@@ -253,14 +253,14 @@ bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b, bool san
 template<typename T>
 bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b)
 {
-	auto scalar_product=[](const point_2d<T>& a, const point_2d<T>& b)
+	auto scalar_product=[](const point_2d<T>& pa, const point_2d<T>& pb)
 	{
-		return (a.x * b.y) - (a.y * b.x);
+		return (pa.x * pb.y) - (pa.y * pb.x);
 	};
 
-	auto are_equal=[](bool a, bool b, bool c, bool d)
+	auto are_equal=[](bool pa, bool pb, bool pc, bool pd)
 	{
-		return a==b && a==c && a==d;
+		return pa==pb && pa==pc && pa==pd;
 	};
 
 	point_2d<T> r=a.v2 - a.v1;

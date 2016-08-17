@@ -1,5 +1,12 @@
-CFLAGS=-c -g -Wno-deprecated -Wall -ansi -pedantic -std=c++11
-#CFLAGS=-c -O3 -Wno-deprecated -Wall -ansi -pedantic -std=c++11
+#OPTIMIZATION=-O2
+#DEBUG -g
+
+#These are either old or plain stupid :P.
+#OTHER_WARNING_FLAGS=-Wno-deprecated -Wfloat-equal
+
+WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual
+
+CFLAGS=-c -g $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) -ansi -pedantic -std=c++11
 CC=g++
 LIMPIAR=rm objects/*; rm ./libDanSDL2.a; touch objects/dummy;
 include makefile_comun

@@ -2,10 +2,10 @@
 
 using namespace ldv;
 
-ttf_representation::ttf_representation(const ttf_font& font, rgba_color color, std::string text)
-	:raster_representation(color, rect{0,0,0,0}, rect{0,0,0,0}, sampling::complete), 
-	font(&font),
-	text(text)
+ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
+	:raster_representation(pcolor, rect{0,0,0,0}, rect{0,0,0,0}, sampling::complete), 
+	font(&pfont),
+	text(ptext)
 {
 	create_texture();
 	update_view_position();
@@ -79,7 +79,7 @@ void ttf_representation::create_texture()
 	//superficie primero para obtener el formato... Es una mierda pero
 	//me vale.
 	auto col=get_rgba();
-	SDL_Color sdl_col{(Uint8)colorif(col.r), (Uint8)colorif(col.g), (Uint8)colorif(col.b)};
+	SDL_Color sdl_col{(Uint8)colorif(col.r), (Uint8)colorif(col.g), (Uint8)colorif(col.b), 255};
 
 	SDL_Surface * s=TTF_RenderUTF8_Blended
 			(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
@@ -94,18 +94,18 @@ void ttf_representation::create_texture()
 		text_replace(c, "\t", "    ");
 		const char * cad=c.size() ? c.c_str() : " \0";
 
-		SDL_Surface * s=TTF_RenderUTF8_Blended
+		SDL_Surface * surf=TTF_RenderUTF8_Blended
 			(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
 
-		if(!s)
+		if(!surf)
 		{
 			throw std::runtime_error("Unable to prepare ttf_representation : "+std::string(TTF_GetError())+" : "+c);
 		}
 		else
 		{
 			SDL_Rect pos{0, y, 0, 0}; 
-			SDL_BlitSurface(s, nullptr, cnv->get_surface(), &pos);
-			SDL_FreeSurface(s);
+			SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
+			SDL_FreeSurface(surf);
 			y+=h;
 		}		
 	}

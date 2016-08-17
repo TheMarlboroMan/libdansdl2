@@ -51,7 +51,7 @@ class representation
 	int			get_alpha() const {return colorif(rgba.a);}
 	const rotation_transform& get_transformation_rotation() const {return transformation;}
 
-	bool 			is_in_focus(const rect& rect) const {return rect.collides_with(view_position, true);}
+	bool 			is_in_focus(const rect& prect) const {return prect.collides_with(view_position, true);}
 	bool 			is_visible() const {return visible;}
 	virtual bool 		is_transformed() const {return transformation.is_transformed();}
 

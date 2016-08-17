@@ -129,9 +129,9 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	}
 
 	//Fill the callback channel static object.
-	for(auto&c : channels)
+	for(auto& ch : channels)
 	{
-		callback_channels[c.get_index()]=&c;
+		callback_channels[ch.get_index()]=&ch;
 	}
 
 	//Comprobar que el audio está arrancado.
@@ -190,7 +190,7 @@ void lda::audio_play_callback(int pchannel)
 	}
 }
 
-void audio_controller::play_sound(sound_struct& pstruct, int pchannel)
+void audio_controller::play_sound(sound_struct& pstruct)
 {
 	if(!pstruct.is_ready())
 	{

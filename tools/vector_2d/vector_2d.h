@@ -282,6 +282,7 @@ struct vector_2d_cartesian:
 	}
 
 						vector_2d_cartesian(const vector_2d_cartesian<T>& v)
+		:vector_2d<T>() /*(v.x, v.y)*/
 	{
 		this->x=v.x;
 		this->y=v.y;

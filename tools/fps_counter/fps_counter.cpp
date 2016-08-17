@@ -3,7 +3,7 @@
 
 using namespace ldt;
 
-fps_counter::fps_counter(unsigned int p_f):
+fps_counter::fps_counter():
 	apply(true), ticks_count(SDL_GetTicks()), ticks_end(0), ticks_begin(ticks_count), 
 	diff(0), frame_count(0), frame_count_internal(0), delta(0.f),
 	delta_acumulator(0.f), rest_acumulator(0.f), timestep(0.f),
@@ -20,13 +20,13 @@ void fps_counter::init_loop_step()
 	delta_acumulator=0.0;
 }
 
-bool fps_counter::consume_loop(float delta)
+bool fps_counter::consume_loop(float pdelta)
 {
-	bool go_on=timestep >= delta;
+	bool go_on=timestep >= pdelta;
 
 	if(go_on) //Si continuamos en el loop, restamos otro pico.
 	{
-		timestep-=delta;
+		timestep-=pdelta;
 	}
 	else //Si vamos a dejar el loop, guardamos lo que nos ha sobrado para la próxima.
 	{
@@ -39,9 +39,7 @@ bool fps_counter::consume_loop(float delta)
 float fps_counter::get_delta_for_time(Uint32 p_ticks) const
 {
 	Uint32 now=SDL_GetTicks();
-	Uint32 diff=now - p_ticks;
-	float delta=diff / 1000.f;
-	return delta;
+	return (now - p_ticks) / 1000.f;
 }
 
 void fps_counter::end_loop_step()

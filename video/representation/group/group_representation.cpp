@@ -8,8 +8,8 @@ group_representation::group_representation(point p, bool p_poseer)
 	update_view_position();
 }
 
-group_representation::group_representation(const group_representation& o):
-	owns_data(o.owns_data)
+group_representation::group_representation(const group_representation& o)
+	:representation(o), owns_data(o.owns_data)
 {
 	if(!owns_data)
 	{
@@ -48,7 +48,7 @@ void group_representation::draw(screen& p_screen, const camera& pcamera, bool sk
 
 void group_representation::draw(screen& p_screen, bool skip_take)
 {
-	if(is_visible() && is_in_focus(p_screen.get_box()))
+	if(is_visible() && (skip_take || is_in_focus(p_screen.get_box())))
 	{
 		draw_internal(p_screen, nullptr);
 	}

@@ -9,9 +9,17 @@ canvas::canvas()
 
 
 canvas::canvas(const canvas& o)
+	:surface(o), generated(o.generated)
+{
+
+}
+
+canvas& canvas::operator=(const canvas& o)
+	
 {
 	surface::operator=(o);
 	generated=o.generated;
+	return *this;
 }
 
 canvas::~canvas()
@@ -31,11 +39,4 @@ canvas * canvas::create(int w, int h, int bpp, Uint32 r, Uint32 g, Uint32 b, Uin
 	result->generated=true;
 	result->sdl_surface=SDL_CreateRGBSurface(0, w, h, bpp, r, g, b, a);
 	return result;
-}
-
-canvas& canvas::operator=(const canvas& o)
-{
-	surface::operator=(o);
-	generated=o.generated;
-	return *this;
 }

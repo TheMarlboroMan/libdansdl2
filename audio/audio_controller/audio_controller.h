@@ -154,7 +154,7 @@ class audio_controller
 						~audio_controller();
 
 	//Sounds...	
-	void 					play_sound(sound_struct&, int=-1);
+	void 					play_sound(sound_struct&);
 	void 					stop_sound(int);
 	void 					pause_sound(); //Pauses all sounds.
 	void 					resume_sound(); //Restarts all sounds.

@@ -29,10 +29,10 @@ image& image::operator=(const image& o)
 }
 
 image::image(const image& o)
+	:surface(o)
 {
-	surface::operator=(o);
-}
 
+}
 
 image::~image()
 {

@@ -30,7 +30,7 @@ class fps_counter
 {
 	public:
 
-			fps_counter(unsigned int p_f=60);
+			fps_counter();
 
 	unsigned int 	get_frame_count() const {return frame_count;}
 	float 		get_delta() const {return delta;}
