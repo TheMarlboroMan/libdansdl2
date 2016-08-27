@@ -438,7 +438,7 @@ vector_2d<T> for_points(T p_xa, T p_ya, T p_xb, T p_yb, bool normalize=true)
 	{
 		r.x=p_xb-p_xa;
 		r.y=p_yb-p_ya;
-		r.normalize();
+		if(normalize) r.normalize();
 	}
 
 	return r;
