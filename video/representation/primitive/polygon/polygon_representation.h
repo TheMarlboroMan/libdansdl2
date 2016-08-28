@@ -25,6 +25,7 @@ class polygon_representation
 	virtual void 			go_to(int x, int y);
 	virtual point			get_position() const;
 	virtual rect			get_base_view_position() const;
+	void				set_filltype(type t) {filltype=t;}
 
 	protected:
 
