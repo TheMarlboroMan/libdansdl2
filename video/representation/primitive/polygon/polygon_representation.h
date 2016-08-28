@@ -26,6 +26,7 @@ class polygon_representation
 	virtual point			get_position() const;
 	virtual rect			get_base_view_position() const;
 	void				set_filltype(type t) {filltype=t;}
+	void				set_points(const std::vector<point>&);
 
 	protected:
 

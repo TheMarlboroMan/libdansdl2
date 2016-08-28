@@ -26,6 +26,14 @@ polygon_representation& polygon_representation::operator=(const polygon_represen
 	return *this;
 }
 
+void polygon_representation::set_points(std::vector<point>& pt)
+{
+	origin=pt[0];
+	points=pt;
+	normalize();
+	update_view_position();
+}
+
 void polygon_representation::normalize()
 {
 	for(auto& pt : points)
