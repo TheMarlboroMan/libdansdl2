@@ -19,7 +19,7 @@ raster_representation::raster_representation(rgba_color color, rect pos, rect re
 }
 
 raster_representation::raster_representation(const raster_representation& o)
-	:representation(o) ,texture_instance(o.texture_instance),
+	:representation(o), texture_instance(o.texture_instance),
 	brush(o.brush), points(o.points), 
 	tex_points(o.tex_points),
 	sampling_type(o.sampling_type),

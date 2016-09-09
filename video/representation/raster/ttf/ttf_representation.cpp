@@ -16,6 +16,7 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	font(o.font),
 	text(o.text)
 {
+	reset_texture();
 	create_texture();
 }
 
