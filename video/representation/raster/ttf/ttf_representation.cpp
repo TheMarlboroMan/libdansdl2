@@ -5,7 +5,9 @@ using namespace ldv;
 ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
 	:raster_representation(pcolor, rect{0,0,0,0}, rect{0,0,0,0}, sampling::complete), 
 	font(&pfont),
-	text(ptext)
+	text(ptext),
+	mode(render_mode::blended), 
+	bg_shaded(rgba8(0,0,0,255))
 {
 	create_texture();
 	update_view_position();
@@ -14,7 +16,9 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 ttf_representation::ttf_representation(const ttf_representation& o)
 	:raster_representation(o), 
 	font(o.font),
-	text(o.text)
+	text(o.text),
+	mode(o.mode),
+	bg_shaded(o.bg_shaded)
 {
 	reset_texture();
 	create_texture();
@@ -30,6 +34,7 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 	raster_representation::operator=(o);
 	font=o.font;
 	text=o.text;
+	mode=o.mode;
 	create_texture();
 
 	return *this;
@@ -80,10 +85,24 @@ void ttf_representation::create_texture()
 	//superficie primero para obtener el formato... Es una mierda pero
 	//me vale.
 	auto col=get_rgba();
-	SDL_Color sdl_col{(Uint8)colorif(col.r), (Uint8)colorif(col.g), (Uint8)colorif(col.b), 255};
+	SDL_Color sdl_col{(Uint8)colorif(col.r), (Uint8)colorif(col.g), (Uint8)colorif(col.b), (Uint8)colorif(col.a)};
 
-	SDL_Surface * s=TTF_RenderUTF8_Blended
-			(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
+	SDL_Surface * s=nullptr;
+
+	switch(mode)
+	{
+		case render_mode::solid:
+			s=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
+		break;
+		case render_mode::shaded:
+			s=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col, 
+				SDL_Color{(Uint8)colorif(bg_shaded.r), (Uint8)colorif(bg_shaded.g), (Uint8)colorif(bg_shaded.b), (Uint8)colorif(bg_shaded.a)});
+		break;
+		case render_mode::blended:
+			s=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
+		break;
+	}
+
 	std::unique_ptr<canvas> cnv(canvas::create(w, total_h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
 
@@ -92,11 +111,24 @@ void ttf_representation::create_texture()
 
 	for(std::string& c : lines)
 	{
+		SDL_Surface * surf=nullptr;
+
 		text_replace(c, "\t", "    ");
 		const char * cad=c.size() ? c.c_str() : " \0";
 
-		SDL_Surface * surf=TTF_RenderUTF8_Blended
-			(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
+		switch(mode)
+		{
+			case render_mode::solid:
+				surf=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
+			break;
+			case render_mode::shaded:
+				surf=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col, 
+					SDL_Color{(Uint8)colorif(bg_shaded.r), (Uint8)colorif(bg_shaded.g), (Uint8)colorif(bg_shaded.b), (Uint8)colorif(bg_shaded.a)});
+			break;
+			case render_mode::blended:
+				surf=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
+			break;
+		}
 
 		if(!surf)
 		{
@@ -108,7 +140,7 @@ void ttf_representation::create_texture()
 			SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
 			SDL_FreeSurface(surf);
 			y+=h;
-		}		
+		}
 	}
 
 	if(!get_texture())

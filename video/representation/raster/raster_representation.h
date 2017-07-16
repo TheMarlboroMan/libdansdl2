@@ -48,6 +48,7 @@ class raster_representation:
 					complete}; //No añade nada.
 
 				raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete);
+//TODO: Nonsense.
 				raster_representation(rgba_color, rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete);
 				raster_representation(const raster_representation&);
 				raster_representation& operator=(const raster_representation &);

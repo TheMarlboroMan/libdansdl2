@@ -17,6 +17,8 @@ class ttf_representation:
 {
 	public:
 
+	enum class 			render_mode{solid, shaded, blended};
+
 					ttf_representation(const ttf_font&, rgba_color, std::string="");
 					ttf_representation(const ttf_representation&);
 	virtual				~ttf_representation();
@@ -27,6 +29,7 @@ class ttf_representation:
 	void 				set_font(const ttf_font&);
 	virtual void 			set_text(const char);
 	virtual void 			set_text(const std::string&);
+	void				set_render_mode(render_mode r) {mode=r;}
 
 	private:
 
@@ -37,6 +40,9 @@ class ttf_representation:
 	//Esto es un puntero a conciencia, para poderlo cambiar.
 	ttf_font const *		font;
 	std::string			text;
+
+	render_mode			mode;
+	rgba_color			bg_shaded;
 };
 
 }

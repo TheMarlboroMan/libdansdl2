@@ -64,17 +64,19 @@ void raster_representation::do_draw()
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	//Alpha...
+	//TODO: Nonsense?????????????
 	const auto c=get_rgba();
 	switch(get_blend())
 	{
 		case representation::blends::none:
 			glDisable(GL_BLEND);
-			glColor3f(c.r, c.g, c.b);
+			glColor3f(0.f, 0.f, 0.f); //c.r, c.g, c.b);
 		break;
 		case representation::blends::alpha:
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glColor4f(c.r, c.g, c.b, c.a);
+			glColor4f(0.f, 0.f, 0.f, c.a);
+//			glColor4f(c.r, c.g, c.b, c.a);
 		break;
 	}
 		

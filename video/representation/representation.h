@@ -89,6 +89,8 @@ class representation
 
 	bool 			visible;
 	blends		 	blend_mode;
+
+	//This is actually here because of the alpha.
 	rgba_color		rgba;
 	rect	 		view_position;
 
