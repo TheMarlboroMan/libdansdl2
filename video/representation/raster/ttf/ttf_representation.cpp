@@ -3,10 +3,11 @@
 using namespace ldv;
 
 ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
-	:raster_representation(pcolor, rect{0,0,0,0}, rect{0,0,0,0}, sampling::complete), 
+	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, sampling::complete, colorif(pcolor.a)), 
 	font(&pfont),
 	text(ptext),
 	mode(render_mode::blended), 
+	text_color{pcolor.r, pcolor.g, pcolor.b},
 	bg_shaded(rgba8(0,0,0,255))
 {
 	create_texture();
@@ -18,6 +19,7 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	font(o.font),
 	text(o.text),
 	mode(o.mode),
+	text_color(o.text_color),
 	bg_shaded(o.bg_shaded)
 {
 	reset_texture();
@@ -35,6 +37,8 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 	font=o.font;
 	text=o.text;
 	mode=o.mode;
+	text_color=o.text_color;
+	bg_shaded=o.bg_shaded;
 	create_texture();
 
 	return *this;
@@ -84,8 +88,11 @@ void ttf_representation::create_texture()
 	//Podemos preparar una superficie de ese tamaño... Vamos a sacar una
 	//superficie primero para obtener el formato... Es una mierda pero
 	//me vale.
-	auto col=get_rgba();
-	SDL_Color sdl_col{(Uint8)colorif(col.r), (Uint8)colorif(col.g), (Uint8)colorif(col.b), (Uint8)colorif(col.a)};
+
+	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
+	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
+	SDL_Color sdl_col{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
+	if(mode==render_mode::blended) sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
 
 	SDL_Surface * s=nullptr;
 

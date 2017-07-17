@@ -9,6 +9,13 @@ line_representation::line_representation(int px1, int py1, int px2, int py2, rgb
 	update_view_position();
 }
 
+line_representation::line_representation(int px1, int py1, int px2, int py2, rgb_color c)
+	:primitive_representation(c), origin{px1, py1}
+{
+	set_points(px1, py1, px2, py2);
+	update_view_position();
+}
+
 line_representation::line_representation(const line_representation& o)
 	:primitive_representation(o), points(o.points), origin(o.origin)
 {

@@ -18,6 +18,7 @@ class polygon_representation
 	enum class			type{fill, line};
 
 					polygon_representation(type, const std::vector<point>&, rgba_color);
+					polygon_representation(type, const std::vector<point>&, rgb_color);
 					polygon_representation(const polygon_representation&);
 					polygon_representation& operator=(const polygon_representation&);
 	virtual 			~polygon_representation() {}

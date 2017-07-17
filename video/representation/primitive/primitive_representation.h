@@ -19,6 +19,7 @@ class primitive_representation:
 	public:
 
 			primitive_representation(rgba_color);
+			primitive_representation(rgb_color);
 			primitive_representation(const primitive_representation&);
 			primitive_representation& operator=(const primitive_representation&);
 	virtual 	~primitive_representation() {}
@@ -32,6 +33,10 @@ class primitive_representation:
 
 	void 		do_color();
 	virtual void 	do_draw()=0;
+
+	private:
+
+	rgb_color	color;
 };
 
 } //Fin namespace DLibV

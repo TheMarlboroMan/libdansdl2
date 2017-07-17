@@ -39,16 +39,15 @@ class representation
 	enum class 		blends{none, alpha};
 	enum 			alpha{alpha_min=0, alpha_max=255};
 
-				representation();
-				representation(rgba_color);
+				representation(int=alpha_max);
 				representation(const representation&);
 	representation& 	operator=(const representation &);
 	virtual 		~representation() {}
 
 	blends		 	get_blend() const {return blend_mode;}
 	const rect&		get_view_position() const {return view_position;}
-	rgba_color		get_rgba() const {return rgba;}
-	int			get_alpha() const {return colorif(rgba.a);}
+	int			get_alpha() const {return colorif(val_alpha);}
+	float			get_alphaf() const {return val_alpha;}
 	const rotation_transform& get_transformation_rotation() const {return transformation;}
 
 	bool 			is_in_focus(const rect& prect) const {return prect.collides_with(view_position, true);}
@@ -59,14 +58,8 @@ class representation
 	void 			set_rotation_center(float x, float y);
 	void 			set_visible(bool v) {visible=v;}
 	void 			set_blend(blends v) {blend_mode=v;}
-	void			set_rgba(rgba_color v) {rgba=v;}
-	void 			set_alpha(unsigned int v) {rgba.a=colorfi(v);}
-	void 			set_color(unsigned int pr, unsigned int pg, unsigned int pb)
-	{
-		rgba.r=colorfi(pr);
-		rgba.g=colorfi(pg);
-		rgba.b=colorfi(pb);
-	}
+	void 			set_alpha(int v) {val_alpha=colorfi(v);}
+	void			set_alphaf(float v) {val_alpha=v;}
 
 	virtual void 		reset_transform() {transformation.reset();}
 	void			toogle_visible() {visible=!visible;}
@@ -90,8 +83,7 @@ class representation
 	bool 			visible;
 	blends		 	blend_mode;
 
-	//This is actually here because of the alpha.
-	rgba_color		rgba;
+	float			val_alpha;
 	rect	 		view_position;
 
 	protected:

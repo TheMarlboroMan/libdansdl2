@@ -5,19 +5,10 @@
 
 using namespace ldv;
 
-representation::representation():
+representation::representation(int valpha):
 	visible(true),
 	blend_mode(blends::none), 
-	rgba{1.f, 1.f, 1.f, 1.f},
-	view_position{0,0,0,0}
-{
-
-}
-
-representation::representation(rgba_color c):
-	visible(true),
-	blend_mode(blends::none), 
-	rgba(c),
+	val_alpha{colorfi(valpha)},
 	view_position{0,0,0,0}
 {
 
@@ -26,7 +17,7 @@ representation::representation(rgba_color c):
 representation::representation(const representation& o):
 	visible(o.visible), 
 	blend_mode(blends::none),
-	rgba(o.rgba),
+	val_alpha(o.val_alpha),
 	view_position(o.view_position)
 {
 
@@ -35,7 +26,7 @@ representation::representation(const representation& o):
 representation& representation::operator=(const representation& o)
 {
 	visible=o.visible;
-	rgba=o.rgba;
+	val_alpha=o.val_alpha;
 	view_position=o.view_position;
 	blend_mode=o.blend_mode;
 	return *this;

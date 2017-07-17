@@ -47,9 +47,7 @@ class raster_representation:
 					atlas, 	//Añade medio píxel al sampling.
 					complete}; //No añade nada.
 
-				raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete);
-//TODO: Nonsense.
-				raster_representation(rgba_color, rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete);
+				raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete, int=representation::alpha_max);
 				raster_representation(const raster_representation&);
 				raster_representation& operator=(const raster_representation &);
 	virtual 		~raster_representation() {}
@@ -63,6 +61,7 @@ class raster_representation:
 	const rect& 		get_clip() const {return clip;}
 	rect 			get_clip() {return clip;}
 	const invert_transform& get_transformation_invert() const {return transformation;}
+	rgb_color		get_colorize() {return rgb_colorize;}
 
 	virtual bool 		is_transformed() const {return representation::is_transformed() || transformation.is_transformed();}
 
@@ -75,6 +74,7 @@ class raster_representation:
 	void 			set_clip(Sint16, Sint16, Uint16, Uint16, int=15);
 	void 			set_clip(rect);
 	void 			set_texture(const texture& v) {texture_instance=&const_cast <texture&> (v);}
+	void			set_colorize(rgb_color col) {rgb_colorize=col;}
 
 	virtual void 		reset_transform() {representation::reset_transform(); transformation.reset();}
 
@@ -90,7 +90,6 @@ class raster_representation:
 
 	void			calculate_points();
 
-
 	invert_transform 	transformation;
 
 	texture * 		texture_instance;	//Este es el puntero a su superficie de memoria. Es un puntero y no una referencia para permitir cambiarlo.
@@ -100,6 +99,7 @@ class raster_representation:
 	std::vector<point>	points;
 	std::vector<puntotex>	tex_points;
 	sampling		sampling_type;
+	rgb_color		rgb_colorize;
 
 	protected:
 

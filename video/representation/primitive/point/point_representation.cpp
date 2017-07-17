@@ -10,6 +10,13 @@ point_representation::point_representation(point p, rgba_color c)
 	update_view_position();
 }
 
+point_representation::point_representation(point p, rgb_color c)
+	:primitive_representation(c), origin{0,0}
+{
+	internal_insert(p, false);
+	update_view_position();
+}
+
 point_representation::point_representation(const std::vector<point>& pts, rgba_color c)
 	:primitive_representation(c), origin{0,0}
 {
@@ -17,7 +24,20 @@ point_representation::point_representation(const std::vector<point>& pts, rgba_c
 //	update_view_position();
 }
 
+point_representation::point_representation(const std::vector<point>& pts, rgb_color c)
+	:primitive_representation(c), origin{0,0}
+{
+	insert(pts);
+//	update_view_position();
+}
+
 point_representation::point_representation(rgba_color c)
+	:primitive_representation(c), origin{0,0}
+{
+	update_view_position();
+}
+
+point_representation::point_representation(rgb_color c)
 	:primitive_representation(c), origin{0,0}
 {
 	update_view_position();

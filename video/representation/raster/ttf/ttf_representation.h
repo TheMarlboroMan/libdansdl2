@@ -7,6 +7,7 @@
 #include "../../../texture/texture.h"
 #include "../../../surface/surface.h"
 #include "../../../surface/canvas.h"
+#include "../../../surface/image.h"
 #include "../../../../tools/log/log.h"
 #include "../../../../tools/tools/tools.h"
 
@@ -42,6 +43,7 @@ class ttf_representation:
 	std::string			text;
 
 	render_mode			mode;
+	rgb_color			text_color;
 	rgba_color			bg_shaded;
 };
 

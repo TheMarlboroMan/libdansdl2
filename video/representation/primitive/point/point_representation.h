@@ -12,8 +12,11 @@ class point_representation:
 	public:
 	
 						point_representation(rgba_color);
+						point_representation(rgb_color);
 						point_representation(const std::vector<point>&, rgba_color);
+						point_representation(const std::vector<point>&, rgb_color);
 						point_representation(point, rgba_color);
+						point_representation(point, rgb_color);
 						point_representation(const point_representation&);
 	virtual 				~point_representation() {}
 						point_representation& operator=(const point_representation&);

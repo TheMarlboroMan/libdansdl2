@@ -12,6 +12,7 @@ class line_representation:
 	public:
 	
 					line_representation(int x1, int y1, int x2, int y2, rgba_color);
+					line_representation(int x1, int y1, int x2, int y2, rgb_color);
 					line_representation(const line_representation&);
 	virtual 			~line_representation() {}
 					line_representation& operator=(const line_representation&);

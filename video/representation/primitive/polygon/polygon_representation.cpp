@@ -11,6 +11,15 @@ polygon_representation::polygon_representation(type t, const std::vector<point>&
 	update_view_position();
 }
 
+polygon_representation::polygon_representation(type t, const std::vector<point>& pt, rgb_color c)
+	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
+{ 
+	//Guardarlos de forma que el primero sea 0.0.
+	normalize();
+
+	update_view_position();
+}
+
 polygon_representation::polygon_representation(const polygon_representation& o)
 	:primitive_representation(o), points(o.points), origin(o.origin), filltype(o.filltype)
 {

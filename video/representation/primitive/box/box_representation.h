@@ -13,6 +13,7 @@ class box_representation
 	public:
 	
 				box_representation(polygon_representation::type, const rect& p_pos, const rgba_color&);
+				box_representation(polygon_representation::type, const rect& p_pos, const rgb_color&);
 				box_representation(const box_representation& p_otra);
 				box_representation& operator=(const box_representation& p_otro);
 	virtual 		~box_representation() {}

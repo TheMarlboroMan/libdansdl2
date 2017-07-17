@@ -4,16 +4,10 @@
 
 using namespace ldv;
 
-raster_representation::raster_representation(rect pos, rect rec, sampling ts)
-	:representation(), texture_instance(nullptr), 
-	brush{0,0}, sampling_type(ts), location(pos), clip(rec)
-{
-
-}
-
-raster_representation::raster_representation(rgba_color color, rect pos, rect rec, sampling ts)
-	:representation(color), texture_instance(nullptr),
-	brush{0,0}, sampling_type(ts), location(pos), clip(rec)
+raster_representation::raster_representation(rect pos, rect rec, sampling ts, int palpha)
+	:representation(palpha), texture_instance(nullptr), 
+	brush{0,0}, sampling_type(ts), rgb_colorize{1.f, 1.f, 1.f}, 
+	location(pos), clip(rec)
 {
 
 }
@@ -52,31 +46,27 @@ void raster_representation::clip_to_texture()
 
 void raster_representation::do_draw()
 {
-	glColor4f(1.f, 1.f, 1.f, 1.f);
+//TODO: This was active... What does it do?.
+//	glColor4f(1.f, 1.f, 1.f, 1.f);
 
 	glBindTexture(GL_TEXTURE_2D, texture_instance->get_index());
 	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	//Alpha...
-	//TODO: Nonsense?????????????
-	const auto c=get_rgba();
 	switch(get_blend())
 	{
 		case representation::blends::none:
 			glDisable(GL_BLEND);
-			glColor3f(0.f, 0.f, 0.f); //c.r, c.g, c.b);
+			glColor3f(rgb_colorize.r, rgb_colorize.g, rgb_colorize.b);
 		break;
 		case representation::blends::alpha:
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glColor4f(0.f, 0.f, 0.f, c.a);
-//			glColor4f(c.r, c.g, c.b, c.a);
+			glColor4f(rgb_colorize.r, rgb_colorize.g, rgb_colorize.b, get_alphaf());
 		break;
 	}
 		

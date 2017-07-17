@@ -13,6 +13,17 @@ box_representation::box_representation(polygon_representation::type t,const rect
 
 }
 
+box_representation::box_representation(polygon_representation::type t,const rect& p_pos, const rgb_color& c)
+	:polygon_representation(t, { 
+		{p_pos.origin.x, p_pos.origin.y}, 
+		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y}, 
+		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h}, 
+		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}}, 
+		c)
+{
+
+}
+
 box_representation& box_representation::operator=(const box_representation& p_otro)
 {
 	polygon_representation::operator=(p_otro);
