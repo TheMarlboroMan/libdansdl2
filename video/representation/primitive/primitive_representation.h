@@ -23,7 +23,8 @@ class primitive_representation:
 			primitive_representation(const primitive_representation&);
 			primitive_representation& operator=(const primitive_representation&);
 	virtual 	~primitive_representation() {}
-
+	
+	void		set_color(rgb_color c) {color=c;}
 	//Estas hay que definirlas.
 	virtual void 	go_to(int x, int y)=0;
 	virtual point	get_position() const=0;
