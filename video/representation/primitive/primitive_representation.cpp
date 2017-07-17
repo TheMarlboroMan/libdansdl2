@@ -3,7 +3,7 @@
 using namespace ldv;
 
 primitive_representation::primitive_representation(rgba_color c)
-	:representation(c.a),
+	:representation(colorif(c.a)),
 	color{c.r, c.g, c.b}
 {
 
