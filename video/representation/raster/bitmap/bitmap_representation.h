@@ -12,7 +12,7 @@ class bitmap_representation:
 	public:
 
 			bitmap_representation();
-			bitmap_representation(const texture&, rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::atlas);
+			bitmap_representation(const texture&, rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete);
 			bitmap_representation(const bitmap_representation&);
 			bitmap_representation& operator=(const bitmap_representation &);
 
