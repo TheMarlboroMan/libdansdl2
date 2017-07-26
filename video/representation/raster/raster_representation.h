@@ -43,11 +43,8 @@ class raster_representation:
 	public:
 
 	enum 			flags_rect{frx=1, fry=2, frw=4, frh=8};
-	enum class		sampling{
-					atlas, 	//Añade medio píxel al sampling.
-					complete}; //No añade nada.
 
-				raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, sampling=sampling::complete, int=representation::alpha_max);
+				raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, int=representation::alpha_max);
 				raster_representation(const raster_representation&);
 				raster_representation& operator=(const raster_representation &);
 	virtual 		~raster_representation() {}
@@ -67,7 +64,6 @@ class raster_representation:
 
 	void 			set_invert_horizontal(bool v) {transformation.horizontal=v;}
 	void 			set_invert_vertical(bool v) {transformation.vertical=v;}
-	void			set_sampling(sampling v) {reset_calculations(); sampling_type=v;}
 	void			set_brush(int w, int h) {brush.w=w; brush.h=h;}
 	void			set_location(int, int, int=-1, int=-1, int=15);
 	void 			set_location(rect);
@@ -98,7 +94,6 @@ class raster_representation:
 
 	std::vector<point>	points;
 	std::vector<puntotex>	tex_points;
-	sampling		sampling_type;
 	rgb_color		rgb_colorize;
 
 	protected:

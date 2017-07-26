@@ -3,7 +3,7 @@
 using namespace ldv;
 
 ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
-	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, sampling::complete, colorif(pcolor.a)), 
+	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
 	font(&pfont),
 	text(ptext),
 	mode(render_mode::blended), 

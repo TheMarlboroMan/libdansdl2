@@ -4,9 +4,9 @@
 
 using namespace ldv;
 
-raster_representation::raster_representation(rect pos, rect rec, sampling ts, int palpha)
+raster_representation::raster_representation(rect pos, rect rec, int palpha)
 	:representation(palpha), texture_instance(nullptr), 
-	brush{0,0}, sampling_type(ts), rgb_colorize{1.f, 1.f, 1.f}, 
+	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f}, 
 	location(pos), clip(rec)
 {
 
@@ -16,7 +16,6 @@ raster_representation::raster_representation(const raster_representation& o)
 	:representation(o), texture_instance(o.texture_instance),
 	brush(o.brush), points(o.points), 
 	tex_points(o.tex_points),
-	sampling_type(o.sampling_type),
 	location(o.location), 
 	clip(o.clip)
 {
@@ -32,7 +31,6 @@ raster_representation& raster_representation::operator=(const raster_representat
 	brush=o.brush;
 	points=o.points;
 	tex_points=o.tex_points;
-	sampling_type=o.sampling_type;
 
 	return *this;
 }
@@ -139,33 +137,12 @@ void raster_representation::calculate_points()
 			{
 				std::swap(ptex[0].x, ptex[1].x);
 				std::swap(ptex[2].x, ptex[3].x);
-
-				if(sampling_type==sampling::atlas) for(auto &p: ptex) p.x-=0.5f;
-			}
-			else 
-			{
-				if(sampling_type==sampling::atlas)
-				{
-					for(auto &p: ptex) p.x+=0.5f;
-				}
 			}
 
 			if(transformation.vertical)
 			{
 				std::swap(ptex[0].y, ptex[2].y);
 				std::swap(ptex[1].y, ptex[3].y);
-
-				if(sampling_type==sampling::atlas)
-				{ 
-					for(auto &p: ptex) p.y-=0.5f;
-				}
-			}
-			else
-			{
-				if(sampling_type==sampling::atlas) 
-				{
-					for(auto &p: ptex) p.y+=0.5f;
-				}
 			}
 
 			for(auto &p : ptex)
