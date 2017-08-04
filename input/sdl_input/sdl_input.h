@@ -401,7 +401,9 @@ class sdl_input
 
 	std::map<int, joystick> 	joysticks;
 	std::map<SDL_JoystickID, int>	id_joystick_to_index;
+
 	std::string 			input_text;	//El input de texto...
+	bool				keydown_control_text_filter; //Indicates whether or not to pass backspace or enter to the input_text when text input is active.
 
 	bool 				exit_signal; //SDL_QUIT; básicamente...
 	unsigned short int 		joysticks_size;
@@ -445,6 +447,7 @@ class sdl_input
 	void 			clear_text_input() {input_text=std::string("");}
 	const std::string 	get_text_input() const {return input_text;}
 	bool 			is_text_input() const {return SDL_IsTextInputActive();}
+	void			set_keydown_control_text_filter(bool v) {keydown_control_text_filter=v;}
 
 	bool 			pump_events(SDL_Event &, bool=true);
 	//const SDL_Event& 	get_event() const {return event;}

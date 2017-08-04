@@ -5,7 +5,7 @@
 using namespace ldi;
 
 sdl_input::sdl_input():
-	exit_signal(false), joysticks_size(0)
+	keydown_control_text_filter(false), exit_signal(false), joysticks_size(0)
 
 {
 	SDL_StopTextInput();
@@ -169,11 +169,11 @@ void sdl_input::process_event(SDL_Event& event)
 		break;
 
 		case SDL_TEXTINPUT:
-			if(SDL_IsTextInputActive())
-			{
+//			if(SDL_IsTextInputActive())
+//			{
 				events_cache[text]=true;
 				input_text+=event.text.text;
-			}
+//			}
 		break;
 
 //		case SDL_ACTIVEEVENT:
@@ -184,11 +184,18 @@ void sdl_input::process_event(SDL_Event& event)
 		{
 			unsigned int index=event.key.keysym.scancode;
 
-			if(SDL_IsTextInputActive())
+			if(!device_keyboard.keys_down_locking[index])
+			{
+				events_cache[keyboard_down]=true;
+				device_keyboard.keys_down[index]=1;
+				device_keyboard.keys_down_locking[index]=1;
+			}
+
+			if(keydown_control_text_filter && SDL_IsTextInputActive())
 			{
 				switch(event.key.keysym.sym)
 				{
-					case SDLK_BACKSPACE: 
+					case SDLK_BACKSPACE:
 						if(input_text.length() > 0) 
 						{
 							input_text.pop_back(); 
@@ -197,13 +204,6 @@ void sdl_input::process_event(SDL_Event& event)
 					break;
 					case SDLK_RETURN: input_text+="\n"; break;
 				}
-			}
-
-			if(!device_keyboard.keys_down_locking[index])
-			{
-				events_cache[keyboard_down]=true;
-				device_keyboard.keys_down[index]=1;
-				device_keyboard.keys_down_locking[index]=1;
 			}
 		}
 		break;
