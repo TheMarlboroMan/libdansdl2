@@ -146,20 +146,20 @@ class sdl_input
 
 			if(buttons)
 			{
-				buttons_up.reserve(buttons);
-				buttons_down.reserve(buttons);
-				buttons_pressed.reserve(buttons);
-				buttons_released.reserve(buttons);
+				buttons_up.resize(buttons, false);
+				buttons_down.resize(buttons, false);
+				buttons_pressed.resize(buttons, false);
+				buttons_released.resize(buttons, false);
 			}
 
 			if(axis_size)
 			{
-				axis.reserve(axis_size);
+				axis.resize(axis_size, 0);
 			}
 
 			if(hats_size)
 			{
-				hats.reserve(hats_size);
+				hats.resize(hats_size, 0);
 			}
 
 			init_state();	
@@ -422,7 +422,7 @@ class sdl_input
 	/*Esto registra simplemente si hay algún evento de este tipo por cada
 	ciclo de eventos.*/
 
-	enum events_index{text, 
+	enum events_index{text=0, 
 		mousemove, mousedown, mouseup,
 		keyboard_down, keyboard_up,
 		joystick_axis, joystick_hat, joystick_button_up, joystick_button_down, joystick_connected, 
@@ -500,7 +500,7 @@ class sdl_input
 
 	template <typename TipoFunc> void loop_callback(TipoFunc& f)
 	{
-		this->clear_loop();			
+		this->clear_loop();
 		SDL_Event event;
 		while(SDL_PollEvent(&event))
 		{

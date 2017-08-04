@@ -10,9 +10,8 @@ sdl_input::sdl_input():
 {
 	SDL_StopTextInput();
 
-	events_cache.reserve(max_cache_index);
-	for(size_t i=0; i<events_cache.size(); ++i) events_cache[i]=false;
-
+	events_cache.resize(max_cache_index, false);
+	
 	device_keyboard.init_keys(true);
 	init_joysticks();
 }
@@ -68,7 +67,6 @@ void sdl_input::loop()
 	this->clear_loop();
 			
 	SDL_Event event;
-	//Eventos...
 	while(SDL_PollEvent(&event))
 	{
 		this->process_event(event);
@@ -171,8 +169,11 @@ void sdl_input::process_event(SDL_Event& event)
 		break;
 
 		case SDL_TEXTINPUT:
-			events_cache[text]=true;
-			input_text+=event.text.text;
+			if(SDL_IsTextInputActive())
+			{
+				events_cache[text]=true;
+				input_text+=event.text.text;
+			}
 		break;
 
 //		case SDL_ACTIVEEVENT:
@@ -332,7 +333,8 @@ int sdl_input::get_joystick_hat(unsigned int p_joystick, unsigned int p_hat) con
 
 void sdl_input::clear_loop()
 {
-	for(size_t i=0; i<events_cache.size(); ++i) events_cache[i]=false;
+	//Fucking elegant, tough memset would be faster :P.
+	std::fill(std::begin(events_cache), std::end(events_cache), false);
 
 	//Alimentamos las teclas pulsadas y trabajamos con ellas.
 	device_keyboard.set_pressed_keys(SDL_GetKeyboardState(NULL));
