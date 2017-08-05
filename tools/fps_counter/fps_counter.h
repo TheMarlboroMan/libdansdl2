@@ -34,7 +34,6 @@ class fps_counter
 
 	unsigned int 	get_frame_count() const {return frame_count;}
 	float 		get_delta() const {return delta;}
-	float 		get_delta_for_time(Uint32) const;	//Esto es para obtener el valor delta después de turno();
 
 	void 		set_apply(bool v) {apply=v;}
 	void 		end_loop_step();		//Esto lo llamamos justo después del render (o antes, lo que sea).
