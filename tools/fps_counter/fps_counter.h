@@ -4,24 +4,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <algorithm>
-
-/*
-Incluye el controlador de frames y el cronómetro. El controlador nos servirá
-para controlar los FPS y para obtener la cantidad de delta desde el último 
-frame.
-
-El crónometro_SDL está muy ligado al Controlador de FPS. A un controlador le
-podemos asignar referencias a uno o más cronómetros y por cada turno del 
-controlador se irá pasando el tiempo al crono. Más sencillo imposible. Estos
-cronómetros deben mantener referencias fuera de la clase: sin ellas no 
-podremos manejarlos correctamente.
-
-OJO: En el momento en que adjuntamos un cronómetro al control de frames ese 
-cronómetro no puede "salirse" de ámbito, por así decirlo. Allí donde exista
-el control deben existir aún los cronómetros.
-*/
-
-//TODO: Retool with c++ chrono stuff.
+#include <chrono>
 
 namespace ldt
 {
@@ -47,11 +30,8 @@ class fps_counter
 
 	bool 		apply;
 
-	//TODO: 	Maybe we can do this better with C++ time.
-	Uint32 		ticks_count,
-			ticks_end,
-	 		ticks_begin,
-			diff;
+	std::chrono::high_resolution_clock::time_point 	ticks_count,
+		 					ticks_begin;
 
 	int 		frame_count,	//Este es el "visible"...
 			frame_count_internal;	//Este es "no visible"...
