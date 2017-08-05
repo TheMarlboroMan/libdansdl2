@@ -40,13 +40,15 @@ class fps_counter
 	void 		end_loop_step();		//Esto lo llamamos justo después del render (o antes, lo que sea).
 
 	//Nueva interface...
-	void 		init_loop_step();	//
+	void 		init_loop_step(float=0);
 	bool 		consume_loop(float);
 	void 		set_max_timestep(float t) {max_timestep=t;}
 
 	private:
 
 	bool 		apply;
+
+	//TODO: 	Maybe we can do this better with C++ time.
 	Uint32 		ticks_count,
 			ticks_end,
 	 		ticks_begin,
