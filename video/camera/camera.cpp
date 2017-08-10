@@ -64,6 +64,12 @@ void camera::set_limits(int min_x, int min_y, int max_x, int max_y)
 	limits={min_x, min_y, max_x, max_y};
 }
 
+void camera::set_limits(const rect& r)
+{
+	with_limit=true;
+	limits={r.origin.x, r.origin.y, r.origin.x+r.w, r.origin.y+r.h};
+}
+
 void camera::clear_limits()
 {
 	with_limit=false;

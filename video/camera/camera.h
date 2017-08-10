@@ -31,6 +31,7 @@ class camera
 	void 			go_to(point);
 	void 			move_by(int=0, int=0);
 	void 			set_limits(int, int, int, int);
+	void			set_limits(const rect&);
 	void 			clear_limits();
 
 	//Other helpers.
