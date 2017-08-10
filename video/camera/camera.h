@@ -42,7 +42,7 @@ class camera
 	void 			sync();
 
 	draw_info		d_info;
-	rect 			focus_box;			//La caja a la que se apunta en el "mundo", es decir, estamos apuntado al punto x, y, enfocando w y h del mundo. Si cambian estos w y h haríamos zoom.
+	rect 			focus_box;		//La caja a la que se apunta en el "mundo", es decir, estamos apuntado al punto x, y, enfocando w y h del mundo. Si cambian estos w y h haríamos zoom.
 	rect	 		pos_box;		//Rectángulo de la cámara en pantalla.
 
 	bool 			with_limit;		//Límites para el movimiento de la cámara usando "enfocar a".
