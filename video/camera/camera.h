@@ -9,8 +9,9 @@
 namespace ldv
 {
 
-///A 2d camera pointing at a 2d plane. It has no use unless used with a screen
-///object in the render function of any representation. 
+///A 2d camera pointing at a 2d plane. 
+/**It has no use unless used with a screen object in the render function of any representation. 
+**/
 
 class camera
 {
@@ -62,11 +63,6 @@ class camera
 	void			set_center_margin(const rect&);
 	///Clears the margin for camera movement.
 	void			clear_center_margin();
-
-	//Other helpers.
-
-	///I DON'T KNOW WHAT THIS DOES...
-	point			transform(point) const;
 	///Returns a draw_info struct which conveniently includes most camera information in one place with no overhead.
 	const draw_info		get_draw_info() const {return d_info;}
 
@@ -74,6 +70,8 @@ class camera
 
 	///Syncs camera boxes.
 	void 			sync();
+	///Converts world point to pos point
+	point			world_to_pos(point);
 
 	draw_info		d_info;
 	rect 			focus_box;		//La caja a la que se apunta en el "mundo", es decir, estamos apuntado al punto x, y, enfocando w y h del mundo. Si cambian estos w y h haríamos zoom.

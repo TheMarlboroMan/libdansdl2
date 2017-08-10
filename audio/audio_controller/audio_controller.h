@@ -17,7 +17,9 @@ namespace lda
 void audio_play_callback(int pchannel);	//F-f-f-forward!.
 class sound_queue;			//Re-f-f-f-forward!.
 
-///Configuration to instruct SDL2 on how to setup the audio framework. Refer to SDL2 reference for further information on their meaning.
+///Configuration to instruct SDL2 on how to setup the audio framework. 
+/**Refer to SDL2 reference for further information on their meaning.
+**/
 
 struct audio_controller_config
 {
@@ -41,9 +43,9 @@ struct audio_controller_config
 class audio_channel; //F-f-f-f-forward!.
 class audio_controller;
 
-/**Non constructible audio channel. Can only be created from within the 
-audio_controller class. There's another class: audio_channel, that provides
-the same public interface for it. 
+///Non constructible audio channel for internal use.
+/**Can only be created from within the audio_controller class. 
+There's another class: audio_channel, that provides the same public interface for it. 
 **/
 
 class real_audio_channel
@@ -108,6 +110,9 @@ class real_audio_channel
 };
 
 ///Non singleton audio controller. 
+/**Only one instance can exist for each application. Provides access to all 
+sound channels, music, volumes and debug information.
+**/
 
 class audio_controller
 {
@@ -191,6 +196,7 @@ class audio_controller
 	friend class 				audio_channel; //Para que pueda acceder a la definición de "real_audio_channel".
 };
 
+///Disposable references to real_audio_channels used by the application.
 /**
 Implements audio_channels, which can be used to hand references of specific 
 audio channels to application classes (which would be valid until the audio_controller

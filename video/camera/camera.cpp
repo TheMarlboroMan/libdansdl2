@@ -73,17 +73,6 @@ void camera::clear_limits()
 	with_limit=false;
 }
 
-//Good... why would I ever document what this does???.
-//Okay, this converts a point to a camera point?.
-
-point camera::transform(point p) const
-{
-	point res(p);
-	res.x=focus_box.origin.x + (p.x * (focus_box.w / (float) pos_box.w));
-	res.y=focus_box.origin.y + (p.y * (focus_box.h / (float) pos_box.h));
-	return res;
-}
-
 void camera::set_zoom(double v)
 {
 	if(v < 0.01) v=0.01;
@@ -96,15 +85,26 @@ void camera::center_on(point p)
 {
 	point dest(p.x-(focus_box.w/2), p.y-(focus_box.h/2));
 
-	if(with_margin && limit_margin.point_inside(p))
+	//TODO: This needs work.
+
+	if(with_margin)
 	{
-		return;
+		//Limit margin is expressed in terms of pos_box...
+		//P must be converted to the same terms.
+		if(limit_margin.point_inside(world_to_pos(p)))
+		{
+			return;
+		}
+		else
+		{
+			//TODO: This needs work...
+			go_to(dest);
+		}
 	}
-
-	auto cosa=transform(dest);
-	std::cout<<p.x<<","<<p.y<<" IS "<<dest.x<<","<<dest.y<<" TRANS: "<<cosa.x<<","<<cosa.y<<std::endl;
-
-	go_to(dest);
+	else
+	{
+		go_to(dest);
+	}
 }
 
 void camera::center_on(const rect& r)
@@ -123,4 +123,9 @@ void camera::clear_center_margin()
 {
 	with_margin=false;
 	limit_margin={0,0,0,0};
+}
+
+point camera::world_to_pos(point p)
+{
+	return {p.x-focus_box.origin.x, p.y-focus_box.origin.y};
 }

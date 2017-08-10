@@ -6,7 +6,9 @@
 
 namespace ldv
 {
+///Video specialization of a box.
 typedef ldt::box<int, unsigned int> 	rect;
+///Video specialization of a point.
 typedef ldt::point_2d<int>		point;
 }
 
