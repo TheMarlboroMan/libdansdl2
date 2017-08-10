@@ -29,10 +29,14 @@ class camera
 
 	//Camera movement and tracking...
 	void 			go_to(point);
+	void			center_on(point);
+	void			center_on(const rect&);
 	void 			move_by(int=0, int=0);
 	void 			set_limits(int, int, int, int);
 	void			set_limits(const rect&);
 	void 			clear_limits();
+	void			set_center_margin(const rect&);
+	void			clear_center_margin();
 
 	//Other helpers.
 	point			transform(point) const;
@@ -47,7 +51,11 @@ class camera
 	rect	 		pos_box;		//Rectángulo de la cámara en pantalla.
 
 	bool 			with_limit;		//Límites para el movimiento de la cámara usando "enfocar a".
-	struct			{int min_x, min_y, max_x, max_y;} limits;
+	//TODO: Why don't use a stupid box?????????
+	struct			{int min_x, min_y, max_x, max_y;} limits; 
+
+	bool			with_margin;
+	rect			limit_margin;
 };
 
 } //Fin namespace DLibV

@@ -5,7 +5,7 @@ using namespace ldv;
 camera::camera(rect foco, point pos):
 	d_info{pos.x, pos.y, foco.origin.x, foco.origin.y, (int)foco.w, (int)foco.h, 1.0}, 
 	focus_box(foco), pos_box(pos.x, pos.y, focus_box.w, focus_box.h),
-	with_limit(false), limits{0,0,0,0}
+	with_limit(false), limits{0,0,0,0}, with_margin(false), limit_margin{0,0,0,0}
 {
 	sync();
 }
@@ -75,6 +75,9 @@ void camera::clear_limits()
 	with_limit=false;
 }
 
+//Good... why would I ever document what this does???.
+//Okay, this converts a point to a camera point?.
+
 point camera::transform(point p) const
 {
 	point res(p);
@@ -90,4 +93,37 @@ void camera::set_zoom(double v)
 	d_info.zoom=v;
 	focus_box.w=pos_box.w / v;
 	focus_box.h=pos_box.h / v;
+}
+
+void camera::center_on(point p)
+{
+	point dest{p.x-(focus_box.w/2), p.y-(focus_box.h/2)};
+
+	if(with_margin && limit_margin.point_inside(p))
+	{
+		return;
+	}
+
+	auto cosa=transform(dest);
+	std::cout<<p.x<<","<<p.y<<" IS "<<dest.x<<","<<dest.y<<" TRANS: "<<cosa.x<<","<<cosa.y<<std::endl;
+
+	go_to(dest);
+}
+
+void camera::center_on(const rect& r)
+{
+	point dest{r.origin.x+(r.w/2), r.origin.y+(r.h/2)};
+	center_on(dest);
+}
+
+void camera::set_center_margin(const rect& r)
+{
+	with_margin=true;
+	limit_margin=r;
+}
+
+void camera::clear_center_margin()
+{
+	with_margin=false;
+	limit_margin={0,0,0,0};
 }
