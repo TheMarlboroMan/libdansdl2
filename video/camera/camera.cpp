@@ -47,8 +47,6 @@ void camera::go_to(point p)
 	sync();
 }
 
-/*Mueve la posición a la que apunta la cámara sumando las cantidades provistas
-en los parámetros.*/
 
 void camera::move_by(int p_x, int p_y)
 {
@@ -67,7 +65,7 @@ void camera::set_limits(int min_x, int min_y, int max_x, int max_y)
 void camera::set_limits(const rect& r)
 {
 	with_limit=true;
-	limits={r.origin.x, r.origin.y, r.origin.x+r.w, r.origin.y+r.h};
+	limits={r.origin.x, r.origin.y, r.origin.x+(int)r.w, r.origin.y+(int)r.h};
 }
 
 void camera::clear_limits()
@@ -86,7 +84,6 @@ point camera::transform(point p) const
 	return res;
 }
 
-//Un valor de 2 significa que todo es 2 veces más grande, ergo la caja de foco es dos veces más pequeña.
 void camera::set_zoom(double v)
 {
 	if(v < 0.01) v=0.01;
@@ -97,7 +94,7 @@ void camera::set_zoom(double v)
 
 void camera::center_on(point p)
 {
-	point dest{p.x-(focus_box.w/2), p.y-(focus_box.h/2)};
+	point dest(p.x-(focus_box.w/2), p.y-(focus_box.h/2));
 
 	if(with_margin && limit_margin.point_inside(p))
 	{
@@ -112,7 +109,7 @@ void camera::center_on(point p)
 
 void camera::center_on(const rect& r)
 {
-	point dest{r.origin.x+(r.w/2), r.origin.y+(r.h/2)};
+	point dest(r.origin.x+(r.w/2), r.origin.y+(r.h/2));
 	center_on(dest);
 }
 

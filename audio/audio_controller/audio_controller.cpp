@@ -288,9 +288,9 @@ void audio_controller::debug_state()
 
 	for(real_audio_channel& c : channels)
 	{
-		if(c.is_paused()) std::cout<<"P"<<std::endl;
-		else if(c.is_playing()) std::cout<<"R";
-		else if(c.is_busy()) std::cout<<"O";
+		if(c.is_paused()) std::cout<<"|"<<std::endl;
+		else if(c.is_playing()) std::cout<<"P";
+		else if(c.is_busy()) std::cout<<"B";
 		else std::cout<<"_";
 	}
 

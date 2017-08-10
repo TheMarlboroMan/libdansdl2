@@ -17,66 +17,17 @@ namespace lda
 void audio_play_callback(int pchannel);	//F-f-f-forward!.
 class sound_queue;			//Re-f-f-f-forward!.
 
-/*
-Sobre el Controlador_audio:
-
-No hay mucho que decir. Antes era un singleton.
-
-Sobre el audio_channel.
-
-El channel de audio lo podríamos usar para darles a otros elementos referencias
-a los channels de audio originales que esté usando el controlador. El controlador
-tendría un vector de tantos objetos como channels. Al solicitar la reproducción 
-podríamos devolver un asa a uno de estos de forma que se pueda siempre
-inspeccionar y actuar desde la propia entidad sin tener que hacer muchos puentes
-entre clases.
-
-Estos objetos serían válidos mientras el controlador de audio estuviera en 
-marcha.
-
-Esto reemplazaría a los vectores de estado de channels y demás y se convertiría
-en el nuevo punto de acceso.
-
-La implementación original inluía un vector de Canales de audio en el 
-controlador. Una posterior es un vector de punteros a channels de audio. Esto es
-así porque la interfaz pública hacía copia al devolver el objeto y no permitía
-realmente llevar la cuenta de los mismos si se usan desde fuera del controlador.
-Por ejemplo, al sacar un channel libre y usarlo desde el código cliente se hacía
-una copia del mismo y al usarlo dejaba de reflejarse en debug_channels.
-
-La implementación actual es bien diferente: el channel de audio que se guarda
-en el controlador es del tipo real_audio_channel, y no se guarda como un puntero.
-Para obtener referencias a los mismos desde el código cliente y que todo
-funcione bien, se ha envuelto en un patrón de proxy de forma que un objeto
-audio_channel tiene una referencia al real_audio_channel. audio_channel implementa
-la misma interfaz pública que real_audio_channel de forma que es transparente
-al uso. audio_channel puede ser copiable de un lado para otro sin problemas. 
-audio_channel es amiga de real_audio_channel para poder acceder a sus propiedades
-directamente. 
-
-El objeto del tipo audio_channel es deshechable: no se devuelven por referencia
-ni se guardan referencias al mismo, sino que se copian tantas veces como sea
-necesario. Un detalle MUY importante es que puede crearse un objeto audio_channel
-de la nada pero estaría "desvinculado" y todo aquello que llamemos que tenga
-que afectar un channel causaría un crash seguro. Tenemos el método "es_vinculado()"
-para asegurarnos de que tiene un channel de audio real asociado. Asimismo se
-puede desvincular con el método "desvicular".
-
-Objetos de audio_channel directamente obtenidos del controlador de audio estarían
-siempre vinculados y listos. Objetos creados libremente estarán siempre
-desvinculados a no ser que se creen mediante copia o constructor de copia de 
-otro objeto audio_channel.
-*/
+///Configuration to instruct SDL2 on how to setup the audio framework. Refer to SDL2 reference for further information on their meaning.
 
 struct audio_controller_config
 {
-	int 				ratio,
-	 				out,
-	 				buffers,
-	 				channels,
-					initial_volume;
+	int 				ratio, 	/**< A sane default is 44100. */ 
+	 				out,	/**< A sane default is 2. */ 
+	 				buffers,	/**< A sane default is 1024. */ 
+	 				channels,	/**< A sane default is 8... like Doom. */ 
+					initial_volume; /**< A sane default is 128. */ 
  
-	Uint16 				format;
+	Uint16 				format; /**< A sane default is SDL2 value AUDIO_S16SYS. */ 
 
 /*	audio_controller_config()
 		:ratio(44100), out(2), buffers(1024), channels(8),
@@ -90,33 +41,45 @@ struct audio_controller_config
 class audio_channel; //F-f-f-f-forward!.
 class audio_controller;
 
-//Non constructible audio channel. Can only be created from within the 
-//audio_controller class. There's another class: audio_channel, that provides
-//the same public interface for it.
+/**Non constructible audio channel. Can only be created from within the 
+audio_controller class. There's another class: audio_channel, that provides
+the same public interface for it. 
+**/
+
 class real_audio_channel
 {
 	public:
 
-	int 				play(const sound_struct&);	//Pondría el puntero al audio y si está o no en loop.		
+	///Plays the sound_struct.
+	int 				play(const sound_struct&);
+	///Pauses the sound.
 	void 				pause();
+	///Resumes after pausing.
 	void 				resume();
-	void 				stop();	//Forzaría la parada del channel en el controlador.
+	///Forces sound stop.
+	void 				stop();
+	///Fades out the sound according to the parameter.
 	int 				fade_out(int p_ms) {return Mix_FadeOutChannel(index, p_ms);}
-
 	bool 				is_looping() const {return repeat==-1;}
+	///Busy channels are either playing a sound or finished playing but are being monitored. A non busy channel (idle) can be automatically picked from the channel pool.
 	bool 				is_busy() const {return busy;}
+	///Channels can be monitored. A monitores channel does not call free() when SDL's callback is issued after the sound is played.
 	bool 				is_monitored() const {return monitoring;}
 	bool 				is_playing() const {return playing;}
 	bool 				is_paused() const {return paused;}
+	///Gets the internal channel index.
 	int 				get_index() const {return index;}
 	int 				get_repeat() const {return repeat;}
 	int 				get_volume() const {return volume;}
 
+	///Sets the monitoring value. A monitored channel does not call free() when SDL's callback is issued at the end of playback. This allows for finer, yet useless control in most cases (maybe you want to keep the channel from reverting to "idle").
 	void 				set_monitoring(bool v) {monitoring=v;}
 	void 				set_volume(int);
 
+	///Nullifies repeat, sets busy and monitoring to false and cleans pointer to played sound.
 	void 				free(); //Es público para poder llamarlo si haces monitoring manual.
-	void 				do_callback(); 	//Se pondría como "no_playing" y quitaría el puntero del audio.
+	///Clears the "playing" flag and calls free if not monitored.
+	void 				do_callback();
 
 					~real_audio_channel(){sound_playing=nullptr;}
 					real_audio_channel(const real_audio_channel&);
@@ -130,9 +93,9 @@ class real_audio_channel
 	 				repeat,
 	 				volume;	
 
-	bool 				playing, //Reproduciendo es que la onda se está playing.
-	 				busy,	//Activo es que el channel está busy, ya sea porque reproduce o porque está monitoring.
-	 				monitoring, //Un channel monitoring no se libera del estado busy de forma automática.
+	bool 				playing, /**< Wave is playing. */ 
+	 				busy,	/**< Busy channel: either playing or under monitoring from the application. */ 
+	 				monitoring, /**< Monitored channels are not automatically freed. */ 
 	 				paused;
 
 	audio_controller const *	controller_ref;
@@ -144,6 +107,8 @@ class real_audio_channel
 	friend class 			audio_channel;
 };
 
+///Non singleton audio controller. 
+
 class audio_controller
 {
 	public:
@@ -153,30 +118,42 @@ class audio_controller
 						audio_controller(const audio_controller_config&);
 						~audio_controller();
 
-	//Sounds...	
+	///Plays sound in a free channel.
 	void 					play_sound(sound_struct&);
+	///Stops the sound at the indicated channel.
 	void 					stop_sound(int);
-	void 					pause_sound(); //Pauses all sounds.
-	void 					resume_sound(); //Restarts all sounds.
+	///Stops all sounds.
 	void 					stop_sound(); //Stops all sounds
+	///Pauses all sounds.
+	void 					pause_sound(); //Pauses all sounds.
+	///Resumes all sounds.
+	void 					resume_sound(); //Restarts all sounds.
 
-	//Music.
+	///Plays the music structure as much times as indicated by the parameter.
 	void 					play_music(music&, int=-1);
+	///Stops the music.
 	void 					stop_music();
 
-	//Volume...
+	///Sets the main sound volume that affects all channels.
 	void 					set_main_sound_volume(int);
+	///Sets the volume for a channel.
 	void 					set_sound_volume(int p_vol, int pchannel); //p_vol de 0 a 128.
+	///Sets the music volume.
 	void 					set_music_volume(int);
 
-	//Getters.
+	///Indicates whether music is playing.
 	bool					is_music_playing() const {return music_playing;}
+	///Gets music volume.
 	int 					get_music_volume() const {return Mix_VolumeMusic(-1);}
+	///Returns the number of channels requested to SDL by the controller.
 	int 					get_requested_channels() const {return requested_channels;}
+	///Gets the main sound volume.
 	unsigned int 				get_main_sound_volume() const {return main_sound_volume;}
+	///Gets a handle for the specified audio channel (useful if you already know its id and lost it).
 	audio_channel 				get_channel(int);
+	///Gets a free channel. Can throw if no channels are available.
 	audio_channel 				get_free_channel();
-
+	///Prints a crude representation of channel state to stout: |(Paused), P(playing), B(busy), _(free).
 	void 					debug_state();
 
 	/////////////////////////////////////
@@ -184,7 +161,9 @@ class audio_controller
 
 	private:
 
+	///Can't be copied.
 						audio_controller(const audio_controller&)=delete;
+	///Can't be assigned.
 						audio_controller& operator=(const audio_controller&)=delete;
 
 	int 					get_free_channel_index(int=0, int=-1);
@@ -199,7 +178,7 @@ class audio_controller
 
 	Uint16 					format;
 
-	bool 					music_playing; 	
+	bool 					music_playing;
 
 	std::vector<real_audio_channel> 	channels;
 	static std::map<int, real_audio_channel *>	callback_channels;
@@ -212,34 +191,66 @@ class audio_controller
 	friend class 				audio_channel; //Para que pueda acceder a la definición de "real_audio_channel".
 };
 
-//Exposición pública del channel de audio para usarlo fuera del controlador. 
-//Tiene una referencia al channel real que asegura que todo se sincronice.
+/**
+Implements audio_channels, which can be used to hand references of specific 
+audio channels to application classes (which would be valid until the audio_controller
+itself shuts down.
+
+Any sound must be played through an audio_channel. When a sound stops playing, the 
+channel is automatically freed and made available to the channel pool unless it is
+set under "monitoring" by the application logic.
+
+
+These references are implemented in terms of proxy objects: audio_channel is a 
+proxy to real_audio_channel: both implement the same public structure. This
+makes every audio_channel object suitable for deletion since they are 
+not real references. On a related note, the audio_channels can be manually created but
+that's a recipe for a crash, since they would not be related to the audio_controller 
+in any way. The is_linked and unlink methods manipulate this aspect. There is no "link" method.
+
+Every audio_channel retrieved from the audio_controller is linked. Manually created 
+ones are not unless copied or copy-constructed.
+**/
 
 class audio_channel
 {
 	public:
 
+	///Plays the sound_struct.
 	int 			play(const sound_struct& e) {return channel->play(e);}
+	///Pauses the sound.
 	void 			pause() {channel->pause();}
+	///Resumes after pausing.
 	void 			resume() {channel->resume();}
+	///Forces sound stop.
 	void 			stop() {channel->stop();}
-
+	///Fades out the sound according to the parameter.
 	int 			fade_out(int ms) {return channel->fade_out(ms);}
-
+	///Indicated whether the sound is looping or not.
 	bool 			is_looping() const {return channel->is_looping();}
+	///Busy channels are either playing a sound or finished playing but are being monitored. A non busy channel (idle) can be automatically picked from the channel pool.
 	bool 			is_busy() const {return channel->busy;}
+	///Channels can be monitored. A monitores channel does not call free() when SDL's callback is issued after the sound is played.
 	bool 			is_monitored() const {return channel->monitoring;}
+	///Indicates whether a wave is currently playing on the channel.
 	bool 			is_playing() const {return channel->playing;}
+	///Indicates whether the channel is paused.
 	bool 			is_paused() const {return channel->paused;}
+	///Gets the internal channel index.
 	int 			get_index() const {return channel->index;}
+	///Indicates the number of repeats (a value of 0 loops over and over).
 	int 			get_repeat() const {return channel->repeat;}
+	///Gets the channel volume (different from the master volume).
 	int 			get_volume() const {return channel->volume;}
-
+	///Sets the channel volume (different from the master volume).
 	void 			set_volume(int val) {channel->set_volume(val);}
+	///Sets the monitoring value. A monitored channel does not call free() when SDL's callback is issued at the end of playback. This allows for finer, yet useless control in most cases (maybe you want to keep the channel from reverting to "idle").
 	void 			set_monitoring(bool v) {channel->set_monitoring(v);}
+	///Nullifies repeat, sets busy and monitoring to false and cleans pointer to played sound.
 	void 			free() {channel->free();}
-
+	///Indicates whether the channel is linked to a real_audio_channel
 	bool 			is_linked() const {return channel!=nullptr;}
+	///Unlinks the channel from its real_audio_channel (good thing to do if any object has a handle of this and can be copied).
 	void 			unlink() {channel=nullptr;}
 
 				audio_channel():channel(nullptr){}
