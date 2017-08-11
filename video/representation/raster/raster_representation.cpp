@@ -4,6 +4,8 @@
 
 using namespace ldv;
 
+//!Constructs a raster_representation with position, clipping and alpha.
+
 raster_representation::raster_representation(rect pos, rect rec, int palpha)
 	:representation(palpha), texture_instance(nullptr), 
 	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f}, 
@@ -42,7 +44,7 @@ raster_representation& raster_representation::operator=(const raster_representat
 
 void raster_representation::clip_to_texture()
 {
-	set_clip(0,0, get_w_texture_instance(), get_h_texture_instance());
+	set_clip({0,0, get_w_texture_instance(), get_h_texture_instance()});
 	location.w=clip.w;
 	location.h=clip.h;
 }

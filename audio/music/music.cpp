@@ -3,11 +3,19 @@
 
 using namespace lda;
 
+//!Constructs an empty music object.
+
+//!It can be readied by calling "load".
+
 music::music():
 	ready(false)
 {
 
 }
+
+//!Constructs a music object from the file specified.
+
+//!If the file cannot be open, the is_ready function will return false.
 
 music::music(const std::string& ppath)
 	:ready(false)
@@ -15,10 +23,19 @@ music::music(const std::string& ppath)
 	load(ppath);
 }
 
+//!Class destructor.
+
+//!Implicitely calls free.
+
 music::~music()
 {
-	free();	
+	free();
 }
+
+//!Frees music data.
+
+//!Calls Mix_FreeMusic if there is music_data available. The object will be
+//!left in a state ready to load another file.
 
 void music::free()
 {
@@ -29,6 +46,10 @@ void music::free()
 		ready=false;
 	}
 }
+
+//!Attempts to load the specified file.
+
+//!In case of failure the is_ready function will return false.
 
 void music::load(const std::string& ppath)
 {

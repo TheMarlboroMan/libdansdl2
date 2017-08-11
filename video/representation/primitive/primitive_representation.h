@@ -5,10 +5,10 @@
 #include "../../color/color.h"
 #include "../../../tools/sdl_tools/sdl_tools.h"
 
-//!Base class for all primitives.
-
 namespace ldv
 {
+
+//!Base class for all primitives.
 
 class primitive_representation:
 	public representation

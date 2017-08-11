@@ -8,6 +8,8 @@ bitmap_representation::bitmap_representation()
 	update_view_position();
 }
 
+//!Constructs the representation from a texture, position and clipping rectangle.
+
 bitmap_representation::bitmap_representation(const texture& p_rec, rect pos, rect rec)
 	:raster_representation(pos, rec)
 {

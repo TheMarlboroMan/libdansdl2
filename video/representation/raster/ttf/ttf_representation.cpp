@@ -44,10 +44,23 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 	return *this;
 }
 
+//!Creates the texture from text.
+
+//!This internal function is called whenever a change on text or font is 
+//!detected. It changes the clip and position of the representation.
+//!It may throw a std::runtime_error if the representation cannot be prepared
+//!, which happens when the TTF_* functions fail.
+//!Subsequent calls reuse the same texture data.
+//!A change of color will not trigger a new texture.
+//!This could be considered a bug. There's also another bug where rgb must be
+//!converted to bgr...
+
+//TODO: What if I want to change colors?
+//TODO: Check RGB and BGR and endianess and such.
+
 void ttf_representation::create_texture()
 {	
-	//Si el text tiene newlines no va a funcionar: tenemos que montar
-	//nosotros el código. Empezamos por partir el text en varias líneas...
+	//The text is prepared line by line in different surfaces.
 
 	auto explode=[](const std::string& text, char delimiter)
 	{
@@ -73,7 +86,7 @@ void ttf_representation::create_texture()
 
 	std::vector<std::string> lines=explode(text, '\n');
 
-	//Y ahora medimos el que sería el tamaño total de la superficie del text.
+	//Measuring the full resulting texture...
 	int total_h=0, h=0, w=0, tw=0;
 
 	for(const std::string& c : lines)
@@ -83,14 +96,10 @@ void ttf_representation::create_texture()
 	}
 
 	total_h=(lines.size() * h);
-	// TTF_FontLineSkip(const_cast<TTF_Font*>(font->get_font()))) + h;
-
-	//Podemos preparar una superficie de ese tamaño... Vamos a sacar una
-	//superficie primero para obtener el formato... Es una mierda pero
-	//me vale.
 
 	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
+
 	SDL_Color sdl_col{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
 	if(mode==render_mode::blended) sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
 
@@ -113,7 +122,7 @@ void ttf_representation::create_texture()
 	std::unique_ptr<canvas> cnv(canvas::create(w, total_h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
 
-	//Y ahora, por cada línea, crear una superficie y pegarla en el cnv...
+	//Creating surfaces for each lines, pasting them on the canvas...
 	int y=0;
 
 	for(std::string& c : lines)
@@ -163,8 +172,14 @@ void ttf_representation::create_texture()
 	const auto &ref_tex=get_texture();
 	set_blend(representation::blends::alpha);
 	set_clip({0,0, ref_tex->get_w(), ref_tex->get_h()});
-	set_location(0, 0, ref_tex->get_w(), ref_tex->get_h(), frw|frh);	//Esto debemos llamarlo aquí, de lo contrario se queda con ancho y alto 0, dando problemas con las cámaras.
+	//This must be triggered: dimensions would be left at 0 and cameras would fail.
+	set_location({0, 0, (unsigned)ref_tex->get_w(), (unsigned)ref_tex->get_h()});
+
 }
+
+//!Sets a new ttf font.
+
+//!Triggers a cleanse and recreation of the texture.
 
 void ttf_representation::set_font(const ttf_font& f)
 {
@@ -173,18 +188,26 @@ void ttf_representation::set_font(const ttf_font& f)
 	create_texture();
 }
 
+//!Sets the text as a single character.
+
 void ttf_representation::set_text(const char c)
 {
-	//Hay que joderse...
+	//This is absurd...
 	std::string temp("");
 	temp+=c;
 	set_text_internal(temp);
 }
 
+//!Sets the text as a string.
+
 void ttf_representation::set_text(const std::string& c)
 {
 	set_text_internal(c);
 }
+
+//!Internal function to change text.
+
+//!Triggers a change of the text property and the creation of a new texture.
 
 void ttf_representation::set_text_internal(const std::string& c)
 {
@@ -196,6 +219,10 @@ void ttf_representation::set_text_internal(const std::string& c)
 		create_texture();
 	}
 }
+
+//!Internal replacement function.
+
+//!Basically keeps this class independent from the "tools" project.
 
 void ttf_representation::text_replace(std::string& sujeto, const std::string& busca, const std::string& reemplaza)
 {

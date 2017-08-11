@@ -13,6 +13,7 @@ namespace ldv
 {
 
 //!Structure that contains rotation information.
+
 //!Provides with a few convenience functions. Used by representations.
 
 struct rotation_transform
@@ -88,7 +89,7 @@ class representation
 	//!Toogles visibility flag.
 	void			toogle_visible() {visible=!visible;}
 	//!Moves the top-left point of the view position to the given point.
-	virtual void 		go_to(point p)=0; {go_to(p.x, p.y);}
+	virtual void 		go_to(point p)=0;
 	//1Each derived class must define how to get the position.
 	virtual point		get_position() const=0;
 	//!Each derived class must define how to get the base_view_position (the one without rotation transformations).

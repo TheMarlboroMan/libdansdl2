@@ -58,7 +58,18 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 
 void representation::draw(screen& pscreen, bool skip_take)
 {
-	if(visible && (skip_take || is_in_focus(pscreen.get_box())))
+	auto in_screen=[this](screen &screen)
+	{
+		int ex=view_position.origin.x+view_position.w,
+			ey=view_position.origin.y+view_position.h;
+
+		return 	ex >= 0
+			&& view_position.origin.x <= (int) screen.get_w()
+			&& ey >= 0
+			&& view_position.origin.y <= (int) screen.get_h();
+	};
+
+	if(visible && (skip_take || in_screen(pscreen)))
 	{
 		if(pscreen.has_camera())
 		{

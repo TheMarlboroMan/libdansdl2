@@ -1,17 +1,18 @@
 #ifndef LIBDANSDL2_POLYGON_REPRESENTATION_H
 #define LIBDANSDL2_POLYGON_REPRESENTATION_H
 
-//!N-sided polygon.
-
-//!Polygons are represented by a collection of integer points which are normalized, that
-//!is, the first point is stored as 0.0 and the rest are relative to it.
-
 #include <vector>
 
 #include "../primitive_representation.h"
 
 namespace ldv
 {
+
+//!N-sided polygon.
+
+//!Polygons are represented by a collection of integer points which are normalized, that
+//!is, the first point is stored as 0.0 and the rest are relative to it.
+
 class polygon_representation
 	:public primitive_representation
 {

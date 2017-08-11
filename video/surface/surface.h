@@ -7,29 +7,30 @@
 #include <iostream>
 #include "../sdl_video_tools/sdl_video_tools.h"
 
-//Wrapper para una surface... La vamos a usar para algunas cosas muy
-//concretas, como usar fuentes de bitmap.
-
 namespace ldv
 {
+
+//!Wrapper for a SDL_Surface and base class for image and canvas.
 
 class surface
 {
 	public:
 
-	enum class 	types{image, canvas};
-	
 			surface();
 			surface(SDL_Surface *);
 			virtual ~surface();
 			surface& operator=(const surface&);
-	
-	SDL_Surface * 	get_surface() const {return sdl_surface;}
-	SDL_Surface * 	get_surface() {return sdl_surface;}
-	unsigned int 	get_w() const {return sdl_surface->w;}
-	unsigned int 	get_h() const {return sdl_surface->h;}
-	bool 		is_with_colorkey() const {return this->with_colorkey;}
 
+	//!Returns the underlying surface.
+	SDL_Surface * 	get_surface() const {return sdl_surface;}
+	//!Returns the underlying surface.
+	SDL_Surface * 	get_surface() {return sdl_surface;}
+	//!Shortcut for get_surface()->w.
+	unsigned int 	get_w() const {return sdl_surface->w;}
+	//!Shortcut for get_surface()->h.
+	unsigned int 	get_h() const {return sdl_surface->h;}
+	//!Checks whether colokeying is active.
+	bool 		is_with_colorkey() const {return with_colorkey;}
 	void 		set_colorkey(Uint32=0);
 	void 		set_colorkey(Uint8=0, Uint8=255, Uint8=255);
 	void 		set_alpha(Uint8);
@@ -41,9 +42,6 @@ class surface
 	void 		copy_from(surface const&);
 	void 		copy_from(surface const&, SDL_Rect);
 	void 		copy_from(surface const&, SDL_Rect, SDL_Rect);
-
-	//Resulta ridículo que esto es lo único que hace abstracta a esta clase :D.
-	virtual types 	get_type() const=0;
 
 	protected:
 

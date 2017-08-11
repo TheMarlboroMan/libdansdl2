@@ -3,12 +3,13 @@
 
 #include "../polygon/polygon_representation.h"
 
+namespace ldv
+{
+
 //!A box representation.
 
 //!Boxes are rectangles and are implemented in terms of polygon.
 
-namespace ldv
-{
 class box_representation
 	:public polygon_representation
 {

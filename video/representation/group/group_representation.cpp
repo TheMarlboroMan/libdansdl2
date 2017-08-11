@@ -60,7 +60,20 @@ void group_representation::draw(screen& p_screen, const camera& pcamera, bool sk
 
 void group_representation::draw(screen& p_screen, bool skip_take)
 {
-	if(is_visible() && (skip_take || is_in_focus(p_screen.get_box())))
+	auto in_screen=[this](screen &screen)
+	{
+		const auto& v_position=get_view_position();
+
+		int ex=v_position.origin.x+v_position.w,
+			ey=v_position.origin.y+v_position.h;
+
+		return 	ex >= 0
+			&& v_position.origin.x <= (int) screen.get_w()
+			&& ey >= 0
+			&& v_position.origin.y <= (int) screen.get_h();
+	};
+
+	if(is_visible() && (skip_take || in_screen(p_screen)))
 	{
 		draw_internal(p_screen, nullptr);
 	}

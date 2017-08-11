@@ -5,29 +5,42 @@
 
 using namespace ldv;
 
+//!Creates a texture from a ldv::surface object.
+
 texture::texture(const surface& s):
 	index(0), mode(GL_RGB), w(0), h(0)
 {
 	load(s.get_surface());
 }
 
+//!Class destructor
+
+//!Triggers openGL deletion mechanism.
+
 texture::~texture()
 {
 	glDeleteTextures(1, &index);
 }
+
+//!Replaces the current texture with the new ldv::surface object.
+
+//!Implemented in terms of "load".
 
 void texture::replace(const surface& s)
 {
 	load(s.get_surface());
 }
 
+//!Loads the texture into openGL.
+
+//!There may be funky glitches with byte ordering.
+
 void texture::load(const SDL_Surface * surface)
 {
 	w=surface->w;
 	h=surface->h;
 
-	//Si el índice no existe se pide una nueva textura a OpenGL. En caso contrario
-	//se trabaja sobre la original.
+	//If there is no index, we request a new from opengl.
 	if(!index)
 	{
 		glGenTextures(1, &index);

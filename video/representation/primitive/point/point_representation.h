@@ -4,14 +4,15 @@
 #include "../primitive_representation.h"
 #include <vector>
 
+namespace ldv
+{
+
 //!A representation of a single point or a group of points.
 
 //!It is defined in terms of integers. Unlike the polygon, its points are not
 //!normalized. The first point is considered its origin and determines its
 //!position.
 
-namespace ldv
-{
 class point_representation:
 	public primitive_representation
 {

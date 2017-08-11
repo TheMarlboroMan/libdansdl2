@@ -46,6 +46,8 @@ class raster_representation:
 
 	//!Gets the assigned texture.
 	const texture * 	get_texture() const {return texture_instance;}
+	//!Gets the assigned texture. 
+	texture * 		get_texture() {return texture_instance;}
 	int			get_w_texture_instance() const;
 	int			get_h_texture_instance() const;
 

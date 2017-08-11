@@ -2,10 +2,17 @@
 
 using namespace ldv;
 
-screen::screen(int p_w, int p_h):
+//!Constructs the window in a non-initialised state.
+
+//!A call to "init" is necessary before working with the window, usually right
+//after it is constructed.
+
+
+screen::screen():
 	window(nullptr), current_camera(nullptr), 
-	draw_info_instance{0,0,0,0,(int)p_w,(int)p_h,1.0},
-	box{0,0,0,0}, w(p_w), h(p_h), w_logic(w), h_logic(h)
+	draw_info_instance{0,0,0,0,0,0,1.0},
+	w(0), h(0), 
+	w_logic(w), h_logic(h)
 {
 }
 
@@ -15,16 +22,32 @@ screen::~screen()
 	SDL_GL_DeleteContext(context); 
 }
 
+//!Clears the screen with the given color.
+
+//TODO: What does alpha do??
+
 void screen::clear(const rgba_color& c)
 {
 	glClearColor(c.r, c.g, c.b, c.a);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
+//!Refresh screen.
+
+//!Any call to draw in any representation has no effect until this is called.
+
 void screen::update()
 {
 	SDL_GL_SwapWindow(window);
 }
+
+//!Initialises the window
+
+//!Initialise means to set SDL attributes (double buffer, a stencil size of 1),
+//!create a window (in an undefined position) with SDL_WINDOW_OPENGL
+//!flags by default and set the logical size of w and h.
+//!Can be called many times with different sizes that will change the window
+//!size but not the logical size or flags.
 
 void screen::init(int p_w, int p_h, int flags_window)
 {
@@ -43,22 +66,29 @@ void screen::init(int p_w, int p_h, int flags_window)
 			SDL_WINDOWPOS_UNDEFINED,
 			w, h, flags_window); //Por defecto SDL_WINDOW_OPENGL
 
+		//Bind the sdl window to openGL.
 		context=SDL_GL_CreateContext(window);
 		set_logical_size(w, h);
 	}
 	else
 	{
-		//Cambia el tamaño de la window pero jode completamente el viewport.
+		//Breaks viewport... TODO: Fix.
 		SDL_SetWindowSize(window, w, h);
 	}
 
 	draw_info_instance={0,0,0,0,w,h,1.0};
-	box=rect{0,0,(unsigned int)w,(unsigned int)h};
 }
+
+//!Sets the logical size.
+
+//!The logical size allows for representing spaces larger or smaller than the
+//!window itself looking like a zoom effect. It is a good idea to set this
+//!logical size to the window size. If the application requires of a fixed
+//!logical size, it can be set independently from the window's.
 
 void screen::set_logical_size(int pw, int ph)
 {
-	//Establecer el modo a matriz de proyección y cargarla a 1.
+	//Projection matrix...
 	glMatrixMode(GL_PROJECTION); 
 	glLoadIdentity();
 
@@ -66,38 +96,40 @@ void screen::set_logical_size(int pw, int ph)
 	h_logic=ph;
 	glViewport(0.f, 0.f, w, h);
 
-	//Izquierda, derecha, abajo, arriba, cerca y lejos...
-	//Ahora el punto 0.0 es arriba a la izquierda. Ajustamos a 0.5
-	//para que pille el centro del pixel.
+	//left, right, top, bottom, near and far.
+	//Sets 0.0 to be top left. Adjust 0.5f to get the pixel centre.
 	glOrtho(-0.5f, (float)w_logic-.5f, (float)h_logic-.5f, -0.5f, 1.f, -1.0f);
 
 	glMatrixMode(GL_MODELVIEW); 
 	glLoadIdentity();
 }
 
+//!Clips the display to the real camera display size.
+
+//!The camera box size is different from its focus box.
+
 void screen::set_clip(camera const& pcamera)
 {
 	set_clip(pcamera.get_pos_box());
 }
 
+//!Clips the display.
+
 void screen::set_clip(rect p_caja)
 {
-	//Reiniciar matrices...
+	//Reset matrix.
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//Activar test de stencil, establecer valor de limpieza y limpiar.
+	//Activate stencil, set clear values and clear.
 
-	glDepthMask(GL_FALSE); //Realmente no sé si esto hace algo.
-	glEnable(GL_STENCIL_TEST); //Esto se activa aquí... Se desactivaría en algún otro lado.
+	glDepthMask(GL_FALSE); //Does this really do anything?
+	glEnable(GL_STENCIL_TEST);
 	glClearStencil(0);
 	glClear(GL_STENCIL_BUFFER_BIT);
 
-	//Nunca renderizar... pero si reemplazar.
-
-//	glColor4f(0.1f, 0.6f, 0.6f, 0.2f);
+	//Do not render, but do replace...
 	glStencilFunc(GL_NEVER, 1, 1);
-//	glStencilFunc(GL_ALWAYS, 1, 1);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
 	int	fx=p_caja.origin.x+p_caja.w, 
@@ -114,11 +146,14 @@ void screen::set_clip(rect p_caja)
 	glDrawArrays(GL_POLYGON, 0, puntos.size());
 	glDisableClientState(GL_VERTEX_ARRAY); 
 
-	//Ahora si, sólo renderizamos cuando el valor sea igual y
-	//no cambiaremos el pixel.
+	//Now, just render when the value is the same and keep the pixel...
 	glStencilFunc(GL_EQUAL, 1, 1);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 }
+
+//!Sets the camera as current.
+
+//!The view will be clipped to the camera's box.
 
 void screen::set_camera(const camera& c)
 {
@@ -128,6 +163,8 @@ void screen::set_camera(const camera& c)
 		current_camera=&c;
 	}
 }
+
+//!Disables all clipping and unlinks camera.
 
 void screen::reset_clip()
 {

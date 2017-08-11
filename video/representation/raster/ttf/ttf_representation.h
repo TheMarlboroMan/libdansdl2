@@ -13,11 +13,15 @@
 
 namespace ldv
 {
+
+//!Text representation using a TTF font.
+
 class ttf_representation:
 	public raster_representation
 {
 	public:
 
+	//!Render modes. Default is blended.
 	enum class 			render_mode{solid, shaded, blended};
 
 					ttf_representation(const ttf_font&, rgba_color, std::string="");
@@ -25,11 +29,13 @@ class ttf_representation:
 	virtual				~ttf_representation();
 	ttf_representation&		operator=(const ttf_representation&);
 
+	//!Returns the assigned text.
 	const std::string& 		get_text() const {return text;}
 
 	void 				set_font(const ttf_font&);
 	virtual void 			set_text(const char);
 	virtual void 			set_text(const std::string&);
+	//!Sets the render mode.
 	void				set_render_mode(render_mode r) {mode=r;}
 
 	private:
@@ -38,8 +44,7 @@ class ttf_representation:
 	void				set_text_internal(const std::string&);
 	void				text_replace(std::string&, const std::string&, const std::string&);
 
-	//Esto es un puntero a conciencia, para poderlo cambiar.
-	ttf_font const *		font;
+	ttf_font const *		font; //! <This is a pointer so it can change.
 	std::string			text;
 
 	render_mode			mode;

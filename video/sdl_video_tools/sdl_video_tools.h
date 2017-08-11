@@ -12,8 +12,7 @@
 namespace ldv
 {
 
-//!Displays or hides the cursor.
-void 		set_cursor_visible(bool v) {SDL_ShowCursor(v);}
+void 		set_cursor_visible(bool v);
 SDL_Surface * 	new_sdl_surface(SDL_Surface const *);
 SDL_Surface * 	new_sdl_surface(SDL_Surface const *, const SDL_Rect&, Uint32=0, Uint32=0);
 SDL_Surface * 	copy_sdl_surface(const SDL_Surface *);

@@ -4,12 +4,13 @@
 #include <array>
 #include "../primitive_representation.h"
 
+namespace ldv
+{
+
 //!Primitive repreentation of a line.
 
 //!Internally represented as two points, normalized from the origin (the first point).
 
-namespace ldv
-{
 class line_representation:
 	public primitive_representation
 {
