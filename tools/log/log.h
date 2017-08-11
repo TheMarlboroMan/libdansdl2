@@ -9,32 +9,23 @@
 #include <cstring>
 #include <mutex>
 
-/*Esto es para sustituir y al guardián. Es más de lo mismo pero está un poco
-más actualizado. Básicamente va guardando lo que se meta con el operador <<
-pero adicionalmente permite recibir por medio de ese operador los dos structs
-log_base_n y log_base_m, que van cambiando el nivel de "error".
-
-Por defecto está en nivel de error 10. Todo aquello que esté por encima del 
-nivel de error no sólo se guardará en un archivo, sino que se almacenará en una
-cadena propia de la clase. Todo lo que esté por debajo no se almacenará en la
-cadena.
-
-La cadena la podemos usar para mostrarla por cout o por medio de alguna 
-representación de SDL.
-
-Se incluye además una clase log_motor, que es una aplicación singleton de esta.
-Se usará dentro del motor para notificar los posibles errores.
-
-
-*/
-
 namespace ldt
 {
 
+//!Types of input.
 enum class lin{error, warning, info};
+//!Input cut.
 enum class lcut{error, warning, info, all};
+//!Locking for threads.
 enum class lop{lock, unlock};
+//!Time values.
 enum class ltime{date, time, datetime};
+
+//!A basic log to file.
+
+//!The log allows for four levels (all, info, warning, error) of input, but
+//!can be cut at any level to produce smaller files. It also has locking
+//!capabilities for multithreading and date/time formats.
 
 class log
 {
@@ -43,7 +34,8 @@ class log
 	//This enum just bitwises the levels.
 	enum levels{all=0, info=1, warning=2, error=3};
 
-	lcut	int_to_lcut(int v);
+
+	lcut int_to_lcut(int v);
 	log();
 	log(const char * filename);
 	~log();
@@ -52,6 +44,7 @@ class log
 	void deactivate();
 	void init(const char * filename);
 
+	//!Inserts data into the log.
 	template <class X> log& operator<<(const X &input)
 	{
 		if(is_usable() && check_levels())
@@ -72,7 +65,9 @@ class log
 
 	private:
 
+	//!Checks if the current level can write.
 	bool					check_levels() {return entry_level >= min_level;}
+	//!Indicates if the file is open and the log is active.
 	bool 					is_usable() {return active && s.is_open();}
 	std::string				date() const;
 	std::string				time() const;
@@ -84,17 +79,13 @@ class log
 	bool 					active;
 };
 
-/*Incluimos un singleton aquí, para uso del motor. Sería algo así
-como DLibH::log_motor::L()<<"aquí tu log";
-
-Un detalle: cuando se inicia está inactive. Hay que habilitarlo manualmente 
-haciendo log_motor::L().arrancar();
-*/
-
+//!Singleton instance for internal use of the library.
 
 class log_lsdl
 {
 	public:
+
+	//!Gets the log instance.
 
 	static log& get()
 	{
@@ -106,6 +97,8 @@ class log_lsdl
 		return *l;
 	}
 
+	//!Inits the log with the output set to path.
+
 	static void init(const std::string& path)
 	{
 		if(!l) 
@@ -116,6 +109,8 @@ class log_lsdl
 		l->init(path.c_str());
 		l->activate();
 	}
+
+	//!Deletes the log, closing the file.
 
 	static void end()
 	{

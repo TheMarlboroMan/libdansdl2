@@ -99,6 +99,9 @@ class real_audio_channel
 
 //!Non singleton audio controller. 
 
+//!Unlike the video elements - which need to be loaded, queued and refreshed
+//!in sequence - the audio_controller is interactive: each action takes place
+//!instantly.
 //!Only one instance can exist for each application. Provides access to all 
 //!sound channels, music, volumes and debug information.
 

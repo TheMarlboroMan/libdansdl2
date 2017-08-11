@@ -20,14 +20,13 @@ void camera::sync()
 	d_info.view_h=focus_box.h;
 }
 
-/*Mueve la posición a la que apunta la cámara en la pantalla. Se usan las
-coordenadas provistas.*/
+///Moves the top-left point of the focus box.
 
 void camera::go_to(point p)
 {
 	if(with_limit)
 	{
-		auto procesar=[](int pos, int dimension, int limit_min, int limit_max, int &target)
+		auto task=[](int pos, int dimension, int limit_min, int limit_max, int &target)
 		{
 			int fin=pos + dimension;
 			if(pos >= limit_min && fin  <= limit_max) target=pos;
@@ -35,38 +34,35 @@ void camera::go_to(point p)
 			else if(fin > limit_max) target=limit_max-dimension;
 		};
 
-		if((int)focus_box.w <= limits.max_x - limits.min_x) procesar(p.x, focus_box.w, limits.min_x, limits.max_x, focus_box.origin.x);
-		if((int)focus_box.h <= limits.max_y - limits.min_y) procesar(p.y, focus_box.h, limits.min_y, limits.max_y, focus_box.origin.y);
+		if((int)focus_box.w <= limits.max_x - limits.min_x) task(p.x, focus_box.w, limits.min_x, limits.max_x, focus_box.origin.x);
+		if((int)focus_box.h <= limits.max_y - limits.min_y) task(p.y, focus_box.h, limits.min_y, limits.max_y, focus_box.origin.y);
 	}
 	else
 	{
-		focus_box.origin.x=p.x;
-		focus_box.origin.y=p.y;
+		focus_box.origin={p.x, p.y};
 	}
 
 	sync();
 }
 
+///Moves the top-left point of the focus box by the specified parameters (x and y).
 
 void camera::move_by(int p_x, int p_y)
 {
-	go_to({focus_box.origin.x+p_x, focus_box.origin.y+p_y});
+	go_to(focus_box.origin + point{p_x, p_y});
 }
 
-/*Establece los límites a los que la cámara puede apuntar: es decir, los límites
-máximos para la cámara dentro del "mundo".*/
+//!Sets a limit to camera movement.
 
-void camera::set_limits(int min_x, int min_y, int max_x, int max_y)
-{
-	with_limit=true;
-	limits={min_x, min_y, max_x, max_y};
-}
+//!The values are considered "world space". 
 
 void camera::set_limits(const rect& r)
 {
 	with_limit=true;
 	limits={r.origin.x, r.origin.y, r.origin.x+(int)r.w, r.origin.y+(int)r.h};
 }
+
+//!Removes camera movement limits in world space.
 
 void camera::clear_limits()
 {
@@ -81,24 +77,37 @@ void camera::set_zoom(double v)
 	focus_box.h=pos_box.h / v;
 }
 
+//!Centers the focus box on the given point.
+
+//!If limit margins are in effect, the focused position may be different from
+//!the one requested.
+
 void camera::center_on(point p)
 {
 	point dest(p.x-(focus_box.w/2), p.y-(focus_box.h/2));
-
-	//TODO: This needs work.
 
 	if(with_margin)
 	{
 		//Limit margin is expressed in terms of pos_box...
 		//P must be converted to the same terms.
-		if(limit_margin.point_inside(world_to_pos(p)))
+		auto pt=world_to_pos(p);
+
+		if(limit_margin.point_inside(pt))
 		{
 			return;
 		}
 		else
 		{
-			//TODO: This needs work...
-			go_to(dest);
+			int x=pt.x, y=pt.y;
+
+			if(x < limit_margin.origin.x) x=limit_margin.origin.x;
+			else if(x > limit_margin.origin.x+(int)limit_margin.w) x=limit_margin.origin.x+limit_margin.w;
+
+			if(y < limit_margin.origin.y) y=limit_margin.origin.y;
+			else if(y > limit_margin.origin.y+(int)limit_margin.h) y=limit_margin.origin.y+limit_margin.h;
+
+			//Convert again to world...
+			go_to(pos_to_world({x, y}));
 		}
 	}
 	else
@@ -107,11 +116,21 @@ void camera::center_on(point p)
 	}
 }
 
+//!Centers the focus box on the middle of the rect.
+
+//!If limit margins are in effect, the focused position may be different from
+//!the one requested.
+
 void camera::center_on(const rect& r)
 {
 	point dest(r.origin.x+(r.w/2), r.origin.y+(r.h/2));
 	center_on(dest);
 }
+
+//!Sets a margin for camera movement when using center_on functions. 
+
+//!Objects still within the margin will cause no camera movement. 
+//!The rect is interpreted as relative to pos_box.
 
 void camera::set_center_margin(const rect& r)
 {
@@ -119,13 +138,46 @@ void camera::set_center_margin(const rect& r)
 	limit_margin=r;
 }
 
+//!Clears the margin for camera movement.
+
 void camera::clear_center_margin()
 {
 	with_margin=false;
 	limit_margin={0,0,0,0};
 }
 
-point camera::world_to_pos(point p)
+//!Converts world point to pos point
+
+//!Where pos point is absolute position on the screen.
+
+point camera::world_to_pos(point p) const
 {
-	return {p.x-focus_box.origin.x, p.y-focus_box.origin.y};
+	return p-focus_box.origin;
+//	return {p.x-focus_box.origin.x, p.y-focus_box.origin.y};
 }
+
+//!Converts world rect to pos rect
+
+//!Where pos rect is absolute position on the screen.
+
+rect camera::world_to_pos(const rect& r) const
+{
+	auto orig=world_to_pos(r.origin);
+	return {orig.x, orig.y, r.w, r.h};
+}
+
+//!Converts pos point to world point
+
+//!Where pos point is absolute position on the screen.
+
+point camera::pos_to_world(point p) const
+{
+	return p+focus_box.origin;
+}
+
+/*
+rect camera::pos_to_world(const rect& r) const
+{
+
+}
+*/

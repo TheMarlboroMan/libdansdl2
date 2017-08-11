@@ -4,6 +4,8 @@ using namespace ldt;
 
 log * log_lsdl::l=nullptr;
 
+//!Converts integer to lcut values.
+
 lcut	log::int_to_lcut(int v)
 {
 	if(v < 0 || v > 3)
@@ -37,6 +39,10 @@ log::log(const char * filename)
 	init(filename);
 }
 
+//!Class destructor.
+
+//!Adds a timestamp.
+
 log::~log()
 {
 	if(is_usable())
@@ -46,6 +52,10 @@ log::~log()
 	}
 }
 
+//!Activates the log.
+
+//!Adds a timestamp.
+
 void log::activate() 
 {
 	active=true;
@@ -54,6 +64,10 @@ void log::activate()
 		(*this)<<"Session starts "<<ltime::datetime<<std::endl;
 	}
 }
+
+//!Dectivates the log.
+
+//!Adds a timestamp.
 
 void log::deactivate() 
 {
@@ -65,6 +79,10 @@ void log::deactivate()
 	active=false;
 }
 
+//!Inits the log, opening the file.
+
+//!Adds a timestamp.
+
 void log::init(const char * filename)
 {
 	s.open(filename);
@@ -74,6 +92,11 @@ void log::init(const char * filename)
 		(*this)<<"Session starts "<<ltime::datetime<<std::endl;
 	}
 }
+
+//!Locks or unlocks the log for multithreading environments.
+
+//!In multithreaded environments, the log must be locked before writing
+//!and unlocked when done.
 
 log& log::operator<<(lop op)
 {
@@ -85,7 +108,10 @@ log& log::operator<<(lop op)
 	return *this;
 }
 
-//Establece el nivel de los mensajes entrantes.
+//!Sets the level of input.
+
+//!Additionally adds the level to the output.
+
 log& log::operator<<(lin lvl)
 {
 	switch(lvl)
@@ -106,6 +132,10 @@ log& log::operator<<(lin lvl)
 	return *this;
 }
 
+//!Sets the minimum level. 
+
+//!Error will show only errors, warning will show errors and warnings, etc.
+
 log& log::operator<<(lcut lvl)
 {
 	switch(lvl)
@@ -118,7 +148,8 @@ log& log::operator<<(lcut lvl)
 	return *this;
 }
 
-//Coloca la hora.
+//!Adds the time, date or both to the output.
+
 log& log::operator<<(ltime v)
 {
 	if(is_usable())
@@ -140,6 +171,8 @@ log& log::operator<<(ltime v)
 	return *this;
 }
 
+//!Creates a string with the system time.
+
 std::string log::time() const
 {
 	char * t=new char[14];
@@ -150,6 +183,8 @@ std::string log::time() const
 	delete [] t ;
 	return res;
 }
+
+//!Creates a string with the system date.
 
 std::string log::date() const
 {
@@ -162,6 +197,8 @@ std::string log::date() const
 	return res;
 }
 
+//!Accepts std::ostream modificators.
+
 log& log::operator<<(std::ostream& ( *pf )(std::ostream&))
 {
 	if(is_usable() && check_levels())
@@ -171,6 +208,8 @@ log& log::operator<<(std::ostream& ( *pf )(std::ostream&))
 	return *this;
 }
 
+//!Accepts std::ios modificators.
+
 log& log::operator<<(std::ios& ( *pf )(std::ios&))
 {
 	if(is_usable() && check_levels())
@@ -179,6 +218,8 @@ log& log::operator<<(std::ios& ( *pf )(std::ios&))
 	}
 	return *this;
 }
+
+//!Accepts std::ios_base modificators.
 
 log& log::operator<<(std::ios_base& ( *pf )(std::ios_base&))
 {

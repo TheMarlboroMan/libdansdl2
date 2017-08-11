@@ -1,5 +1,12 @@
 #include "tools.h"
 
+/*! \file tools.cpp
+    \brief Spatial tools.
+    
+This file contains free functions and structs in the ldt namespace that are 
+used to work with space and other miscellanea.
+*/
+
 using namespace ldt;
 
 float ldt::angle_from_points(float x1, float y1, float x2, float y2)

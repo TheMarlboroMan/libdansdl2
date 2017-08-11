@@ -19,14 +19,18 @@
 namespace ldt
 {
 
+//!Converts degrees to radians.
 template<typename T>
 float deg_to_rad(T val) {return (val * M_PI) / 180.0;}
 
+//!Converts radians to degrees.
 template<typename T>
-float rad_to_deg(T val){return ( val * 180.0) / M_PI;}
+float rad_to_deg(T val) {return ( val * 180.0) / M_PI;}
 
-//Only valid for points in the same plane. The comparison is done by
-//negating "segments don't overlap".
+//!Determines if segments overlap.
+
+//!Only valid for points in the same plane. The comparison is done by
+//!negating "segments don't overlap".
 template<typename T>
 bool segments_overlap(T aini, T afin, T bini, T bfin, bool unit_is_collision=false)
 {
