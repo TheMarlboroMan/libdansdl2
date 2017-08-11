@@ -14,6 +14,7 @@ As of mid July 2016 all the library has been translated into english. All public
 	- normalised a few functions that got two integers instead of a point class.
 	- removed the sound_queue class. Each application should have its own.
 	- draconian compiler flags.
+	- camera margin settings.
 
 
 ## TODO: 

@@ -9,6 +9,13 @@
 namespace ldt
 {
 
+//!A lo-tech 2d line.
+
+//!This class is at odds with the segment_2d struct, as they represent the
+//!same idea. This one is, however, oriented to calculations (that may be
+//!performed with the segment struct too). It also includes a set of free 
+//!functions to construct them (it's the only way to do so).
+
 template<typename T>
 class line
 {
@@ -16,118 +23,17 @@ class line
 
 	typedef point_2d<T> point;
 
-	struct point_set
-	{
-		point 	p1,
-			p2;
-		bool 	error;
-		point_set(point p_1, point p_2)
-			:p1(p_1), p2(p_2), error(false)
-		{
-
-		}
-	};
-
+	//!Indicates if the line is vertical.
 	bool is_vertical() const {return orientation==torientation::vertical;}
+	//!Indicates if the line is horizontal.
 	bool is_horizontal() const {return orientation==torientation::horizontal;}
-	bool is_other() const {return orientation==torientation::other;}
-	T get_m() const {return this->m;}	
+	//!Indicates if the line is sloped.
+	bool is_slope() const {return orientation==torientation::slope;}
+	//!Get the m value (slope)
+	T get_m() const {return this->m;}
+	//!Get the b value (constant).
 	T get_b() const {return this->b;}
-
-	~line() {}
-
-	static line from_points(T xa, T ya, T xb, T yb)
-	{
-		line result;
-
-		if(xa==xb) 		//Es vertical??
-		{
-			result.orientation=torientation::vertical;
-		}
-		else if(ya==yb)		//Es horizontal?
-		{
-			result.orientation=torientation::horizontal;
-		}
-		else			//Orientation is already asigned as other by the constructor.
-		{       
-			//La pendiente: m=(yb-ya)/(xb-xa)...            
-			result.m=((T)yb-(T)ya)/((T)xb-(T)xa);  
-
-			//La constante b... b=y-(mx)
-			result.b=ya-(result.m*xa);
-		}
-
-		return result;
-	}
-
-	static line from_parameters(T p_m, T p_b)
-	{
-		line result(p_m, p_b);
-		if(p_b==0) 
-		{
-			result.orientation==torientation::horizontal;
-		}
-
-		return result;
-	}
-
-/*Obtiene una línea metida dentro de una caja recortando
-la existente, si procede... Los cuatro primeros parámetros
-son la caja, el resto los puntos... Ojo: sólo funciona
-cuando realmente la línea PASA por el rectángulo. 
-Realmente no devuelve una línea, sino dos puntos en un
-*/
-
-	static point_set for_line_and_box(box<T,T> b, line l)
-	{
-		//En primer lugar, buscamos los puntos en los que la línea corta
-		//con cada "lado". Los ejes serán 1, 2, 3 y 4 como 
-		//arriba, derecha, abajo e izquierda.
-	
-		//La línea que va por arriba... Buscamos la x para la y enviada.
-		point 	p1(l.x_for_y(b.origin.y), b.origin.y),
-		//La línea de la derecha... Buscamos la y para una x.
-			p2(b.origin.x+b.w, l.y_for_x(b.origin.x+b.w)),
-		//La línea de abajo: buscamos la x para una y.
-			p3(l.x_for_y(b.origin.y+b.h), b.origin.y),
-		//La línea de la izquierda...
-			p4(b.origin.x, l.y_for_x(b.origin.x));
-
-		//De estos cuatro puntos ahora vemos cuales estarían "dentro"
-		//del rectángulo. Serán aquellos en los que al menos una coordenada
-		//coincida...
-
-		point_set result=point_set(point(0.0,0.0), point(0.0,0.0));
-
-		if(p1.x >= b.origin.x && p1.y <= b.origin.x+b.w)
-		{
-			result.p1=p1;
-		}
-		else if(p3.x >= b.origin.x && p3.y <= b.origin.x+b.w)
-		{
-			result.p1=p3;
-		}
-		else
-		{
-			result.error=true;
-		}
-
-		if(p2.y >= b.origin.y && p2.y <= b.origin.y+b.h)
-		{
-			result.p2=p2;
-		}
-		else if(p4.y >= b.origin.y && p4.y <= b.origin.y+b.h)
-		{
-			result.p2=p4;
-		}
-		else
-		{
-			result.error=true;
-		}
-
-		return result;
-	}
-	
+	//!Gets the Y value for a given X.
 	T y_for_x(T p_x) const
 	{
 		//y=mx+b;
@@ -137,7 +43,7 @@ Realmente no devuelve una línea, sino dos puntos en un
 		{
 			case torientation::vertical:	result=0; break;
 			case torientation::horizontal:	result=b; break;
-			case torientation::other:
+			case torientation::slope:
 				if(p_x==0) 
 				{
 					result=b;
@@ -151,7 +57,7 @@ Realmente no devuelve una línea, sino dos puntos en un
 
 		return result;
 	}
-
+	//Gets the X value for a given Y.
 	T x_for_y(T p_y) const
 	{
 		//x=(y-b)/m
@@ -160,8 +66,8 @@ Realmente no devuelve una línea, sino dos puntos en un
 		switch(orientation)
 		{
 			case torientation::horizontal:	result=0; break;
-			case torientation::vertical:	result=b; break; //Quien sabe... 
-			case torientation::other:	result=(p_y-b) / m; break;
+			case torientation::vertical:	result=b; break; //Go figure.
+			case torientation::slope:	result=(p_y-b) / m; break;
 		}
 
 		return result;
@@ -169,17 +75,52 @@ Realmente no devuelve una línea, sino dos puntos en un
 
 	private:
 
-	enum class torientation{vertical, horizontal, other};
+	enum class torientation{vertical, horizontal, slope};
 
-	line(T pm=0.0, T pb=0.0, torientation po=torientation::other):
+	line(T pm=0.0, T pb=0.0, torientation po=torientation::slope):
 		orientation(po), m(pm), b(pb)
 	{
 	}
 
 	torientation	orientation;
-	T 		m,	//Pendiente.
-			b;	//Constante.	
+	T 		m,
+			b;
 };
+
+//!Creates a line from two points.
+
+template<typename T>
+line<T> line_from_points(T xa, T ya, T xb, T yb)
+{
+	line<T> result;
+
+	if(xa==xb) result.orientation=line<T>::torientation::vertical;
+	else if(ya==yb) result.orientation=line<T>::torientation::horizontal;
+	else //Orientation is already asigned as sloped by the constructor.
+	{       
+		//Slope: m=(yb-ya)/(xb-xa)...            
+		result.m=((T)yb-(T)ya)/((T)xb-(T)xa);  
+
+		//Constant b... b=y-(mx)
+		result.b=ya-(result.m*xa);
+	}
+
+	return result;
+}
+
+//Creates a line from slope and constant.
+
+template<typename T>
+line<T> line_from_parameters(T p_m, T p_b)
+{
+	line<T> result(p_m, p_b);
+	if(p_b==0) 
+	{
+		result.orientation==line<T>::torientation::horizontal;
+	}
+	return result;
+}
+
 
 }
 #endif

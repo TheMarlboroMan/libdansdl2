@@ -58,7 +58,7 @@ class camera
 
 	point			world_to_pos(point) const;
 	rect			world_to_pos(const rect&) const;
-	point			pos_to_world(point) const;
+//	point			pos_to_world(point) const;
 //	rect			pos_to_world(const rect&) const;  
 
 	//Properties...
