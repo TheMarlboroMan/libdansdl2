@@ -15,7 +15,9 @@ music::music():
 
 //!Constructs a music object from the file specified.
 
-//!If the file cannot be open, the is_ready function will return false.
+//!May be buggy, as load throws.
+
+//TODO: Exception...
 
 music::music(const std::string& ppath)
 	:ready(false)
@@ -49,7 +51,7 @@ void music::free()
 
 //!Attempts to load the specified file.
 
-//!In case of failure the is_ready function will return false.
+//!Will throw a std::runtime_error when the file cannot be loaded.
 
 void music::load(const std::string& ppath)
 {
@@ -58,10 +60,8 @@ void music::load(const std::string& ppath)
 
 	if(!music_data)
 	{
-		ready=false;
+		throw std::runtime_error(std::string("music::load() : error loading ")+path);
 	}
-	else
-	{
-		ready=true;
-	}	
+
+	ready=true;
 }

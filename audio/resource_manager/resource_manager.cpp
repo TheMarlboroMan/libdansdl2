@@ -3,10 +3,11 @@
 
 using namespace lda;
 
-/*Se realizan inserciones y se devuelve -1 si no están preparadas correctamente.
-Un fallo no significa nada: realmente se vuelven a hacer comprobaciones con 
-cada reproducción que se haga. Atención a que realmente SIEMPRE se hace una 
-inserción en la lista!*/
+//!Attempts to insert a sound file with the specified key.
+
+//!Will throw a std::runtime_error if the key is already in use. There will
+//!be no visible failure if the sound itself does not exist: the application
+//!must manually check the ready state.
 
 void resource_manager::insert_sound(int key, const std::string& path)
 {
@@ -20,8 +21,11 @@ void resource_manager::insert_sound(int key, const std::string& path)
 	}
 }
 
-/*Idem que en el anterior. Se realiza la inserción y se devuelve -1 si ha
-fallado algo.*/
+//!Attempts to insert a music file with the specified key.
+
+//!Will throw a std::runtime_error if the key is already in use. There will
+//!be no visible failure if the music itself does not exist: the application
+//!must manually check the ready state.
 
 void resource_manager::insert_music(int key, const std::string& path)
 {
@@ -35,6 +39,10 @@ void resource_manager::insert_music(int key, const std::string& path)
 	}
 }
 
+//!Retrieves the sound object with the specified key.
+
+//!Will throw a std::runtime_error if the key does not exist.
+
 sound& resource_manager::get_sound(int key)
 {
 	if(!sounds.count(key))
@@ -44,6 +52,10 @@ sound& resource_manager::get_sound(int key)
 
 	return *sounds[key];
 }
+
+//!Retrieves the music object with the specified key.
+
+//!Will throw a std::runtime_error if the key does not exist.
 
 music& resource_manager::get_music(int key)
 {

@@ -6,13 +6,11 @@
 #include <string>
 #include "../../tools/log/log.h"
 
-/* Se definen dos cosas: la clase sound es un wrapper para un chunk de 
-SDL_Mixer. La clase Estructura sonido envuelve a sound y le añade volumen,
-repeticiones y otras historias para poder pasarlo a un canal y que haga 
-todo lo que tenga que hacer.*/
-
 namespace lda
 {
+
+//!Wrapper for Mix_Chunk data.
+
 class sound
 {
 	public:
@@ -23,8 +21,11 @@ class sound
 
 	void 			load(const std::string&);
 
-	std::string 		get_path() const {return path;}
+	//!Returns the original file path.
+	const std::string&	get_path() const {return path;}
+	//!Indicates whether the file was loaded correctly.
 	bool			is_ready() const {return ready;}
+	//!Returns a raw pointer to the sound data. This pointer must not be freed.
 	Mix_Chunk * 		get_data() {return sound_data;}
 
 	private:
@@ -36,15 +37,22 @@ class sound
 	bool 			ready;
 };
 
+//!Additional information for sound.
+
+//!Includes a pointer to the sound, plus volume, repeats, fade and everything
+//!else needed to interact with the audio_controller. It is recommended that
+//!applications use this class routinely to play sound.
+
 struct sound_struct
 {
-	sound *	 		sound_ptr; //This has to be copy constructible, ergo the pointer.
-	short int 		volume;	//El volumen -1 es "no hagas cambios".
-	short int 		repeat;
+	sound *	 		sound_ptr; //! <This has to be copy constructible, ergo the pointer.
+	short int 		volume;	//! <-1 means "no changes" to the channel volume.
+	short int 		repeat; //! <-1 means "infinite".
 	int 			volume_left;
 	int 			volume_right;
 	int 			ms_fade;
 	
+	//!Checks whether the sound_ptr is ready. Will crash if there is no sound pointer.
 	bool 			is_ready() 	{return sound_ptr->is_ready();}
 
 	sound_struct(sound& s, int v=-1, int r=0, int pvi=127, int pvd=127, int msf=0)

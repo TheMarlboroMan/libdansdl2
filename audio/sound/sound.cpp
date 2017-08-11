@@ -5,11 +5,21 @@
 
 using namespace lda;
 
+//!Constructs and empty sound object.
+
+//!Can be readied with a call to "load".
+
 sound::sound()
 	:ready(false)
 {
 
 }
+
+//!Constructs a sound object and attempts to load the file.
+
+//!This function may be buggy exception-wise, as load may throw.
+
+//TODO: Except.
 
 sound::sound(const std::string& ppath)
 	:ready(false)
@@ -17,10 +27,18 @@ sound::sound(const std::string& ppath)
 	load(ppath);
 }
 
+//!Class destructor.
+
+//!Implicitely frees the sound data.
+
 sound::~sound()
 {
 	free();
 }
+
+//!Deletes the audio data.
+
+//!Calls Mix_FreeChunk and leaves the object in a good state to call load again.
 
 void sound::free()
 {
@@ -31,6 +49,11 @@ void sound::free()
 		ready=false;
 	}
 }
+
+//!Attempts to load the file.
+
+//!Will throw std::runtime_error when the sound cannot be loaded. In case of
+//!success, the class will be ready.
 
 void sound::load(const std::string& ppath)
 {
