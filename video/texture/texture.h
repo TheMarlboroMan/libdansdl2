@@ -36,8 +36,8 @@ class texture
 	void		load(const SDL_Surface *);
 
 	GLuint		index;
-	int 		mode, 	//! <OpenGL mode... GL_RGB by default.
-			w,
+	int 		mode; 	//! <OpenGL mode... GL_RGB by default.
+	unsigned int 	w,
 	 		h;
 };
 

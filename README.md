@@ -10,9 +10,10 @@ As of mid July 2016 all the library has been translated into english. All public
 
 - August 2017: 
 	- added doxygen support and comments.
-	- removed unused features.
+	- removed unused functions (old functions with window parameters...).
 	- normalised a few functions that got two integers instead of a point class.
 	- removed the sound_queue class. Each application should have its own.
+	- draconian compiler flags.
 
 
 ## TODO: 

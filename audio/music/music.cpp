@@ -1,5 +1,6 @@
 #include "music.h"
 #include <iostream>
+#include <stdexcept>
 
 using namespace lda;
 

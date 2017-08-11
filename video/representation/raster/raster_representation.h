@@ -48,8 +48,8 @@ class raster_representation:
 	const texture * 	get_texture() const {return texture_instance;}
 	//!Gets the assigned texture. 
 	texture * 		get_texture() {return texture_instance;}
-	int			get_w_texture_instance() const;
-	int			get_h_texture_instance() const;
+	unsigned int		get_w_texture_instance() const;
+	unsigned int		get_h_texture_instance() const;
 
 	//!Gets the full rect of the representation.
 	const rect& 		get_location() const {return location;}

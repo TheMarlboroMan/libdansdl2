@@ -235,7 +235,7 @@ void raster_representation::reset_calculations()
 //!Shortcut to get_texture()->get_w(). Will throw if there is no texture
 //!assigned.
 
-int raster_representation::get_w_texture_instance() const 
+unsigned int raster_representation::get_w_texture_instance() const 
 {
 	if(!texture_instance) throw std::runtime_error("no texture for get_w_texture_instance");
 	return texture_instance->get_w();
@@ -246,7 +246,7 @@ int raster_representation::get_w_texture_instance() const
 //!Shortcut to get_texture()->get_h(). Will throw if there is no texture
 //!assigned.
 
-int raster_representation::get_h_texture_instance() const 
+unsigned int raster_representation::get_h_texture_instance() const 
 {
 	if(!texture_instance) throw std::runtime_error("no texture for get_h_texture_instance");
 	return texture_instance->get_h();

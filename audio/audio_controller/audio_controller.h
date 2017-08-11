@@ -15,7 +15,6 @@ namespace lda
 {
 
 void audio_play_callback(int pchannel);	//F-f-f-forward!.
-class sound_queue;			//Re-f-f-f-forward!.
 
 //!Configuration to instruct SDL2 on how to setup the audio framework. 
 
@@ -163,7 +162,6 @@ class audio_controller
 	// Amigos.
 
 	friend void 				audio_play_callback(int pchannel);
-	friend class 				sound_queue;
 	friend class 				audio_channel; //Para que pueda acceder a la definición de "real_audio_channel".
 };
 
