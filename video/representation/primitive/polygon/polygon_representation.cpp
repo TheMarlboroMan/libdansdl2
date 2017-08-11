@@ -5,18 +5,14 @@ using namespace ldv;
 polygon_representation::polygon_representation(type t, const std::vector<point>& pt, rgba_color c)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 { 
-	//Guardarlos de forma que el primero sea 0.0.
 	normalize();
-
 	update_view_position();
 }
 
 polygon_representation::polygon_representation(type t, const std::vector<point>& pt, rgb_color c)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 { 
-	//Guardarlos de forma que el primero sea 0.0.
 	normalize();
-
 	update_view_position();
 }
 
@@ -35,6 +31,11 @@ polygon_representation& polygon_representation::operator=(const polygon_represen
 	return *this;
 }
 
+//!Sets the points from a vector of points.
+
+//!The vector does not need to be normalized. Data will be normalized upon
+//!insertion.
+
 void polygon_representation::set_points(const std::vector<point>& pt)
 {
 	origin=pt[0];
@@ -42,6 +43,10 @@ void polygon_representation::set_points(const std::vector<point>& pt)
 	normalize();
 	update_view_position();
 }
+
+//!Normalizes the points.
+
+//!Sets the first point at 0.0 and the positions relative to it.
 
 void polygon_representation::normalize()
 {
@@ -52,6 +57,10 @@ void polygon_representation::normalize()
 	}
 }
 
+//!Does the bulk of the drawing.
+
+//!Directly uses openGL functions to get the work done.
+
 void polygon_representation::do_draw()
 {
 	do_color();
@@ -60,6 +69,8 @@ void polygon_representation::do_draw()
 	glDrawArrays(filltype==type::fill ? GL_POLYGON : GL_LINE_LOOP, 0, points.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
+
+//!Gets the box formed by all points.
 
 rect polygon_representation::get_base_view_position() const
 {
@@ -81,15 +92,19 @@ rect polygon_representation::get_base_view_position() const
 	return rect{x, y, (unsigned int)maxx-x, (unsigned int)maxy-y};
 }
 
+//!Moves the polygon.
 
-void polygon_representation::go_to(int x, int y)
+void polygon_representation::go_to(point p)
 {
-	origin.x=x;
-	origin.y=y;
+	origin=p;
 	update_view_position();
 }
 
-//Position is the first point.
+//!Returns the position.
+
+//!Position is expressed in terms of origin: the first point as it was
+//!given to the class.
+
 point polygon_representation::get_position() const
 {
 	return point{origin.x, origin.y};

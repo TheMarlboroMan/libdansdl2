@@ -2,12 +2,18 @@
 
 using namespace ldv;
 
+//!Constructs the primitive with colour and alpha.
+
 primitive_representation::primitive_representation(rgba_color c)
 	:representation(colorif(c.a)),
 	color{c.r, c.g, c.b}
 {
 
 }
+
+//!Constructs the primitive with colour. 
+
+//!Alpha will be set to max by default.
 
 primitive_representation::primitive_representation(rgb_color c)
 	:representation(),
@@ -29,6 +35,11 @@ primitive_representation& primitive_representation::operator=(const primitive_re
 	color=o.color;
 	return *this;
 }
+
+//!Sets the primitive color.
+
+//!Primitives are only assigned one color throughout. Alpha is applied if the
+//!blend mode says so.
 
 void primitive_representation::do_color()
 {

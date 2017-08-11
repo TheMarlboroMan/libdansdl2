@@ -32,13 +32,11 @@ representation& representation::operator=(const representation& o)
 	return *this;
 }
 
-//El parámetro skip_take indica que es posible no comprobar si la 
-//representación está en la toma. Tiene su sentido en las representaciones 
-//agrupadas, que son problemáticas de comprobar cuando al propio grupo se le
-//aplica una rotación (no se tiene un cuenta la misma a la hora de comprobar
-//si está en toma). Para solucionarlo se pueden añadir varios parámetros a
-//estas funciones y las dependientes (posición del grupo y rotación) para 
-//calcular pero el código es menos limpio.
+//!Draws to screen with camera. The third parameter skips camera checks and draws anyway.
+
+//!This function actually delegates to do_draw on each derived class.
+//!skip_take is mostly useful for group repesentations, specially when rotations 
+//are applied to them.
 
 void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take)
 {
@@ -49,9 +47,14 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 		do_draw();
 	}
 
-	//Es importante que esto siempre esté presente...
+	//Do not forget this.
 	glLoadIdentity();
 }
+
+//!Draws to screen with no camera bounds.
+
+//!This function actually delegates to do_draw on each derived class.
+//!The second parameter skips window bound tests and tries to draw anyway.
 
 void representation::draw(screen& pscreen, bool skip_take)
 {
@@ -69,6 +72,10 @@ void representation::draw(screen& pscreen, bool skip_take)
 	//Es importante que esto siempre esté presente...
 	glLoadIdentity();
 }
+
+//!Directly uses openGL to trace the view position.
+
+//!This function should not be used beyond debug purposes.
 
 void representation::debug_trace_box() const
 {
@@ -91,6 +98,8 @@ void representation::debug_trace_box() const
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
+//!Applies all SDL transformations of zoom, position and rotation.
+
 void representation::pre_render_transform(const draw_info& iv)
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -99,12 +108,12 @@ void representation::pre_render_transform(const draw_info& iv)
 	int 	x=iv.pos_x+pos.x-iv.rel_x, 
 		y=iv.pos_y+pos.y-iv.rel_y;
 
-	//En caso de que haya zoom compensamos el movimiento que causa la escala.
-	//Básicamente estamos desplazando la mitad, dos tercios, tres cuartos...
+	//Compensating the movement that zoom and scale causes... We displace
+	//one half, two thirds, three fourths...
 	if(iv.zoom!=1.0)
 	{
 		glScaled(iv.zoom, iv.zoom, 1.0);
-		//Puro empirismo.
+		//Empirical knowledge.
 		glTranslatef((iv.pos_x / iv.zoom) - iv.pos_x, (iv.pos_y / iv.zoom) - iv.pos_y, 0.f);
 	}
 
@@ -118,10 +127,10 @@ void representation::pre_render_transform(const draw_info& iv)
 	}
 }
 
-//Se usa para darle un volumen a la posición, que de por si no tiene.
-//La posición no tendría interés ninguno de no ser que la cámara la 
-//considera para ver si dibujarla o no. Por defecto podemos pensar que 
-//es el del recorte.
+//!Sets rotation angle (0.f-360.f).
+
+//!Rotated representations have different view_position boxes that 
+//!not transformed ones.
 
 void representation::set_rotation(float v) 
 {
@@ -129,12 +138,19 @@ void representation::set_rotation(float v)
 	update_view_position();
 }
 
+//!Sets the rotation center
+
+//!The rotation center is the axis around which a representation rotates. By
+//!default it is its top-left corner.
+
 void representation::set_rotation_center(float x, float y) 
 {
 	transformation.center.x=x;
 	transformation.center.y=y;
 	update_view_position();
 }
+
+//!Updates the view_position rect with the base or transformed rects.
 
 void representation::update_view_position()
 {
@@ -147,6 +163,8 @@ void representation::update_view_position()
 		view_position=calculate_view_position();
 	}
 }
+
+//!Calculates the view position when rotation transformations are involved.
 
 rect representation::calculate_view_position() const
 {

@@ -4,6 +4,10 @@
 #include <array>
 #include "../primitive_representation.h"
 
+//!Primitive repreentation of a line.
+
+//!Internally represented as two points, normalized from the origin (the first point).
+
 namespace ldv
 {
 class line_representation:
@@ -11,17 +15,17 @@ class line_representation:
 {
 	public:
 	
-					line_representation(int x1, int y1, int x2, int y2, rgba_color);
-					line_representation(int x1, int y1, int x2, int y2, rgb_color);
+					line_representation(point, point, rgba_color);
+					line_representation(point, point, rgb_color);
 					line_representation(const line_representation&);
 	virtual 			~line_representation() {}
 					line_representation& operator=(const line_representation&);
 
-	virtual void 			go_to(int x, int y);
+	virtual void 			go_to(point p);
 	virtual point			get_position() const;
 	virtual rect			get_base_view_position() const;
 
-	void 				set_points(int x1, int y1, int x2, int y2);
+	void 				set_points(point, point);
 
 	protected:
 

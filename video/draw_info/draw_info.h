@@ -4,7 +4,7 @@
 namespace ldv
 {
 
-///A convenience structure used by the camera.
+//!A convenience structure used by the camera.
 /**
 	pos_x - pos_y: screen position of the camera.
 	rel_x - rel_y: world position of the camera (focus box position, in camera terms).

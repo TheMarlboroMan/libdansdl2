@@ -1,18 +1,23 @@
 #include "sdl_video_tools.h"
 #include <stdexcept>
 
+/*! \file sdl_video_tools.h
+    \brief Video functions.
+    
+	Miscellaneous video and SDL related functionality.
+*/
+
 using namespace ldv;
 
-void ldv::set_cursor_visible(bool v) 
-{
-	SDL_ShowCursor(v);
-}
+//!Creates a SDL_Surface with the same format and size as the one given.
 
 SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin)
 {
 	SDL_Rect box{0,0, porigin->w, porigin->h};
 	return new_sdl_surface(porigin, box, 0, 0);
 }
+
+//!Creates a SDL_Surface with the same format as the one given, the specified size (2nd) flags (3rd parameter) and background color in integer form (4th parameter, check SDL documentation on this).
 
 SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin, const SDL_Rect& pbox, Uint32 pflags, Uint32 pcolor)
 {
@@ -30,11 +35,15 @@ SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin, const SDL_Rect& 
 	return copy;
 }
 
+//!Copies a SDL_Surface.
+
 SDL_Surface * ldv::copy_sdl_surface(SDL_Surface const * porigin)
 {
 	SDL_Rect pbox{0, 0, porigin->w, porigin->h};
 	return copy_sdl_surface(porigin, pbox, porigin->flags, 0);
 }
+
+//!Copies part of a SDL surface  with the specified flags.
 
 SDL_Surface * ldv::copy_sdl_surface(SDL_Surface const * porigin, const SDL_Rect& pbox, Uint32 pflags, Uint32 pcolor)
 {
@@ -49,6 +58,10 @@ SDL_Surface * ldv::copy_sdl_surface(SDL_Surface const * porigin, const SDL_Rect&
 
 	return copy;
 }
+
+//!Loads image into SDL_Surface. 
+
+//!With old window parameter... Unused, really.
 
 SDL_Surface * ldv::load_image(const std::string& path, const SDL_Window * window)
 {
@@ -73,6 +86,10 @@ SDL_Surface * ldv::load_image(const std::string& path, const SDL_Window * window
 	}
 }
 
+//!Loads image into SDL_Surface. 
+
+//This goes well with open_gl. Use this one.
+
 SDL_Surface * ldv::load_image(const std::string& path)
 {
         SDL_Surface * temp=IMG_Load(path.c_str());
@@ -83,6 +100,10 @@ SDL_Surface * ldv::load_image(const std::string& path)
 
 	return temp;
 }
+
+//!Gets the uint32 value of a surface pixel.
+
+//!Does not work with textures and is mostly obsolete.
 
 Uint32 ldv::SDL_GetPixel(SDL_Surface *surface, int x, int y)
 {

@@ -3,7 +3,9 @@
 
 #include "../polygon/polygon_representation.h"
 
-//Simplemente un caso especial de un polígono.
+//!A box representation.
+
+//!Boxes are rectangles and are implemented in terms of polygon.
 
 namespace ldv
 {

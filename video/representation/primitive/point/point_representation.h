@@ -4,6 +4,12 @@
 #include "../primitive_representation.h"
 #include <vector>
 
+//!A representation of a single point or a group of points.
+
+//!It is defined in terms of integers. Unlike the polygon, its points are not
+//!normalized. The first point is considered its origin and determines its
+//!position.
+
 namespace ldv
 {
 class point_representation:
@@ -21,12 +27,12 @@ class point_representation:
 	virtual 				~point_representation() {}
 						point_representation& operator=(const point_representation&);
 
-	void 					insert(int x, int y) {internal_insert({x, y}, true);}
+	//!Inserts a point.
 	void					insert(point p) {internal_insert(p, true);}
 	void					insert(const std::vector<point>&);
 	void					clear();
 
-	virtual void 				go_to(int x, int y);
+	virtual void 				go_to(point p);
 	virtual point				get_position() const;
 	virtual rect				get_base_view_position() const;
 

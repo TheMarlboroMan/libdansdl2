@@ -35,18 +35,26 @@ raster_representation& raster_representation::operator=(const raster_representat
 	return *this;
 }
 
+//!Sets the clip to the full size of the texture.
+
+//!Correspondingly adjusts the location box to the clipping size.
+//!Will throw an std::exception if there is no texture.
+
 void raster_representation::clip_to_texture()
 {
-	set_clip(0,0, texture_instance->get_w(), texture_instance->get_h());
+	set_clip(0,0, get_w_texture_instance(), get_h_texture_instance());
 	location.w=clip.w;
 	location.h=clip.h;
 }
 
+//!Does the drawing work.
+
+//!Directly invokes openGL routines.
+//!A first invocation will take longer, since a series of points need to be
+//!calculated for the vertexes and texture.
+
 void raster_representation::do_draw()
 {
-//TODO: This was active... What does it do?.
-//	glColor4f(1.f, 1.f, 1.f, 1.f);
-
 	glBindTexture(GL_TEXTURE_2D, texture_instance->get_index());
 	glEnable(GL_TEXTURE_2D);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -85,10 +93,7 @@ void raster_representation::do_draw()
 	glDisable(GL_TEXTURE_2D);
 }
 
-//Calcula las positiones de los vértices y los points de las texture_instances.
-//Dado que las positiones se calculan a partir de 0.0 no debería haber problemas
-//al cambiar la posición.
-//Los valores calculados se almacenan.
+//!Calculates and stores vertex and texture points.
 
 void raster_representation::calculate_points()
 {
@@ -116,23 +121,22 @@ void raster_representation::calculate_points()
 
 			point pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
 
-			//Samplear los points centrales de las cuatro esquinas. De momento no buscamos el centro del texel. 
-			//El cálculo de ptex_fx y ptex_fy está sacando la proporción entre el brush y la cantidad de espacio
-			//que queda por dibujar (una simple regla de tres). La finalidad es mapear sólo el trozo de texture_instance
-			//necesario.
+			//ptex_fx y ptex_fy calculations are a proportion between the brush
+			//and the space to be drawn (rule of three). This will only map
+			//the neccesary texture parts.
  
 			GLfloat ptex_x=(GLfloat)recor.origin.x,
 				ptex_y=(GLfloat)recor.origin.y, 
 				ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)brush.w), 
 				ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
 
-			puntotex ptex[]={
+			texpoint ptex[]={
 				{ptex_x,	ptex_y},
 				{ptex_fx,	ptex_y},
 				{ptex_fx,	ptex_fy},
 				{ptex_x,	ptex_fy}};
 
-			//Invertir y resamplear points...
+			//Inversion means resampling too.
 			if(transformation.horizontal)
 			{
 				std::swap(ptex[0].x, ptex[1].x);
@@ -159,9 +163,10 @@ void raster_representation::calculate_points()
 	}
 }
 
-//Eso sólo deberíamos llamarlo en aquellas para las cuales hemos creado una
-//texture_instance que poseen. Si es parte de un recurso que no es de su propiedad
-//te vas a encontrar con un problema.
+//!Deletes the texture assigned.
+
+//!This should only be called if the representation owns the texture. I cannot
+//!think of a single example when this is useful.
 
 void raster_representation::free_texture()
 {
@@ -172,14 +177,9 @@ void raster_representation::free_texture()
 	}
 }
 
-void raster_representation::set_location(int p_x, int p_y, int p_w, int p_h, int p_flags)
-{
-	if(p_flags & frx) location.origin.x=p_x;
-	if(p_flags & fry) location.origin.y=p_y;
-	if(p_flags & frw && p_w != -1) location.w=p_w;
-	if(p_flags & frh && p_h != -1) location.h=p_h;
-	update_view_position();
-}
+//!Sets the position and size of the representation.
+
+//!go_to is used to set the position without altering the size.
 
 void raster_representation::set_location(rect c)
 {
@@ -187,41 +187,65 @@ void raster_representation::set_location(rect c)
 	update_view_position();
 }
 
+//!Sets the texture clip.
+
 void raster_representation::set_clip(rect p_caja)
 {
 	clip=p_caja;
 	reset_calculations();
 }
 
-void raster_representation::set_clip(Sint16 p_x, Sint16 p_y, Uint16 p_w, Uint16 p_h, int p_flags)
-{
-	if(p_flags & frx) clip.origin.x=p_x;
-	if(p_flags & fry) clip.origin.y=p_y;
-	if(p_flags & frw) clip.w=p_w;
-	if(p_flags & frh) clip.h=p_h;
-	reset_calculations();
-}
+//!Sets the position without altering size.
 
-void raster_representation::go_to(int x, int y)
+void raster_representation::go_to(point p)
 {
-	location.origin.x=x; 
-	location.origin.y=y;
+	location.origin=p;
 	update_view_position();
 }
 
+//!Gets the position.
+
 point raster_representation::get_position() const
 {
-	return point{location.origin.x, location.origin.y};
+	return location.origin;
 }
+
+//!Gets the base view position.
 
 rect raster_representation::get_base_view_position() const
 {
 	return location;
 }
 
+//!Resets all stored fields.
+
+//!Internally called when the clipping box changes.
+
 void raster_representation::reset_calculations()
 {
 	brush={0,0};
 	points.clear();
 	tex_points.clear();
+}
+
+//!Gets assigned texture width.
+
+//!Shortcut to get_texture()->get_w(). Will throw if there is no texture
+//!assigned.
+
+int raster_representation::get_w_texture_instance() const 
+{
+	if(!texture_instance) throw std::runtime_error("no texture for get_w_texture_instance");
+	return texture_instance->get_w();
+}
+
+//!Gets assigned texture height.
+
+//!Shortcut to get_texture()->get_h(). Will throw if there is no texture
+//!assigned.
+
+int raster_representation::get_h_texture_instance() const 
+{
+	if(!texture_instance) throw std::runtime_error("no texture for get_h_texture_instance");
+	return texture_instance->get_h();
 }

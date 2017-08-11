@@ -57,11 +57,20 @@ point_representation& point_representation::operator=(const point_representation
 	return *this;
 }
 
+//!Inserts a vector of points.
+
+//!Current points are not erased.
+
 void point_representation::insert(const std::vector<point>& pts)
 {
 	for(const auto& p : pts) internal_insert(p, false);
 	update_view_position();
 }
+
+//!Internal insertion function.
+
+//!The second parameters indicates if view position must be updated. If the
+//!representation is empty, the first point is considered the new origin.
 
 void point_representation::internal_insert(point p, bool update_state)
 {
@@ -70,12 +79,18 @@ void point_representation::internal_insert(point p, bool update_state)
 	if(update_state) update_view_position();
 }
 
+//!Removes all points.
+
+//!There is no way to remove a single point. Origin is reset to 0.0.
+
 void point_representation::clear()
 {
 	points.clear();
 	origin={0,0};
 	update_view_position();
-}	
+}
+
+//!Gets the base view position.
 
 rect point_representation::get_base_view_position() const
 {
@@ -102,6 +117,8 @@ rect point_representation::get_base_view_position() const
 	}
 }
 
+//!Does the real drawing.
+
 void point_representation::do_draw()
 {
 	do_color();
@@ -111,15 +128,32 @@ void point_representation::do_draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void point_representation::go_to(int x, int y)
+//!Moves the representation.
+
+//!There is no way to move a single point.
+//!This function is likely buggy.
+//TODO: This is likely wrong: origin is set, but the rest of the points remain in place.
+
+void point_representation::go_to(point p)
 {
-	origin.x=x;
-	origin.y=y;
+	origin=p;
 	update_view_position();
 }
 
+//!Returns the position.
+
+//!Position is expressed as the top-left most point relative to the origin
+//!That is, if origin is 10,10 and there is a point in -5,-5 this function
+//!will return 5,5.
+//!Will throw if the representation has no points.
+
 point point_representation::get_position() const
 {
+	if(!points.size())
+	{
+		throw std::runtime_error("there are no points");
+	}
+
 	struct {bool operator() (point a, point b) {return a.x < b.x;}}fx;
 	struct {bool operator() (point a, point b) {return a.y < b.y;}}fy;
 

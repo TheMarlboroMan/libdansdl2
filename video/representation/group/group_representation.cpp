@@ -22,6 +22,10 @@ group_representation::~group_representation()
 	clear();
 }
 
+//!Empties the group.
+
+//!All representations will be destroyed.
+
 void group_representation::clear()
 {
 	if(owns_data)
@@ -38,6 +42,10 @@ void group_representation::clear()
 	data.clear();
 }
 
+//!Draws the group to the screen using a camera. 
+
+//!Parameters are the same as in a regular representation object.
+
 void group_representation::draw(screen& p_screen, const camera& pcamera, bool skip_take)
 {
 	if(is_visible() && (skip_take || is_in_focus(pcamera.get_focus_box())))
@@ -45,6 +53,10 @@ void group_representation::draw(screen& p_screen, const camera& pcamera, bool sk
 		draw_internal(p_screen, &pcamera);
 	}
 }
+
+//!Draws the group to the screen with no camera.
+
+//!Parameters are the same as in a regular representation object.
 
 void group_representation::draw(screen& p_screen, bool skip_take)
 {
@@ -54,20 +66,17 @@ void group_representation::draw(screen& p_screen, bool skip_take)
 	}
 }
 
-/*La posición que demos a la representación que se pasa se sumará luego a 
-la posición del grupo. Para poner algo en la esquina superior izquierda del 
-grupo estableceríamos la posición de rep en 0,0.
-El alpha del grupo se aplica directamente a cada componente siempre que tenga
-un valor distinto de "opaco".
-Sería posible hacerlo "acumulativo" sin muchos problemas de modo que los valores
-se sumen y resten dentro del rango 0-255.
-*/
+//!Internal draw function.
+
+//!The position of each representation will be added to the group position, so
+//!top-left of the group is 0.0. Group alpha is applied to each item whenever 
+//!it is not opaque. In other words, it is not accumulative nor it does blend.
 
 void group_representation::draw_internal(screen& p_screen, camera const * pcamera)
 {
-	//Al asignar se reinician las matrices. Si la asignación ocurre durante 
-	//la iteración podríamos tenemos malos resultados ya que antes ha habido
-	//un translate que no se ha tenido en cuenta.
+	//When assigning, matrixes are reset. If assignation occurs during
+	//this iteration we can have terrible results because translations not
+	//accounted for.
 	if(pcamera!=nullptr) p_screen.set_camera(*pcamera);
 
 	for(auto &r : data)
@@ -82,7 +91,7 @@ void group_representation::draw_internal(screen& p_screen, camera const * pcamer
 
 		if(pcamera!=nullptr)
 		{
-			//De nuevo, puro empirismo. No tengo ni idea de qué hace esto.
+			//This is pure empiric knowledge. Try and error.
 			if(tr.angle != 0.f)
 			{
 				float 	tx=iv.pos_x+((tr.center.x-iv.rel_x)*iv.zoom),
@@ -110,7 +119,7 @@ void group_representation::draw_internal(screen& p_screen, camera const * pcamer
 		r->set_blend(representation::blends::alpha);
 		r->set_alpha(calculado);
 
-		//Indicamos que vamos a saltar el check de en toma.
+		//Camera and screen checks are skipped.
 		if(pcamera!=nullptr) r->draw(p_screen, *pcamera, true);
 		else r->draw(p_screen, true);
 
@@ -119,10 +128,17 @@ void group_representation::draw_internal(screen& p_screen, camera const * pcamer
 	}
 }
 
+//!This function is unreachable.
+
 void group_representation::do_draw()
 {
-	//Lulz circus. Nunca llegaríamos aquí.
+
 }
+
+//!Inserts a representation in the group.
+
+//!The order of insertion determines the subsequent drawing order, making
+//!groups a very rigid structure.
 
 void group_representation::insert(representation * p_rep)
 {
@@ -130,16 +146,24 @@ void group_representation::insert(representation * p_rep)
 	update_view_position();
 }
 
-void  group_representation::go_to(int px, int py)
+//!Updates the group position.
+
+void  group_representation::go_to(point p)
 {
-	position={px, py};
+	position={p.x, p.y};
 	update_view_position();
 }
+
+//!Gets the group position as a point. 
+
+//!Each part of the group may go into the group negative space.
 
 point group_representation::get_position() const
 {
 	return position;
 }
+
+//!Returns the box of all representations put together.
 
 rect group_representation::get_base_view_position() const
 {
@@ -156,7 +180,6 @@ rect group_representation::get_base_view_position() const
 
 		for(const auto& r : data)
 		{
-
 			rect pr=r->get_base_view_position();
 
 			if(pr.origin.x < res.origin.x) res.origin.x=pr.origin.x;

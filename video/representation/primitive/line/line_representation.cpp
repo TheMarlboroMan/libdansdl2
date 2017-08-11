@@ -2,17 +2,17 @@
 
 using namespace ldv;
 
-line_representation::line_representation(int px1, int py1, int px2, int py2, rgba_color c)
-	:primitive_representation(c), origin{px1, py1}
+line_representation::line_representation(point p1, point p2, rgba_color c)
+	:primitive_representation(c), origin{p1}
 {
-	set_points(px1, py1, px2, py2);
+	set_points(p1, p2);
 	update_view_position();
 }
 
-line_representation::line_representation(int px1, int py1, int px2, int py2, rgb_color c)
-	:primitive_representation(c), origin{px1, py1}
+line_representation::line_representation(point p1, point p2, rgb_color c)
+	:primitive_representation(c), origin{p1}
 {
-	set_points(px1, py1, px2, py2);
+	set_points(p1, p2);
 	update_view_position();
 }
 
@@ -30,30 +30,34 @@ line_representation& line_representation::operator=(const line_representation& o
 	return *this;
 }
 
-void line_representation::set_points(int px1, int py1, int px2, int py2)
+//!Reassigns the points.
+
+void line_representation::set_points(point p1, point p2)
 {
-	//Guardar como 0.0...
-	origin={px1, py1};
-	points[0]={px1-origin.x, py1-origin.y};
-	points[1]={px2-origin.x, py2-origin.y};
+	//Save the origin...
+	origin=p1;
+	points[0]={p1.x-origin.x, p1.y-origin.y};
+	points[1]={p2.x-origin.x, p2.y-origin.y};
 	update_view_position();
 }
+
+//!Gets the base view position.
 
 rect line_representation::get_base_view_position() const
 {
 	int x, y, w, h;
 
-	auto f=[](int v1, int v2, int& pos, int& medida)
+	auto f=[](int v1, int v2, int& pos, int& measure)
 	{
 		if(v1 < v2)
 		{
 			pos=v1;
-			medida=abs(v2-v1);
+			measure=abs(v2-v1);
 		}
 		else
 		{
 			pos=v2;
-			medida=abs(v1-v2);
+			measure=abs(v1-v2);
 		}
 	};
 
@@ -62,6 +66,10 @@ rect line_representation::get_base_view_position() const
 
 	return rect{x, y, (unsigned int)w, (unsigned int)h};
 }
+
+//!Does the drawing.
+
+//!Directly invokes openGL routines.
 
 void line_representation::do_draw()
 {
@@ -72,14 +80,22 @@ void line_representation::do_draw()
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void line_representation::go_to(int x, int y)
+//!Moves the representation.
+
+//!Sets the origin. This function may be buggy.
+
+//TODO; Bugs???
+
+void line_representation::go_to(point p)
 {
-	origin.x=x;
-	origin.y=y;
+	origin=p;
 	update_view_position();
 }
 
-//El punto más arriba y más a la izquierda.
+//!Retrieves the position.
+
+//!The position is the top-left most point.
+
 point line_representation::get_position() const
 {
 	int x, y;
@@ -95,4 +111,3 @@ point line_representation::get_position() const
 
 	return point{x, y};
 }
-

@@ -9,12 +9,11 @@
 namespace ldv
 {
 
-/*Tiene un vector de varias representaciones. Cuando se lo pasamos a la screen
-las vuelca en el orden en que se han insertado. Las representacions deben
-ser estáticas  o dinámicas, según el tipo de grupo. 
+//!A group of representations that are drawn as one.
 
-Una vez insertadas, el grupo toma posesión de las representaciones y se encarga 
-de destruirlas al finalizar su tiempo de vida.*/
+//!Grouped representations are applied the same transformations and traslocations.
+//!Representations assigned to a group belong to the group itself, which will
+//!manage their lifetime. Can be copy constructed, but have never really tried it.
 
 class group_representation:
 	public representation
@@ -29,7 +28,7 @@ class group_representation:
 	void 			clear();
 	unsigned int 		size() const {return data.size();}
 
-	virtual void 		go_to(int x, int y);
+	virtual void 		go_to(point);
 	virtual point		get_position() const;
 	virtual rect		get_base_view_position() const;
 
@@ -45,7 +44,8 @@ class group_representation:
 	point			position;
 	bool			owns_data;
 
-	group_representation& 	operator=(const group_representation &);	//OJO: Es incopiable!.
+	//!Cannot be copied.
+	group_representation& 	operator=(const group_representation &)=delete;
 
 	protected:
 
