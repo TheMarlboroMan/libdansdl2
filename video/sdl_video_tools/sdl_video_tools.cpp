@@ -67,33 +67,6 @@ SDL_Surface * ldv::copy_sdl_surface(SDL_Surface const * porigin, const SDL_Rect&
 
 //!Loads image into SDL_Surface. 
 
-//!With old window parameter... Unused, really.
-
-SDL_Surface * ldv::load_image(const std::string& path, const SDL_Window * window)
-{
-        SDL_Surface * temp=IMG_Load(path.c_str());
-        if (!temp) 
-        {
-		throw std::runtime_error(std::string("ldv::load_image() : unable to load image on ")+path);
-        }
-
-	//This is a hack at best.
-	if(!window) 
-	{
-		SDL_Surface * optimized=SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888, 0);
-      	        SDL_FreeSurface(temp);
-		return optimized;
-	}
-	else
-	{
-		SDL_Surface * optimized=SDL_ConvertSurface(temp, SDL_GetWindowSurface(const_cast<SDL_Window *>(window))->format, 0);
-      	        SDL_FreeSurface(temp);
-		return optimized;
-	}
-}
-
-//!Loads image into SDL_Surface. 
-
 //This goes well with open_gl. Use this one.
 
 SDL_Surface * ldv::load_image(const std::string& path)

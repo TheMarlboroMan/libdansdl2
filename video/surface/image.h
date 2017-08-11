@@ -16,8 +16,6 @@ class image:
 	public:
 
 			image(SDL_Surface *);
-	//TODO: This is obsolete...
-			image(std::string const&, SDL_Window *);
 			image(std::string const&);
 			image(const image&);
 	image& 		operator=(const image&);

@@ -14,16 +14,6 @@ image::image(SDL_Surface * psurface)
 
 //!Creates an image from a string path.
 
-//!This is an old version pre-openGL where we would use the window color depth.
-
-image::image(const std::string& path, SDL_Window * window)
-	:surface(ldv::load_image(path, window))
-{
-
-}
-
-//!Creates an image from a string path.
-
 image::image(const std::string& path)
 	:surface(ldv::load_image(path))
 {

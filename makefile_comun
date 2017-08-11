@@ -38,7 +38,6 @@ OBJETOS=$(DIR_O)screen.o \
 	$(DIR_O)audio_resource_manager.o \
 	$(DIR_O)sound.o \
 	$(DIR_O)music.o \
-	$(DIR_O)sound_queue.o \
 	$(DIR_O)sdl_video_tools.o
 
 all: libDanSDL2.a
@@ -195,13 +194,6 @@ $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp
 
 ################################################################################
 # AUDIO
-
-$(DIR_O)sound_queue.o: \
-$(DIR_O)audio_controller.o \
-$(DIR_O)sound.o \
-$(DIR_CLASS_A)sound_queue/sound_queue.h \
-$(DIR_CLASS_A)sound_queue/sound_queue.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)sound_queue/sound_queue.cpp -o $(DIR_O)sound_queue.o $(INCLUDES)
 
 $(DIR_O)audio_controller.o: \
 $(DIR_O)sound.o \
