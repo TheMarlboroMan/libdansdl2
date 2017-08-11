@@ -98,16 +98,15 @@ void camera::center_on(point p)
 		}
 		else
 		{
-			int x=pt.x, y=pt.y;
+			int x=0, y=0;
 
-			if(x < limit_margin.origin.x) x=limit_margin.origin.x;
-			else if(x > limit_margin.origin.x+(int)limit_margin.w) x=limit_margin.origin.x+limit_margin.w;
+			if(pt.x < limit_margin.origin.x) x=pt.x-limit_margin.origin.x;
+			else if(pt.x > limit_margin.origin.x+(int)limit_margin.w) x=pt.x-limit_margin.origin.x-limit_margin.w;
 
-			if(y < limit_margin.origin.y) y=limit_margin.origin.y;
-			else if(y > limit_margin.origin.y+(int)limit_margin.h) y=limit_margin.origin.y+limit_margin.h;
+			if(pt.y < limit_margin.origin.y) y=pt.y-limit_margin.origin.y;
+			else if(pt.y > limit_margin.origin.y+(int)limit_margin.h) y=pt.y-limit_margin.origin.y-limit_margin.h;
 
-			//Convert again to world...
-			go_to(pos_to_world({x, y}));
+			move_by(x, y);
 		}
 	}
 	else
