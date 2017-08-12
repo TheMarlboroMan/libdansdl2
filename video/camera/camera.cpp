@@ -22,44 +22,38 @@ void camera::sync()
 
 //!Moves the top-left point of the focus box.
 
-//!If the camera is limited, movement may not happen.
+//!If the camera is limited, movement may not happen... Also, there is a slight
+//!chance that the camera will go out of limits into the negative space: if
+//!the focus box has a dimension smaller than the camera, the camera will try
+//!to center on it, triggering this behaviour and creating sort of a 
+//!"letterbox" effect.
 
 void camera::go_to(point p)
 {
 	if(with_limit)
 	{
+		//Params are p.x, focus_box.w, limits.min_x, limits.max_x, focus_box.origin.x
 		auto task=[](int pos, int dimension, int limit_min, int limit_max, int &target)
 		{
-			//Read => p.x, focus_box.w, limits.min_x, limits.max_x, focus_box.origin.x
 			int fin=pos + dimension;
-			if(pos >= limit_min && fin  <= limit_max) 
-			{
-				target=pos;
-std::cout<<"TARGET ADJUSTED AS POS "<<target<<std::endl;
-			}
-			else if(pos < limit_min) 
-			{
+			if(pos < limit_min) 
 				target=limit_min;
-std::cout<<"TARGET ADJUSTED AS MIN "<<target<<std::endl;
-			}
 			else if(fin > limit_max) 
-			{
 				target=limit_max-dimension;
-std::cout<<"TARGET ADJUSTED AS MAX "<<target<<std::endl;
-			}
+			else	//pos >= limit_min && fin  <= limit_max
+				target=pos;
 		};
 
-std::cout<<"LIMITED"<<std::endl;
-
 		//If the dimension if smaller than the dimension set by the limits the task is run.
-std::cout<<"X"<<std::endl;
+		//else, center the camera on the dimension.
 		if((int)focus_box.w <= limits.max_x - limits.min_x) task(p.x, focus_box.w, limits.min_x, limits.max_x, focus_box.origin.x);
-std::cout<<"Y"<<std::endl;
+		else focus_box.origin.x=((limits.max_x-limits.min_x)-focus_box.w) / 2;
+
 		if((int)focus_box.h <= limits.max_y - limits.min_y) task(p.y, focus_box.h, limits.min_y, limits.max_y, focus_box.origin.y);
+		else focus_box.origin.y=((limits.max_y-limits.min_y)-focus_box.h) / 2;
 	}
 	else
 	{
-std::cout<<"UNLIMITED!!"<<std::endl;
 		focus_box.origin={p.x, p.y};
 	}
 
@@ -127,8 +121,6 @@ void camera::center_on(point p)
 			if(pt.y < limit_margin.origin.y) y=pt.y-limit_margin.origin.y;
 			else if(pt.y > limit_margin.origin.y+(int)limit_margin.h) y=pt.y-limit_margin.origin.y-limit_margin.h;
 
-std::cout<<"MOVE BY "<<x<<","<<y<<std::endl;
-
 			move_by(x, y);
 		}
 	}
@@ -175,7 +167,6 @@ void camera::clear_center_margin()
 point camera::world_to_pos(point p) const
 {
 	return p-focus_box.origin;
-//	return {p.x-focus_box.origin.x, p.y-focus_box.origin.y};
 }
 
 //!Converts world rect to pos rect
