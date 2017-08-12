@@ -46,11 +46,12 @@ void camera::go_to(point p)
 
 		//If the dimension if smaller than the dimension set by the limits the task is run.
 		//else, center the camera on the dimension.
+
 		if((int)focus_box.w <= limits.max_x - limits.min_x) task(p.x, focus_box.w, limits.min_x, limits.max_x, focus_box.origin.x);
-		else focus_box.origin.x=((limits.max_x-limits.min_x)-focus_box.w) / 2;
+		else focus_box.origin.x=((limits.max_x-limits.min_x)-(int)focus_box.w) / 2;
 
 		if((int)focus_box.h <= limits.max_y - limits.min_y) task(p.y, focus_box.h, limits.min_y, limits.max_y, focus_box.origin.y);
-		else focus_box.origin.y=((limits.max_y-limits.min_y)-focus_box.h) / 2;
+		else focus_box.origin.y=((limits.max_y-limits.min_y)-(int)focus_box.h) / 2;
 	}
 	else
 	{
