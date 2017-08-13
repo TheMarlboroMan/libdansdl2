@@ -15,6 +15,13 @@ void ldv::set_cursor_visible(bool v)
 	SDL_ShowCursor(v);
 }
 
+//!Sets the vsync value.
+
+void ldv::set_vsync(bool v)
+{
+	SDL_GL_SetSwapInterval(v ? 1 : 0);
+}
+
 //!Creates a SDL_Surface with the same format and size as the one given.
 
 SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin)
