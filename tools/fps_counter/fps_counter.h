@@ -17,14 +17,14 @@ class fps_counter
 
 	unsigned int 	get_frame_count() const {return frame_count;}
 	float 		get_delta() const {return delta;}
-
+	
+	void		reset();
 	void 		set_apply(bool v) {apply=v;}
 	void 		end_loop_step();		//Esto lo llamamos justo después del render (o antes, lo que sea).
 
 	//Nueva interface...
 	void 		init_loop_step(float=0);
 	bool 		consume_loop(float);
-	void 		set_max_timestep(float t) {max_timestep=t;}
 
 	private:
 
@@ -39,8 +39,7 @@ class fps_counter
 	float 		delta,
 			delta_acumulator,
 	 		rest_acumulator,
-	 		timestep,
-	 		max_timestep;
+	 		timestep;
 };
 
 }
