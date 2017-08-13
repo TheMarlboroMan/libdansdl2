@@ -16,6 +16,9 @@ namespace ldv
 
 //!Text representation using a TTF font.
 
+//!Textures generated are always in powers of two, to avoid strange hardware
+//issues.
+
 class ttf_representation:
 	public raster_representation
 {
@@ -50,6 +53,9 @@ class ttf_representation:
 	render_mode			mode;
 	rgb_color			text_color;
 	rgba_color			bg_shaded;
+
+	//!Lookup table for powers of two.
+	static const std::vector<int>	valid_sizes;
 };
 
 }

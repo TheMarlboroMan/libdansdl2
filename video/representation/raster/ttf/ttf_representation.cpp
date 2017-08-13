@@ -2,6 +2,8 @@
 
 using namespace ldv;
 
+const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048};
+
 ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
 	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
 	font(&pfont),
@@ -119,7 +121,21 @@ void ttf_representation::create_texture()
 		break;
 	}
 
-	std::unique_ptr<canvas> cnv(canvas::create(w, total_h, s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
+	auto get_next_power_of_2=[this](int v)->int
+	{
+		for(const auto& vs : valid_sizes)
+		{
+			if(v > vs) continue;
+			return vs;
+		}
+
+		throw std::runtime_error("Invalid text texture size");
+	};
+
+	std::unique_ptr<canvas> cnv(canvas::create(
+		get_next_power_of_2(w), 
+		get_next_power_of_2(total_h), 
+		s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
 
 	//Creating surfaces for each lines, pasting them on the canvas...
@@ -173,7 +189,7 @@ void ttf_representation::create_texture()
 	set_blend(representation::blends::alpha);
 	set_clip({0,0, ref_tex->get_w(), ref_tex->get_h()});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
-	set_location({0, 0, (unsigned)ref_tex->get_w(), (unsigned)ref_tex->get_h()});
+	set_location({0, 0, (unsigned)w, (unsigned)total_h});
 
 }
 
