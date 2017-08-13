@@ -185,9 +185,9 @@ void ttf_representation::create_texture()
 		get_texture()->replace(*cnv);
 	}
 	
-	const auto &ref_tex=get_texture();
+//	const auto &ref_tex=get_texture();
 	set_blend(representation::blends::alpha);
-	set_clip({0,0, ref_tex->get_w(), ref_tex->get_h()});
+	set_clip({0,0, (unsigned)w, (unsigned)total_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
 	set_location({0, 0, (unsigned)w, (unsigned)total_h});
 
