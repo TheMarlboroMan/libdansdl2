@@ -8,10 +8,11 @@
 application code but also appears in other libdansdl2 parts.
 */
 
-
+#include <algorithm>
 #include <cmath>
+
 #include "../tools/tools.h"
-#include "../point2d/point2d.h"
+#include "../point_2d/point_2d.h"
 
 namespace ldt
 {
@@ -184,7 +185,7 @@ vector_2d<T> vector_from_angle_and_velocity(T angle, T magnitude)
 
 //!Creates the vector from point a to point b. Order is important.
 template<typename T>
-vector_2d<T> vector_from_points(point_2d<T> p_a, point_2d<T> p_b)
+vector_2d<T> vector_from_points(point_2d<T> pa, point_2d<T> pb)
 {
 	vector_2d<T> r;
 

@@ -52,13 +52,12 @@ class polygon_2d_vertexes
 		for(auto &p : vertexes) p+=v;
 	}
 
-	//!Moves the polygon so the center rests in the specified point.
-	virtual ldt::vector_2d<double>	center_in(tpoint v)
+	//!Moves the polygon so the center rests in the specified point. For some reason returns the vector.
+	virtual void			center_in(tpoint v)
 	{
-		auto vec=for_points_cartesian(this->center.x, this->center.y, v.x, v.y, false);
+		vector_2d<T> vec=vector_from_points(this->center, tpoint(v.x, v.y));
 		for(auto &p : vertexes) p+={vec.x, vec.y};
 		center=v;
-		return vec;
 	}
 
 	//!Rotates the polygon around its center.
@@ -146,7 +145,7 @@ template<typename T>
 T	get_projection_overlap(const polygon_projection<T>& pa, const polygon_projection<T>& pb)
 {
 	std::vector<T> v={pa.min, pa.max, pb.min, pb.max};
-	std::sort(std::begin(v), std::end(v);
+	std::sort(std::begin(v), std::end(v));
 	return v[2]-v[1];
 }
 
@@ -325,7 +324,7 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2
 		throw std::runtime_error("ERROR: vertexes size is different from segments size.");
 	}
 
-	SAT_mtv_result res;
+	SAT_mtv_result<T> res;
 
 	auto f=[res](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
 	{
@@ -345,10 +344,10 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2
 				}
 				res.collision=true;
 			}
+		}
 
 		return true;
-	 };
-
+	};
 	
 	if(!f(a, b)) return res;	//Early exit if no collision exists.
 	f(b, a);			//No early exit at this point.
