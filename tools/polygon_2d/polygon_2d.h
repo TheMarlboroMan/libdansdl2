@@ -128,7 +128,7 @@ struct segment_2d
 template<typename T>
 struct polygon_projection{T min, max;};
 
-//!Evaluates the overlap of two projections.
+//!Evaluates if two projections overlap.
 
 //!Defined in terms of segments_overlap.
 
@@ -138,9 +138,23 @@ bool	is_projection_overlap(const polygon_projection<T>& pa, const polygon_projec
 	return ldt::segments_overlap(pa.min, pa.max, pb.min, pb.max, unit_is_collision);
 }
 
+//!Gets the overlap magnitude of two projections.
+
+//!It assumes that overlap exists.
+
+template<typename T>
+T	get_projection_overlap(const polygon_projection<T>& pa, const polygon_projection<T>& pb)
+{
+	std::vector<T> v={pa.min, pa.max, pb.min, pb.max};
+	std::sort(std::begin(v), std::end(v);
+	return v[2]-v[1];
+}
+
 //Forwards...
 template<typename T> class polygon_2d;
+template<typename T> struct SAT_mtv_result;
 template<typename T> bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b, bool=false);
+template<typename T> SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b, bool=false);
 
 //!Complex polygon.
 
@@ -288,6 +302,58 @@ bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b, bool san
 	if(!f(a, b)) return false;
 	else if(!f(b, a)) return false;
 	else return true;
+}
+
+//!SAT collision response including the minimum translation vector.
+
+//!Angle is expressed in degrees. Magnitude and angle can be converted into a vector.
+
+template<typename T> 
+struct SAT_mtv_result
+{
+	bool 		collision=false;
+	T		magnitude, angle; //Angle is in degrees.
+};
+
+//!Calculates SAT with the minumum translation vector.
+
+template<typename T>
+SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b, bool sanity)
+{
+	if(sanity && (a.get_vertexes().size() != a.get_segments().size() || b.get_vertexes().size() != b.get_segments().size()))
+	{
+		throw std::runtime_error("ERROR: vertexes size is different from segments size.");
+	}
+
+	SAT_mtv_result res;
+
+	auto f=[res](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
+	{
+		for(const auto& s : pa.segments)
+		{
+			auto axis=s.direction.perpendicular(); //Vector normal...
+			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
+
+			if(!is_projection_overlap(proy_a, proy_b)) return false;
+			else 
+			{
+				T overlap=get_projection_overlap(proy_a, proy_b);
+				if(!res.collision || overlap < res.magnitude)
+				{
+					res.magnitude=overlap;
+					res.angle=axis.get_angle_deg();
+				}
+				res.collision=true;
+			}
+
+		return true;
+	 };
+
+	
+	if(!f(a, b)) return res;	//Early exit if no collision exists.
+	f(b, a);			//No early exit at this point.
+
+	return res;
 }
 
 //!Checks if two segments are intersecting.
