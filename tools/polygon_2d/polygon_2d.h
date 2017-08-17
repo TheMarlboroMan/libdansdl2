@@ -194,11 +194,10 @@ class polygon_2d:
 
 	//!Moves the polygon so the center rests in the value specified.
 
-	virtual ldt::vector_2d<double>	center_in(tpoint v)
+	virtual void			center_in(tpoint v)
 	{
 		auto res=polygon_2d_vertexes<T>::center_in(v);
 		for(auto &s : segments) s.move({res.x, res.y});
-		return res;
 	}
 
 	//!Rotates the polygon around its center.
