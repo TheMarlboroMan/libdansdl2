@@ -92,7 +92,10 @@ class polygon_2d_vertexes
 	std::vector<tpoint>		vertexes;
 };
 
-//!A segment is a couple of points joined by a bearing vector.
+//!A segment is a couple of points joined by a bearing vector... 
+
+//!TODO: This can actually be made smaller by having a point and a vector towards
+//!the second one.
 
 template<typename T>
 struct segment_2d
@@ -103,7 +106,7 @@ struct segment_2d
 
 	//!Creates a segment from v1 to v2.
 					segment_2d<T>(point_2d<T> pv1, point_2d<T> pv2)
-		:v1(pv1), v2(pv2), direction(for_points(v1.x, v1.y, v2.x, v2.y))
+		:v1(pv1), v2(pv2), direction(vector_from_points(v1, v2))
 	{}
 
 	//!Copy constructor.
@@ -193,11 +196,11 @@ class polygon_2d:
 	}
 
 	//!Moves the polygon so the center rests in the value specified.
-
 	virtual void			center_in(tpoint v)
 	{
-		auto res=polygon_2d_vertexes<T>::center_in(v);
-		for(auto &s : segments) s.move({res.x, res.y});
+		vector_2d<T> mv=vector_from_points(this->center, v);
+		polygon_2d_vertexes<T>::center_in(v);
+		for(auto &s : segments) s.move({mv.x, mv.y});
 	}
 
 	//!Rotates the polygon around its center.
@@ -482,8 +485,8 @@ bool is_concave(const std::vector<point_2d<T>>& vertexes)
 			pt2=vertexes.at(i+1);
 		}
 
-		auto vector_1=for_points_cartesian(ptc.x, ptc.y, pt1.x, pt1.y);
-		auto vector_2=for_points_cartesian(ptc.x, ptc.y, pt2.x, pt2.y);
+		auto vector_1=vector_from_points(ptc, pt1);
+		auto vector_2=vector_from_points(ptc, pt2);
 		double dot=cross_product(vector_1, vector_2);
 		double det=determinant(vector_1, vector_2);
 		double angle=ldt::rad_to_deg(atan2(det, dot));
