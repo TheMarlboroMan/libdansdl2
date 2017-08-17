@@ -277,6 +277,7 @@ class polygon_2d:
 
 	std::vector<segment_2d<T> > segments;
 	friend bool SAT_collision_check<T>(const polygon_2d<T>& a,const polygon_2d<T>& b, bool);
+	friend bool SAT_collision_check_mtv<T>(const polygon_2d<T>& a,const polygon_2d<T>& b, bool);
 };
 
 //!Checks if there is a SAT collision check between two polygons. Will throw std::runtime_error in non-closed polygons.
