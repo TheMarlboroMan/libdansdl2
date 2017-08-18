@@ -14,19 +14,25 @@
 namespace ldi
 {
 
+//!Complete input inferface.
+
+//!Allows access to keyboard, mouse and joysticks. Additionally provides hooks
+//!for custom event processing and text input. Text input allows the interface
+//!to take control keystrokes and build a std::string with them.
+
 class sdl_input
 {
 	public:
 
+	//!Represents the mouse position.
 	struct mouse_position
 	{
-		int x, y;
-		mouse_position(): x(0), y(0) {}
+		int x=0, y=0;
 	};
 
 	private:
 
-	//El bloque de control es quien interactúa realmente con la capa inferior de la SDL.
+	//!Private structure representing the keyboard layout and state.
 	class keyboard
 	{
 		public:
@@ -53,12 +59,12 @@ class sdl_input
 
 		private:
 
-		//No es un leak: la estructura pertenece a SDL.
+		//This is a structure from SDL, not a leak.
 		const Uint8 * 		pressed_keys;
 
 	};
 
-	//Aquí dentro se guarda todo lo que tiene que ver con el raton.
+	//!Private structure to interact with mouse parameters.
 
 	class mouse
 	{
@@ -97,6 +103,8 @@ class sdl_input
 		}
 	};
 
+	//!Private structure to interact with joysticks and controllers.
+
 	class joystick
 	{
 		public:
@@ -130,12 +138,9 @@ class sdl_input
 		{
 		}
 
-		/**
-		* Los joysticks están metidos en un mapa que hace copia del objeto
-		* de forma que se borra y se liberaría la estructura si la emplazamos
-		* en el constructor. La solución de momento es pasar la estructura 
-		* después de construido el objeto.
-		*/
+		//Joysticks are inside a map that copies the object so it
+		//would be deleted and freed if emplaced in the constructor.
+		//So far we'll just pass the structure after construction.
 
 		void init(SDL_Joystick * joy)
 		{
@@ -162,11 +167,10 @@ class sdl_input
 				hats.resize(hats_size, 0);
 			}
 
-			init_state();	
+			init_state();
 
-			/*OJO: No vamos a mover esto a "inicializar state!!!",
-			si lo hacemos se perderá el state del input de botones
-			pulsados o movements de ejes!!!.*/
+			//Warning: this should not be moved to "init_state":
+			//if done we'd lose the axis movement or pressed buttons.
 
 			if(buttons)
 			{
@@ -187,7 +191,8 @@ class sdl_input
 			}
 		}
 
-		//Crea botones virtuales para los hats.
+		//Hats are treated as buttons.
+
 		void virtualize_hats()
 		{
 			if(virtualized_hats) return;
@@ -198,7 +203,7 @@ class sdl_input
 			buttons_down.insert(std::end(buttons_down), nbuttons, false);
 			buttons_released.insert(std::end(buttons_released), nbuttons, true);
 
-			virtualized_hats=buttons; //Primer índice de los hats virtualizados.
+			virtualized_hats=buttons; //First virtualised hat index.
 			buttons+=nbuttons;
 		}
 
@@ -214,7 +219,7 @@ class sdl_input
 			buttons_down.insert(std::end(buttons_down), nbuttons, false);
 			buttons_released.insert(std::end(buttons_released), nbuttons, true);
 
-			virtualized_axis=buttons; //Primer índice de los ejes virtualizados.
+			virtualized_axis=buttons; //First virtualised axis index.
 			buttons+=nbuttons;
 		}
 
@@ -318,20 +323,7 @@ class sdl_input
 				}
 			}
 		}
-/*
-		void debug()
-		{
-			std::cout<<std::endl<<"UP\t";
-			for(auto v : buttons_up) std::cout<<(int(v));
-			std::cout<<std::endl<<"PULSA\t";
-			for(auto v : buttons_pressed) std::cout<<(int(v));
-			std::cout<<std::endl<<"DOWN\t";
-			for(auto v : buttons_down) std::cout<<(int(v));
-			std::cout<<std::endl<<"SOLTA\t";
-			for(auto v : buttons_released) std::cout<<(int(v));
-			std::cout<<std::endl;
-		}
-*/
+
 		void init_state()
 		{
 			if(buttons)
@@ -350,62 +342,58 @@ class sdl_input
 		}		
 	};
 
-	/*Esta clase controla los eventos de actividad (minimizar, maximizar,
-	pérdida de foco...). Será un miembro de la clase Controles de modo que
-	siempre estará ahí con los últimos valores que tuviera. Para usarla
-	correctamente preguntaremos siempre si hay algún evento de actividad
-	y luego, si lo hay, preguntaremos ya por el state y el foco.
+	//!Keeps track of all activity events (minimize, maximize, lose focus...).
 
-	Conservamos una sana actitud escéptica a que se den varios eventos de
-	actividad a la vez. Si lo hubiera tendríamos que cambiar toda la 
-	interface pública por una cola de eventos.
-	*/
+	//!So far, this interface allows for only one simultaneous activity 
+	//!event. To support more, we'd need a queue of these events.
+	//!Supposedly get_state returns the SDL state index.
 
 	class activity_event
 	{
-		private:
-
-		Uint8 state;
-		bool focus;
-		bool activity_event_registered;
-
 		public:
 
 		activity_event():state(0), focus(false), activity_event_registered(false){}
 		~activity_event(){}
 
-		void get_input(bool p_focus, Uint8 p_state)
+		void 				get_input(bool p_focus, Uint8 p_state)
 		{
 			focus=p_focus;
 			state=p_state;
 			activity_event_registered=true;
 		}
 
-		void reset()
+		void 				reset()
 		{
 			activity_event_registered=false;
 			focus=false;
 			state=0;
 		}
 	
-		bool is_activity_event_registered() const {return activity_event_registered;}
-		bool is_focused() const {return focus;}
-		Uint8 get_state() const {return state;}
+		bool 				is_activity_event_registered() const {return activity_event_registered;}
+		bool 				is_focused() const {return focus;}
+		Uint8 				get_state() const {return state;}
+
+		private:
+
+		Uint8 				state;
+		bool 				focus, 
+						activity_event_registered;
+
 	};
 
 	private:
 
 	keyboard		 	device_keyboard;
-	mouse 				device_mouse;		//Siempre hay un ratón, no?.
+	mouse 				device_mouse;		//There's always a mouse... right?.
 	activity_event	 		activity_event_instance;
 
 	std::map<int, joystick> 	joysticks;
 	std::map<SDL_JoystickID, int>	id_joystick_to_index;
 
-	std::string 			input_text;	//El input de texto...
+	std::string 			input_text;
 	bool				keydown_control_text_filter; //Indicates whether or not to pass backspace or enter to the input_text when text input is active.
 
-	bool 				exit_signal; //SDL_QUIT; básicamente...
+	bool 				exit_signal; //Basically SDL_QUIT.
 	unsigned short int 		joysticks_size;
 
 	void 				init_joysticks();
@@ -420,10 +408,6 @@ class sdl_input
 	void 				clear_loop();
 	void 				process_event(SDL_Event &);
 
-
-	/*Esto registra simplemente si hay algún evento de este tipo por cada
-	ciclo de eventos.*/
-
 	enum events_index{text=0, 
 		mousemove, mousedown, mouseup,
 		keyboard_down, keyboard_up,
@@ -432,9 +416,6 @@ class sdl_input
 
 	std::vector<bool> events_cache;
 
-	/*Registra el foco...*/
-
-
 	public:
 
 	enum axis_values{min_axis=-32768, max_axis=32767, min_noise=-3200, max_noise=3200};
@@ -442,30 +423,42 @@ class sdl_input
 				sdl_input();
 				~sdl_input();
 
+	//!Activates text input. 
 	void 			start_text_input() {SDL_StartTextInput();}
+	//!Deactivates text input.
 	void 			stop_text_input() {SDL_StopTextInput();}
+	//!Clears the internal text buffer.
 	void 			clear_text_input() {input_text=std::string("");}
+	//!Returns the internal text buffer.
 	const std::string 	get_text_input() const {return input_text;}
+	//!Checks whether text input is activated.
 	bool 			is_text_input() const {return SDL_IsTextInputActive();}
+	//!Sets whether or not to pass backspace or enter to the input_text when text input is active.
 	void			set_keydown_control_text_filter(bool v) {keydown_control_text_filter=v;}
 
-	bool 			pump_events(SDL_Event &, bool=true);
-	//const SDL_Event& 	get_event() const {return event;}
+	bool 	 		pump_events(SDL_Event &, bool=true);
+	//!Gets the full mouse structure.
 	const mouse& 		get_mouse() const {return device_mouse;}
+	//!Gets the indicated joystick. May throw if not available.
 	const joystick& 	get_joystick(int index) const {return joysticks.at(index);}
+	//!Gets the indicated joystick. May throw if not available.
 	joystick& 		get_joystick(int index) {return joysticks.at(index);}
+	//!Instruct the joystick to virtualize its hats as buttons.
 	void			virtualize_joystick_hats(int index) {joysticks.at(index).virtualize_hats();}
+	//!Instruct the joystick to virtualize its axes as buttons.
 	void			virtualize_joystick_axis(int index, int threshold) {joysticks.at(index).virtualize_axis(threshold);}
 	void 			loop();
+	//!Indicates if a new joystick was connected
 	bool			is_event_joystick_connected() const {return events_cache[joystick_connected];}
 
-	/*Recibe como parámetro una functión f que toma como parámetro un evento y
-	devuelve true o false... Si devuelve true se sale del loop. Es una forma 
-	de obtener un control a bajo nivel sobre los eventos.
+	//!Specifies manual callback, allowing for low level control.
 
-	Un ejemplo de un callback para poder leer manualmente el input que se recibe...  Se
-	puede usar para, por ejemplo, aprender las teclas que se quieran usar.
+	//!Receives f as a parameter function that takes an event and returns
+	//!true or false (if true the loop of events is broken and no more are
+	//!processed. An example is present in sdl_input.h just above the
+	//!function declaration.
 
+	/*
 	bool test;
 	struct Cosa
 	{
@@ -474,31 +467,17 @@ class sdl_input
 		{
 			if(ev.type==SDL_KEYDOWN)
 			{
-				std::cout<<"CODIGO DE TECLA ES "<<ev.key.keysym.scancode<<std::endl;
+				std::cout<<"Keycode is "<<ev.key.keysym.scancode<<std::endl;
 				return true;
 			}
 
 			++val;
-			std::cout<<"HOLA "<<val<<std::endl;
+			std::cout<<"Hey "<<val<<std::endl;
 			return false;
 		}
 		
-		Cosa():val(0) {}		
+		Cosa():val(0) {}
 	}c;
-
-	virtual void turno()
-	{
-		if(!test)
-		{
-			Input_base::turno();
-		}
-		else
-		{
-			acc_controles_sdl().recoger_callback(c);
-			std::cout<<c.val<<std::endl;
-			if(c.val > 100) test=false;
-		}
-	}
 	*/
 
 	template <typename TipoFunc> void loop_callback(TipoFunc& f)
@@ -511,13 +490,21 @@ class sdl_input
 		}
 	}
 
+	//!Moves the mouse cursor to the specified position.
 	void 			warp_mouse(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
+	//!Checks if the key is pressed as expressed in SDL scancodes.
 	bool 			is_key_pressed(int pkey) const {return device_keyboard.is_key_pressed(pkey);}
+	//!Checks if the key is down as expressed in SDL scancodes.
 	bool 			is_key_down(int pkey) const {return device_keyboard.keys_down[pkey];}
+	//!Checks if the key is up as expressed in SDL scancodes.
 	bool 			is_key_up(int pkey) const {return device_keyboard.keys_up[pkey];}
+	//!Checks if the mouse button is up.
 	bool 			is_mouse_button_up(int pbutton) const {return device_mouse.buttons_up[pbutton];}
+	//!Checks if the mouse button is down.
 	bool			is_mouse_button_down(int pbutton) const {return device_mouse.buttons_down[pbutton];}
+	//!Checks if the mouse button is pressed.
 	bool 			is_mouse_button_pressed(int pbutton) const {return device_mouse.buttons_pressed[pbutton];}
+	//!Checks if the mouse has been moved.
 	bool 			is_mouse_movement() const {return device_mouse.movement;}
 	bool 			is_joystick_button_down(unsigned int, unsigned int) const;
 	bool 			is_joystick_button_up(unsigned int, unsigned int) const;
@@ -525,35 +512,54 @@ class sdl_input
 	bool 			is_joystick_button_released(unsigned int, unsigned int) const;
 	Sint16 			get_joystick_axis(unsigned int, unsigned int) const;
 	int			get_joystick_hat(unsigned int, unsigned int) const;
+	//!Returns the number of connected joysticks.
 	unsigned short int 	get_joysticks_size() const {return joysticks_size;}
+	//!Returns the current mouse position.
 	mouse_position 		get_mouse_position() const {return device_mouse.get_position();}
+	//!Checks if the "close window" button has been pressed.
 	bool 			is_exit_signal() const {return exit_signal;}
+	//!Checks if there has been an acivity event (minimize, maximize...).
 	bool 			is_event_activity() const {return activity_event_instance.is_activity_event_registered();}
+	//!Checks if the activity event has focus. //TODO: What does this even mean????
 	bool 			is_event_activity_focus() const {return activity_event_instance.is_focused();}
+	//!Returns the kind of activity event. //TODO: Again, what is this???
 	Uint8 			get_activity_event() const {return activity_event_instance.get_state();}
 	int			get_key_down_index() const;
 	int			get_mouse_button_down_index() const;
 	int			get_joystick_button_down_index(int) const;
 
-	//Quick cache access.
+	//!Indicates if a text event has taken place.
 	bool 			is_event_text() const {return events_cache[text];}
+	//!Indicates if a mouse event has taken place.
 	bool 			is_event_mouse() const {return events_cache[mousemove] || events_cache[mousedown] || events_cache[mouseup];}
+	//!Indicates if a mouse movement event has taken place.
 	bool 			is_event_mouse_movement() const {return events_cache[mousemove];}
+	//!Indicates if a mouse button down event has taken place.
 	bool 			is_event_mouse_button_down() const {return events_cache[mousedown];}
+	//!Indicates if a mouse button up event has taken place.
 	bool 			is_event_mouse_button_up() const {return events_cache[mouseup];}
+	//!Indicates if any keyboard event has taken place.
 	bool 			is_event_keyboard() const {return events_cache[keyboard_up] || events_cache[keyboard_down];}
+	//!Indicates if a keyboard down event has taken place.
 	bool 			is_event_keyboard_down() const {return events_cache[keyboard_down];}
+	//!Indicates if a keyboard up event has taken place.
 	bool 			is_event_keyboard_up() const {return events_cache[keyboard_up];}
-
+	//!Indicates any joystick event has taken place.
 	bool 			is_event_joystick() const {return events_cache[joystick_axis] || events_cache[joystick_hat] || events_cache[joystick_button_up] || events_cache[joystick_button_down] ;}
+	//!Indicates any joystick axis event has taken place.
 	bool 			is_event_joystick_axis() const {return events_cache[joystick_axis];}
+	//!Indicates any joystick hat event has taken place.
 	bool 			is_event_joystick_hat() const {return events_cache[joystick_hat];}
+	//!Indicates any joystick button event has taken place.
 	bool 			is_event_joystick_button() const {return events_cache[joystick_button_up] || events_cache[joystick_button_down];}
+	//!Indicates a joystick button up event has taken place.
 	bool 			is_event_joystick_button_up() const {return events_cache[joystick_button_up];}
+	//!Indicates a joystick button down event has taken place.
 	bool 			is_event_joystick_button_down() const {return events_cache[joystick_button_down];}
+	//!Indicates if any input is received.
 	bool 			is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
 };
 
-} //Fin namespace DLibI
+}
 
 #endif

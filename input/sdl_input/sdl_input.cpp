@@ -4,6 +4,7 @@
 
 using namespace ldi;
 
+//!Default constructor.
 sdl_input::sdl_input():
 	keydown_control_text_filter(false), exit_signal(false), joysticks_size(0)
 
@@ -16,11 +17,13 @@ sdl_input::sdl_input():
 	init_joysticks();
 }
 
+//!Class destructor.
 sdl_input::~sdl_input()
 {
 	joysticks.clear();
 }
 
+//!Starts all joysticks.
 void sdl_input::init_joysticks()
 {
 	this->joysticks_size=SDL_NumJoysticks();
@@ -39,6 +42,7 @@ void sdl_input::init_joysticks()
 	}
 }
 
+//!Individual joystick init subroutine.
 void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 {
 	SDL_JoystickID id=SDL_JoystickInstanceID(estructura);
@@ -55,29 +59,28 @@ void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 
 }
 
+//!Manually pumps and event into the first parameter, optionally processing.
+
+//!Returns if there was an event to pump.
+
 bool sdl_input::pump_events(SDL_Event &pevent, bool pprocess)
 {
 	bool result=SDL_PollEvent(&pevent);
-	if(pprocess && result) this->process_event(pevent);
+	if(pprocess && result) process_event(pevent);
 	return result;
 }
 
+//!Main event loop. Must be called once per application tick.
+
 void sdl_input::loop()
 {
-	this->clear_loop();
-			
+	clear_loop();
 	SDL_Event event;
 	while(SDL_PollEvent(&event))
-	{
-		this->process_event(event);
-	}
+		process_event(event);
 }
 
-/*
-A esto se le llama una vez por cada evento que haya en "recoger". Lo hemos
-incluido para poderlo llamar desde otros puntos como el "Escritor_texto" y 
-poder seguir usando la clase de Controles desde fuera de la última.
-*/
+//!Called for each event, alters the internal structure of the class according to input.
 
 void sdl_input::process_event(SDL_Event& event)
 {
@@ -88,7 +91,6 @@ void sdl_input::process_event(SDL_Event& event)
 		break;
 
 		case SDL_MOUSEMOTION:
-
 			events_cache[mousemove]=true;
 			device_mouse.x=event.motion.x; 
 			device_mouse.y=event.motion.y; 
@@ -222,6 +224,8 @@ void sdl_input::process_event(SDL_Event& event)
 	}
 }
 
+//!Internally loops joystick state to update the event cache.
+
 void sdl_input::set_virtualized_input()
 {
 	for(const auto& pj: joysticks)
@@ -232,11 +236,11 @@ void sdl_input::set_virtualized_input()
 		{
 			if(std::any_of(std::begin(j.buttons_pressed), std::end(j.buttons_pressed), [](bool v) {return v;})) events_cache[joystick_button_up]=true; 
 			if(std::any_of(std::begin(j.buttons_down), std::end(j.buttons_down), [](bool v) {return v;})) events_cache[joystick_button_down]=true; 
-//			if(std::any_of(std::begin(j.buttons_pressed), std::end(j.buttons_pressed), [](bool v) {return v;}))
-//			if(std::any_of(std::begin(j.buttons_released), std::end(j.buttons_released), [](bool v) {return v;}))
 		}
 	}
 }
+
+//!Checks if a joystick with the given device id is registered.
 
 bool sdl_input::is_joystick_registered_by_device_id(unsigned int d_id)
 {
@@ -248,10 +252,14 @@ bool sdl_input::is_joystick_registered_by_device_id(unsigned int d_id)
 	return false;
 }
 
+//!Internally resets joystick state.
+
 void sdl_input::clear_joysticks_state()
 {
 	for(auto& p: joysticks) p.second.init_state();
 }
+
+//!Internally checks joystick button existence.
 
 bool sdl_input::check_joystick_button(unsigned int p_joystick, unsigned int pbutton) const
 {
@@ -260,6 +268,8 @@ bool sdl_input::check_joystick_button(unsigned int p_joystick, unsigned int pbut
 	else if(pbutton > joysticks.at(p_joystick).buttons) return false;
 	else return true;
 }
+
+//!Checks if joystick button is down.
 
 bool sdl_input::is_joystick_button_down(unsigned int p_joystick, unsigned int pbutton) const
 {
@@ -270,6 +280,8 @@ bool sdl_input::is_joystick_button_down(unsigned int p_joystick, unsigned int pb
 	}
 }
 
+//!Checks if joystick button is up.
+
 bool sdl_input::is_joystick_button_up(unsigned int p_joystick, unsigned int pbutton) const
 {
 	if(!this->check_joystick_button(p_joystick, pbutton)) return false;
@@ -278,6 +290,8 @@ bool sdl_input::is_joystick_button_up(unsigned int p_joystick, unsigned int pbut
 		return joysticks.at(p_joystick).buttons_up[pbutton];	
 	}
 }
+
+//!Checks if joystick button is pressed.
 
 bool sdl_input::is_joystick_button_pressed(unsigned int p_joystick, unsigned int pbutton) const
 {
@@ -288,6 +302,8 @@ bool sdl_input::is_joystick_button_pressed(unsigned int p_joystick, unsigned int
 	}
 }
 
+//!Checks if joystick button is released.
+
 bool sdl_input::is_joystick_button_released(unsigned int p_joystick, unsigned int pbutton) const
 {
 	if(!this->check_joystick_button(p_joystick, pbutton)) return false;
@@ -297,6 +313,8 @@ bool sdl_input::is_joystick_button_released(unsigned int p_joystick, unsigned in
 	}
 }
 
+//!Checks joystick axis existence.
+
 bool sdl_input::check_joystick_axis(unsigned int p_joystick, unsigned int p_eje) const
 {
 	if(!joysticks.size()) return false;
@@ -305,6 +323,8 @@ bool sdl_input::check_joystick_axis(unsigned int p_joystick, unsigned int p_eje)
 	else return true;
 }
 
+//!Checks joystick hat existence.
+
 bool sdl_input::check_joystick_hat(unsigned int p_joystick, unsigned int p_hat) const
 {
 	if(!joysticks.size()) return false;
@@ -312,6 +332,8 @@ bool sdl_input::check_joystick_hat(unsigned int p_joystick, unsigned int p_hat) 
 	else if(p_hat > joysticks.at(p_joystick).hats_size) return false;
 	else return true;
 }
+
+//!Gets joystick axis value.
 
 Sint16 sdl_input::get_joystick_axis(unsigned int p_joystick, unsigned int p_eje) const
 {
@@ -322,6 +344,8 @@ Sint16 sdl_input::get_joystick_axis(unsigned int p_joystick, unsigned int p_eje)
 	}
 }
 
+//!Gets joystick hat value.
+
 int sdl_input::get_joystick_hat(unsigned int p_joystick, unsigned int p_hat) const
 {
 	if(!this->check_joystick_hat(p_joystick, p_hat)) return false;
@@ -330,6 +354,8 @@ int sdl_input::get_joystick_hat(unsigned int p_joystick, unsigned int p_hat) con
 		return joysticks.at(p_joystick).hats[p_hat];
 	}
 }
+
+//!Internally clears state for next tic.
 
 void sdl_input::clear_loop()
 {
@@ -343,6 +369,9 @@ void sdl_input::clear_loop()
 	device_mouse.init();
 }
 
+
+//!Returns the first key down index registered. Of limited use, actually.
+
 int sdl_input::get_key_down_index() const
 {
 	int i=0;
@@ -355,6 +384,8 @@ int sdl_input::get_key_down_index() const
 	return 1;
 }
 
+//!Returns the first mouse button down index registered. Sees little use.
+
 int sdl_input::get_mouse_button_down_index() const
 {
 	unsigned int i=0;
@@ -365,6 +396,8 @@ int sdl_input::get_mouse_button_down_index() const
 	}
 	return -1;
 }
+
+//!Returns the first joystick button down index registered. Used very sparingly.
 
 int sdl_input::get_joystick_button_down_index(int index) const
 {
