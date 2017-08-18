@@ -178,7 +178,7 @@ vector_2d<T> vector_from_angle(T p_ang)
 
 //!Obtains a vector for the given angle and magnitude.
 template<typename T>
-vector_2d<T> vector_from_angle_and_velocity(T angle, T magnitude)
+vector_2d<T> vector_from_angle_and_magnitude(T angle, T magnitude)
 {
 	return {magnitude*cos(angle), magnitude*sin(angle)};
 }
