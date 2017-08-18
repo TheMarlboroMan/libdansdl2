@@ -16,8 +16,8 @@ namespace ldv
 
 //!Text representation using a TTF font.
 
-//!Textures generated are always in powers of two, to avoid strange hardware
-//issues.
+//!Generates and owns a texture using the SDL_ttf library. Textures generated 
+//!are always in powers of two, to avoid hardware issues.
 
 class ttf_representation:
 	public raster_representation

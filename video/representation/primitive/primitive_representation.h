@@ -21,8 +21,9 @@ class primitive_representation:
 			primitive_representation& operator=(const primitive_representation&);
 	virtual 	~primitive_representation() {}
 	
+	//!Assigns color (line, fill, dot... everything).
 	void		set_color(rgb_color c) {color=c;}
-	//Estas hay que definirlas.
+
 	virtual void 	go_to(point)=0;
 	virtual point	get_position() const=0;
 	virtual rect	get_base_view_position() const=0;

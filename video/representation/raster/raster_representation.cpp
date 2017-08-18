@@ -14,6 +14,10 @@ raster_representation::raster_representation(rect pos, rect rec, int palpha)
 
 }
 
+//!Class copy constructor.
+
+//!Texture is assigned. It must not be owned by the class, but by an external manager.
+
 raster_representation::raster_representation(const raster_representation& o)
 	:representation(o), texture_instance(o.texture_instance),
 	brush(o.brush), points(o.points), 
@@ -23,6 +27,10 @@ raster_representation::raster_representation(const raster_representation& o)
 {
 
 }
+
+//!Assignment operator.
+
+//!Texture is assigned. It must not be owned by the class, but by an external manager.
 
 raster_representation& raster_representation::operator=(const raster_representation& o)
 {

@@ -2,6 +2,8 @@
 
 using namespace ldv;
 
+//!Default constructor.
+
 bitmap_representation::bitmap_representation()
 	:raster_representation()
 {
@@ -21,11 +23,15 @@ bitmap_representation::bitmap_representation(const texture& p_rec, rect pos, rec
 	update_view_position();
 }
 
+//!Copy constructor.
+
 bitmap_representation::bitmap_representation(const bitmap_representation& o)
 	:raster_representation(o)
 {
 
 }
+
+//!Assignment operator.
 
 bitmap_representation& bitmap_representation::operator=(const bitmap_representation & o)
 {

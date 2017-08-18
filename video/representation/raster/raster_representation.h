@@ -16,15 +16,13 @@ namespace ldv
 
 struct invert_transform
 {
-	bool 		horizontal,
-		 	vertical;
+	bool 		horizontal=false, 	//!< Indicates that horizontal transformation will be performed.
+		 	vertical=false;		//!< Indicates that vertical transformation will be performed.
 
-	invert_transform():
-		horizontal(false), vertical(false)
-	{}
-
+	//!Checks if there is any transformations.
 	bool is_transformed() const {return horizontal || vertical;}
 
+	//!Resets all transformations to their default state.
 	void reset()
 	{
 		horizontal=false;
@@ -107,8 +105,8 @@ class raster_representation:
 
 	protected:
 
-	rect 			location; 	//Lugar en que se muestra de la pantalla.
-	rect	 		clip;		//Considerando la dimensión total de la representación, la parte que mostramos.
+	rect 			location; 	//!< Location in which it is drawm.
+	rect	 		clip;		//!< Section of the texture used.
 
 	void			reset_calculations();
 	void 			free_texture();

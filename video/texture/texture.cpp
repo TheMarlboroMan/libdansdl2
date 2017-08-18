@@ -5,6 +5,8 @@
 
 using namespace ldv;
 
+//!Class constructor.
+
 //!Creates a texture from a ldv::surface object.
 
 texture::texture(const surface& s):

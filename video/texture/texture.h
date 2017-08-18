@@ -19,8 +19,10 @@ class texture
 {
 	public:
 			texture(const surface&);
+	//!Textures cannot be copy constructed.
 			texture(const texture&)=delete;
 			~texture();
+	//!Textures cannot be copied.
 	texture& 	operator=(const texture& t)=delete;
 
 	//!Gets texture width.

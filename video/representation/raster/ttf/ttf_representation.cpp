@@ -4,6 +4,8 @@ using namespace ldv;
 
 const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048};
 
+//!Default class constructor.
+
 ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
 	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
 	font(&pfont),
@@ -15,6 +17,10 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 	create_texture();
 	update_view_position();
 }
+
+//!Copy constructor.
+
+//!Texture is recreated as a different resource from the original.
 
 ttf_representation::ttf_representation(const ttf_representation& o)
 	:raster_representation(o), 
@@ -28,10 +34,16 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	create_texture();
 }
 
+//!Class destructor.
+
 ttf_representation::~ttf_representation()
 {
 	free_texture();
 }
+
+//!Assignment operator.
+
+//!Texture is recreated as a different resource from the original.
 
 ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 {

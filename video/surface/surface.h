@@ -47,8 +47,11 @@ class surface
 
 	Uint32 		map_color(unsigned int r, unsigned int g, unsigned int b);
 
-	SDL_Surface * 	sdl_surface;
-	bool 		with_colorkey;
+	SDL_Surface * 	sdl_surface;	//!< Underlying SDL_Surface.
+
+	private:
+
+	bool 		with_colorkey;	//!< Indicates if colorkeying will be applied.
 
 	
 };

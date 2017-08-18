@@ -5,6 +5,10 @@
 
 using namespace ldv;
 
+//!Class constructor.
+
+//!Alpha value defaults to max.
+
 representation::representation(int valpha):
 	visible(true),
 	blend_mode(blends::none), 
@@ -14,6 +18,8 @@ representation::representation(int valpha):
 
 }
 
+//!Copy constructor.
+
 representation::representation(const representation& o):
 	visible(o.visible), 
 	blend_mode(blends::none),
@@ -22,6 +28,8 @@ representation::representation(const representation& o):
 {
 
 }
+
+//!Assignment operator.
 
 representation& representation::operator=(const representation& o)
 {

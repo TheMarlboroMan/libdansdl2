@@ -18,16 +18,18 @@ namespace ldv
 
 struct rotation_transform
 {
-	float 				angle;
-	ldt::point_2d<float>		center;
+	float 				angle;		//!< Rotation angle. Defaults to 0.f
+	ldt::point_2d<float>		center;		//!< Center of rotation. Defaults to 0,0.
 
 	rotation_transform():
 		angle(0.f), center(0.f, 0.f)
 	{}
 
+	//!Checks whether any transformation has taken place.
 	bool 				is_transformed() const {return angle!=0.f;}
+	//!Checks if the center is displaced from its original 0.0 position.
 	bool 				is_center_displaced() const {return center.x!=0.f || center.y!=0.f;}
-
+	//!Resets center and angle.
 	void 				reset()
 	{
 		angle=0.f;
@@ -49,6 +51,7 @@ class representation
 
 	//!Indicates blend modes.
 	enum class 		blends{none, alpha};
+	//!Quick access to minimum and maximum alpha. Minimum is fully transparent.
 	enum 			alpha{alpha_min=0, alpha_max=255};
 
 	//!By default all representations have 255 as alpha value.
@@ -90,7 +93,7 @@ class representation
 	void			toogle_visible() {visible=!visible;}
 	//!Moves the top-left point of the view position to the given point.
 	virtual void 		go_to(point p)=0;
-	//1Each derived class must define how to get the position.
+	//!Each derived class must define how to get the position.
 	virtual point		get_position() const=0;
 	//!Each derived class must define how to get the base_view_position (the one without rotation transformations).
 	virtual rect		get_base_view_position() const=0;

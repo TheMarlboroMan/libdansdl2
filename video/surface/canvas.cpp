@@ -2,11 +2,17 @@
 
 using namespace ldv;
 
+//!Default constructor.
+
+//!Creates an empty canvas... It is private so can only be called from 
+//!statis functions.
+
 canvas::canvas()
 	:surface(), generated(false)
 {
 }
 
+//!Copy constructor.
 
 canvas::canvas(const canvas& o)
 	:surface(o), generated(o.generated)
@@ -27,8 +33,10 @@ canvas& canvas::operator=(const canvas& o)
 	return *this;
 }
 
+//!Class destructor.
+
 canvas::~canvas()
-{	
+{
 
 }
 

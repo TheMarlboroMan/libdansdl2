@@ -3,6 +3,10 @@
 
 using namespace ldv;
 
+//!Class constructor.
+
+//!Creates a surface wrapper from a SDL_Surface.
+
 surface::surface(SDL_Surface * s)
 	:sdl_surface(s), with_colorkey(false)
 {
@@ -18,6 +22,8 @@ surface::surface()
 {
 
 }
+
+//!Class destructor.
 
 surface::~surface()
 {

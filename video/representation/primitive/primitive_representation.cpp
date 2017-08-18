@@ -22,12 +22,16 @@ primitive_representation::primitive_representation(rgb_color c)
 
 }
 
+//!Copy constructor.
+
 primitive_representation::primitive_representation(const primitive_representation& o)
 	:representation(o),
 	color(o.color)
 {
 
 }
+
+//!Assignment operator.
 
 primitive_representation& primitive_representation::operator=(const primitive_representation& o)
 {
