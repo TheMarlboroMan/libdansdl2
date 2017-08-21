@@ -48,7 +48,8 @@ void group_representation::clear()
 
 void group_representation::draw(screen& p_screen, const camera& pcamera, bool skip_take)
 {
-	if(is_visible() && (skip_take || is_in_focus(pcamera.get_focus_box())))
+	
+	if(is_visible() && (skip_take || pcamera.get_focus_box().collides_with(get_view_position(), true) ))
 	{
 		draw_internal(p_screen, &pcamera);
 	}

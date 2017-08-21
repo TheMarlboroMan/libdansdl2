@@ -29,11 +29,6 @@ the camera in sync with cartesian-minded applications (what it does is to actual
 reverse the Y value in an internal structure). Whatever the system chosen, all
 representations MUST be in "screen" form.
 
-A few functions are affected by the coordinate system. From the public 
-interface these are:
-
-	- TODO
-
 The camera can also set a margin for the "focus on" functions to avoid constant
 scrolling. The margin is always in screen coordinates. These functions are
 meant as quick tools but the system is better controlled by the application
@@ -106,6 +101,8 @@ class camera
 	std::function<point(point, point)>	world_to_pos_f;
 	std::function<int(int, int)>		y_addition_f;
 	std::function<int(int, int)>		y_substraction_f;
+	std::function<bool(int, int)>		go_to_less_than_f;
+	std::function<bool(int, int)>		go_to_greater_than_f;
 };
 
 } //Fin namespace DLibV

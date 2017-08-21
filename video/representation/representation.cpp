@@ -57,6 +57,9 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 
 	//TODO, how about "view position"? Is that still valid?. Not as long as we use "focus box".
 	//and maybe not as long as we wanto to express this as cartesian data.
+
+	//TODO: Once this changes, we'd still need to change it in group_representation.cpp.
+
 	if(visible && (skip_take || pcamera.get_focus_box().collides_with(view_position, true))) 
 	{
 		pscreen.set_camera(pcamera);
