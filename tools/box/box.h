@@ -8,8 +8,7 @@
 namespace ldt
 {
 
-/*Una caja para no estar siempre comprometidos con la representación SDL de 
-la misma. Incluye además algunos métodos típicos de colisión y cosas así.*/
+//!A box with the origin at top-left corner. Width extends right, height down.
 
 template<typename T, typename U>
 class box

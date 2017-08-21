@@ -48,19 +48,14 @@ representation& representation::operator=(const representation& o)
 
 void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take)
 {
-	//TODO: This is_in_focus is not compatible with cartesian coordinates, I am afraid,
-	//since negative values of the Y axis have different significance here. Thus the
-	//camera system is DESIGNED to be in screen axis... unless the focus box returned
-	//is somewhat mirrored. In that case we could be game again.
-
-	//TODO: Here is the largest proble,
-
-	//TODO, how about "view position"? Is that still valid?. Not as long as we use "focus box".
-	//and maybe not as long as we wanto to express this as cartesian data.
-
 	//TODO: Once this changes, we'd still need to change it in group_representation.cpp.
 
-	if(visible && (skip_take || pcamera.get_focus_box().collides_with(view_position, true))) 
+	//Using the draw info allows us to work with cartesian coordinates.
+	const auto cf&=pcamera.get_draw_info();
+	const auto vp&=view_position;
+
+//	if(visible && (skip_take || pcamera.get_focus_box().collides_with(view_position, true)))
+	if(visible && (skip_take || ldt::rects_overlap(cf.rel.x, cf.rel.y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true)))
 	{
 		pscreen.set_camera(pcamera);
 		pre_render_transform(pcamera.get_draw_info());

@@ -48,8 +48,12 @@ void group_representation::clear()
 
 void group_representation::draw(screen& p_screen, const camera& pcamera, bool skip_take)
 {
-	
-	if(is_visible() && (skip_take || pcamera.get_focus_box().collides_with(get_view_position(), true) ))
+	//Using the draw info allows us to work with cartesian coordinates.
+	const auto cf&=pcamera.get_draw_info();
+	const auto vp&=get_view_position();
+
+//	if(is_visible() && (skip_take || pcamera.get_focus_box().collides_with(get_view_position(), true) ))
+	if(is_visible() && (skip_take || ldt::rects_overlap(cf.rel.x, cf.rel.y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true)))
 	{
 		draw_internal(p_screen, &pcamera);
 	}

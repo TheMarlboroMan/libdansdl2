@@ -70,7 +70,7 @@ class camera
 	void			clear_center_margin();
 
 	//!Return a draw_info struct. The information contained may not be the same as the one exposed by the public interface due to coordinate system differences.
-	const draw_info		get_draw_info() const {return d_info;}
+	const draw_info&	get_draw_info() const {return d_info;}
 
 	private:
 
