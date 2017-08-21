@@ -51,10 +51,13 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 	//TODO: Once this changes, we'd still need to change it in group_representation.cpp.
 
 	//Using the draw info allows us to work with cartesian coordinates.
-	const auto cf&=pcamera.get_draw_info();
+	const auto& cf=pcamera.get_draw_info();
 
 //	if(visible && (skip_take || pcamera.get_focus_box().collides_with(view_position, true)))
-	if(visible && (skip_take || ldt::rects_overlap(cf.rel.x, cf.rel.y, cf.view_w, cf.view_h, view_position.origin.x, view_position.origin.y, view_position.w, view_position.h, true)))
+
+	//We need to force the template typenames, since the parameters don't match.
+	if(visible && (skip_take || rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, view_position.origin.x, view_position.origin.y, view_position.w, view_position.h, true
+		)))
 	{
 		pscreen.set_camera(pcamera);
 		pre_render_transform(pcamera.get_draw_info());

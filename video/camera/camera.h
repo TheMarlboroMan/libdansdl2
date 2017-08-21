@@ -20,14 +20,17 @@ like controlling the zoom, pruning screen objects out of focus and many others.
 A particularly interesting feature is the coordinate system. The focus box will
 always be assumed to be a rectangle with its origin in the top-left corner,
 its width extending right and its height extending down (just as the screen
-coordinate system used on the library).
+coordinate system used on the library). By default, the camera uses a screen
+coordinate system (Y points down) but given that it is often a point of 
+contact between the library and the client code, a cartesian coordinate option
+is offered.
 
-As for coordinate systems: by default the screen system (Y points down) is activated
-but the cartesian one can be used (Y points up). This does not change the origin
-and value of the height and width concepts of the focus box, but helps keep
+This cartesian system does not change how the camera works, the origin 
+or value of the height and width concepts of the focus box, but helps keep
 the camera in sync with cartesian-minded applications (what it does is to actually
 reverse the Y value in an internal structure). Whatever the system chosen, all
-representations MUST be in "screen" form.
+representations MUST be in "screen" form. The camera will not perform the
+transformations itself.
 
 The camera can also set a margin for the "focus on" functions to avoid constant
 scrolling. The margin is always in screen coordinates. These functions are
