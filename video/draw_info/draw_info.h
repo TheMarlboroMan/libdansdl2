@@ -11,7 +11,8 @@ namespace ldv
 	view_w - view_h: width and height of the focus box (zoom applied).
 	zoom: zoom value.
 
-Application classes are encouraged to get information from here, instead of requesting separate data pieces from a camera object.
+Application classes are discouraget to get information from here, instead, 
+requesting data from the camera object is the way to go.
 */
 
 struct draw_info

@@ -70,8 +70,6 @@ class representation
 	float			get_alphaf() const {return val_alpha;}
 	//!Gets rotation data.
 	const rotation_transform& get_transformation_rotation() const {return transformation;}
-	//!Indicates if the view position collides with the given rect. Used by cameras.
-	bool 			is_in_focus(const rect& prect) const {return prect.collides_with(view_position, true);}
 	//!Indicates if is visible. An invisible representation is ignored.
 	bool 			is_visible() const {return visible;}
 	//!Indicates if any rotation transformation has happened (rotation center or angle).

@@ -48,7 +48,16 @@ representation& representation::operator=(const representation& o)
 
 void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take)
 {
-	if(visible && (skip_take || is_in_focus(pcamera.get_focus_box()))) 
+	//TODO: This is_in_focus is not compatible with cartesian coordinates, I am afraid,
+	//since negative values of the Y axis have different significance here. Thus the
+	//camera system is DESIGNED to be in screen axis... unless the focus box returned
+	//is somewhat mirrored. In that case we could be game again.
+
+	//TODO: Here is the largest proble,
+
+	//TODO, how about "view position"? Is that still valid?. Not as long as we use "focus box".
+	//and maybe not as long as we wanto to express this as cartesian data.
+	if(visible && (skip_take || pcamera.get_focus_box().collides_with(view_position, true))) 
 	{
 		pscreen.set_camera(pcamera);
 		pre_render_transform(pcamera.get_draw_info());
@@ -123,6 +132,8 @@ void representation::pre_render_transform(const draw_info& iv)
 {
 	glMatrixMode(GL_MODELVIEW);
 	
+	//Here we are always dealing with screen values...
+
 	auto pos=get_position();
 	int 	x=iv.pos_x+pos.x-iv.rel_x, 
 		y=iv.pos_y+pos.y-iv.rel_y;
