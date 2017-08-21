@@ -41,8 +41,6 @@ void camera::go_to(point p)
 		//we'll center on the limits. Otherwise, we set the origin as
 		//necessary respecting the limits.
 
-		//TODO: And then, do the cartesian version.
-
 		auto calculate=[](int foc_dimension, int limit_origin, int limit_dimension, int pos)
 		{
 			if(foc_dimension <= limit_dimension) //Set the origin in the proposed point, according to the limits...
@@ -51,21 +49,39 @@ void camera::go_to(point p)
 					limit_max=limit_origin+limit_dimension;
 
 				if(pos < limit_origin) return limit_origin;
-				else if(end > limit_max) return limit_max-dimension;
-				else	//pos >= limit_origin && end  <= limit_max
-					return pos;
+				else if(end > limit_max) return limit_max-foc_dimension;
+				else return pos;
 			}
 			else //Set the focus origin so it centers on the limits.
 			{
-				//TODO: here is the fucking operation again...
-//				return limit_origin+limit_dimension-limit_origin-foc_dimension / 2
-//Fuck.. The calculation changes for the Y cartesian... Goddamnt int.
 				return ((limit_dimension-foc_dimension) / 2) + limit_origin;
 			}
 		};
+		
+		auto calculate_cartesian_y=[](int foc_dimension, int limit_origin, int limit_dimension, int pos) -> int
+		{
+			if(foc_dimension <= limit_dimension) //Set the origin in the proposed point, according to the limits...
+			{
+				int 	end=pos + foc_dimension,
+					limit_max=limit_origin+limit_dimension;
 
-		focus_box.origin.x=calculate(focus_box.w, limits.x, limits.w, p.x);
-		focus_box.origin.y=calculate(focus_box.h, limits.y, limits.h, p.y);
+				//The comparison changes.
+				if(pos > limit_origin) return limit_origin;
+				//The comparison changes	The sign changes too.
+				else if(end < limit_max) return limit_max+foc_dimension;
+				else return pos;
+			}
+			else //Set the focus origin so it centers on the limits. Cartesian coordinates will need further additions.
+			{
+				//TODO: Additional data is given.
+				return ((limit_dimension-foc_dimension) / 2) + limit_origin + foc_dimension;
+			}
+		};
+
+		focus_box.origin.x=calculate(focus_box.w, limits.origin.x, limits.w, p.x);
+		focus_box.origin.y=coordinate_system==tsystem::screen ? 
+			calculate(focus_box.h, limits.origin.y, limits.h, p.y)
+			: calculate_cartesian_y(focus_box.h, limits.origin.y, limits.h, p.y);
 	}
 	else
 	{
