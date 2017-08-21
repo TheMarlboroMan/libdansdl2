@@ -21,16 +21,18 @@ namespace ldt
 
 //!Converts degrees to radians.
 template<typename T>
-float deg_to_rad(T val) {return (val * M_PI) / 180.0;}
+T deg_to_rad(T val) {return (val * (T)M_PI) / (T)180;}
 
 //!Converts radians to degrees.
 template<typename T>
-float rad_to_deg(T val) {return ( val * 180.0) / M_PI;}
+T rad_to_deg(T val) {return ( val * (T)180) / (T)M_PI;}
 
 //!Determines if segments overlap.
 
 //!Only valid for points in the same plane. The comparison is done by
-//!negating "segments don't overlap".
+//!negating "segments don't overlap". It works with the assumption that the
+//!"begin" values are always smaller than the "end" ones.
+
 template<typename T>
 bool segments_overlap(T aini, T afin, T bini, T bfin, bool unit_is_collision=false)
 {
@@ -44,15 +46,16 @@ bool segments_overlap(T aini, T afin, T bini, T bfin, bool unit_is_collision=fal
         }
 }
 
-float degree_360(float f);
-float angle_from_points(float, float, float, float);
-float percent(float, float);
+template<typename T>
+T percent(T p_part, T p_total)
+{
+	T zero{};
+	if(p_total==zero) return zero;
+	else return (p_part * (T)100) / p_total;
+}
 
 template <typename T, typename U> bool rects_overlap(T, T, U, U, T, T, U, U, bool=false);
 template <typename T, typename U> bool rects_overlap(T, T, U, U, T, T, U, U, T&, T&, U&, U&, bool=false);
-template <typename T, typename U> void position_dimension_segments(T, T, T, T, T&, U&);
-template <typename T, typename U> void position_dimension_segments_partial_solution(T, T, T, T, T&, U&);
-template <typename T, typename U> void position_dimension_segments_complete_solution(T, T, T, T, T&, U&);
 template <typename T, typename U> bool box_in_box(T, T, U, U, T, T, U, U);
 template <typename T, typename U> bool point_in_box(T, T, U, U, T, T);
 }

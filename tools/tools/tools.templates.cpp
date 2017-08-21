@@ -1,56 +1,31 @@
 using namespace ldt;
 
-//!Determines if two rectangles overlap.
+#include <vector>
+#include <algorithm>
+
+//!Determines if two rectangles overlap. 
 
 template<typename T, typename U> 
 bool ldt::rects_overlap(T x1, T y1, U w1, U h1, T x2, T y2, U w2, U h2, bool unit_is_collision)
 {
-        bool in_x;
-        bool in_y;
-
-	T x2_w2=(x2+w2);
-	T x1_w1=(x1+w1);
-	T y2_h2=(y2+h2);
-	T y1_h1=(y1+h1);
+	T 	endx2=x2+w2,
+		endx1=x1+w1,
+		endy2=y2+h2,
+		endy1=y1+h1;
 
         //Check if not colliding and negate...
-	/* Proof...
-
-0	     10           
-|---- A ------|---- B ----|
-	     10          20
-
-		If grazing is collision:
-			in_x=!( (x2_w2 < x1) || (x2 > x1_w1) );
-			in_x=!( (20 < 0) || (10 > 10) );
-			in_x=!( false || false );
-			in_x=!(false)
-			in_x=true
-
-		If not...
-
-			in_x=!( (x2_w2 <= x1) || (x2 >= x1_w1) );
-			in_x=!( (20 <= 0) || (10 >= 10) );
-			in_x=!( false || true );
-			in_x=!(true)
-			in_x=false
-	*/
+	auto with_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 < p1 || p2 > e1)};
+	auto no_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 <= p1 || p2 >= e1)};
 	
-        if(unit_is_collision)
-        {
-		in_x=!( (x2_w2 < x1) || (x2 > x1_w1) );
-		in_y=!( (y2_h2 < y1) || (y2 > y1_h1) );
-        }
-        else
-        {
-		in_x=!( (x2_w2 <= x1) || (x2 >= x1_w1) );
-		in_y=!( (y2_h2 <= y1) || (y2 >= y1_h1) );
-        }
+	bool in_x=unit_is_collision ? with_unit_collision(x1, x2, endx1, endx2) : no_unit_collision(x1, x2, endx1, endx2),
+		in_y=unit_is_collision ? with_unit_collision(y1, y2, endy1, endy2) : no_unit_collision(y1, y2, endy1, endy2),
 
         return in_x&&in_y;
 }
 
 //!Determines if two rectangles overlap and writes the overlap as a result.
+
+//!When one box contains the other, the smaller one is considered the overlap.
 
 template <typename T, typename U> 
 bool ldt::rects_overlap(
@@ -65,107 +40,52 @@ bool ldt::rects_overlap(
 	}
 	else
 	{
-		//This is the common box.
+		T endx1=x1+w1;
+		T endx2=x2+w2;
+		T endy1=y1+h1;
+		T endy2=y2+h2;
 
-		T x1_w1=x1+w1;
-		T x2_w2=x2+w2;
-		T y1_h1=y1+h1;
-		T y2_h2=y2+h2;
+		std::vector<T> 	solution_x={x1, x2, endx1, endx2},
+				solution_y={y1, y2, endy1, endy2};
 
-		posicion_dimension_segmentos(x1, x1_w1, x2, x2_w2, rx, rw);
-		posicion_dimension_segmentos(y1, y1_h1, y2, y2_h2, ry, rh);
+		std::sort(std::begin(solution_x), std::end(solution_x);
+		std::sort(std::begin(solution_y), std::end(solution_y);
+
+		rx=solution_x[1];
+		wx=solution_x[2]-rx;
+		ry=solution_y[1];
+		wy=solution_y[2]-ry;
 
 		//Important when small dimensions enter the game...
-		if(!unit_is_collision)
-		{
-			if(rw) rw++;
-			if(rh) rh++;
-		}		
+		//TODO: Really? Explain why.
+//		if(!unit_is_collision)
+//		{
+//			if(rw) rw++;
+//			if(rh) rh++;
+//		}
 
 		return true;
 	}
 }
 
-//!Obtains the overlap of two segments and writes position and dimension.
-template <typename T, typename U> 
-void ldt::position_dimension_segments(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
-{
-	bool c1=aini < bini;
-	bool c2=afin < bfin;
-	bool c3=bini < aini;
-	bool c4=bfin < afin;
-	bool c5=aini == bini;
-	bool c6=afin == bfin;
-	
-	//The same...
-	if(c5 && c6)
-	{
-		position_dimension_segments_complete_solution(bini, bfin, aini, afin, resultado_pos, resultado_dim);
-	}
-	//A to the left of B
-	else if(c1 && c2) 
-	{
-		position_dimension_segments_partial_solution(aini, afin, bini, bfin, resultado_pos, resultado_dim); //Caso 1
-	}
-	//B to the left of A
-	else if(c3 && c4) 
-	{
-		position_dimension_segments_partial_solution(bini, bfin, aini, afin, resultado_pos, resultado_dim); //Caso 2
-	}
-	//A inside B
-	else if(!c1 && !c4) 
-	{
-		position_dimension_segments_complete_solution(aini, afin, bini, bfin, resultado_pos, resultado_dim); //Caso 3
-	}
-	//B inside A
-	else if(!c2 && !c3) 
-	{
-		position_dimension_segments_complete_solution(bini, bfin, aini, afin, resultado_pos, resultado_dim); //Caso 4
-	}
-}
-
-//!Partial solution helper.
-
-/*
-A segment is partially inside the other:
-
-	|------ SEGMENT A ---------|
-			     XXXXXXXX
-			     |-------- SEGMENT B ------|
-*/
-
-template <typename T, typename U> 
-void ldt::position_dimension_segments_partial_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
-{
-	resultado_pos=bini;
-	resultado_dim=afin-bini;
-}
-
-//!Partial solution helper.
-/*
-A segment is completely inside the other...
-
-		|--- SEGMENT A ----|
-	|-------XXXX SEGMENT B XXXXX ---|
-*/
-
-template <typename T, typename U> 
-void ldt::position_dimension_segments_complete_solution(T aini, T afin, T bini, T bfin, T &resultado_pos, U &resultado_dim)
-{
-	resultado_pos=aini;
-	resultado_dim=afin-aini;
-}
-
 //!Determines if a point is inside a box.
+
+//!The function is coordinate system agnostic but in order to work with 
+//!cartesian coordinates the height must extend upwards.
+
 template <typename T, typename U> 
 bool ldt::point_in_box(T cx, T cy, U cw, U ch, T px, T py)
 {
-        return  (cx <= px && (T)(cx+cw) >= px)
-        &&
-        (cy <= py && (T)(cy+ch) >= py);
+	auto in_limits=[](T p, T pos, T dim) -> bool {return p >= pos && p <= pos+dim;};
+        return in_limits(px, cx, cw) && in_limits(py, cy, ch);
 }
 
 //!Determines if a box contains another box.
+
+//!The function is coordinate system agnostic but in order to work with 
+//!cartesian coordinates the height must extend upwards. The first set of
+//!arguments builds a "small" box, while the second builds the "large" one.
+
 template <typename T, typename U> 
 bool ldt::box_in_box(T pqx, T pqy, U pqw, U pqh, T grx, T gry, U grw, U grh)
 {

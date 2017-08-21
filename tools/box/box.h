@@ -8,7 +8,11 @@
 namespace ldt
 {
 
-//!A box with the origin at top-left corner. Width extends right, height down.
+//!A box. 
+
+//!The only thing that is given here is that height goes towards the positive
+//!infinite in the Y axis. This means "down" in screen coordinates and "up"
+//!in cartesian ones. If this rule is respected, its functions should work.
 
 template<typename T, typename U>
 class box
