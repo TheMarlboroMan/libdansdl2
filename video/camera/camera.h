@@ -17,6 +17,13 @@ namespace ldv
 of any representation. In that case, it has plenty of interesting features, 
 like controlling the zoom, pruning screen objects out of focus and many others.
 
+//TODO: Why this assumption? It is tearing everything apart!. It is okay that
+we think that on its interactions with the representations, but that's it.
+Thing is... I am not sure of this whole cartesian deal anymore... Maybe
+it is the app what must adapt itself. After all, "height" means upwards towards
+the scale. There is the bit of the camera that needs adapting to know how
+to communicate with the representations, but that's the full extent of it...
+
 A particularly interesting feature is the coordinate system. The focus box will
 always be assumed to be a rectangle with its origin in the top-left corner,
 its width extending right and its height extending down (just as the screen
@@ -56,6 +63,7 @@ class camera
 	int			get_x() const {return focus_box.origin.x;}
 	//!Gets the y position for the focus box.
 	int 			get_y() const {return focus_box.origin.y;}
+	bool			in_focus(const rect&) const;
 	void 			set_zoom(double);
 	void                    set_position(point);
 	void			set_coordinate_system(tsystem);

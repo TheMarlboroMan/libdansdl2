@@ -250,3 +250,16 @@ void camera::set_coordinate_system(tsystem v)
 		break;
 	}
 }
+
+//!Checks if the rect is completely or partly inside the camera focus. 
+
+//!The rect is expected to represent the bounding box of an object in world
+//!coordinates (not a drawable object). This function is sensitive to the 
+//!coordinate system selected.
+
+bool camera::in_focus(const rect& r) const
+{
+	//TODO: Two functions, or two calculations. Choose...
+	//The screen calculation 
+	return r.collides_with(focus_box);
+}

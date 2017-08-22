@@ -14,13 +14,13 @@ bool ldt::rects_overlap(T x1, T y1, U w1, U h1, T x2, T y2, U w2, U h2, bool uni
 		endy1=y1+h1;
 
         //Check if not colliding and negate...
-	auto with_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 < p1 || p2 > e1)};
-	auto no_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 <= p1 || p2 >= e1)};
+	auto with_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 < p1 || p2 > e1);};
+	auto no_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 <= p1 || p2 >= e1);};
 	
 	bool in_x=unit_is_collision ? with_unit_collision(x1, x2, endx1, endx2) : no_unit_collision(x1, x2, endx1, endx2),
-		in_y=unit_is_collision ? with_unit_collision(y1, y2, endy1, endy2) : no_unit_collision(y1, y2, endy1, endy2),
+		in_y=unit_is_collision ? with_unit_collision(y1, y2, endy1, endy2) : no_unit_collision(y1, y2, endy1, endy2);
 
-        return in_x&&in_y;
+        return in_x && in_y;
 }
 
 //!Determines if two rectangles overlap and writes the overlap as a result.
@@ -48,21 +48,13 @@ bool ldt::rects_overlap(
 		std::vector<T> 	solution_x={x1, x2, endx1, endx2},
 				solution_y={y1, y2, endy1, endy2};
 
-		std::sort(std::begin(solution_x), std::end(solution_x);
-		std::sort(std::begin(solution_y), std::end(solution_y);
+		std::sort(std::begin(solution_x), std::end(solution_x));
+		std::sort(std::begin(solution_y), std::end(solution_y));
 
 		rx=solution_x[1];
-		wx=solution_x[2]-rx;
+		rw=solution_x[2]-rx;
 		ry=solution_y[1];
-		wy=solution_y[2]-ry;
-
-		//Important when small dimensions enter the game...
-		//TODO: Really? Explain why.
-//		if(!unit_is_collision)
-//		{
-//			if(rw) rw++;
-//			if(rh) rh++;
-//		}
+		rh=solution_y[2]-ry;
 
 		return true;
 	}
