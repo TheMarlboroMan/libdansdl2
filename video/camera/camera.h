@@ -17,27 +17,14 @@ namespace ldv
 of any representation. In that case, it has plenty of interesting features, 
 like controlling the zoom, pruning screen objects out of focus and many others.
 
-//TODO: Why this assumption? It is tearing everything apart!. It is okay that
-we think that on its interactions with the representations, but that's it.
-Thing is... I am not sure of this whole cartesian deal anymore... Maybe
-it is the app what must adapt itself. After all, "height" means upwards towards
-the scale. There is the bit of the camera that needs adapting to know how
-to communicate with the representations, but that's the full extent of it...
-
-A particularly interesting feature is the coordinate system. The focus box will
-always be assumed to be a rectangle with its origin in the top-left corner,
-its width extending right and its height extending down (just as the screen
-coordinate system used on the library). By default, the camera uses a screen
-coordinate system (Y points down) but given that it is often a point of 
-contact between the library and the client code, a cartesian coordinate option
-is offered.
-
-This cartesian system does not change how the camera works, the origin 
-or value of the height and width concepts of the focus box, but helps keep
-the camera in sync with cartesian-minded applications (what it does is to actually
-reverse the Y value in an internal structure). Whatever the system chosen, all
-representations MUST be in "screen" form. The camera will not perform the
-transformations itself.
+A particularly interesting feature is the coordinate system: in "screen", 
+the focus box will be assumed to be a rectangle with its origin in the top-left 
+corner its width extending right and its height extending down (just as the screen
+coordinate system used on the library). In "cartesian", the origin is the 
+bottom-left corner and the "height" parameter "ascends". The choice of coordinate
+system makes the camera act as a mediator between screen and application space.
+Whatever the system chosen, all representations MUST be in "screen" form. 
+The camera will not perform the transformations itself.
 
 The camera can also set a margin for the "focus on" functions to avoid constant
 scrolling. The margin is always in screen coordinates. These functions are
@@ -55,7 +42,7 @@ class camera
 
 	//!The focus box represents the place in space the camera points at.
 	const rect& 		get_focus_box() const {return focus_box;}
-	//!The pos box is the place objects in the camera will be represented at (camera dimensions may differ from window size).
+	//!The pos box is the place objects in the camera will be represented at (camera dimensions may differ from window size). Represented by screen coordinates.
 	const rect& 		get_pos_box() const {return pos_box;}
 	//!Returns the zoom value.
 	double			get_zoom() const {return d_info.zoom;}
@@ -110,10 +97,6 @@ class camera
 	tsystem			coordinate_system;
 
 	std::function<point(point, point)>	world_to_pos_f;
-	std::function<int(int, int)>		y_addition_f;
-	std::function<int(int, int)>		y_substraction_f;
-	std::function<bool(int, int)>		go_to_less_than_f;
-	std::function<bool(int, int)>		go_to_greater_than_f;
 };
 
 } //Fin namespace DLibV

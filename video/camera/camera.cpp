@@ -29,9 +29,7 @@ void camera::sync()
 //!chance that the camera will go out of limits into the limited space: if
 //!the focus box has a dimension smaller than the camera, the camera will try
 //!to center on it, triggering this behaviour and creating sort of a 
-//!"letterbox" effect. Coordinate system set on the camera will have an 
-//!effect in the result, as cartesian coordinates rise with the Y axis positives
-//!unlike in screen coordinates.
+//!"letterbox" effect. 
 
 void camera::go_to(point p)
 {
@@ -48,8 +46,8 @@ void camera::go_to(point p)
 				int 	end=pos + foc_dimension,
 					limit_max=limit_origin+limit_dimension;
 
-				if(go_to_less_than_f(pos, limit_origin)) return limit_origin;
-				else if(go_to_greater_than_f(end, limit_max)) return y_substraction_f(limit_max, foc_dimension);
+				if(pos < limit_origin) return limit_origin;
+				else if(end > limit_max) return limit_max-foc_dimension;
 				else return pos;
 			}
 			else //Set the focus origin so it centers on the limits.
@@ -60,8 +58,6 @@ void camera::go_to(point p)
 		
 		focus_box.origin.x=calculate(focus_box.w, limits.origin.x, limits.w, p.x);
 		focus_box.origin.y=calculate(focus_box.h, limits.origin.y, limits.h, p.y);
-
-		if(coordinate_system==tsystem::cartesian) focus_box.origin.y+=focus_box.h;
 	}
 	else
 	{
@@ -111,20 +107,18 @@ void camera::center_on(point p)
 	}
 	else
 	{
-		go_to({p.x-((int)focus_box.w/2), y_substraction_f(p.y, (int)focus_box.h/2)});
+		go_to({p.x-((int)focus_box.w/2), p.y-((int)focus_box.h/2)});
 	}
 }
 
 //!Centers the focus box on the middle of the rect.
 
-//!The coordinate system is irrelevant as this will merely move the camera
-//!focus position. The rectangle passed will always have its origin in the
-//!top left corner and its width and height will extend to the right and below
-//!respectively.
+//!The function ignores coordinate systems. If cartesian is chosen, the origin
+//!of the rect will be assumed to be its bottom-left corner.
 
 void camera::center_on(const rect& r)
 {
-	center_on({r.origin.x+((int)r.w/2), y_addition_f(r.origin.y, (int)r.h/2)});
+	center_on({r.origin.x+((int)r.w/2), r.origin.y+((int)r.h/2)});
 }
 
 //!Moves the top-left point of the focus box by the specified parameters (x and y).
@@ -140,9 +134,8 @@ void camera::move_by(int p_x, int p_y)
 
 //!Sets a limit to camera movement.
 
-//!The origin will always point at the top-left, with width and height 
-//!extending right and down regardless of the coordinate system. The same
-//!values mean different things in different coordinate systems.
+//!The rect is assumed to correspond with the camera's coordinate system (that
+//!is, top-left for screen and bottom-left for cartesian).
 
 void camera::set_limits(const rect& r)
 {
@@ -207,7 +200,7 @@ point camera::	world_to_pos(point p) const
 //!Converts world rect to pos rect
 
 //!Where pos rect is absolute position on the screen. The values returned
-//!for this function depend on the coordinate system of the camera.
+//!from this function depend on the coordinate system of the camera.
 
 rect camera::world_to_pos(const rect& r) const
 {
@@ -236,17 +229,9 @@ void camera::set_coordinate_system(tsystem v)
 	{
 		case tsystem::screen:
 			world_to_pos_f=camera::world_to_pos_screen;
-			y_substraction_f=(std::minus<int>());
-			y_addition_f=(std::plus<int>());
-			go_to_less_than_f=(std::less<int>());
-			go_to_greater_than_f=(std::greater<int>());
 		break;
 		case tsystem::cartesian:
 			world_to_pos_f=camera::world_to_pos_cartesian;
-			y_substraction_f=(std::plus<int>());
-			y_addition_f=(std::minus<int>());
-			go_to_less_than_f=(std::greater<int>());
-			go_to_greater_than_f=(std::less<int>());
 		break;
 	}
 }
@@ -259,7 +244,7 @@ void camera::set_coordinate_system(tsystem v)
 
 bool camera::in_focus(const rect& r) const
 {
-	//TODO: Two functions, or two calculations. Choose...
-	//The screen calculation 
+	//TODO: Two functions, or two calculations. Choose... Or do not choose and
+	//rework it.
 	return r.collides_with(focus_box);
 }
