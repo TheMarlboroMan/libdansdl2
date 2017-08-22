@@ -84,9 +84,9 @@ class camera
 	rect			world_to_pos(const rect&) const;
 
 	//Properties...
-	draw_info		d_info;
-	rect 			focus_box;	//! <Box pointed at in world values. Width and height are related to zoom values.
-	rect	 		pos_box;	//! <Box position on screen.
+	draw_info		d_info;		//!< Whatever the coordinate system chosen, this always stores values in screen space.
+	rect 			focus_box;	//!< Box pointed at in world values. Width and height are related to zoom values.
+	rect	 		pos_box;	//!< Box position on screen.
 
 	bool 			with_limit;
 	rect			limits;
