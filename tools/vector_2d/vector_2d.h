@@ -49,6 +49,12 @@ struct vector_2d
 		return *this;
 	}
 
+	//!Checks for equality in values.
+	bool					operator==(const vector_2d<T>& v) const
+	{
+		return x==v.x && y==v.y;
+	}
+
 	//!Adds two vectors and returns the result as a new object.
 	vector_2d<T> operator+(const vector_2d<T> &o)
 	{

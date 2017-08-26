@@ -12,7 +12,7 @@
 namespace ldt
 {
 
-//!Simple 2d polygon defined from vertexes. Clockwise winding.
+//!Simple 2d polygon defined from vertexes. Clockwise winding. No collision capabilities.
 
 //!A polygon is defined by a point (center) and a vector of point (vertexes). 
 //!The center is used as an anchor to rotate it. Many additional function
@@ -86,6 +86,12 @@ class polygon_2d_vertexes
 	//!Sets the center.
 	void				set_center(const tpoint& p) {center=p;}
 
+	//!Checks polygon equality (in both vertexes and center).
+	bool				operator==(const polygon_2d_vertexes<T>& p) const
+	{
+		return center==p.center && vertexes==p.vertexes;
+	}
+
 	protected:
 
 	tpoint				center;
@@ -119,6 +125,12 @@ struct segment_2d
 	{
 		v1+=p;
 		v2+=p;
+	}
+
+	//!Checks for strict equality.
+	bool				operator==(const segment_2d<T> s) const
+	{
+		return v1==s.v1 && v2==s.v2 && direction==s.direction;
 	}
 };
 
@@ -158,7 +170,7 @@ template<typename T> struct SAT_mtv_result;
 template<typename T> bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b, bool=false);
 template<typename T> SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b, bool=false);
 
-//!Complex polygon.
+//!Complex polygon with collision capabilities.
 
 //!The complex polygon has center, vertices and also a set of segments connecting
 //!each vertex pair. When all vertexes have been added, the polygon must be 
@@ -251,6 +263,12 @@ class polygon_2d:
 	//!Gets all segments.
 
 	const std::vector<segment_2d<T> >&	get_segments() const {return segments;}
+
+	//!Checks polygon equality (in both vertexes and center).
+	bool					operator==(const polygon_2d<T>& p) const
+	{
+		return polygon_2d_vertexes<T>::operator==(p) && segments==p.segments;
+	}
 
 	private:
 
