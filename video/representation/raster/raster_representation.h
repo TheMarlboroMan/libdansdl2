@@ -68,7 +68,7 @@ class raster_representation:
 	void 			set_invert_horizontal(bool v) {transformation.horizontal=v;}
 	//!Flips the representation vertically without changing its position.
 	void 			set_invert_vertical(bool v) {transformation.vertical=v;}
-	//!Sets the fill brush values.
+	//!Sets the fill brush values. When these are set to anything than 0, the "location" rect will be filled with "brush" sizes patches of "clip".
 	void			set_brush(int w, int h) {brush.w=w; brush.h=h;}
 	void 			set_location(rect);
 	void 			set_clip(rect);

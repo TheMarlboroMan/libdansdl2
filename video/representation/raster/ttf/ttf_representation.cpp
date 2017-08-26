@@ -242,9 +242,12 @@ void ttf_representation::set_text_internal(const std::string& c)
 	if(c!=text)
 	{
 		//No se limpia la textura: se va a reutilizar.
+
+		auto pos=get_position();
 		text=c;
 		reset_calculations();
 		create_texture();
+		go_to(pos); //Setting the text incidentally resets the position.
 	}
 }
 
