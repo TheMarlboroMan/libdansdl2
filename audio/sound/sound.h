@@ -45,15 +45,22 @@ class sound
 
 struct sound_struct
 {
-	sound *	 		sound_ptr; //! <This has to be copy constructible, ergo the pointer.
-	short int 		volume;	//! <-1 means "no changes" to the channel volume.
-	short int 		repeat; //! <-1 means "infinite".
-	int 			volume_left;
+	sound *	 		sound_ptr; //!< This has to be copy constructible, ergo the pointer.
+	short int 		volume;	//!< -1 means "no changes" to the channel volume.
+	short int 		repeat; //!< -1 means "infinite".
+	int 			volume_left; //!< 127 is the max value for left and right.
 	int 			volume_right;
 	int 			ms_fade;
 	
 	//!Checks whether the sound_ptr is ready. Will crash if there is no sound pointer.
 	bool 			is_ready() 	{return sound_ptr->is_ready();}
+
+	//!A sound structure. 
+
+	//!Default volume is -1 (unchanged)
+	//!Default repetition is 0.
+	//!Default left and right volume is 127 (max for both).
+	//!Default fade is 0milliseconds.
 
 	sound_struct(sound& s, int v=-1, int r=0, int pvi=127, int pvd=127, int msf=0)
 		:sound_ptr(&s), volume(v), repeat(r), 
