@@ -43,26 +43,26 @@ void resource_manager::insert_music(int key, const std::string& path)
 
 //!Will throw a std::runtime_error if the key does not exist.
 
-sound& resource_manager::get_sound(int key)
+sound& resource_manager::get_sound(int key) const
 {
 	if(!sounds.count(key))
 	{
 		throw std::runtime_error("Requested non existing sound key");
 	}
 
-	return *sounds[key];
+	return *sounds.at(key);
 }
 
 //!Retrieves the music object with the specified key.
 
 //!Will throw a std::runtime_error if the key does not exist.
 
-music& resource_manager::get_music(int key)
+music& resource_manager::get_music(int key) const
 {
 	if(!musics.count(key))
 	{
 		throw std::runtime_error("Requested non existing music key");
 	}
 
-	return *musics[key];
+	return *musics.at(key);
 }

@@ -43,7 +43,7 @@ class real_audio_channel
 	//!Sets the monitoring value. A monitored channel does not call free() when SDL's callback is issued at the end of playback. This allows for finer, yet useless control in most cases (maybe you want to keep the channel from reverting to "idle").
 	void 				set_monitoring(bool v) {monitoring=v;}
 	void 				set_volume(int);
-	void				set_panning(int, int);
+	void				set_stereo_volume(sound_panning);
 	void				clear_panning();
 	void 				free();
 	void 				do_callback();

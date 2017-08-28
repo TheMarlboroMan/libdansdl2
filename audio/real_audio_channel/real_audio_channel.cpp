@@ -110,26 +110,20 @@ int real_audio_channel::play(const sound_struct& e)
 		: Mix_FadeInChannel(index, (*sound_playing).get_data(), repeat, e.ms_fade);
 
 //#ifndef WINCOMPIL
-	if(e.volume_left!=-1 && e.volume_right!=-1) 
+	if(e.panning.left!=-1 && e.panning.right!=-1) 
 	{
-		set_panning(e.volume_left, e.volume_right);
+		set_stereo_volume(e.panning);
 	}
 //#endif
 
 	return res;
 }
 
-//!Sets the panning values.
+//!Sets the left and right channel volumes..
 
-//!127 is the maximum for both parameters.
-//!According to the docs, "The easiest way to do true panning is to call 
-//!Mix_SetPanning(channel, left, 254 - left); so that the total volume is 
-//!correct, if you consider the maximum volume to be 127 per channel for center, 
-//!or 254 max for left, this works, but about halves the effective volume.
-
-void real_audio_channel::set_panning(int volume_left, int volume_right)
+void real_audio_channel::set_stereo_volume(sound_panning sp)
 {
-	Mix_SetPanning(index, volume_left, volume_right);
+	Mix_SetPanning(index, sp.left, sp.right);
 }
 
 //!Removes panning from the channel.

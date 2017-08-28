@@ -150,15 +150,11 @@ void audio_channel::clear_callback_listener()
 	channel->clear_callback_listener();
 }
 
-//!127 is the maximum for both parameters.
-//!According to the docs, "The easiest way to do true panning is to call 
-//!Mix_SetPanning(channel, left, 254 - left); so that the total volume is 
-//!correct, if you consider the maximum volume to be 127 per channel for center, 
-//!or 254 max for left, this works, but about halves the effective volume.
+//!Sets the left and right channel volumes..
 
-void audio_channel::set_panning(int volume_left, int volume_right)
+void audio_channel::set_stereo_volume(sound_panning sp)
 {
-	channel->set_panning(volume_left, volume_right);
+	channel->set_stereo_volume(sp);
 }
 
 //!Removes panning from the channel.

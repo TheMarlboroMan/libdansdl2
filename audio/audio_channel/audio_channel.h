@@ -54,7 +54,7 @@ class audio_channel
 	int 			get_volume() const;
 	void 			set_volume(int);
 	void 			set_monitoring(bool);
-	void			set_panning(int, int);
+	void			set_stereo_volume(sound_panning);
 	void			clear_panning();
 	void 			free();
 	bool 			is_linked() const;

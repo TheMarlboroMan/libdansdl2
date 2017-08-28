@@ -29,8 +29,8 @@ class resource_manager
 	void 		insert_sound(int, const std::string&);
 	void		insert_music(int, const std::string&);
 
-	music& 		get_music(int);
-	sound&		get_sound(int);
+	music& 		get_music(int) const;
+	sound&		get_sound(int) const;
 
 	//!Returns the number of music files loaded.
 	size_t		size_music() const {return musics.size();}
