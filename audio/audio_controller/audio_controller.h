@@ -68,7 +68,7 @@ class audio_controller
 	unsigned int 				get_main_sound_volume() const {return main_sound_volume;}
 	audio_channel 				get_channel(int);
 	audio_channel 				get_free_channel();
-	void 					debug_state();
+	std::string				debug_state();
 
 	/////////////////////////////////////
 	// Propiedades...

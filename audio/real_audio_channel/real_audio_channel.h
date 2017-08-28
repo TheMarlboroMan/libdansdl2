@@ -26,8 +26,6 @@ class real_audio_channel
 	int 				fade_out(int p_ms) {return Mix_FadeOutChannel(index, p_ms);}
 	//!Indicates whether the sound is looping or not.
 	bool 				is_looping() const {return repeat==-1;}
-	//!Busy channels are either playing a sound or finished playing but are being monitored. A non busy channel (idle) can be automatically picked from the channel pool.
-	bool 				is_busy() const {return busy;}
 	//!Channels can be monitored. A monitores channel does not call free() when SDL's callback is issued after the sound is played.
 	bool 				is_monitored() const {return monitoring;}
 	//!Indicates whether the channel is playing or not.
@@ -65,7 +63,6 @@ class real_audio_channel
 	 				volume;
 
 	bool 				playing, /**< Wave is playing. */ 
-	 				busy,	/**< Busy channel: either playing or under monitoring from the application. */ 
 	 				monitoring, /**< Monitored channels are not automatically freed. */ 
 	 				paused;
 

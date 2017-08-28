@@ -5,7 +5,7 @@
 using namespace lda;
 
 real_audio_channel::real_audio_channel(int i, const audio_controller& ac)
-	:index(i), repeat(0), volume(128), playing(false), busy(false), 
+	:index(i), repeat(0), volume(128), playing(false), 
 	monitoring(false), paused(false), controller_ref(&ac),
 	sound_playing(nullptr) 
 {
@@ -15,7 +15,7 @@ real_audio_channel::real_audio_channel(int i, const audio_controller& ac)
 
 real_audio_channel::real_audio_channel(const real_audio_channel& o)
 	:index(o.index), repeat(o.repeat), volume(o.volume), 
-	playing(o.playing), busy(o.busy), monitoring(o.monitoring),
+	playing(o.playing), monitoring(o.monitoring),
 	paused(o.paused), controller_ref(o.controller_ref),
 	sound_playing(o.sound_playing)
 {
@@ -28,7 +28,6 @@ real_audio_channel& real_audio_channel::operator=(const real_audio_channel& o)
 	repeat=o.repeat;
 	volume=o.volume;
 	playing=o.playing;
-	busy=o.busy;
 	monitoring=o.monitoring;
 	paused=o.paused;
 	controller_ref=o.controller_ref;
@@ -41,7 +40,7 @@ real_audio_channel& real_audio_channel::operator=(const real_audio_channel& o)
 
 //!This is part of the SDL_Audio callback system, which needs a callback 
 //!function to call after a sound has been played. Must be manually called on 
-//!monitored channels. Nullifies repeat, sets busy and monitoring to false and 
+//!monitored channels. Nullifies repeat, sets monitoring to false and 
 //!cleans pointer to played sound. The callback listener is also removed and
 //!the panning is cleared.
 
@@ -49,7 +48,6 @@ void real_audio_channel::free()
 {
 	sound_playing=nullptr;
 	repeat=0;
-	busy=false;
 	monitoring=false;
 	callback_listener=nullptr;
 	clear_panning();

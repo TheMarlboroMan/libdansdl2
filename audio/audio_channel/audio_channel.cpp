@@ -66,12 +66,6 @@ bool audio_channel::is_looping() const
 	return channel->is_looping();
 }
 
-//!Busy channels are either playing a sound or finished playing but are being monitored. A non busy channel (idle) can be automatically picked from the channel pool.
-bool audio_channel::is_busy() const 
-{
-	return channel->busy;
-}
-
 //!Channels can be monitored. A monitores channel does not call free() when SDL's callback is issued after the sound is played.
 bool audio_channel::is_monitored() const 
 {
@@ -120,7 +114,7 @@ void audio_channel::set_monitoring(bool v)
 	channel->set_monitoring(v);
 }
 
-//!Nullifies repeat, sets busy and monitoring to false and cleans pointer to played sound.
+//!Nullifies repeat, sets monitoring to false and cleans pointer to played sound.
 void audio_channel::free() 
 {
 	channel->free();

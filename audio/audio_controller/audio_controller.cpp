@@ -1,6 +1,7 @@
 #include "audio_controller.h"
 
 #include <stdexcept>
+#include <sstream>
 #include "../../tools/log/log.h"
 
 using namespace lda;
@@ -117,6 +118,8 @@ void audio_controller::play_sound(sound_struct& pstruct)
 
 //!Gets a free channel index.
 
+//!A free channel is not playing. Monitored channels will not be reported as
+//!free. 
 //!pfrom will be used to start the search and pto will be the last channel
 //!searched if provided. Returns -1 when no channels are available.
 
@@ -127,7 +130,7 @@ int audio_controller::get_free_channel_index(int pfrom, int pto)
 	for(; pfrom < l; pfrom++)
 	{
 		real_audio_channel& c=channels.at(pfrom);
-		if(!c.is_busy() && !c.is_playing())
+		if(!c.is_monitored() && !c.is_playing())
 		{
 			return pfrom;
 		}
@@ -221,25 +224,35 @@ void audio_controller::set_music_volume(int p_vol)
 	Mix_VolumeMusic(p_vol);
 }
 
-//!Prints a crude representation of channel state to stout.
+//!Returns a crude representation of channel state to stout.
 
 //!The representation looks like this:
-//!C[8] = PPB___|_
-//!Where 8 is the number of channels and |=Paused, P=playing, B=busy, _=free.
+//!C[8] = ppS___-_
+//!Where 8 is the number of channels and p=playing, _=free and s=paused.
+//!Monitored channels will be displayed in uppercase (P-S).
 
-void audio_controller::debug_state()
+std::string audio_controller::debug_state()
 {
-	std::cout<<"C["<<channels.size()<<"] = ";
+	std::stringstream ss;
+	ss<<"C["<<channels.size()<<"] = ";
 
 	for(real_audio_channel& c : channels)
 	{
-		if(c.is_paused()) std::cout<<"|"<<std::endl;
-		else if(c.is_playing()) std::cout<<"P";
-		else if(c.is_busy()) std::cout<<"B";
-		else std::cout<<"_";
+		if(c.is_monitored())
+		{
+			if(c.is_paused()) ss<<"S"<<std::endl;
+			else if(c.is_playing()) ss<<"P";
+			else ss<<"-";
+		}
+		else
+		{
+			if(c.is_paused()) ss<<"s"<<std::endl;
+			else if(c.is_playing()) ss<<"p";
+			else ss<<"_";
+		}
 	}
 
-	std::cout<<std::endl;
+	return ss.str();
 }
 
 //!Gets a handle for the specified audio channel.
@@ -256,6 +269,10 @@ audio_channel audio_controller::get_channel(int pchannel)// throw()
 
 //!Gets a free channel. 
 
+//!A free channel is either playing or not being monitored so 
+//!two consecutive calls will !yield the very same channel. To avoid this, 
+//!either have the channel play something or set it under monitoring with 
+//!channel.set_monitoring(true);
 //!If no channels are available will throw with std::runtime_error, since it
 //is implemented on terms of get_free_channel_index.
 

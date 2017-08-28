@@ -45,7 +45,6 @@ class audio_channel
 	void 			stop();
 	int 			fade_out(int);
 	bool 			is_looping() const;
-	bool 			is_busy() const;
 	bool 			is_monitored() const;
 	bool 			is_playing() const;
 	bool 			is_paused() const;
