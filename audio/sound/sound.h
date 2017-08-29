@@ -76,7 +76,7 @@ struct sound_struct
 	//!Default left and right volume is 127 (max for both).
 	//!Default fade is 0milliseconds.
 
-	sound_struct(sound& s, int v=-1, int r=0, sound_panning sp={127,127}, int msf=0)
+	sound_struct(sound& s, int v=-1, int r=0, sound_panning sp={255,255}, int msf=0)
 		:sound_ptr(&s), volume(v), repeat(r), panning(sp), ms_fade(msf) 
 	{
 	}

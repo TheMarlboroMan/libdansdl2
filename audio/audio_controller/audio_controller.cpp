@@ -27,8 +27,7 @@ audio_controller::audio_controller(const audio_controller_config& c):
 
 	//Create all channels. The constructor of the channel is private, so the channel
 	//itself will do the dirty work.
-	int i=callback_channels.size(); //This should actually be... zero.
-	std::cout<<"i is "<<i<<std::endl;
+	int i=callback_channels.size(); //This should actually be... zero. Oh well.
 	while(i < requested_channels)
 		channels.push_back(std::move(real_audio_channel{i++, main_sound_volume}));
 
