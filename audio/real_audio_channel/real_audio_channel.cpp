@@ -4,36 +4,30 @@
 
 using namespace lda;
 
-real_audio_channel::real_audio_channel(int i, const audio_controller& ac)
+//!Default class constructor.
+
+//!It is private, so good luck creating it.
+
+real_audio_channel::real_audio_channel(int i, const int& main_vol)
 	:index(i), repeat(0), volume(128), playing(false), 
-	monitoring(false), paused(false), controller_ref(&ac),
+	monitoring(false), paused(false), main_sound_volume_ptr(&main_vol),
 	sound_playing(nullptr) 
 {
 
 }
 
+//!Copy constructor.
+
+//!Even if public, it is a very bad idea to use it. In fact, is only public so
+//!it can be thrown into a vector without doing custom allocators.
 
 real_audio_channel::real_audio_channel(const real_audio_channel& o)
 	:index(o.index), repeat(o.repeat), volume(o.volume), 
 	playing(o.playing), monitoring(o.monitoring),
-	paused(o.paused), controller_ref(o.controller_ref),
+	paused(o.paused), main_sound_volume_ptr(o.main_sound_volume_ptr),
 	sound_playing(o.sound_playing)
 {
 
-}
-
-real_audio_channel& real_audio_channel::operator=(const real_audio_channel& o)
-{
-	index=o.index;
-	repeat=o.repeat;
-	volume=o.volume;
-	playing=o.playing;
-	monitoring=o.monitoring;
-	paused=o.paused;
-	controller_ref=o.controller_ref;
-	sound_playing=o.sound_playing;
-
-	return *this;
 }
 
 //!Frees a channel after the playback is done. 
@@ -84,8 +78,7 @@ void real_audio_channel::do_callback()
 void real_audio_channel::set_volume(int v)
 {
 	volume=v;
-	int overall_volume=controller_ref->get_main_sound_volume();
-	Mix_Volume(index, (float) volume * ((float)volume / (float)overall_volume));
+	Mix_Volume(index, (float) volume * ((float)volume / (float)*main_sound_volume_ptr));
 }
 
 //!Plays the sound_struct. 
@@ -95,12 +88,11 @@ void real_audio_channel::set_volume(int v)
 
 int real_audio_channel::play(const sound_struct& e)
 {
-	int overall_volume=controller_ref->get_main_sound_volume();
 	sound_playing=e.sound_ptr;
 	repeat=e.repeat;
 	
 	if(e.volume!=-1) volume=e.volume;
-	Mix_Volume(index, (float) volume * ((float)volume / (float)overall_volume));
+	Mix_Volume(index, (float) volume * ((float)volume / (float)*main_sound_volume_ptr));
 
 	playing=true;
 

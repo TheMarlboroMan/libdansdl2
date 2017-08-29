@@ -1,4 +1,4 @@
-CFLAGS=-DWINCOMPIL=1 -D__NO_INLINE__ -c -O3 -Wno-deprecated -Wall -pedantic -std=c++11
+CFLAGS=-DWINCOMPIL=1 -D__NO_INLINE__ -c -O3 -Wno-deprecated -Wall -pedantic -std=c++11 -fno-rtti
 CC=g++
 UNIDAD_DISCO=C
 LIMPIAR=del objects\*; del libDanSDL2.a;

@@ -52,11 +52,9 @@ class real_audio_channel
 
 					~real_audio_channel(){sound_playing=nullptr;}
 					real_audio_channel(const real_audio_channel&);
-					real_audio_channel& operator=(const real_audio_channel&);
-
 	private:
+					real_audio_channel(int, const int&);
 
-					real_audio_channel(int, const audio_controller&);
 	
 	int 				index,
 	 				repeat, //!< -1 means it will repeat forever.
@@ -66,14 +64,14 @@ class real_audio_channel
 	 				monitoring, /**< Monitored channels are not automatically freed. */ 
 	 				paused;
 
-	audio_controller const *	controller_ref;
+	int const * 	 		main_sound_volume_ptr; //!< Cannot be written into... do not dare to change what it points to!!!.
 	sound * 			sound_playing;
 	audio_callback_interface *	callback_listener=nullptr;
 
 	public:
 
-	friend class 			audio_controller; //To call callback reception.
-	friend class 			audio_channel;
+	friend class			audio_controller;	//!< So that these can be created.
+	friend class 			audio_channel;	//!< So that the audio_channel does not need to pass through accessors.
 };
 }
 

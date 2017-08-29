@@ -25,12 +25,12 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	
 	ldt::log_lsdl::get()<<"Init audio controller with "<<requested_channels<<" channels, "<<buffers<<" buffers, "<<out<<" outputs and a ratio of "<<ratio<<std::endl;
 
-	int i=callback_channels.size();
-	//Create all channels.
+	//Create all channels. The constructor of the channel is private, so the channel
+	//itself will do the dirty work.
+	int i=callback_channels.size(); //This should actually be... zero.
+	std::cout<<"i is "<<i<<std::endl;
 	while(i < requested_channels)
-	{
-		channels.push_back(std::move(real_audio_channel(i++, *this)));
-	}
+		channels.push_back(std::move(real_audio_channel{i++, main_sound_volume}));
 
 	//Fill the callback channel static object.
 	for(auto& ch : channels)
@@ -230,13 +230,15 @@ void audio_controller::set_music_volume(int p_vol)
 //!C[8] = ppS___-_
 //!Where 8 is the number of channels and p=playing, _=free and s=paused.
 //!Monitored channels will be displayed in uppercase (P-S).
+//!It is a good idea to run and check this once in a while, specially when
+//!monitoring is used in the application, to prevent channel blocking.
 
 std::string audio_controller::debug_state()
 {
 	std::stringstream ss;
-	ss<<"C["<<channels.size()<<"] = ";
+	ss<<"C["<<channels.size()<<"] = "; 
 
-	for(real_audio_channel& c : channels)
+	for(auto& c : channels)
 	{
 		if(c.is_monitored())
 		{
@@ -288,7 +290,7 @@ audio_channel audio_controller::get_free_channel()// throw()
 
 void audio_controller::pause_sound()
 {
-	for(real_audio_channel c : channels) c.pause();
+	for(auto& c : channels) c.pause();
 }
 
 //!Resumes all sounds.
@@ -298,7 +300,7 @@ void audio_controller::pause_sound()
 
 void audio_controller::resume_sound()
 {
-	for(real_audio_channel c : channels) c.resume();
+	for(auto& c : channels) c.resume();
 }
 
 //!Stops all sounds.
@@ -307,5 +309,5 @@ void audio_controller::resume_sound()
 
 void audio_controller::stop_sound()
 {
-	for(real_audio_channel c : channels) c.stop();
+	for(auto& c : channels) c.stop();
 }

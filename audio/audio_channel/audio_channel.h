@@ -19,6 +19,9 @@ Any sound must be played through an audio_channel. When a sound stops playing, t
 channel is automatically freed and made available to the channel pool unless it is
 set under "monitoring" by the application logic.
 
+When a channel is set under "monitoring" it will remain so until the application
+logic frees it. In other words, deleting the channel does not unmonitor it.
+
 These references are implemented in terms of proxy objects: audio_channel is a 
 proxy to real_audio_channel: both implement the same public structure. This
 makes every audio_channel object suitable for deletion since they are 
@@ -28,6 +31,8 @@ in any way. The is_linked and unlink methods manipulate this aspect. There is no
 
 Every audio_channel retrieved from the audio_controller is linked. Manually created 
 ones are not unless copied or copy-constructed.
+
+
 **/
 
 class audio_channel
