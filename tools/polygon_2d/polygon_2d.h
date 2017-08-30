@@ -74,7 +74,7 @@ class polygon_2d_vertexes
 	}
 
 	//!Returns the center point.
-	tpoint				get_center() const {return center;}
+	const tpoint&			get_center() const {return center;}
 	//!Returns all vertices.
 	const std::vector<tpoint>&	get_vertexes() const {return vertexes;}
 	//!Returns the vertex at the index. May throw.

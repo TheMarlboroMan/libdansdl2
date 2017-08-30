@@ -25,18 +25,6 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	
 	ldt::log_lsdl::get()<<"Init audio controller with "<<requested_channels<<" channels, "<<buffers<<" buffers, "<<out<<" outputs and a ratio of "<<ratio<<std::endl;
 
-	//Create all channels. The constructor of the channel is private, so the channel
-	//itself will do the dirty work.
-	int i=callback_channels.size(); //This should actually be... zero. Oh well.
-	while(i < requested_channels)
-		channels.push_back(std::move(real_audio_channel{i++, main_sound_volume}));
-
-	//Fill the callback channel static object.
-	for(auto& ch : channels)
-	{
-		callback_channels[ch.get_index()]=&ch;
-	}
-
 	//Comprobar que el audio está arrancado.
 	if(SDL_WasInit(SDL_INIT_AUDIO)==0)
 	{
@@ -47,10 +35,23 @@ audio_controller::audio_controller(const audio_controller_config& c):
 		}
 	}
 
-
 	if(Mix_OpenAudio(ratio, format, out, buffers) == -1)
 	{
 		throw std::runtime_error("Unable to open audio device");
+	}
+
+	
+	//Create all channels. The constructor of the channel is private, so the channel
+	//itself will do the dirty work.
+	int i=callback_channels.size(); //This should actually be... zero. Oh well.
+	Mix_AllocateChannels(requested_channels);
+	while(i < requested_channels)
+		channels.push_back(std::move(real_audio_channel{i++, main_sound_volume}));
+
+	//Fill the callback channel static object.
+	for(auto& ch : channels)
+	{
+		callback_channels[ch.get_index()]=&ch;
 	}
 
 	ldt::log_lsdl::get()<<"Starting sdl mixer and setting callback function."<<std::endl;
@@ -226,8 +227,9 @@ void audio_controller::set_music_volume(int p_vol)
 //!Returns a crude representation of channel state to stout.
 
 //!The representation looks like this:
-//!C[8] = ppS___-_
-//!Where 8 is the number of channels and p=playing, _=free and s=paused.
+//!C[8/8/8] = ppS___-_
+//!Where 8 is the number of channels (vector, allocated and init value) 
+//!and p=playing, _=free and s=paused.
 //!Monitored channels will be displayed in uppercase (P-S).
 //!It is a good idea to run and check this once in a while, specially when
 //!monitoring is used in the application, to prevent channel blocking.
@@ -235,7 +237,7 @@ void audio_controller::set_music_volume(int p_vol)
 std::string audio_controller::debug_state()
 {
 	std::stringstream ss;
-	ss<<"C["<<channels.size()<<"] = "; 
+	ss<<"C["<<channels.size()<<"/"<<Mix_AllocateChannels(-1)<<"/"<<requested_channels<<"] = "; 
 
 	for(auto& c : channels)
 	{
