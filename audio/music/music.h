@@ -11,6 +11,9 @@ namespace lda
 
 //!Wrapper for a Mix_Music pointer.
 
+//!The sad thing is that it can't be copied, since the destructor really
+//!does free the music itself.
+
 class music
 {
 	public:

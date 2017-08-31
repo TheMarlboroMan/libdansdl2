@@ -54,6 +54,7 @@ class real_audio_channel
 					real_audio_channel(const real_audio_channel&);
 	private:
 					real_audio_channel(int, const int&);
+	int				calculate_real_volume();
 
 	
 	int 				index,

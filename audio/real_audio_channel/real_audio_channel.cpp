@@ -78,7 +78,13 @@ void real_audio_channel::do_callback()
 void real_audio_channel::set_volume(int v)
 {
 	volume=v;
-	Mix_Volume(index, (float) volume * ((float)volume / (float)*main_sound_volume_ptr));
+	Mix_Volume(index, calculate_real_volume());
+}
+
+int real_audio_channel::calculate_real_volume()
+{
+	float res=(float) volume * ((float)volume / (float)*main_sound_volume_ptr);
+	return ceil(res);
 }
 
 //!Plays the sound_struct. 
@@ -92,7 +98,7 @@ int real_audio_channel::play(const sound_struct& e)
 	repeat=e.repeat;
 	
 	if(e.volume!=-1) volume=e.volume;
-	Mix_Volume(index, (float) volume * ((float)volume / (float)*main_sound_volume_ptr));
+	Mix_Volume(index, calculate_real_volume());
 
 	playing=true;
 
