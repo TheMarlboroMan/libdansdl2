@@ -163,22 +163,19 @@ void audio_controller::check_channel(int pchannel)
 	}
 }
 
-//!Plays music with given repeats and volume.
+//!Plays music.
 
-//!Plays the music structure with as many repeats as indicated in prepeat. -1
-//!will loop the music until stopped by "stop_music". Internally uses 
-//!Mix_PlayMusic.
-
-void audio_controller::play_music(music &pmusic, int prepeat, int pvolume)
+void audio_controller::play_music(music_struct& m)
 {
-	if(!pmusic.is_ready())
+	if(!m.is_ready())
 	{
-		ldt::log_lsdl::get()<<"Sound reference not ready to be played"<<std::endl;
+		ldt::log_lsdl::get()<<"Music reference not ready to be played"<<std::endl;
 		return; 
 	}
 
-	set_music_volume(pvolume);
-	Mix_PlayMusic(pmusic.get_data(), prepeat);
+	if(m.volume!=-1) set_music_volume(pvolume);
+
+	Mix_PlayMusic(m.music_ptr->get_data(), m.repeat);
 	music_playing=true;
 }
 

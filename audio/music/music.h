@@ -40,6 +40,31 @@ class music
 	bool 			ready;
 };
 
+//!Additional information for music.
+
+//!Includes a pointer to the music, plus volume and repeats. It is recommended 
+//!that applications use this class routinely to play music.
+
+struct music_struct
+{
+	music *	 		sound_ptr; //!< This has to be copy constructible, ergo the pointer.
+	short int 		volume;
+	short int 		repeat;
+	
+	//!Checks whether the music_ptr is ready. Will crash if there is no sound pointer.
+	bool 			is_ready() 	{return music_ptr->is_ready();}
+
+	//!A sound structure. 
+
+	//!Default volume is -1 (unchanged from the previous one)
+	//!Default repetition is -1 (loop until manually stopped)
+
+	music_struct(music& s, int v=-1, int r=-1)
+		:music_ptr(&s), volume(v), repeat(r)
+	{
+	}
+};
+
 }
 
 #endif
