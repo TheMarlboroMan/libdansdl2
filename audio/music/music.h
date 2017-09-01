@@ -47,7 +47,7 @@ class music
 
 struct music_struct
 {
-	music *	 		sound_ptr; //!< This has to be copy constructible, ergo the pointer.
+	music *	 		music_ptr; //!< This has to be copy constructible, ergo the pointer.
 	short int 		volume;
 	short int 		repeat;
 	

@@ -173,7 +173,7 @@ void audio_controller::play_music(music_struct& m)
 		return; 
 	}
 
-	if(m.volume!=-1) set_music_volume(pvolume);
+	if(m.volume!=-1) set_music_volume(m.volume);
 
 	Mix_PlayMusic(m.music_ptr->get_data(), m.repeat);
 	music_playing=true;
