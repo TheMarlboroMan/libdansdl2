@@ -114,12 +114,6 @@ void audio_channel::set_monitoring(bool v)
 	channel->set_monitoring(v);
 }
 
-//!Nullifies repeat, sets monitoring to false and cleans pointer to played sound.
-void audio_channel::free() 
-{
-	channel->free();
-}
-
 //!Indicates whether the channel is linked to a real_audio_channel
 bool audio_channel::is_linked() const 
 {

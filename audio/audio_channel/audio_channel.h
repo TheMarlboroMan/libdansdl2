@@ -60,7 +60,6 @@ class audio_channel
 	void 			set_monitoring(bool);
 	void			set_stereo_volume(sound_panning);
 	void			clear_panning();
-	void 			free();
 	bool 			is_linked() const;
 	void 			unlink();
 	void			assign_callback_listener(audio_callback_interface&);
