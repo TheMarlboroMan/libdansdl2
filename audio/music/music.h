@@ -52,7 +52,7 @@ struct music_struct
 	short int 		repeat;
 	
 	//!Checks whether the music_ptr is ready. Will crash if there is no sound pointer.
-	bool 			is_ready() 	{return music_ptr->is_ready();}
+	bool 			is_ready() const {return music_ptr->is_ready();}
 
 	//!A sound structure. 
 

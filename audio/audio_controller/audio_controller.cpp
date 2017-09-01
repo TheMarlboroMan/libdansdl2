@@ -103,7 +103,7 @@ void lda::audio_play_callback(int pchannel)
 //!The sound_struct is checked before played. If it is not ready no sound will be
 //!Played.
 
-void audio_controller::play_sound(sound_struct& pstruct)
+void audio_controller::play_sound(const sound_struct& pstruct)
 {
 	if(!pstruct.is_ready())
 	{
@@ -165,7 +165,7 @@ void audio_controller::check_channel(int pchannel)
 
 //!Plays music.
 
-void audio_controller::play_music(music_struct& m)
+void audio_controller::play_music(const music_struct& m)
 {
 	if(!m.is_ready())
 	{

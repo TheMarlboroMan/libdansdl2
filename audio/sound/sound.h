@@ -67,7 +67,7 @@ struct sound_struct
 	int 			ms_fade;
 	
 	//!Checks whether the sound_ptr is ready. Will crash if there is no sound pointer.
-	bool 			is_ready() 	{return sound_ptr->is_ready();}
+	bool 			is_ready() const {return sound_ptr->is_ready();}
 
 	//!A sound structure. 
 

@@ -49,12 +49,12 @@ class audio_controller
 						audio_controller(const audio_controller_config&);
 						~audio_controller();
 
-	void 					play_sound(sound_struct&);
+	void 					play_sound(const sound_struct&);
 	void 					stop_sound(int);
 	void 					stop_sound(); //Stops all sounds
 	void 					pause_sound(); //Pauses all sounds.
 	void 					resume_sound(); //Restarts all sounds.
-	void 					play_music(music_struct&);
+	void 					play_music(const music_struct&);
 	void 					stop_music();
 	void 					set_main_sound_volume(int);
 	void 					set_sound_volume(int p_vol, int pchannel); //p_vol de 0 a 128.
