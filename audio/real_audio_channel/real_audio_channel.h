@@ -43,7 +43,6 @@ class real_audio_channel
 	void 				set_volume(int);
 	void				set_stereo_volume(sound_panning);
 	void				clear_panning();
-	void 				free();
 	void 				do_callback();
 	//!Assigns a callback listener, replacing any previously existing one. Of course, it is assumed that it will still exist after the sound is played.
 	void				assign_callback_listener(audio_callback_interface& a) {callback_listener=&a;}
@@ -54,6 +53,8 @@ class real_audio_channel
 					real_audio_channel(const real_audio_channel&);
 	private:
 					real_audio_channel(int, const int&);
+	void 				free();
+
 	int				calculate_real_volume();
 
 	
