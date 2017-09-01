@@ -83,7 +83,8 @@ void real_audio_channel::set_volume(int v)
 
 int real_audio_channel::calculate_real_volume()
 {
-	float res=(float) volume * ((float)volume / (float)*main_sound_volume_ptr);
+//	float res=(float) volume * ((float)volume / (float)*main_sound_volume_ptr);
+	float res=(float) volume * ((float)*main_sound_volume_ptr / 128.f);
 	return ceil(res);
 }
 

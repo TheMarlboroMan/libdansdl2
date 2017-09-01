@@ -216,11 +216,14 @@ void audio_controller::set_sound_volume(int p_vol, int pchannel)	//p_vol de 0 a 
 
 //!Sets the music volume, that will be processed against the master music volume.
 
-//!The valid range is 0-128.
+//!The valid range is 0-128. The input value transformed according to the 
+//!main_music_volume.
 
 void audio_controller::set_music_volume(int p_vol)
 {
-	float vol=(float) p_vol * ((float)p_vol / (float)main_music_volume);
+//	float vol=(float) p_vol * ((float)p_vol / (float)main_music_volume);
+	float vol=(float) p_vol * ((float)main_music_volume / 128.f);
+std::cout<<"in the end is "<<vol<<std::endl;
 	Mix_VolumeMusic(ceil(vol));
 }
 
