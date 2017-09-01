@@ -224,6 +224,17 @@ void audio_controller::set_music_volume(int p_vol)
 	Mix_VolumeMusic(ceil(vol));
 }
 
+//!Gets music volume as processed by the main music volume.
+
+//!This function does not neccesarily return the value of Mix_VolumeMusic(-1);
+
+int audio_controller::get_music_volume() const
+{
+	float pvol=Mix_VolumeMusic(-1);
+	float vol=pvol * (pvol / (float)main_music_volume);
+	return ceil(vol);
+}
+
 //!Returns a crude representation of channel state to stout.
 
 //!The representation looks like this:
