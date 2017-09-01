@@ -1,6 +1,9 @@
 #ifndef LIBDANSDL2_AUDIO_CHANNEL_H
 #define LIBDANSDL2_AUDIO_CHANNEL_H
 
+#include <stdexcept>
+#include <string>
+
 #include "../sound/sound.h"
 #include "../audio_callback_interface/audio_callback_interface.h"
 
@@ -35,6 +38,8 @@ ones are not unless copied or copy-constructed.
 
 **/
 
+class audio_channel_safe;
+
 class audio_channel
 {
 	public:
@@ -66,6 +71,62 @@ class audio_channel
 	void			clear_callback_listener();
 
 	private:
+
+	real_audio_channel * 	channel;
+
+	friend class		audio_channel_safe; //So the pointer can be grabbed.
+};
+
+//!Exception thrown from the audio_channel_safe
+
+class audio_channel_safe_exception:
+	public std::runtime_error
+{
+	public:
+
+	audio_channel_safe_exception(const std::string& s)
+		:std::runtime_error(s)
+	{}
+};
+
+//!An audio_channel that throws when the real_audio_channel is unlinked.
+
+//!Can be constructed from an audio channel, copied or assigned. This type
+//!exists in case one wants to do lots of work with a channel that involves
+//!linking and unlinking so exceptions can be caught.
+
+class audio_channel_safe
+{
+	public:
+
+				audio_channel_safe(audio_channel&);
+				audio_channel_safe(const audio_channel_safe&);
+				audio_channel_safe& operator=(const audio_channel_safe&);
+
+	int 			play(const sound_struct& e);
+	void 			pause();
+	void 			resume();
+	void 			stop();
+	int 			fade_out(int);
+	bool 			is_looping() const;
+	bool 			is_monitored() const;
+	bool 			is_playing() const;
+	bool 			is_paused() const;
+	int 			get_index() const;
+	int 			get_repeat() const;
+	int 			get_volume() const;
+	void 			set_volume(int);
+	void 			set_monitoring(bool);
+	void			set_stereo_volume(sound_panning);
+	void			clear_panning();
+	bool 			is_linked() const;
+	void 			unlink();
+	void			assign_callback_listener(audio_callback_interface&);
+	void			clear_callback_listener();
+
+	private:
+
+	void			fail() const;
 
 	real_audio_channel * 	channel;
 };

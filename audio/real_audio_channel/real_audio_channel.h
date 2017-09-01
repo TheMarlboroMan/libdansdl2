@@ -7,6 +7,7 @@
 namespace lda
 {
 class audio_channel; //F-f-f-f-forward!.
+class audio_channel_safe;
 class audio_controller;
 
 //!Non constructible audio channel for internal use.
@@ -74,6 +75,7 @@ class real_audio_channel
 
 	friend class			audio_controller;	//!< So that these can be created.
 	friend class 			audio_channel;	//!< So that the audio_channel does not need to pass through accessors.
+	friend class			audio_channel_safe;
 };
 }
 
