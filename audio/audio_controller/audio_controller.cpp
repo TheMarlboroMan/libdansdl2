@@ -223,7 +223,6 @@ void audio_controller::set_music_volume(int p_vol)
 {
 //	float vol=(float) p_vol * ((float)p_vol / (float)main_music_volume);
 	float vol=(float) p_vol * ((float)main_music_volume / 128.f);
-std::cout<<"in the end is "<<vol<<std::endl;
 	Mix_VolumeMusic(ceil(vol));
 }
 
