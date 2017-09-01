@@ -14,7 +14,8 @@ std::map<int, real_audio_channel *> audio_controller::callback_channels;
 //!be started or the audio device is unavailable.
 
 audio_controller::audio_controller(const audio_controller_config& c):
-	main_sound_volume(c.initial_volume),
+	main_sound_volume(c.initial_sound_volume),
+	main_music_volume(c.initial_music_volume),
 	ratio(c.ratio), //22050), 
 	out(c.out), 
 	buffers(c.buffers), //1024), //2048), 
@@ -162,13 +163,13 @@ void audio_controller::check_channel(int pchannel)
 	}
 }
 
-//!Plays music.
+//!Plays music with given repeats and volume.
 
 //!Plays the music structure with as many repeats as indicated in prepeat. -1
 //!will loop the music until stopped by "stop_music". Internally uses 
 //!Mix_PlayMusic.
 
-void audio_controller::play_music(music &pmusic, int prepeat)
+void audio_controller::play_music(music &pmusic, int prepeat, int pvolume)
 {
 	if(!pmusic.is_ready())
 	{
@@ -176,6 +177,7 @@ void audio_controller::play_music(music &pmusic, int prepeat)
 		return; 
 	}
 
+	set_music_volume(pvolume);
 	Mix_PlayMusic(pmusic.get_data(), prepeat);
 	music_playing=true;
 }
@@ -215,13 +217,14 @@ void audio_controller::set_sound_volume(int p_vol, int pchannel)	//p_vol de 0 a 
 	channels.at(pchannel).set_volume(p_vol);
 }
 
-//!Sets the music volume.
+//!Sets the music volume, that will be processed against the master music volume.
 
-//!The valid range is 0-128. Forwards to Mix_VolumeMusic.
+//!The valid range is 0-128.
 
 void audio_controller::set_music_volume(int p_vol)
 {
-	Mix_VolumeMusic(p_vol);
+	float vol=(float) p_vol * ((float)p_vol / (float)main_music_volume);
+	Mix_VolumeMusic(ceil(vol));
 }
 
 //!Returns a crude representation of channel state to stout.

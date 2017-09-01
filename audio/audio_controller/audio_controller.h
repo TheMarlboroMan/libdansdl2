@@ -28,7 +28,8 @@ struct audio_controller_config
 	 				out,	/**< A sane default is 2. */ 
 	 				buffers,	/**< A sane default is 1024. */ 
 	 				channels,	/**< A sane default is 8... like Doom. */ 
-					initial_volume; /**< A sane default is 128. */ 
+					initial_sound_volume, /**< A sane default is 128. */ 
+					initial_music_volume;
  
 	Uint16 				format; /**< A sane default is SDL2 value AUDIO_S16SYS. */ 
 };
@@ -53,10 +54,13 @@ class audio_controller
 	void 					stop_sound(); //Stops all sounds
 	void 					pause_sound(); //Pauses all sounds.
 	void 					resume_sound(); //Restarts all sounds.
-	void 					play_music(music&, int=-1);
+	void 					play_music(music&, int=-1, int=128);
 	void 					stop_music();
 	void 					set_main_sound_volume(int);
 	void 					set_sound_volume(int p_vol, int pchannel); //p_vol de 0 a 128.
+
+	//!Sets the master music volume. 
+	void					set_main_music_volume(int v) {main_music_volume=v;}
 	void 					set_music_volume(int);
 	//!Indicates whether music is playing.
 	bool					is_music_playing() const {return music_playing;}
@@ -85,6 +89,7 @@ class audio_controller
 
 
 	int 					main_sound_volume,
+						main_music_volume,
 	 					ratio,
 	 					out,	//1 mono, 2 estéreo.
 	 					buffers,
@@ -101,7 +106,6 @@ class audio_controller
 	// Friends
 
 	friend void 				audio_play_callback(int pchannel);
-	friend class 				audio_channel; //TODO: I don't think I need this anymore...
 };
 
 }
