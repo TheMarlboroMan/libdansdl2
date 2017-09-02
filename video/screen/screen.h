@@ -55,6 +55,9 @@ class screen
 	//!Returns whether there is a camera attached.
 	bool				has_camera() const {return current_camera!=nullptr;}
 
+	//!Returns a rect with the screen size. Useful to align representations.
+	rect				get_rect() {return rect{0,0,(unsigned)w,(unsigned)h};}
+
 	private:
 
 	//Properties...
