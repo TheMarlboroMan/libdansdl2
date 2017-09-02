@@ -25,9 +25,9 @@ class ttf_representation:
 	public:
 
 	enum class 			render_mode{solid, shaded, blended}; 	//!< Render modes. Default is blended.
-	enum class			align{left, center, right};		//!< Text alignment Default is left.
+	enum class			text_align{left, center, right};	//!< Text alignment Default is left.
 
-					ttf_representation(const ttf_font&, rgba_color, std::string="", double=1., align=align::left, render_mode=render_mode::blended);
+					ttf_representation(const ttf_font&, rgba_color, std::string="", double=1., text_align=text_align::left, render_mode=render_mode::blended);
 					ttf_representation(const ttf_representation&);
 	virtual				~ttf_representation();
 	ttf_representation&		operator=(const ttf_representation&);
@@ -38,7 +38,7 @@ class ttf_representation:
 	void				set_color(rgb_color);
 	void				set_bg_shaded_color(rgba_color);
 
-	void				set_align(align);
+	void				set_text_align(text_align);
 
 	void 				set_font(const ttf_font&);
 	void 				set_text(const char);
@@ -63,7 +63,7 @@ class ttf_representation:
 	rgb_color			text_color;
 	rgba_color			bg_shaded;
 	int				line_height; //!< Expressed in pixels...
-	align				alignment;
+	text_align			alignment;
 
 	//!Lookup table for powers of two.
 	static const std::vector<int>	valid_sizes;

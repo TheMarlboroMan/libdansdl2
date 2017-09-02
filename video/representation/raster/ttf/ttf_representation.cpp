@@ -8,7 +8,7 @@ const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128
 
 //!Line height by default is constructed as font size values.
 
-ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext, double lh, align al, render_mode pmode)
+ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext, double lh, text_align al, render_mode pmode)
 	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
 	font(&pfont),
 	text(ptext),
@@ -188,9 +188,9 @@ void ttf_representation::create_texture()
 			int x=0;
 			switch(alignment)
 			{
-				case align::left: x=0; break;
-				case align::center: x=(total_w/2)-(surf->w/2); break;
-				case align::right: x=total_w-surf->w; break;
+				case text_align::left: x=0; break;
+				case text_align::center: x=(total_w/2)-(surf->w/2); break;
+				case text_align::right: x=total_w-surf->w; break;
 			}
 
 			SDL_Rect pos{x, y, 0, 0}; 
@@ -331,7 +331,7 @@ void ttf_representation::set_render_mode(render_mode r)
 //!Triggers a texture recreation if changes. Text alignment only matters when
 //!there is more than a single line in the text.
 
-void ttf_representation::set_align(align v)
+void ttf_representation::set_text_align(text_align v)
 {
 	if(v==alignment) return;
 	alignment=v;
