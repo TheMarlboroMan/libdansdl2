@@ -10,7 +10,8 @@ namespace ldv
 
 struct rgba_color
 {
-	float r, g, b, a;
+	float 		r, g, b, a;
+	bool		operator==(const rgba_color& o) const {return o.r==r && o.g==g && o.b==b && o.a==a;}
 };
 
 //!A struct of r,g and b expressed in floats.
@@ -19,7 +20,8 @@ struct rgba_color
 
 struct rgb_color
 {
-	float r, g, b;
+	float 		r, g, b;
+	bool		operator==(const rgb_color& o) const {return o.r==r && o.g==g && o.b==b;}
 };
 
 rgba_color rgba8(int, int, int, int);
