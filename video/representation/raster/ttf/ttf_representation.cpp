@@ -6,13 +6,17 @@ const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128
 
 //!Default class constructor.
 
-ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext)
+//!Line height by default is constructed as font size values.
+
+ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext, double lh, align al, render_mode pmode)
 	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
 	font(&pfont),
 	text(ptext),
-	mode(render_mode::blended), 
+	mode(pmode), 
 	text_color{pcolor.r, pcolor.g, pcolor.b},
-	bg_shaded(rgba8(0,0,0,255))
+	bg_shaded(rgba8(0,0,0,255)),
+	line_height(calculate_line_height(lh)),
+	alignment(al)
 {
 	create_texture();
 	update_view_position();
@@ -69,7 +73,6 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 //!This could be considered a bug. There's also another bug where rgb must be
 //!converted to bgr...
 
-//TODO: What if I want to change colors?
 //TODO: Check RGB and BGR and endianess and such.
 
 void ttf_representation::create_texture()
@@ -101,15 +104,17 @@ void ttf_representation::create_texture()
 	std::vector<std::string> lines=explode(text, '\n');
 
 	//Measuring the full resulting texture...
-	int total_h=0, h=0, w=0, tw=0;
+	int total_h=0, h=0, w=0, total_w=0;
 
 	for(const std::string& c : lines)
 	{
-		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &tw, &h);
-		if(tw > w) w=tw;
+		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &total_w, &h);
+		if(total_w > w) w=total_w;
 	}
 
-	total_h=(lines.size() * h);
+	//TODO: Check this calculation...
+	total_h=(lines.size() * h) + (lines.size() * (line_height-h));
+	std::cout<<lines.size()<<" of "<<h<<" pixels each with "<<line_height<<" is "<<total_h<<std::endl;
 
 	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
@@ -180,10 +185,19 @@ void ttf_representation::create_texture()
 		}
 		else
 		{
-			SDL_Rect pos{0, y, 0, 0}; 
+			int x=0;
+			switch(alignment)
+			{
+				case align::left: x=0; break;
+				case align::center: x=(total_w/2)-(surf->w/2); break;
+				case align::right: x=total_w-surf->w; break;
+			}
+
+			SDL_Rect pos{x, y, 0, 0}; 
 			SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
 			SDL_FreeSurface(surf);
-			y+=h;
+			//TODO: And this???
+			y+=h+(line_height-h);
 		}
 	}
 
@@ -263,4 +277,64 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 		sujeto.replace(pos, busca.length(), reemplaza);
 		pos += l;
 	}
+}
+
+//!Sets the line height in pixels.
+
+//!This function will trigger a recreation of the texture.
+
+void ttf_representation::set_line_height_px(int v) 
+{
+	line_height=v;
+	free_texture();
+	create_texture();
+}
+
+//!Sets the font color.
+
+//!Will trigger a recreation of the texture if different.
+void ttf_representation::set_color(rgb_color c)
+{
+	if(c==text_color) return;
+	text_color=c;
+	free_texture();
+	create_texture();
+}
+
+//!Sets the background color for the shaded mode.
+
+//!Will trigger a recreation of the texture if the mode is shaded and changes.
+
+void ttf_representation::set_bg_shaded_color(rgba_color c)
+{
+	if(c==bg_shaded) return;
+	bg_shaded=c;
+	if(mode!=render_mode::shaded) return;
+	free_texture();
+	create_texture();
+}
+
+//!Sets the render mode.
+
+//!Triggers a texture recreation if changes.
+
+void ttf_representation::set_render_mode(render_mode r)
+{
+	if(r==mode) return;
+	mode=r;
+	free_texture();
+	create_texture();
+}
+
+//!Sets the text alignment.
+
+//!Triggers a texture recreation if changes. Text alignment only matters when
+//!there is more than a single line in the text.
+
+void ttf_representation::set_align(align v)
+{
+	if(v==alignment) return;
+	alignment=v;
+	free_texture();
+	create_texture();
 }
