@@ -8,14 +8,14 @@ const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128
 
 //!Line height by default is constructed as font size values.
 
-ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext, double lh, text_align al, render_mode pmode)
+ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext, double lhr, text_align al, render_mode pmode)
 	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
 	font(&pfont),
 	text(ptext),
 	mode(pmode), 
 	text_color{pcolor.r, pcolor.g, pcolor.b},
 	bg_shaded(rgba8(0,0,0,255)),
-	line_height(calculate_line_height(lh)),
+	line_height_ratio(lhr),
 	alignment(al)
 {
 	create_texture();
@@ -108,13 +108,13 @@ void ttf_representation::create_texture()
 
 	for(const std::string& c : lines)
 	{
-		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &total_w, &h);
-		if(total_w > w) w=total_w;
+		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &w, &h);
+		if(w > total_w) total_w=w;
 	}
 
-	//TODO: Check this calculation...
-	total_h=(lines.size() * h) + (lines.size() * (line_height-h));
-	std::cout<<lines.size()<<" of "<<h<<" pixels each with "<<line_height<<" is "<<total_h<<std::endl;
+	int line_height=(double)font->get_size()*line_height_ratio;
+
+	total_h=(lines.size() * h) + ( (lines.size()-1) * (line_height-h)); //The last spacing is removed, of course.
 
 	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
@@ -150,7 +150,7 @@ void ttf_representation::create_texture()
 	};
 
 	std::unique_ptr<canvas> cnv(canvas::create(
-		get_next_power_of_2(w), 
+		get_next_power_of_2(total_w), 
 		get_next_power_of_2(total_h), 
 		s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
@@ -185,6 +185,7 @@ void ttf_representation::create_texture()
 		}
 		else
 		{
+
 			int x=0;
 			switch(alignment)
 			{
@@ -196,7 +197,6 @@ void ttf_representation::create_texture()
 			SDL_Rect pos{x, y, 0, 0}; 
 			SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
 			SDL_FreeSurface(surf);
-			//TODO: And this???
 			y+=h+(line_height-h);
 		}
 	}
@@ -213,9 +213,9 @@ void ttf_representation::create_texture()
 	
 //	const auto &ref_tex=get_texture();
 	set_blend(representation::blends::alpha);
-	set_clip({0,0, (unsigned)w, (unsigned)total_h});
+	set_clip({0,0, (unsigned)total_w, (unsigned)total_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
-	set_location({0, 0, (unsigned)w, (unsigned)total_h});
+	set_location({0, 0, (unsigned)total_w, (unsigned)total_h});
 
 }
 
@@ -279,13 +279,17 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 	}
 }
 
-//!Sets the line height in pixels.
+//!Sets the line height as a ratio of the font size.
 
+//!A value of 1.0 given an space equal to the font size. 1.5 gives a line
+//!and a half and so on.
 //!This function will trigger a recreation of the texture.
 
-void ttf_representation::set_line_height_px(int v) 
+void ttf_representation::set_line_height_ratio(double v) 
 {
-	line_height=v;
+	if(v==line_height_ratio) return;
+
+	line_height_ratio=v;
 	free_texture();
 	create_texture();
 }

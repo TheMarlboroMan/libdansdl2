@@ -17,7 +17,9 @@ namespace ldv
 //!Text representation using a TTF font.
 
 //!Generates and owns a texture using the SDL_ttf library. Textures generated 
-//!are always in powers of two, to avoid hardware issues.
+//!are always in powers of two, to avoid hardware issues. Also, note that 
+//!depending on the font used, the size will not always correspond to a certain
+//!pixel height.
 
 class ttf_representation:
 	public raster_representation
@@ -44,14 +46,10 @@ class ttf_representation:
 	void 				set_text(const char);
 	void 				set_text(const std::string&);
 	void				set_render_mode(render_mode r);
-	void				set_line_height_px(int v);
-	//!Sets the line height relative to font size (1.0 is equal to font size). Will trigger a recreation of the texture.
-	void 				set_line_height_relative(double v) {set_line_height_px(calculate_line_height(v));}
+	void				set_line_height_ratio(double);
 
 	private:
 	
-	//!Gets the height value in pixels from a double value relative to font size.
-	int				calculate_line_height(double v) {return (double)font->get_size()*v;}
 	void				create_texture();
 	void				set_text_internal(const std::string&);
 	void				text_replace(std::string&, const std::string&, const std::string&);
@@ -62,7 +60,7 @@ class ttf_representation:
 	render_mode			mode;
 	rgb_color			text_color;
 	rgba_color			bg_shaded;
-	int				line_height; //!< Expressed in pixels...
+	double				line_height_ratio; //!< Expressed as a ratio of the font size.
 	text_align			alignment;
 
 	//!Lookup table for powers of two.
