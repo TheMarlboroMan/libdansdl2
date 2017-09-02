@@ -12,6 +12,31 @@
 namespace ldv
 {
 
+//!An alignment object.
+
+//!This is a companion to the "align" method, which helps set positions of
+//!representations relative to other representations or rectangles.
+
+struct representation_aligment
+{
+	enum class h{
+		none, 
+		outer_left, 
+		inner_left, 
+		center, 
+		inner_right, 
+		outer_right} 	horizontal;
+	enum class v{
+		none,
+		outer_top, 
+		inner_top, 
+		center, 
+		inner_bottom, 
+		outer_bottom} 	vertical;
+	int			margin_horizontal,
+				margin_vertical;
+};
+
 //!Structure that contains rotation information.
 
 //!Provides with a few convenience functions. Used by representations.
@@ -87,6 +112,8 @@ class representation
 	//!Resets rotation transformation data.
 	virtual void 		reset_transform() {transformation.reset();}
 	void			debug_trace_box() const;
+	void			align(const representation&, const representation_aligment&);
+	void			align(const rect&, const representation_aligment&);
 	//!Toogles visibility flag.
 	void			toogle_visible() {visible=!visible;}
 	//!Moves the top-left point of the view position to the given point.

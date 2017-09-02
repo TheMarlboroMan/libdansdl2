@@ -227,3 +227,68 @@ rect representation::calculate_view_position() const
 
 	return res;
 }
+
+//!Aligns this representation with respect to the parameter
+
+void representation::align(const representation& o, const representation_aligment& ra)
+{
+	align(o.get_base_view_position(), ra);
+}
+
+//Aligns this representation relative to the rectangle.
+
+//!In the inner left/top and outer right/bottom position, the margin becomes
+//!inverted.
+
+void representation::align(const rect& r, const representation_aligment& ra)
+{
+	auto pos=get_position();
+	auto mrect=get_base_view_position();
+	int mh=ra.margin_horizontal, mv=ra.margin_vertical;
+
+	switch(ra.horizontal)
+	{
+		case representation_aligment::h::none: break;
+		case representation_aligment::h::outer_left:
+			pos.x=r.origin.x-mrect.w;
+			mh=-mh;
+		break;
+		case representation_aligment::h::inner_left:
+			pos.x=r.origin.x;
+		break;
+		case representation_aligment::h::center:
+			pos.x=(r.origin.x+r.w / 2)-(mrect.w/2);
+		break;
+		case representation_aligment::h::inner_right:
+			pos.x=r.origin.x+r.w-mrect.w;
+			mh=-mh;
+		break;
+		case representation_aligment::h::outer_right:
+			pos.x=r.origin.x+r.w;
+		break;
+	}
+
+	switch(ra.vertical)
+	{
+		case representation_aligment::v::none: break;
+		case representation_aligment::v::outer_top:
+			pos.y=r.origin.y-mrect.h;
+			mv=-mv;
+		break;
+		case representation_aligment::v::inner_top:
+			pos.y=r.origin.y;
+		break;
+		case representation_aligment::v::center:
+			pos.y=(r.origin.y+r.h / 2)-(mrect.h/2);
+		break;
+		case representation_aligment::v::inner_bottom:
+			pos.y=r.origin.y+r.h-mrect.h;
+			mv=-mv;
+		break;
+		case representation_aligment::v::outer_bottom:
+			pos.y=r.origin.y+r.h;
+		break;
+	}
+
+	go_to({pos.x+mh, pos.y+mv});
+}
