@@ -2,6 +2,7 @@
 #define LIBDANSDL2_GROUP_REPRESENTATION_H
 
 #include <vector>
+#include <memory>
 
 #include "../representation.h"
 #include "../../../tools/sdl_tools/sdl_tools.h"
@@ -13,15 +14,14 @@ namespace ldv
 
 //!Grouped representations are applied the same transformations and traslocations.
 //!Representations assigned to a group belong to the group itself, which will
-//!manage their lifetime. Can be copy constructed, but have never really tried it.
+//!manage their lifetime. Cannot be copied nor assigned.
 
 class group_representation:
 	public representation
 {
 	public:
 
-				group_representation(point, bool=true);
-				group_representation(const group_representation&);
+				group_representation(point);
 	virtual 		~group_representation();
 	void	 		insert(representation *);
 
@@ -32,8 +32,6 @@ class group_representation:
 	virtual point		get_position() const;
 	virtual rect		get_base_view_position() const;
 
-	std::vector<representation *>&	get_data() {return data;}
-
 	virtual void		draw(screen&, const camera&, bool=false);
 	virtual void		draw(screen&, bool=false);
 
@@ -42,14 +40,14 @@ class group_representation:
 	void			draw_internal(screen&, camera const *);
 
 	point			position;
-	bool			owns_data;
 
 	//!Cannot be copied.
 	group_representation& 	operator=(const group_representation &)=delete;
+				group_representation(const group_representation&)=delete;
 
 	protected:
 
-	std::vector<representation *> 	data;
+	std::vector<std::unique_ptr<representation>> 	data;
 
 	virtual void		do_draw();
 };

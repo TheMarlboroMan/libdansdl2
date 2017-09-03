@@ -230,7 +230,7 @@ rect representation::calculate_view_position() const
 
 //!Aligns this representation with respect to the parameter
 
-void representation::align(const representation& o, const representation_aligment& ra)
+void representation::align(const representation& o, const representation_alignment& ra)
 {
 	align(o.get_base_view_position(), ra);
 }
@@ -240,7 +240,7 @@ void representation::align(const representation& o, const representation_aligmen
 //!In the inner left/top and outer right/bottom position, the margin becomes
 //!inverted.
 
-void representation::align(const rect& r, const representation_aligment& ra)
+void representation::align(const rect& r, const representation_alignment& ra)
 {
 	auto pos=get_position();
 	auto mrect=get_base_view_position();
@@ -248,44 +248,44 @@ void representation::align(const rect& r, const representation_aligment& ra)
 
 	switch(ra.horizontal)
 	{
-		case representation_aligment::h::none: break;
-		case representation_aligment::h::outer_left:
+		case representation_alignment::h::none: break;
+		case representation_alignment::h::outer_left:
 			pos.x=r.origin.x-mrect.w;
 			mh=-mh;
 		break;
-		case representation_aligment::h::inner_left:
+		case representation_alignment::h::inner_left:
 			pos.x=r.origin.x;
 		break;
-		case representation_aligment::h::center:
+		case representation_alignment::h::center:
 			pos.x=(r.origin.x+r.w / 2)-(mrect.w/2);
 		break;
-		case representation_aligment::h::inner_right:
+		case representation_alignment::h::inner_right:
 			pos.x=r.origin.x+r.w-mrect.w;
 			mh=-mh;
 		break;
-		case representation_aligment::h::outer_right:
+		case representation_alignment::h::outer_right:
 			pos.x=r.origin.x+r.w;
 		break;
 	}
 
 	switch(ra.vertical)
 	{
-		case representation_aligment::v::none: break;
-		case representation_aligment::v::outer_top:
+		case representation_alignment::v::none: break;
+		case representation_alignment::v::outer_top:
 			pos.y=r.origin.y-mrect.h;
 			mv=-mv;
 		break;
-		case representation_aligment::v::inner_top:
+		case representation_alignment::v::inner_top:
 			pos.y=r.origin.y;
 		break;
-		case representation_aligment::v::center:
+		case representation_alignment::v::center:
 			pos.y=(r.origin.y+r.h / 2)-(mrect.h/2);
 		break;
-		case representation_aligment::v::inner_bottom:
+		case representation_alignment::v::inner_bottom:
 			pos.y=r.origin.y+r.h-mrect.h;
 			mv=-mv;
 		break;
-		case representation_aligment::v::outer_bottom:
+		case representation_alignment::v::outer_bottom:
 			pos.y=r.origin.y+r.h;
 		break;
 	}

@@ -2,19 +2,10 @@
 
 using namespace ldv;
 
-group_representation::group_representation(point p, bool p_poseer)
-	:representation(), position{p}, owns_data(p_poseer)
+group_representation::group_representation(point p)
+	:representation(), position{p}
 {
 	update_view_position();
-}
-
-group_representation::group_representation(const group_representation& o)
-	:representation(o), owns_data(o.owns_data)
-{
-	if(!owns_data)
-	{
-		data=o.data;
-	}
 }
 
 group_representation::~group_representation()
@@ -28,17 +19,6 @@ group_representation::~group_representation()
 
 void group_representation::clear()
 {
-	if(owns_data)
-	{
-		std::vector<representation *>::iterator ini=data.begin(),
-						fin=data.end();
-		while(ini < fin)
-		{
-			delete (*ini);
-			ini++;
-		};
-	}
-
 	data.clear();
 }
 
@@ -160,7 +140,7 @@ void group_representation::do_draw()
 
 void group_representation::insert(representation * p_rep)
 {
-	data.push_back(p_rep);
+	data.push_back(std::unique_ptr<representation>(p_rep));
 	update_view_position();
 }
 
