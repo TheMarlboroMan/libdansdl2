@@ -221,16 +221,18 @@ void ttf_representation::create_texture()
 
 //!Sets a new ttf font.
 
-//!Triggers a cleanse and recreation of the texture.
+//!Triggers a cleanse and recreation of the texture if unlocked.
 
 void ttf_representation::set_font(const ttf_font& f)
 {
 	font=&f;
-	free_texture();
+	if(!perform_changes) return;
 	create_texture();
 }
 
 //!Sets the text as a single character.
+
+//!Triggers a cleanse and recreation of the texture if unlocked. 
 
 void ttf_representation::set_text(const char c)
 {
@@ -242,6 +244,8 @@ void ttf_representation::set_text(const char c)
 
 //!Sets the text as a string.
 
+//!Triggers a cleanse and recreation of the texture if unlocked.
+
 void ttf_representation::set_text(const std::string& c)
 {
 	set_text_internal(c);
@@ -249,20 +253,30 @@ void ttf_representation::set_text(const std::string& c)
 
 //!Internal function to change text.
 
-//!Triggers a change of the text property and the creation of a new texture.
+//!Triggers a change of the text property and the creation of a new texture if unlocked.
 
 void ttf_representation::set_text_internal(const std::string& c)
 {
 	if(c!=text)
 	{
-		//No se limpia la textura: se va a reutilizar.
-
-		auto pos=get_position();
+		//The texture is going to be reused.
 		text=c;
+		if(!perform_changes) return;
+		auto pos=get_position();
 		reset_calculations();
 		create_texture();
 		go_to(pos); //Setting the text incidentally resets the position.
 	}
+}
+
+//!Unlocks the representation and refreshes its values.
+void ttf_representation::unlock_changes()
+{
+	perform_changes=true;
+	auto pos=get_position();
+	reset_calculations();
+	create_texture();
+	go_to(pos);
 }
 
 //!Internal replacement function.
@@ -283,62 +297,67 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 
 //!A value of 1.0 given an space equal to the font size. 1.5 gives a line
 //!and a half and so on.
-//!This function will trigger a recreation of the texture.
+//!This function will trigger a recreation of the texture if unlocked.
 
 void ttf_representation::set_line_height_ratio(double v) 
 {
 	if(v==line_height_ratio) return;
-
 	line_height_ratio=v;
-	free_texture();
+	if(!perform_changes) return;
 	create_texture();
 }
 
 //!Sets the font color.
 
-//!Will trigger a recreation of the texture if different.
+//!Will trigger a recreation of the texture if different and unlocked.
 void ttf_representation::set_color(rgb_color c)
 {
 	if(c==text_color) return;
 	text_color=c;
-	free_texture();
+	if(!perform_changes) return;
 	create_texture();
 }
 
 //!Sets the background color for the shaded mode.
 
-//!Will trigger a recreation of the texture if the mode is shaded and changes.
+//!Will trigger a recreation of the texture if the mode is shaded and changes (if unlocked).
 
 void ttf_representation::set_bg_shaded_color(rgba_color c)
 {
 	if(c==bg_shaded) return;
 	bg_shaded=c;
 	if(mode!=render_mode::shaded) return;
-	free_texture();
+	if(!perform_changes) return;
 	create_texture();
 }
 
 //!Sets the render mode.
 
-//!Triggers a texture recreation if changes.
+//!Triggers a texture recreation if changes and unlocked.
 
 void ttf_representation::set_render_mode(render_mode r)
 {
 	if(r==mode) return;
 	mode=r;
-	free_texture();
+	if(!perform_changes) return;
 	create_texture();
 }
 
 //!Sets the text alignment.
 
-//!Triggers a texture recreation if changes. Text alignment only matters when
-//!there is more than a single line in the text.
+//!Triggers a texture recreation if changes and unlocked. Text alignment only 
+//!matters when there is more than a single line in the text.
 
 void ttf_representation::set_text_align(text_align v)
 {
 	if(v==alignment) return;
 	alignment=v;
-	free_texture();
+	if(!perform_changes) return;
 	create_texture();
+}
+
+void ttf_representation::do_draw()
+{
+	if(!perform_changes) throw std::runtime_error("ttf_representation is locked!");
+	raster_representation::do_draw();
 }

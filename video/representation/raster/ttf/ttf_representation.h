@@ -37,6 +37,12 @@ class ttf_representation:
 	//!Returns the assigned text.
 	const std::string& 		get_text() const {return text;}
 
+	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
+	//!Must be accompanied by a call to "unlock_changes" that will perform recreation. 
+	//!Trying to draw a locked ttf_representation will throw,
+	void				lock_changes() {perform_changes=false;}
+	void				unlock_changes();
+
 	void				set_color(rgb_color);
 	void				set_bg_shaded_color(rgba_color);
 
@@ -48,8 +54,12 @@ class ttf_representation:
 	void				set_render_mode(render_mode r);
 	void				set_line_height_ratio(double);
 
+	protected:
+
+	virtual void 			do_draw();
+
 	private:
-	
+
 	void				create_texture();
 	void				set_text_internal(const std::string&);
 	void				text_replace(std::string&, const std::string&, const std::string&);
@@ -62,6 +72,7 @@ class ttf_representation:
 	rgba_color			bg_shaded;
 	double				line_height_ratio; //!< Expressed as a ratio of the font size.
 	text_align			alignment;
+	bool				perform_changes=true;
 
 	//!Lookup table for powers of two.
 	static const std::vector<int>	valid_sizes;
