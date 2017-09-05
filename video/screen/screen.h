@@ -46,7 +46,9 @@ class screen
 	void 				set_clip(camera const&);
 	void 				set_clip(rect);
 	void 				reset_clip();
+	void				set_size(int, int);
 	void 				set_logical_size(int, int);
+	void				set_fullscreen(bool);
 
 	void 				init(int, int, int=SDL_WINDOW_OPENGL);
 	void 				clear(const rgba_color&);
@@ -54,6 +56,7 @@ class screen
 
 	//!Returns whether there is a camera attached.
 	bool				has_camera() const {return current_camera!=nullptr;}
+	bool				is_fullscreen() const {return fullscreen;}
 
 	//!Returns a rect with the screen size. Useful to align representations.
 	rect				get_rect() {return rect{0,0,(unsigned)w,(unsigned)h};}
@@ -72,6 +75,8 @@ class screen
 
 	int 				w_logic, //! <Rendered size. May differ from window dimensions.
 					h_logic; //! <Rendered size. May differ from window dimensions.
+
+	bool				fullscreen=false;
 };
 
 } //Fin namespace DLibV

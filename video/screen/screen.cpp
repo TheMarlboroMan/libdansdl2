@@ -46,37 +46,96 @@ void screen::update()
 //!Initialise means to set SDL attributes (double buffer, a stencil size of 1),
 //!create a window (in an undefined position) with SDL_WINDOW_OPENGL
 //!flags by default and set the logical size of w and h.
-//!Can be called many times with different sizes that will change the window
-//!size but not the logical size or flags.
 
 void screen::init(int p_w, int p_h, int flags_window)
 {
 	w=p_w;
 	h=p_h;
 
-	if(!window)
-	{	
-		//All these attributes must be set BEFORE creating the window!!.
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		//This is very important...
-		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
+	if(window)
+	{
+		throw std::runtime_error("window was already init");
+	}
 
-		window=SDL_CreateWindow("", 
-			SDL_WINDOWPOS_UNDEFINED,
-			SDL_WINDOWPOS_UNDEFINED,
-			w, h, flags_window); //Por defecto SDL_WINDOW_OPENGL
+	//All these attributes must be set BEFORE creating the window!!.
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	//This is very important...
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
-		//Bind the sdl window to openGL.
-		context=SDL_GL_CreateContext(window);
-		set_logical_size(w, h);
+	window=SDL_CreateWindow("", 
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		w, h, flags_window); //Por defecto SDL_WINDOW_OPENGL
+
+	//Bind the sdl window to openGL.
+	context=SDL_GL_CreateContext(window);
+	set_logical_size(w, h);
+	glViewport(0.f, 0.f, w, h);
+
+	draw_info_instance={0,0,0,0,w,h,1.0};
+}
+
+//!Sets the phisical size of the screen and adjusts the viewport accordingly.
+
+//!The viewport will not preserve the original proportions if these change. 
+//!This function has no effect in fullscreen windows.
+
+void screen::set_size(int pw, int ph)
+{
+	if(fullscreen) return;
+	w=pw;
+	h=ph;
+	SDL_SetWindowSize(window, w, h);
+	glViewport(0.f, 0.f, w, h);
+}
+
+//!Sets or removes fake fullscreen mode.
+
+//!This function does not do videomode changes: it just gets the current display
+//!desktop size and adjusts the viewport so it retains its proportions. You can
+//!still put other windows on top, or even see the OS bars.
+
+void screen::set_fullscreen(bool v) 
+{
+	if(fullscreen==v) return;
+
+	fullscreen=v;
+	if(fullscreen)
+	{
+		SDL_DisplayMode info;
+		if(SDL_GetDesktopDisplayMode(0, &info)==0)
+		{
+			if(info.w < w || info.h < h) 
+			{
+				fullscreen=false;
+			}
+			else
+			{
+				SDL_SetWindowSize(window, info.w, info.h);
+				SDL_SetWindowPosition(window, 0, 0);
+				SDL_SetWindowBordered(window, (SDL_bool)false);
+
+				//Adjust and letterbox...
+				float screen_aspect=(float)info.w /(float)info.h;
+				float app_aspect=(float)w / (float)h;
+				float factor=screen_aspect > app_aspect ? info.h / h : info.w / w;
+				int nw=info.w*factor, nh=info.h*factor;
+//				glViewport((info.w-nw) / 2, (info.h-nh) / 2, nw, nh);
+				glViewport(0, 0, nw, nh);
+			}
+		}
+		else
+		{
+			fullscreen=false;
+		}
 	}
 	else
 	{
-		//Breaks viewport... TODO: Fix.
-		SDL_SetWindowSize(window, w, h);
+		set_size(w, h);
+		SDL_SetWindowBordered(window, (SDL_bool)true);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 	}
 
-	draw_info_instance={0,0,0,0,w,h,1.0};
 }
 
 //!Sets the logical size.
@@ -94,7 +153,7 @@ void screen::set_logical_size(int pw, int ph)
 
 	w_logic=pw;
 	h_logic=ph;
-	glViewport(0.f, 0.f, w, h);
+	//glViewport(0.f, 0.f, w, h);
 
 	//left, right, top, bottom, near and far.
 	//Sets 0.0 to be top left. Adjust 0.5f to get the pixel centre.
