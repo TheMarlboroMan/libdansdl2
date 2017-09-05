@@ -37,25 +37,20 @@ class sdl_input
 	{
 		public:
 					keyboard()
-			:pressed_keys(nullptr)
-		{
-
-		}
+			:keys_pressed_size{0}, pressed_keys{nullptr} 
+		{}
 			
 		void 			set_pressed_keys(const Uint8 * v)  {pressed_keys=v;}
-		Uint8 const * 		get_pressed_keys() const {return pressed_keys;}
 		bool 			is_key_pressed(int v) const {return pressed_keys[v];}
-		void			init_keys(bool locking)
+		void			init_keys()
 		{
-			memset(keys_up.data(), 0, SDL_NUM_SCANCODES);
-			memset(keys_down.data(), 0, SDL_NUM_SCANCODES);
-			if(locking) memset(keys_down_locking.data(), 0, SDL_NUM_SCANCODES);
+			memset(keys_up.data(), false, SDL_NUM_SCANCODES);
+			memset(keys_down.data(), false, SDL_NUM_SCANCODES);
 		}
 
-		std::array<char, SDL_NUM_SCANCODES>	keys_up,
-							keys_down,
-							keys_down_locking;
-
+		std::array<bool, SDL_NUM_SCANCODES>	keys_up,
+							keys_down;
+		int					keys_pressed_size; //This goes up when a key down and down when a key up. As long as it is larger than zero there are keypresses.
 
 		private:
 
@@ -410,7 +405,7 @@ class sdl_input
 
 	enum events_index{text=0, 
 		mousemove, mousedown, mouseup,
-		keyboard_down, keyboard_up,
+		keyboard_down, keyboard_up, 
 		joystick_axis, joystick_hat, joystick_button_up, joystick_button_down, joystick_connected, 
 		max_cache_index};
 
@@ -451,7 +446,7 @@ class sdl_input
 	//!Indicates if a new joystick was connected
 	bool			is_event_joystick_connected() const {return events_cache[joystick_connected];}
 
-	//!Specifies manual callback, allowing for low level control.
+	//!Specifies manual callback, allowing for low level control... It is to be called instead of "loop".
 
 	//!Receives f as a parameter function that takes an event and returns
 	//!true or false (if true the loop of events is broken and no more are
@@ -544,6 +539,8 @@ class sdl_input
 	bool 			is_event_keyboard_down() const {return events_cache[keyboard_down];}
 	//!Indicates if a keyboard up event has taken place.
 	bool 			is_event_keyboard_up() const {return events_cache[keyboard_up];}
+	//!Indicates if a keyboard pressed event has taken place.
+	bool 			is_event_keyboard_pressed() const {return device_keyboard.keys_pressed_size;}
 	//!Indicates any joystick event has taken place.
 	bool 			is_event_joystick() const {return events_cache[joystick_axis] || events_cache[joystick_hat] || events_cache[joystick_button_up] || events_cache[joystick_button_down] ;}
 	//!Indicates any joystick axis event has taken place.
@@ -558,6 +555,8 @@ class sdl_input
 	bool 			is_event_joystick_button_down() const {return events_cache[joystick_button_down];}
 	//!Indicates if any input is received.
 	bool 			is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
+	//!Same as before, but with key presses (not really events) too.
+	bool 			is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
 };
 
 }

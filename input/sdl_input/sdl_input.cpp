@@ -13,7 +13,7 @@ sdl_input::sdl_input():
 
 	events_cache.resize(max_cache_index, false);
 	
-	device_keyboard.init_keys(true);
+	device_keyboard.init_keys();
 	init_joysticks();
 }
 
@@ -186,12 +186,9 @@ void sdl_input::process_event(SDL_Event& event)
 		{
 			unsigned int index=event.key.keysym.scancode;
 
-			if(!device_keyboard.keys_down_locking[index])
-			{
 				events_cache[keyboard_down]=true;
-				device_keyboard.keys_down[index]=1;
-				device_keyboard.keys_down_locking[index]=1;
-			}
+				device_keyboard.keys_down[index]=true;
+				++device_keyboard.keys_pressed_size;
 
 			if(keydown_control_text_filter && SDL_IsTextInputActive())
 			{
@@ -215,8 +212,8 @@ void sdl_input::process_event(SDL_Event& event)
 			unsigned int index=event.key.keysym.scancode;
 
 			events_cache[keyboard_up]=true;
-			device_keyboard.keys_up[index]=1;
-			device_keyboard.keys_down_locking[index]=0;
+			device_keyboard.keys_up[index]=true;
+			--device_keyboard.keys_pressed_size;
 		}
 		break;
 
@@ -363,8 +360,8 @@ void sdl_input::clear_loop()
 	std::fill(std::begin(events_cache), std::end(events_cache), false);
 
 	//Alimentamos las teclas pulsadas y trabajamos con ellas.
-	device_keyboard.set_pressed_keys(SDL_GetKeyboardState(NULL));
-	device_keyboard.init_keys(false);
+	device_keyboard.set_pressed_keys(SDL_GetKeyboardState(nullptr));
+	device_keyboard.init_keys();
 	clear_joysticks_state();
 	device_mouse.init();
 }
