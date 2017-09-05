@@ -37,26 +37,26 @@ class sdl_input
 	{
 		public:
 					keyboard()
-			:keys_pressed_size{0}, pressed_keys{nullptr} 
+			:keys_pressed_size{0}
 		{}
 			
-		void 			set_pressed_keys(const Uint8 * v)  {pressed_keys=v;}
-		bool 			is_key_pressed(int v) const {return pressed_keys[v];}
 		void			init_keys()
+		{
+			memset(keys_up.data(), false, SDL_NUM_SCANCODES);
+			memset(keys_down.data(), false, SDL_NUM_SCANCODES);
+			memset(keys_pressed.data(), false, SDL_NUM_SCANCODES);
+		}
+
+		void			reset_keys()
 		{
 			memset(keys_up.data(), false, SDL_NUM_SCANCODES);
 			memset(keys_down.data(), false, SDL_NUM_SCANCODES);
 		}
 
 		std::array<bool, SDL_NUM_SCANCODES>	keys_up,
-							keys_down;
+							keys_down,
+							keys_pressed;
 		int					keys_pressed_size; //This goes up when a key down and down when a key up. As long as it is larger than zero there are keypresses.
-
-		private:
-
-		//This is a structure from SDL, not a leak.
-		const Uint8 * 		pressed_keys;
-
 	};
 
 	//!Private structure to interact with mouse parameters.
@@ -488,7 +488,7 @@ class sdl_input
 	//!Moves the mouse cursor to the specified position.
 	void 			warp_mouse(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
 	//!Checks if the key is pressed as expressed in SDL scancodes.
-	bool 			is_key_pressed(int pkey) const {return device_keyboard.is_key_pressed(pkey);}
+	bool 			is_key_pressed(int pkey) const {return device_keyboard.keys_pressed[pkey];}
 	//!Checks if the key is down as expressed in SDL scancodes.
 	bool 			is_key_down(int pkey) const {return device_keyboard.keys_down[pkey];}
 	//!Checks if the key is up as expressed in SDL scancodes.
