@@ -92,8 +92,9 @@ void screen::set_size(int pw, int ph)
 //!Sets or removes fake fullscreen mode.
 
 //!This function does not do videomode changes: it just gets the current display
-//!desktop size and adjusts the viewport so it retains its proportions. You can
-//!still put other windows on top, or even see the OS bars.
+//!desktop size and adjusts the viewport so it retains its proportions, 
+//!letterboxing the rest. You can still put other windows on top, or even see 
+//!the OS bars.
 
 void screen::set_fullscreen(bool v) 
 {
