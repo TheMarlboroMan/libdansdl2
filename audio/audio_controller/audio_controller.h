@@ -65,6 +65,8 @@ class audio_controller
 	//!Indicates whether music is playing.
 	bool					is_music_playing() const {return music_playing;}
 	int 					get_music_volume() const;
+	//!Returns the main music volume.
+	int					get_main_music_volume() const {return main_music_volume;}
 	//!Returns the number of channels requested to SDL by the controller.
 	int 					get_requested_channels() const {return requested_channels;}
 	//!Gets the main sound volume.
