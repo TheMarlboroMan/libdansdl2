@@ -26,6 +26,13 @@ void ldv::set_vsync(bool v)
 	SDL_GL_SetSwapInterval(v ? 1 : 0);
 }
 
+//!Returns the vsync value.
+
+bool ldv::get_vsync()
+{
+	return SDL_GL_GetSwapInterval();
+}
+
 //!Creates a SDL_Surface with the same format and size as the one given.
 
 SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin)
