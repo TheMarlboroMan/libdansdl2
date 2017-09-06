@@ -3,7 +3,6 @@
 
 #include <SDL2/SDL.h>
 #include <iostream>
-#include <cstring> //Para memset.
 #include <cstdlib> //Para abs en windows.
 #include <vector>
 #include <map>
@@ -42,15 +41,17 @@ class sdl_input
 			
 		void			init_keys()
 		{
-			memset(keys_up.data(), false, SDL_NUM_SCANCODES);
-			memset(keys_down.data(), false, SDL_NUM_SCANCODES);
-			memset(keys_pressed.data(), false, SDL_NUM_SCANCODES);
+			auto f=[](std::array<bool, SDL_NUM_SCANCODES>& a) {std::fill(std::begin(a), std::end(a), false);};
+			f(keys_up); 
+			f(keys_down);
+			f(keys_pressed);
 		}
 
 		void			reset_keys()
 		{
-			memset(keys_up.data(), false, SDL_NUM_SCANCODES);
-			memset(keys_down.data(), false, SDL_NUM_SCANCODES);
+			auto f=[](std::array<bool, SDL_NUM_SCANCODES>& a) {std::fill(std::begin(a), std::end(a), false);};
+			f(keys_up); 
+			f(keys_down);
 		}
 
 		std::array<bool, SDL_NUM_SCANCODES>	keys_up,
@@ -77,7 +78,7 @@ class sdl_input
 		bool 			movement;
 
 		static const unsigned int max_buttons=6;
-		std::array<char, max_buttons>	buttons_up,
+		std::array<bool, max_buttons>	buttons_up,
 						buttons_down,
 						buttons_pressed;
 
@@ -87,13 +88,13 @@ class sdl_input
 			x(position.x), y(position.y),
 			movement(false)
 		{
-			memset(buttons_pressed.data(), 0, max_buttons);
+			std::fill(std::begin(buttons_pressed), std::end(buttons_pressed), false);
 		}
 
 		void init()
 		{
-			memset(buttons_up.data(), 0, max_buttons);
-			memset(buttons_down.data(), 0, max_buttons);
+			std::fill(std::begin(buttons_up), std::end(buttons_up), false);
+			std::fill(std::begin(buttons_down), std::end(buttons_down), false);
 			movement=false;
 		}
 	};
