@@ -6,9 +6,11 @@ using namespace ldi;
 
 //!Default constructor.
 sdl_input::sdl_input():
-	keydown_control_text_filter(false), exit_signal(false), joysticks_size(0)
-
+	keydown_control_text_filter(false), 
+	exit_signal(false), joysticks_size(0)
 {
+	f_default_process_event=[this](SDL_Event& e){process_event(e);};
+	reset_event_processing_function();
 	SDL_StopTextInput();
 
 	events_cache.resize(max_cache_index, false);
@@ -66,8 +68,14 @@ void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 bool sdl_input::pump_events(SDL_Event &pevent, bool pprocess)
 {
 	bool result=SDL_PollEvent(&pevent);
-	if(pprocess && result) process_event(pevent);
+	if(pprocess && result) f_process_event(pevent, f_default_process_event);
 	return result;
+}
+
+//!Resets the default event processing function.
+void sdl_input::reset_event_processing_function()
+{
+	f_process_event=[this](SDL_Event& e, tf_default){process_event(e); return true;};
 }
 
 //!Main event loop. Must be called once per application tick.
@@ -77,7 +85,7 @@ void sdl_input::loop()
 	clear_loop();
 	SDL_Event event;
 	while(SDL_PollEvent(&event))
-		process_event(event);
+		if(!f_process_event(event, f_default_process_event)) return;
 }
 
 //!Called for each event, alters the internal structure of the class according to input.
@@ -413,4 +421,12 @@ int sdl_input::get_joystick_button_down_index(int index) const
 	}
 
 	return -1;
+}
+
+
+//Returns the joystick index from its id. Useful to "learn" controls, specifically to convert event.jbutton.which to id.
+int sdl_input::get_joystick_index_from_id(SDL_JoystickID id) const
+{
+	if(!id_joystick_to_index.count(id)) throw std::runtime_error("Invalid joystick id in get_joystick_index_from_id");
+	return id_joystick_to_index.at(id);
 }

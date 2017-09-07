@@ -377,6 +377,11 @@ class sdl_input
 
 	};
 
+	public:
+
+	typedef				std::function<void(SDL_Event& event)> tf_default;
+	typedef				std::function<bool(SDL_Event& event, tf_default&)> tf_event;
+
 	private:
 
 	keyboard		 	device_keyboard;
@@ -391,6 +396,9 @@ class sdl_input
 
 	bool 				exit_signal; //Basically SDL_QUIT.
 	unsigned short int 		joysticks_size;
+
+	tf_event			f_process_event;
+	tf_default			f_default_process_event;
 
 	void 				init_joysticks();
 	void 				clear_joysticks_state();
@@ -446,46 +454,6 @@ class sdl_input
 	void 			loop();
 	//!Indicates if a new joystick was connected
 	bool			is_event_joystick_connected() const {return events_cache[joystick_connected];}
-
-	//!Specifies manual callback, allowing for low level control... It is to be called instead of "loop".
-
-	//!Receives f as a parameter function that takes an event and returns
-	//!true or false (if true the loop of events is broken and no more are
-	//!processed. An example is present in sdl_input.h just above the
-	//!function declaration.
-
-	/*
-	bool test;
-	struct Cosa
-	{
-		int val;
-		bool operator()(SDL_Event& ev)
-		{
-			if(ev.type==SDL_KEYDOWN)
-			{
-				std::cout<<"Keycode is "<<ev.key.keysym.scancode<<std::endl;
-				return true;
-			}
-
-			++val;
-			std::cout<<"Hey "<<val<<std::endl;
-			return false;
-		}
-		
-		Cosa():val(0) {}
-	}c;
-	*/
-
-	template <typename TipoFunc> void loop_callback(TipoFunc& f)
-	{
-		this->clear_loop();
-		SDL_Event event;
-		while(SDL_PollEvent(&event))
-		{
-			if(f(event)) break;
-		}
-	}
-
 	//!Moves the mouse cursor to the specified position.
 	void 			warp_mouse(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
 	//!Checks if the key is pressed as expressed in SDL scancodes.
@@ -558,6 +526,11 @@ class sdl_input
 	bool 			is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
 	//!Same as before, but with key presses (not really events) too.
 	bool 			is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
+	
+	void			reset_event_processing_function();
+	//!Sets a new event processing function. Replaces callback template. The function must process the event and return true. If it returns false, the event loop will exit until the next step. If the parameter function is called, the default function will be issued.
+	void			set_event_processing_function(tf_event f) {f_process_event=f;}
+	int			get_joystick_index_from_id(SDL_JoystickID) const;
 };
 
 }
