@@ -24,7 +24,10 @@ coordinate system used on the library). In "cartesian", the origin is the
 bottom-left corner and the "height" parameter "ascends". The choice of coordinate
 system makes the camera act as a mediator between screen and application space.
 Whatever the system chosen, all representations MUST be in "screen" form. 
-The camera will not perform the transformations itself.
+The camera will not perform the transformations itself... Even if this 
+transformation could be implemented into the framework, I'd rather not do it
+and keep it simple. All the client code needs to do is invert the y axis 
+when creating a representation for a logic object.
 
 The camera can also set a margin for the "focus on" functions to avoid constant
 scrolling. The margin is always in screen coordinates. These functions are
@@ -73,8 +76,6 @@ class camera
 	private:
 
 	//Methods...
-
-	//!Syncs camera boxes and performs neccesary coordinate system conversions.
 	void 			sync();
 
 	static point		world_to_pos_screen(point p, point origin) {return p-origin;}

@@ -48,8 +48,6 @@ representation& representation::operator=(const representation& o)
 
 void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take)
 {
-	//TODO: Once this changes, we'd still need to change it in group_representation.cpp.
-
 	//Using the draw info allows us to work with cartesian coordinates.
 	const auto& cf=pcamera.get_draw_info();
 
@@ -238,7 +236,8 @@ void representation::align(const representation& o, const representation_alignme
 //Aligns this representation relative to the rectangle.
 
 //!In the inner left/top and outer right/bottom position, the margin becomes
-//!inverted.
+//!inverted. This function only takes into account screen coordinates (as 
+//!it aligns representations, not logic objects).
 
 void representation::align(const rect& r, const representation_alignment& ra)
 {

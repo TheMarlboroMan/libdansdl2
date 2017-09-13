@@ -12,12 +12,19 @@ camera::camera(rect foco, point pos):
 	sync();
 }
 
+//!Syncs camera boxes and performs neccesary coordinate system conversions.
+
+//!This is a private function. Basically feeds a draw_info struct with the 
+//!camera values and converts its y coordinates to screen space if neccesary.
+
 void camera::sync()
 {
 	d_info.pos_x=pos_box.origin.x;
 	d_info.pos_y=pos_box.origin.y;
 	d_info.rel_x=focus_box.origin.x;
-	d_info.rel_y=coordinate_system==tsystem::screen ? focus_box.origin.y : -focus_box.origin.y;
+	d_info.rel_y=coordinate_system==tsystem::screen ? 
+		focus_box.origin.y : 
+		-focus_box.origin.y-focus_box.h; //Set to screen space.
 	d_info.view_w=focus_box.w;
 	d_info.view_h=focus_box.h;
 }
@@ -155,9 +162,7 @@ void camera::clear_limits()
 //!Zoom works by ratio: a zoom 1 is in a 1:1 ratio. A zoom of 2 draws 
 //!everything twice as large. Larger zoom values imply smaller focus boxes.
 //!Zoom is done from the top-left corner of the camera so the view must
-//!be adjusted accordingly.
-
-//TODO: Perhaps we can provide for that...
+//!be adjusted accordingly. This is so even if the system is set to cartesian.
 
 void camera::set_zoom(double v)
 {
@@ -234,6 +239,7 @@ void camera::set_coordinate_system(tsystem v)
 			world_to_pos_f=camera::world_to_pos_cartesian;
 		break;
 	}
+	sync();
 }
 
 //!Checks if the rect is completely or partly inside the camera focus. 
