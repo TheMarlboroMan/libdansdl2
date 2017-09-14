@@ -34,7 +34,8 @@ class line_representation:
 
 	private:
 
-	std::array<point, 2>		points;
+	std::array<point, 2>		points; //!<Points as described as relative to a 0.0...
+	point				origin; //!<this is that 0.0.
 };
 
 }

@@ -132,6 +132,8 @@ void representation::pre_render_transform(const draw_info& iv)
 	
 	//Here we are always dealing with screen values...
 
+//TODO: WELCOME TO DEBUG LAND.
+
 	auto pos=get_position();
 	int 	x=iv.pos_x+pos.x-iv.rel_x, 
 		y=iv.pos_y+pos.y-iv.rel_y;
