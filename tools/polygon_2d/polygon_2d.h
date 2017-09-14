@@ -12,6 +12,10 @@
 namespace ldt
 {
 
+//Forwards...
+template<typename T> bool is_concave(const std::vector<point_2d<T>>&);
+template<typename T> bool is_clockwise(const std::vector<point_2d<T>>&);
+
 //!Simple 2d polygon defined from vertexes. Clockwise winding. No collision capabilities.
 
 //!A polygon is defined by a point (center) and a vector of point (vertexes). 
@@ -39,9 +43,9 @@ class polygon_2d_vertexes
 	}
 
 	//!Checks if the polygon is concave (making it unsuitable for SAT collision detection).
-	bool				is_concave() const {return is_concave(vertexes);}
+	bool				is_concave() const {return ldt::is_concave(vertexes);}
 	//!Checks if the polygon is winded clockwise.
-	bool				is_clockwise() const {return is_clockwise(vertexes);}
+	bool				is_clockwise() const {return ldt::is_clockwise(vertexes);}
 	//!Returns the amount of vertices.
 	size_t				size() const {return vertexes.size();}
 
@@ -547,7 +551,7 @@ bool is_clockwise(const std::vector<point_2d<T>>& vertexes)
 	}
 
 	sum+=(vertexes[0].x-vertexes[tam-1].x)*(vertexes[0].y+vertexes[tam-1].y);
-	return sum >= 0;
+	return sum >= (T)0;
 }
 
 }
