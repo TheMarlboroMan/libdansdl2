@@ -100,8 +100,8 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_MOUSEMOTION:
 			events_cache[mousemove]=true;
-			device_mouse.x=event.motion.x; 
-			device_mouse.y=event.motion.y; 
+			device_mouse.position.x=event.motion.x; 
+			device_mouse.position.y=event.motion.y; 
 			device_mouse.movement=true;
 		break;
 

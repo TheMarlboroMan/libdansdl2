@@ -68,9 +68,6 @@ class sdl_input
 
 		mouse_position 		position;
 
-		int& 			x, y;	//Referencias, por compatibilidad de cuando x e y flotaban fuera de Posicion.
-
-		//Para los puristas, versiones acc...
 		int 			get_x() const {return position.x;}
 		int 			get_y() const {return position.y;}
 		const mouse_position&	get_position() const {return position;}
@@ -85,7 +82,6 @@ class sdl_input
 	
 		mouse():
 			position(),
-			x(position.x), y(position.y),
 			movement(false)
 		{
 			std::fill(std::begin(buttons_pressed), std::end(buttons_pressed), false);
@@ -479,7 +475,7 @@ class sdl_input
 	//!Returns the number of connected joysticks.
 	unsigned short int 	get_joysticks_size() const {return joysticks_size;}
 	//!Returns the current mouse position.
-	mouse_position 		get_mouse_position() const {return device_mouse.get_position();}
+	const mouse_position& 	get_mouse_position() const {return device_mouse.get_position();}
 	//!Checks if the "close window" button has been pressed.
 	bool 			is_exit_signal() const {return exit_signal;}
 	//!Checks if there has been an acivity event (minimize, maximize...).
