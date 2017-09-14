@@ -35,7 +35,6 @@ class line_representation:
 	private:
 
 	std::array<point, 2>		points;
-	point				origin;
 };
 
 }
