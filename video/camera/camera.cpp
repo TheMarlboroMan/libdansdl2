@@ -162,7 +162,8 @@ void camera::clear_limits()
 //!Zoom works by ratio: a zoom 1 is in a 1:1 ratio. A zoom of 2 draws 
 //!everything twice as large. Larger zoom values imply smaller focus boxes.
 //!Zoom is done from the top-left corner of the camera so the view must
-//!be adjusted accordingly. This is so even if the system is set to cartesian.
+//!be adjusted accordingly. In cartesian mode the zoom happens from the bottom-
+//!left corner.
 
 void camera::set_zoom(double v)
 {
@@ -170,6 +171,7 @@ void camera::set_zoom(double v)
 	d_info.zoom=v;
 	focus_box.w=pos_box.w / v;
 	focus_box.h=pos_box.h / v;
+	sync();
 }
 
 //!Sets a margin for camera movement when using center_on functions. 
