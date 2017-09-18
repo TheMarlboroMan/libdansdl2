@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <array>
+#include <cassert>
 
 #include "../point_2d/point_2d.h"
 #include "../vector_2d/vector_2d.h"
@@ -18,9 +19,9 @@ template<typename T> bool is_clockwise(const std::vector<point_2d<T>>&);
 
 //!Simple 2d polygon defined from vertexes. Clockwise winding. No collision capabilities.
 
-//!A polygon is defined by a point (center) and a vector of point (vertexes). 
-//!The center is used as an anchor to rotate it. Many additional function
-//!templates are defined in the same header, providing extended functionality.
+//!A polygon is defined by a rotation point and a vector of point (vertexes). 
+//!Many additional function templates are defined in the same header, 
+//!providing extended functionality.
 
 template<typename T>
 class polygon_2d_vertexes
@@ -35,11 +36,19 @@ class polygon_2d_vertexes
 	
 	}
 
-	//!Constructs a polygon with the given points and center.
+	//!Constructs a polygon with the given points and rotation center.
 					polygon_2d_vertexes(const std::vector<tpoint>& pts, tpoint c)
-		:center(c), vertexes(pts)
+		:vertexes(pts), rotation_center(c)
 	{
+		calculate_centroid();
+	}
 
+	//!Constructs a polygon with the given points. By default the rotation center is set to the centroid.
+					polygon_2d_vertexes(const std::vector<tpoint>& pts)
+		:vertexes(pts)
+	{
+		calculate_centroid();
+		rotation_center=centroid;
 	}
 
 	//!Checks if the polygon is concave (making it unsuitable for SAT collision detection).
@@ -52,33 +61,48 @@ class polygon_2d_vertexes
 	//!Moves the polygon by the units specified in the point.
 	virtual void			move(tpoint v)
 	{
-		center+=v;
+		centroid+=v;
+		rotation_center+=v;
 		for(auto &p : vertexes) p+=v;
 	}
 
-	//!Moves the polygon so the center rests in the specified point. For some reason returns the vector.
+	//!Moves the polygon so the centroid rests in the specified point.
 	virtual void			center_in(tpoint v)
 	{
-		vector_2d<T> vec=vector_from_points(this->center, tpoint(v.x, v.y));
-		for(auto &p : vertexes) p+={vec.x, vec.y};
-		center=v;
+		vector_2d<T> vec=vector_from_points(this->centroid, tpoint(v.x, v.y));
+		tpoint factor={vec.x, vec.y};
+		for(auto &p : vertexes) p+=factor;
+		rotation_center+=factor;
+		centroid=v;
 	}
 
-	//!Rotates the polygon around its center.
+	//!Rotates the polygon around its rotation_center.
 	virtual void			rotate(T degrees)
 	{
-		for(auto &p : vertexes) p.rotate(degrees, center);
+		for(auto &p : vertexes) p.rotate(degrees, rotation_center);
+		centroid.rotate(degrees, rotation_center);
+	}
+
+	//!Rotates the polygon around an arbitrary point.
+	virtual void			rotate(T degrees, tpoint pt)
+	{
+		for(auto &p : vertexes) p.rotate(degrees, pt);
+		centroid.rotate(degrees, pt);
+		rotation_center.rotate(degrees, pt);
 	}
 
 	//!Adds a new vertex.
 	virtual void			add_vertex(const tpoint& p)
 	{
-		if(!size()) center=p;
+		if(!size()) rotation_center=p;
 		vertexes.push_back(p);
+		calculate_centroid();
 	}
 
-	//!Returns the center point.
-	const tpoint&			get_center() const {return center;}
+	//!Returns the rotation center point.
+	const tpoint&			get_rotation_center() const {return rotation_center;}
+	//!Returns the centroid.
+	const tpoint&			get_centroid() const {return centroid;}
 	//!Returns all vertices.
 	const std::vector<tpoint>&	get_vertexes() const {return vertexes;}
 	//!Returns the vertex at the index. May throw.
@@ -87,36 +111,71 @@ class polygon_2d_vertexes
 	tpoint				get_vertex(size_t v) {return vertexes[v];}
 	//!Returns a reference to the vertex at the index. May throw.
 	tpoint&				ref_vertex(size_t v) {return vertexes[v];}
-	//!Sets the center.
-	void				set_center(const tpoint& p) {center=p;}
+	//!Sets the rotation center.
+	void				set_rotation_center(const tpoint& p) {rotation_center=p;}
 
-	//!Checks polygon equality (in both vertexes and center).
+	//!Checks polygon equality (in both vertexes and centers).
 	bool				operator==(const polygon_2d_vertexes<T>& p) const
 	{
-		return center==p.center && vertexes==p.vertexes;
+		return rotation_center==p.rotation_center 
+			&& centroid==p.centroid 
+			&& vertexes==p.vertexes;
 	}
 
 	protected:
 
-	tpoint				center;
+	void				calculate_centroid()
+	{
+		//https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon#
+
+		if(size() >= 3)
+		{
+			T signedArea=0.0;
+			T x0=0.0, y0=0.0; // Current vertex X and Y.
+			T x1=0.0, y1=0.0; // Next vertex X and Y.
+			T a = 0.0;  // Partial signed area
+
+			// For all vertices
+			int i=0;
+			for (i=0; i<vertexes.size(); ++i)
+			{
+				x0 = vertexes[i].x;
+				y0 = vertexes[i].y;
+				x1 = vertexes[(i+1) % vertexes.size()].x;
+				y1 = vertexes[(i+1) % vertexes.size()].y;
+				a = x0*y1 - x1*y0;
+				signedArea += a;
+				centroid.x += (x0 + x1)*a;
+				centroid.y += (y0 + y1)*a;
+			}
+
+			signedArea *= 0.5;
+			centroid.x /= (6.0*signedArea);
+			centroid.y /= (6.0*signedArea);
+		}
+	}
+
 	std::vector<tpoint>		vertexes;
+	tpoint				centroid;
+	tpoint				rotation_center;
 };
 
 //!A segment is a couple of points joined by a bearing vector... 
-
-//!TODO: This can actually be made smaller by having a point and a vector towards
-//!the second one.
 
 template<typename T>
 struct segment_2d
 {
 	typedef	point_2d<T>		tpoint;
-	point_2d<T>			v1, v2;
+	tpoint				v1, v2;
 	vector_2d<T>			direction;
 
 	//!Creates a segment from v1 to v2.
-					segment_2d<T>(point_2d<T> pv1, point_2d<T> pv2)
+					segment_2d<T>(tpoint pv1, tpoint pv2)
 		:v1(pv1), v2(pv2), direction(vector_from_points(v1, v2))
+	{}
+
+					segment_2d<T>()
+		:v1(tpoint(0,0)), v2(tpoint(0,0)), direction(vector_2d<T>(0,0))
 	{}
 
 	//!Copy constructor.
@@ -137,6 +196,15 @@ struct segment_2d
 		return v1==s.v1 && v2==s.v2 && direction==s.direction;
 	}
 };
+
+//Calculates the middle point of a segment...
+
+template<typename T>
+point_2d<T> segment_middle_point(const segment_2d<T>& s)
+{
+	return {	(s.v1.x+s.v2.x) / 2., 
+			(s.v1.y+s.v2.y) / 2.};
+}
 
 //!A polygon projection.
 
@@ -170,9 +238,11 @@ T	get_projection_overlap(const polygon_projection<T>& pa, const polygon_projecti
 
 //Forwards...
 template<typename T> class polygon_2d;
+template<typename T> struct SAT_edge_result;
 template<typename T> struct SAT_mtv_result;
-template<typename T> bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b, bool=false);
-template<typename T> SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b, bool=false);
+template<typename T> bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b);
+template<typename T> SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b);
+template<typename T> SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon_2d<T>& b);
 
 //!Complex polygon with collision capabilities.
 
@@ -190,13 +260,20 @@ class polygon_2d:
 
 	typedef	point_2d<T>		tpoint;
 
+	//!Default constructor.
 					polygon_2d()
 		:polygon_2d_vertexes<T>()
+	{}
+
+	//!Construct from vertexes. Rotation center and centroid are the same.
+					polygon_2d(const std::vector<tpoint>& pts)
+		:polygon_2d_vertexes<T>(pts)
 	{
-	
+		recreate_segments();
 	}
 
 	
+	//!Construct from vertexes and sets rotation center.
 					polygon_2d(const std::vector<tpoint>& pts, tpoint c)
 		:polygon_2d_vertexes<T>(pts, c)
 	{
@@ -211,19 +288,27 @@ class polygon_2d:
 		for(auto &s : segments) s.move(v);
 	}
 
-	//!Moves the polygon so the center rests in the value specified.
+	//!Moves the polygon so the centroid rests in the value specified.
 	virtual void			center_in(tpoint v)
 	{
-		vector_2d<T> mv=vector_from_points(this->center, v);
+		vector_2d<T> mv=vector_from_points(this->centroid, v);
 		polygon_2d_vertexes<T>::center_in(v);
 		for(auto &s : segments) s.move({mv.x, mv.y});
 	}
 
-	//!Rotates the polygon around its center.
+	//!Rotates the polygon around its rotation center.
 
 	virtual void			rotate(T deg)
 	{
 		polygon_2d_vertexes<T>::rotate(deg);
+		recreate_segments();
+	}
+
+	//!Rotates the polygon around an arbitrary point.
+
+	virtual void			rotate(T deg, tpoint pt)
+	{
+		polygon_2d_vertexes<T>::rotate(deg, pt);
 		recreate_segments();
 	}
 
@@ -298,85 +383,186 @@ class polygon_2d:
 	}
 
 	std::vector<segment_2d<T> > segments;
-	friend bool SAT_collision_check<T>(const polygon_2d<T>& a,const polygon_2d<T>& b, bool);
-	friend SAT_mtv_result<T> SAT_collision_check_mtv<T>(const polygon_2d<T>& a,const polygon_2d<T>& b, bool);
+	friend bool SAT_collision_check<T>(const polygon_2d<T>& a,const polygon_2d<T>& b);
+	friend SAT_mtv_result<T> SAT_collision_check_mtv<T>(const polygon_2d<T>& a,const polygon_2d<T>& b);
+	friend SAT_edge_result<T> SAT_collision_check_edge<T>(const polygon_2d<T>& a,const polygon_2d<T>& b);
 };
 
-//!Checks if there is a SAT collision check between two polygons. Will throw std::runtime_error in non-closed polygons.
+//!Checks if there is a SAT collision check between two polygons.
 
 template<typename T>
-bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b, bool sanity)
+bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b)
 {
-	if(sanity && (a.get_vertexes().size() != a.get_segments().size() || b.get_vertexes().size() != b.get_segments().size()))
-	{
-		throw std::runtime_error("ERROR: vertexes size is different from segments size.");
-	}
+	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
 
 	auto f=[](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
 	{
 		for(const auto& s : pa.segments)
 		{
-			auto axis=s.direction.perpendicular(); //Vector normal...
+			auto axis=s.direction.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 			if(!is_projection_overlap(proy_a, proy_b)) return false;
 		}
 		return true;
 	};
 
-	if(!f(a, b)) return false;
-	else if(!f(b, a)) return false;
+	if(!f(b, a)) return false;
+	else if(!f(a, b)) return false;
 	else return true;
 }
 
-//!SAT collision response including the minimum translation vector.
-
-//!Angle is expressed in degrees. Magnitude and angle can be converted into a vector.
+//!SAT collision response with minimum translation vector.
 
 template<typename T> 
 struct SAT_mtv_result
 {
-	bool 		collision=false;
-	T		magnitude, angle; //Angle is in degrees.
+			SAT_mtv_result():
+		collision(false), mtv{0., 0.}
+	{}
+
+	bool 			collision;
+	ldt::vector_2d<T>	mtv;
 };
 
 //!Calculates SAT with the minumum translation vector.
 
 template<typename T>
-SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b, bool sanity)
+SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b)
 {
-	if(sanity && (a.get_vertexes().size() != a.get_segments().size() || b.get_vertexes().size() != b.get_segments().size()))
-	{
-		throw std::runtime_error("ERROR: vertexes size is different from segments size.");
-	}
+	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
 
 	SAT_mtv_result<T> res;
+	T current_magnitude=0.;
 
-	auto f=[&res](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
+	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
 	{
 		for(const auto& s : pa.segments)
 		{
-			auto axis=s.direction.perpendicular(); //Vector normal...
+			auto axis=s.direction.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 
 			if(!is_projection_overlap(proy_a, proy_b)) return false;
 			else 
 			{
 				T overlap=get_projection_overlap(proy_a, proy_b);
-				if(!res.collision || overlap < res.magnitude)
+				if(!res.collision || overlap < current_magnitude)
 				{
-					res.magnitude=overlap;
-					res.angle=axis.get_angle_deg();
+					current_magnitude=overlap;
+					res.mtv=ldt::vector_from_angle_and_magnitude(axis.get_angle_deg(), overlap);
+					res.collision=true;
 				}
-				res.collision=true;
 			}
 		}
 
 		return true;
 	};
 	
-	if(!f(a, b)) return res;	//Early exit if no collision exists.
-	f(b, a);			//No early exit at this point.
+	if(!f(b, a)) return res;	//Early exit if no collision exists.
+	f(a, b);			//No early exit at this point.
 
+	return res;
+}
+
+//!SAT collision response with collision edge
+
+template<typename T> 
+struct SAT_edge_result
+{
+	bool 			collision=false,
+				edge_in_poly_a=false;
+	segment_2d<T>		edge;
+};
+
+//!Calculates SAT with a collision edge.
+
+//!The edge_in_poly_a boolean serves to evaluate to which polygon the edge
+//!belongs, helping choose the left or right normal for collision response.
+//!Is is assumed that poly_a is the first parameter. Given that paralell edges
+//!can give irregular results, all parallels are trimmed. This can be a
+//!costly operation. TODO: Provide alternatives, like this function with edges
+//!instead of polygons, so they can be cached if static.
+
+template<typename T>
+SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon_2d<T>& b)
+{
+	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
+
+	SAT_edge_result<T> res;
+	T current_magnitude=0.;
+	
+	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
+	{
+		//If there are parallel segments we can have problems... a convex
+		//polygon can have at most 2 parallel segments amongst themselves,
+		//so we'll not test the one furthest from "pa"'s center.
+
+		auto is_parallel=[](const segment_2d<T>& sa, const segment_2d<T>& sb)
+		{
+			auto na=sa.direction.get_normalized(), nb=sb.direction.get_normalized();
+			if(na==nb) throw std::runtime_error("SAT_collision_check_edge: coplanar edges found!");
+			auto v=na+nb;
+			return !v.x && !v.y;
+		}; 
+
+		//Trimming parallels.
+		std::vector<size_t> to_check;
+		for(size_t i=0; i<pa.size()-1; ++i)
+		{
+			//See if we have to skip (we skip when we decide on a paralell we have yet to examine with "i".
+			if(std::find(std::begin(to_check), std::end(to_check), i) != std::end(to_check)) continue;
+
+			int added=-1;
+			for(size_t j=i+1; j<pa.size(); ++j)
+			{
+				if(is_parallel(pa.segments[i], pa.segments[j]))
+				{
+					//Distance to the middle of the segment... //TODO: For this to be real, we should measure the distance from a previous center, but hey...
+				auto 	middle_segment_1=segment_middle_point(pa.segments[i]),
+					middle_segment_2=segment_middle_point(pa.segments[j]);
+					added=abs(ldt::distance_between(pb.get_centroid(), middle_segment_1 )) < abs(ldt::distance_between(pb.get_centroid(), middle_segment_2)) ? 
+						i : j;
+					break;
+				}
+			}
+
+			if(added==-1) added=i;
+			to_check.push_back(added);
+		}
+
+		//We may need to add the last if we didn't skip it.
+		if(std::find(std::begin(to_check), std::end(to_check), pa.size()-1)==std::end(to_check))
+			to_check.push_back(pa.size()-1);
+
+		//True SAT testing.
+		for(const auto& index : to_check)
+		{
+			const auto& s=pa.segments[index];
+			auto axis=s.direction.left_normal(); //Vector normal...
+			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
+
+			if(!is_projection_overlap(proy_a, proy_b)) return false;
+			else 
+			{
+				T overlap=get_projection_overlap(proy_a, proy_b);
+				if(!res.collision || overlap < current_magnitude)
+				{
+					current_magnitude=overlap;
+					res.edge=s;
+					res.collision=true;
+				}
+			}
+		}
+
+		return true;
+	};
+	
+	//A bit messy, but easy. Do b to a... early exit if no collision exists. Else we could assume that the edge is in b as long as there is a collision.		
+	if(!f(b, a)) return res;
+
+	//Now do a to b. If the magnitude is lower, we can assume that a had a new edge.
+	T prev_magnitude=current_magnitude;
+	f(a, b);
+	if(prev_magnitude > current_magnitude) res.edge_in_poly_a=true;
 	return res;
 }
 

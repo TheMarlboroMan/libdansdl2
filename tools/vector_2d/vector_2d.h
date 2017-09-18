@@ -138,9 +138,29 @@ struct vector_2d
 		this->y/=v;
 		return *this;
 	}
+/*
+		right	left	up	down
+		1,0	-1,0	0,1	0,-1
 
-	//!Gets the vector perpendicular to this one.
-	vector_2d<T>				perpendicular() const
+		up	down	left	right
+left	-y,x	-0,1	-0,-1	-1,0	1,0
+
+right	y,-x
+
+*/
+
+
+//-128, 0
+//left:	-0, 128
+//right:	0, -128
+	//!Gets the left normal (perpendicular) vector to this one.
+	vector_2d<T>				left_normal() const
+	{
+		return vector_2d<T>{-this->y, this->x};
+	}
+
+	//!Gets the right normal (perpendicular) vector to this one.
+	vector_2d<T>				right_normal() const
 	{
 		return vector_2d<T>{this->y, -this->x};
 	}
@@ -148,13 +168,23 @@ struct vector_2d
 	//!Normalizes vector (sets largest value to 1).
 	void 					normalize()
 	{
-		T m=this->length();
+		T m=this->magnitude();
 		this->x=this->x / m;
 		this->y=this->y / m;
 	}
 
+	//!Returns a new, normalized vector (sets largest value to 1).
+	vector_2d<T>				get_normalized() const
+	{
+		vector_2d<T> res{*this};
+		T m=res.magnitude();
+		res.x=res.x / m;
+		res.y=res.y / m;
+		return res;
+	}
+
 	//!Calculates the lenght of the vector.
-	T 					length() const
+	T 					magnitude() const
 	{
 		return sqrtf(this->x*this->x + this->y*this->y);
 	}
