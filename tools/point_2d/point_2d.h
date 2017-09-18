@@ -129,6 +129,32 @@ T distance_between(const point_2d<T>& p1, const point_2d<T>& p2)
 	return sqrt(x+y);
 }
 
+//!Returns the minimum distance between a point and a segment.
+
+//!p is the point. The segment is s1 to s2.
+
+//Only god know what this is and does ... https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment/1501725.
+
+template<typename T>
+T distance_between(const point_2d<T>& pt, const point_2d<T>& s1, const point_2d<T>& s2)
+{
+	auto dist=[](const point_2d<T>& v, const point_2d<T>& w)
+	{
+		return 	((v.x-w.x)*(v.x-w.x)) + ((v.y-w.y)*(v.y-w.y));
+	};
+
+	auto dist_to_segment_squared=[&dist](const point_2d<T>& p, const point_2d<T>& v, const point_2d<T>& w)
+	{
+		auto l2=dist(v, w);
+		if(!l2) return dist(p, v);
+		T t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+		t = std::max((T)0, std::min((T)1, t));
+		point_2d<T> near(v.x + t * (w.x - v.x), v.y + t * (w.y - v.y));
+		return dist(p, near);
+	};
+
+	return std::sqrt(dist_to_segment_squared(pt, s1, s2));
 }
 
+} //End of namespace...
 #endif

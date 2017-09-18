@@ -516,10 +516,10 @@ SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon
 			{
 				if(is_parallel(pa.segments[i], pa.segments[j]))
 				{
-					//Distance to the middle of the segment... //TODO: For this to be real, we should measure the distance from a previous center, but hey...
-				auto 	middle_segment_1=segment_middle_point(pa.segments[i]),
-					middle_segment_2=segment_middle_point(pa.segments[j]);
-					added=abs(ldt::distance_between(pb.get_centroid(), middle_segment_1 )) < abs(ldt::distance_between(pb.get_centroid(), middle_segment_2)) ? 
+					//TODO: For this to be real, we should measure the distance from a previous center, not the current centroid, but hey...
+					//Distance to the nearest point of the segment...
+					added=	abs(ldt::distance_between(pb.get_centroid(), pa.segments[i].v1, pa.segments[i].v2)) <
+						abs(ldt::distance_between(pb.get_centroid(), pa.segments[j].v1, pa.segments[j].v2)) ?
 						i : j;
 					break;
 				}
