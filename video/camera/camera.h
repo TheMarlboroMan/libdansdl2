@@ -41,7 +41,7 @@ class camera
 
 	enum class		tsystem{screen, cartesian};
 
-				camera(rect={0,0,640,400}, point={0,0});
+				camera(rect/*={0,0,640,400}*/, point/*={0,0}*/);
 
 	//!The focus box represents the place in space the camera points at.
 	const rect& 		get_focus_box() const {return focus_box;}
