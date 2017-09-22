@@ -245,11 +245,14 @@ T angle_for_vector_rad(const vector_2d<T>& p_vector)
 }
 
 //!Calculates angle in degrees for a vector in cartesian space.
+
+//!Returns its results in 0-360.
 template<typename T>
 T angle_for_vector_deg(const vector_2d<T>& p_vector)
 {
-	//degrees = radians × 180° / π
-	return (angle_for_vector_rad(p_vector) * (T)180.0) / M_PI;
+	T res=(angle_for_vector_rad(p_vector) * (T)180.0) / M_PI;
+	if(res < (T).0) res+=(T)360.;
+	return res;
 }
 
 //!Calculates the cross product of two vectors.
