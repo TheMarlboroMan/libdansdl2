@@ -8,7 +8,6 @@
 #include "tools/box/box.h"
 #include "tools/vector_2d/vector_2d.h"
 #include "tools/point_2d/point_2d.h"
-#include "tools/fps_counter/fps_counter.h"
 #include "tools/tools/tools.h"
 
 #endif

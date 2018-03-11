@@ -4,7 +4,6 @@ DIR_CLASS_H=./tools/
 DIR_CLASS_I=./input/
 DIR_O=./objects/
 OBJETOS=$(DIR_O)screen.o \
-	$(DIR_O)fps_counter.o \
 	$(DIR_O)video_resource_manager.o \
 	$(DIR_O)texture.o \
 	$(DIR_O)surface.o \
@@ -246,11 +245,6 @@ $(DIR_CLASS_I)sdl_input/sdl_input.cpp
 
 ################################################################################
 # HERRAMIENTAS
-
-$(DIR_O)fps_counter.o: \
-$(DIR_CLASS_H)fps_counter/fps_counter.h \
-$(DIR_CLASS_H)fps_counter/fps_counter.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)fps_counter/fps_counter.cpp -o $(DIR_O)fps_counter.o $(INCLUDES)
 
 $(DIR_O)log.o: \
 $(DIR_CLASS_H)log/log.h \
