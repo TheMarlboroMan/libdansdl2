@@ -136,7 +136,7 @@ class polygon_2d_vertexes
 			T a = 0.0;  // Partial signed area
 
 			// For all vertices
-			int i=0;
+			size_t i=0;
 			for (i=0; i<vertexes.size(); ++i)
 			{
 				x0 = vertexes[i].x;

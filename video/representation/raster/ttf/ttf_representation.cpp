@@ -79,12 +79,12 @@ void ttf_representation::create_texture()
 {	
 	//The text is prepared line by line in different surfaces.
 
-	auto explode=[](const std::string& text, char delimiter)
+	auto explode=[](const std::string& _text, char delimiter)
 	{
 		std::vector<std::string> result;
 		std::string temp;
 
-		for(const char& c : text) 
+		for(const char& c : _text) 
 		{
 			if(c==delimiter) 
 			{	
