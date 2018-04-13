@@ -47,7 +47,7 @@ libDanSDL2.a: create_obj $(OBJETOS)
 	ar rcs libDanSDL2.a $(OBJETOS)
 
 create_obj:
-	mkdir $(DIR_O)
+	mkdir -p $(DIR_O)
 
 clean:
 	$(LIMPIAR)
