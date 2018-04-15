@@ -41,13 +41,13 @@ OBJETOS=$(DIR_O)screen.o \
 	$(DIR_O)music.o \
 	$(DIR_O)sdl_video_tools.o
 
-all: libDanSDL2.a
+all: create_obj libDanSDL2.a
 
 libDanSDL2.a: create_obj $(OBJETOS)
 	ar rcs libDanSDL2.a $(OBJETOS)
 
 create_obj:
-	mkdir $(DIR_O)
+	mkdir -p $(DIR_O)
 
 clean:
 	$(LIMPIAR)

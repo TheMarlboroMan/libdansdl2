@@ -4,9 +4,11 @@
 #These are either old or plain stupid :P.
 #OTHER_WARNING_FLAGS=-Wno-deprecated -Wfloat-equal
 
+INCLUDES=-I ../log/src/
+
 WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wfatal-errors -Werror
 
-CFLAGS=-c -g $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) -ansi -pedantic -std=c++11 -fno-rtti
+CFLAGS=-c -g $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti
 CC=g++
 LIMPIAR=rm objects/*; rm ./libDanSDL2.a; touch objects/dummy;
 include makefile_comun
