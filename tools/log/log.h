@@ -1,6 +1,10 @@
 #ifndef LIBDANSDL2_LOG_H
 #define LIBDANSDL2_LOG_H
 
+//This is a real pickle... I want the log to be independent from the library
+//so I can use it everywhere, but I don't want it to be in the tools and I'd
+//feel bad to have to add this dependency everywhere... oh well..
+
 #include <iostream>
 #include <fstream>
 #include <string>

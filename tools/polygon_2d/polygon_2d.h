@@ -31,22 +31,19 @@ class polygon_2d_vertexes
 	typedef	point_2d<T>		tpoint;
 
 	//!Constructs an empty polygon.
-					polygon_2d_vertexes()
-	{
+					polygon_2d_vertexes() {
 	
 	}
 
 	//!Constructs a polygon with the given points and rotation center.
 					polygon_2d_vertexes(const std::vector<tpoint>& pts, tpoint c)
-		:vertexes(pts), rotation_center(c)
-	{
+		:vertexes(pts), rotation_center(c) {
 		calculate_centroid();
 	}
 
 	//!Constructs a polygon with the given points. By default the rotation center is set to the centroid.
 					polygon_2d_vertexes(const std::vector<tpoint>& pts)
-		:vertexes(pts)
-	{
+		:vertexes(pts)	{
 		calculate_centroid();
 		rotation_center=centroid;
 	}
@@ -67,14 +64,25 @@ class polygon_2d_vertexes
 	}
 
 	//!Moves the polygon so the centroid rests in the specified point.
-	virtual void			center_in(tpoint v)
-	{
+	virtual void			center_in(tpoint v) {
+
 		vector_2d<T> vec=vector_from_points(this->centroid, tpoint(v.x, v.y));
 		tpoint factor={vec.x, vec.y};
 		for(auto &p : vertexes) p+=factor;
 		rotation_center+=factor;
 		centroid=v;
 	}
+
+	//!Moves the polygon to the rotation center rests in the specified point.
+	virtual void			rotation_center_in(tpoint v) {
+
+		vector_2d<T> vec=vector_from_points(rotation_center, tpoint(v.x, v.y));
+		tpoint factor={vec.x, vec.y};
+		for(auto &p : vertexes) p+=factor;
+		rotation_center=v;
+		centroid+=v;
+	}
+
 
 	//!Rotates the polygon around its rotation_center.
 	virtual void			rotate(T degrees)
@@ -306,8 +314,7 @@ class polygon_2d:
 
 	//!Rotates the polygon around an arbitrary point.
 
-	virtual void			rotate(T deg, tpoint pt)
-	{
+	virtual void			rotate(T deg, tpoint pt) {
 		polygon_2d_vertexes<T>::rotate(deg, pt);
 		recreate_segments();
 	}
@@ -506,16 +513,13 @@ SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon
 
 		//Trimming parallels.
 		std::vector<size_t> to_check;
-		for(size_t i=0; i<pa.size()-1; ++i)
-		{
+		for(size_t i=0; i<pa.size()-1; ++i) {
 			//See if we have to skip (we skip when we decide on a paralell we have yet to examine with "i".
 			if(std::find(std::begin(to_check), std::end(to_check), i) != std::end(to_check)) continue;
 
 			int added=-1;
-			for(size_t j=i+1; j<pa.size(); ++j)
-			{
-				if(is_parallel(pa.segments[i], pa.segments[j]))
-				{
+			for(size_t j=i+1; j<pa.size(); ++j) {
+				if(is_parallel(pa.segments[i], pa.segments[j])) {
 					//TODO: For this to be real, we should measure the distance from a previous center, not the current centroid, but hey...
 					//Distance to the nearest point of the segment...
 					added=	abs(ldt::distance_between(pb.get_centroid(), pa.segments[i].v1, pa.segments[i].v2)) <
