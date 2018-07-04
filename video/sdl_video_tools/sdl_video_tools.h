@@ -4,9 +4,11 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
+#include <log.h>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "../../tools/log/log.h"
 #include "../../tools/tools/tools.h"
 
 namespace ldv
