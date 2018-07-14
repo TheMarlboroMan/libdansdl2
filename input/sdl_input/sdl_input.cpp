@@ -9,7 +9,10 @@ sdl_input::sdl_input():
 	keydown_control_text_filter(false), 
 	exit_signal(false), joysticks_size(0)
 {
-	f_default_process_event=[this](SDL_Event& e){process_event(e);};
+	f_default_process_event=[this](SDL_Event& e){
+		process_event(e);
+	};
+
 	reset_event_processing_function();
 	SDL_StopTextInput();
 
@@ -61,21 +64,27 @@ void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 
 }
 
-//!Manually pumps and event into the first parameter, optionally processing.
+//!Manually pumps an event into the first parameter, optionally processing it 
+//!if the second parameter is true.
 
 //!Returns if there was an event to pump.
 
 bool sdl_input::pump_events(SDL_Event &pevent, bool pprocess)
 {
 	bool result=SDL_PollEvent(&pevent);
-	if(pprocess && result) f_process_event(pevent, f_default_process_event);
+	if(pprocess && result) {
+		f_process_event(pevent, f_default_process_event);
+	}
+
 	return result;
 }
 
-//!Resets the default event processing function.
 void sdl_input::reset_event_processing_function()
 {
-	f_process_event=[this](SDL_Event& e, tf_default){process_event(e); return true;};
+	f_process_event=[this](SDL_Event& e, tf_default){
+		process_event(e); 
+		return true;
+	};
 }
 
 //!Main event loop. Must be called once per application tick.
@@ -84,8 +93,11 @@ void sdl_input::loop()
 {
 	clear_loop();
 	SDL_Event event;
-	while(SDL_PollEvent(&event))
-		if(!f_process_event(event, f_default_process_event)) return;
+	while(SDL_PollEvent(&event)) {
+		if(!f_process_event(event, f_default_process_event)) {
+			return;
+		}
+	}
 }
 
 //!Called for each event, alters the internal structure of the class according to input.

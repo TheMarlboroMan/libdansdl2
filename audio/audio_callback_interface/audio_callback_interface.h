@@ -16,7 +16,8 @@ namespace lda
 class audio_callback_interface
 {
 	public:
-	
+
+	//!Callback method to be executed once the audio stops playing.
 	virtual void		do_callback()=0;
 };
 

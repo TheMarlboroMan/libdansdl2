@@ -11,6 +11,7 @@ namespace lda
 {
 
 class real_audio_channel; //Forward.
+class audio_channel_safe; //Forward.
 
 //!Disposable references to real_audio_channels used by the application.
 /**
@@ -35,10 +36,7 @@ in any way. The is_linked and unlink methods manipulate this aspect. There is no
 Every audio_channel retrieved from the audio_controller is linked. Manually created 
 ones are not unless copied or copy-constructed.
 
-
 **/
-
-class audio_channel_safe;
 
 class audio_channel
 {
@@ -84,9 +82,10 @@ class audio_channel_safe_exception:
 {
 	public:
 
+	//!Class constructor.
 	audio_channel_safe_exception(const std::string& s)
-		:std::runtime_error(s)
-	{}
+		:std::runtime_error(s) {
+	}
 };
 
 //!An audio_channel that throws when the real_audio_channel is unlinked.

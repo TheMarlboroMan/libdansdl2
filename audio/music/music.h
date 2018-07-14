@@ -47,9 +47,9 @@ class music
 
 struct music_struct
 {
-	music *	 		music_ptr; //!< This has to be copy constructible, ergo the pointer.
-	short int 		volume;
-	short int 		repeat;
+	music *	 		music_ptr;	//!< Internal data storage. This has to be copy constructible, ergo the pointer.
+	short int 		volume;		//!< Music volume from 0 to 127.
+	short int 		repeat;		//!< Music loops (0 means infinite).
 	
 	//!Checks whether the music_ptr is ready. Will crash if there is no sound pointer.
 	bool 			is_ready() const {return music_ptr->is_ready();}
@@ -60,8 +60,7 @@ struct music_struct
 	//!Default repetition is -1 (loop until manually stopped)
 
 	music_struct(music& s, int v=-1, int r=-1)
-		:music_ptr(&s), volume(v), repeat(r)
-	{
+		:music_ptr(&s), volume(v), repeat(r) {
 	}
 };
 

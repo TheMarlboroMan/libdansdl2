@@ -39,14 +39,13 @@ class sound
 
 //!Simple structure to calculate stereo panning.
 
-struct sound_panning
-{
-	int 			left, 
-				right; //!< 127 is the max value for left and right.
+struct sound_panning {
+
+	int 			left,	//!< Left panning, 127 is the max value.
+				right;	//!< Right panning, 127 is the max value.
 	
 	//!Gets a stereo sound panning object from the left value.
-	static sound_panning 	from_left(int v)
-	{
+	static sound_panning 	from_left(int v) {
 		sound_panning res{v, 254-v};
 		return res;
 	}
@@ -60,11 +59,11 @@ struct sound_panning
 
 struct sound_struct
 {
-	sound *	 		sound_ptr; //!< This has to be copy constructible, ergo the pointer.
-	short int 		volume;	//!< -1 means "no changes" to the channel volume.
-	short int 		repeat; //!< -1 means "infinite".
-	sound_panning		panning;
-	int 			ms_fade;
+	sound *	 		sound_ptr; 	//!< This has to be copy constructible, ergo the pointer.
+	short int 		volume;		//!< -1 means "no changes" to the channel volume.
+	short int 		repeat; 	//!< -1 means "infinite".
+	sound_panning		panning;	//!< Stereo panning.
+	int 			ms_fade;	//!< Milliseconds of fadeout, as provided by SDL audio.
 	
 	//!Checks whether the sound_ptr is ready. Will crash if there is no sound pointer.
 	bool 			is_ready() const {return sound_ptr->is_ready();}
@@ -77,8 +76,7 @@ struct sound_struct
 	//!Default fade is 0milliseconds.
 
 	sound_struct(sound& s, int v=-1, int r=0, sound_panning sp={255,255}, int msf=0)
-		:sound_ptr(&s), volume(v), repeat(r), panning(sp), ms_fade(msf) 
-	{
+		:sound_ptr(&s), volume(v), repeat(r), panning(sp), ms_fade(msf) {
 	}
 };
 

@@ -22,14 +22,13 @@ void audio_play_callback(int pchannel);	//F-f-f-forward!.
 
 //!Refer to SDL2 reference for further information on their meaning.
 
-struct audio_controller_config
-{
+struct audio_controller_config {
 	int 				ratio, 	/**< A sane default is 44100. */ 
 	 				out,	/**< A sane default is 2. */ 
 	 				buffers,	/**< A sane default is 1024. */ 
 	 				channels,	/**< A sane default is 8... like Doom. */ 
 					initial_sound_volume, /**< A sane default is 128. */ 
-					initial_music_volume;
+					initial_music_volume; //!< Defines the initial volume for the music. Sane default values could be 96-128.
  
 	Uint16 				format; /**< A sane default is SDL2 value AUDIO_S16SYS. */ 
 };

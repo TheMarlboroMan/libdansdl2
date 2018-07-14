@@ -26,7 +26,8 @@ class sdl_input
 	//!Represents the mouse position.
 	struct mouse_position
 	{
-		int x=0, y=0;
+		int 		x=0,	//!< X position for the mouse.
+				y=0;	//!< Y position for the mouse.
 	};
 
 	private:
@@ -375,7 +376,12 @@ class sdl_input
 
 	public:
 
+	//!Defines a default event handling function that can be passed to a 
+	//!custom event handling function.
 	typedef				std::function<void(SDL_Event& event)> tf_default;
+
+	//!Defines a custom event handling function that receives the event and
+	//!the default function defined by this class.
 	typedef				std::function<bool(SDL_Event& event, tf_default&)> tf_event;
 
 	private:
@@ -393,8 +399,8 @@ class sdl_input
 	bool 				exit_signal; //Basically SDL_QUIT.
 	unsigned short int 		joysticks_size;
 
-	tf_event			f_process_event;
-	tf_default			f_default_process_event;
+	tf_event			f_process_event;		//!< Custom event processing function to be set with a call to set_event_processing_function.
+	tf_default			f_default_process_event;	//!< Default event processing function, which is to call "process_event".
 
 	void 				init_joysticks();
 	void 				clear_joysticks_state();
@@ -418,7 +424,12 @@ class sdl_input
 
 	public:
 
-	enum axis_values{min_axis=-32768, max_axis=32767, min_noise=-3200, max_noise=3200};
+	//!Defines the joystick maximum and minimum axis and noise values.
+	enum axis_values{
+		min_axis=-32768,	//!< Minimum joystick axis value.
+		max_axis=32767,		//!< Maximum joystick axis value.
+		min_noise=-3200,	//!< Minimum joystick noise value threshold (they constantly generate values).
+		max_noise=3200};	//!< Maximum joystick noise value threshold (they constantly generate values).
 
 				sdl_input();
 				~sdl_input();
@@ -522,10 +533,21 @@ class sdl_input
 	bool 			is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
 	//!Same as before, but with key presses (not really events) too.
 	bool 			is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
-	
+
+		
+	//!Resets the custom processing function to its default value, which
+	//!is to call "process_event".
 	void			reset_event_processing_function();
-	//!Sets a new event processing function. Replaces callback template. The function must process the event and return true. If it returns false, the event loop will exit until the next step. If the parameter function is called, the default function will be issued.
+
+	//!Sets a new event processing function. Replaces callback template. 
+
+	//!The function must process the event and return true. If it returns 
+	//!false, the event loop will exit until the next step. 
+	//!If the parameter function is called, the default function defined
+	//!by this class will be used to process the event with the event parameter.
 	void			set_event_processing_function(tf_event f) {f_process_event=f;}
+
+	//!Returns the internal joystic index from the SDL id handler.
 	int			get_joystick_index_from_id(SDL_JoystickID) const;
 };
 
