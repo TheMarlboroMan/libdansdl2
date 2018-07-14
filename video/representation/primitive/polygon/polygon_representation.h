@@ -21,9 +21,16 @@ class polygon_representation
 	//!May be colour filled or be a line. Line width is not adjustable.
 	enum class			type{fill, line};
 
+	//!Class constructor with alpha color.
 					polygon_representation(type, const std::vector<point>&, rgba_color);
+
+	//!Class constructor with color.
 					polygon_representation(type, const std::vector<point>&, rgb_color);
+
+	//!Copy constructor.
 					polygon_representation(const polygon_representation&);
+
+	//!Assignment operator. Texture is recreated as a different resource from the original.
 					polygon_representation& operator=(const polygon_representation&);
 	virtual 			~polygon_representation() {}
 
@@ -39,9 +46,10 @@ class polygon_representation
 	virtual void			do_draw();
 	void				normalize();
 
-	std::vector<point>		points;
-	point				origin;	//Saves the first original point before normalizing.
-	type				filltype;
+	std::vector<point>		points;		//!<Internal vertex structure.
+	point				origin;		//!< Saves the first original point before normalizing.
+	type				filltype;	//!< Type of fille selected.I27
+
 };
 
 }

@@ -5,19 +5,16 @@ using namespace ldv;
 //!Constructs the window in a non-initialised state.
 
 //!A call to "init" is necessary before working with the window, usually right
-//after it is constructed.
-
+//!after it is constructed.
 
 screen::screen():
 	window(nullptr), current_camera(nullptr), 
 	draw_info_instance{0,0,0,0,0,0,1.0},
 	w(0), h(0), 
-	w_logic(w), h_logic(h)
-{
+	w_logic(w), h_logic(h) {
 }
 
-screen::~screen()
-{
+screen::~screen() {
 	if(window) SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(context); 
 }
@@ -26,8 +23,7 @@ screen::~screen()
 
 //TODO: What does alpha do??
 
-void screen::clear(const rgba_color& c)
-{
+void screen::clear(const rgba_color& c) {
 	glClearColor(c.r, c.g, c.b, c.a);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -36,8 +32,7 @@ void screen::clear(const rgba_color& c)
 
 //!Any call to draw in any representation has no effect until this is called.
 
-void screen::update()
-{
+void screen::update() {
 	SDL_GL_SwapWindow(window);
 }
 

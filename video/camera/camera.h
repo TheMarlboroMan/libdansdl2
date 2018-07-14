@@ -39,8 +39,11 @@ class camera
 {
 	public:
 
+	//!Defines the coordinate system for the camera, with screen having the 
+	//!Y coordinate move away from zero "south" (cartesian has it grow "north").
 	enum class		tsystem{screen, cartesian};
 
+	//!Class constructor with focus and screen position.
 				camera(rect/*={0,0,640,400}*/, point/*={0,0}*/);
 
 	//!The focus box represents the place in space the camera points at.

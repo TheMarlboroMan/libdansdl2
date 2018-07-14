@@ -21,11 +21,16 @@ class group_representation:
 {
 	public:
 
+	//!Creates a group representation with its top-left at the given point.
 				group_representation(point);
+
+	//!Virtual class destructor.
 	virtual 		~group_representation();
 	void	 		insert(representation *);
 
 	void 			clear();
+
+	//!Returns the number of representations grouped under this one.
 	unsigned int 		size() const {return data.size();}
 
 	virtual void 		go_to(point);
@@ -47,7 +52,7 @@ class group_representation:
 
 	protected:
 
-	std::vector<std::unique_ptr<representation>> 	data;
+	std::vector<std::unique_ptr<representation>> 	data;	//!< Internal data storage.
 
 	virtual void		do_draw();
 };

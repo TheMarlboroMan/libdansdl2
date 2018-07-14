@@ -28,6 +28,7 @@ class polygon_2d_vertexes
 {
 	public:
 
+	//!< Defines the type for a vertex.
 	typedef	point_2d<T>		tpoint;
 
 	//!Constructs an empty polygon.
@@ -132,6 +133,10 @@ class polygon_2d_vertexes
 
 	protected:
 
+	//!Calculates the centroid (median center point) of the polygon.
+
+	//!Centroids can be calculated, so they are radically different from 
+	//!a rotation center.
 	void				calculate_centroid()
 	{
 		//https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon#
@@ -163,9 +168,9 @@ class polygon_2d_vertexes
 		}
 	}
 
-	std::vector<tpoint>		vertexes;
-	tpoint				centroid;
-	tpoint				rotation_center;
+	std::vector<tpoint>		vertexes;		//!< Internal vertex data.
+	tpoint				centroid;		//!< Centroid (median center) for the polygon.
+	tpoint				rotation_center;	//!< Rotation center for the polygon.
 };
 
 //!A segment is a couple of points joined by a bearing vector... 
@@ -173,9 +178,11 @@ class polygon_2d_vertexes
 template<typename T>
 struct segment_2d
 {
+	//!Defines the point type.
 	typedef	point_2d<T>		tpoint;
-	tpoint				v1, v2;
-	vector_2d<T>			direction;
+	tpoint				v1, 		//!< Starting vertex of the segment.
+					v2;		//!< End vertex of the segment.
+	vector_2d<T>			direction;	//!< Direction of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
 
 	//!Creates a segment from v1 to v2.
 					segment_2d<T>(tpoint pv1, tpoint pv2)
@@ -220,7 +227,10 @@ point_2d<T> segment_middle_point(const segment_2d<T>& s)
 //!axis.
 
 template<typename T>
-struct polygon_projection{T min, max;};
+struct polygon_projection{
+	T 	min, 	//!< Minimum range component.
+		max;	//!< Maximum range component.
+};
 
 //!Evaluates if two projections overlap.
 
@@ -266,6 +276,7 @@ class polygon_2d:
 {
 	public:
 
+	//!Defines a vertex type.
 	typedef	point_2d<T>		tpoint;
 
 	//!Default constructor.
@@ -423,12 +434,13 @@ bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b)
 template<typename T> 
 struct SAT_mtv_result
 {
+	//!Class constructor.
 			SAT_mtv_result():
-		collision(false), mtv{0., 0.}
-	{}
+		collision(false), mtv{0., 0.} {
+	}
 
-	bool 			collision;
-	ldt::vector_2d<T>	mtv;
+	bool 			collision;		//!< Indicates whether a collision has taken place.
+	ldt::vector_2d<T>	mtv;			//!< Minimum translation vector to solve the collision.
 };
 
 //!Calculates SAT with the minumum translation vector.
@@ -475,9 +487,9 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2
 template<typename T> 
 struct SAT_edge_result
 {
-	bool 			collision=false,
-				edge_in_poly_a=false;
-	segment_2d<T>		edge;
+	bool 			collision=false,		//!< Indicates whether there is a collision.
+				edge_in_poly_a=false;		//!< Indicates whether this edge is colliding.
+	segment_2d<T>		edge;				//!< Edge part of the collision.
 };
 
 //!Calculates SAT with a collision edge.

@@ -26,12 +26,16 @@ class ttf_representation:
 {
 	public:
 
-	enum class 			render_mode{solid, shaded, blended}; 	//!< Render modes. Default is blended.
-	enum class			text_align{left, center, right};	//!< Text alignment Default is left.
+	//!Render modes. Default is blended.
+	enum class 			render_mode{solid, shaded, blended}; 
+	//!Text alignment Default is left.
+	enum class			text_align{left, center, right};
 
 					ttf_representation(const ttf_font&, rgba_color, std::string="", double=1., text_align=text_align::left, render_mode=render_mode::blended);
 					ttf_representation(const ttf_representation&);
 	virtual				~ttf_representation();
+
+	//!Assignment operator. Texture is recreated as a different resource from the original.
 	ttf_representation&		operator=(const ttf_representation&);
 
 	//!Returns the assigned text.

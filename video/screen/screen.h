@@ -56,6 +56,8 @@ class screen
 
 	//!Returns whether there is a camera attached.
 	bool				has_camera() const {return current_camera!=nullptr;}
+
+	//!Returns true is the fullscreen flag is set.
 	bool				is_fullscreen() const {return fullscreen;}
 
 	//!Returns a rect with the screen size. Useful to align representations.

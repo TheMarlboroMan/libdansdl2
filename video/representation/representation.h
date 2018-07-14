@@ -19,22 +19,27 @@ namespace ldv
 
 struct representation_alignment
 {
+	//!Defines the types or horizontal aligment in human-readable format.
 	enum class h{
 		none, 
 		outer_left, 
 		inner_left, 
 		center, 
 		inner_right, 
-		outer_right} 	horizontal;
+		outer_right} 	horizontal;	//!< Horizontal margin type.
+
+	//!Defines the types or vertical aligment in human-readable format.
 	enum class v{
 		none,
 		outer_top, 
 		inner_top, 
 		center, 
 		inner_bottom, 
-		outer_bottom} 	vertical;
-	int			margin_horizontal,
-				margin_vertical;
+		outer_bottom} 	vertical; //!< Vertical margin type.
+
+
+	int			margin_horizontal,	//!< Horizontal margin in px.
+				margin_vertical;	//!< Vertical margin in px.
 };
 
 //!Structure that contains rotation information.
@@ -46,17 +51,16 @@ struct rotation_transform
 	float 				angle;		//!< Rotation angle. Defaults to 0.f
 	ldt::point_2d<float>		center;		//!< Center of rotation. Defaults to 0,0.
 
+	//!Class constructor.
 	rotation_transform():
-		angle(0.f), center(0.f, 0.f)
-	{}
+		angle(0.f), center(0.f, 0.f) {}
 
 	//!Checks whether any transformation has taken place.
 	bool 				is_transformed() const {return angle!=0.f;}
 	//!Checks if the center is displaced from its original 0.0 position.
 	bool 				is_center_displaced() const {return center.x!=0.f || center.y!=0.f;}
 	//!Resets center and angle.
-	void 				reset()
-	{
+	void 				reset()	{
 		angle=0.f;
 		center.x=0.f;
 		center.y=0.f;
@@ -70,8 +74,8 @@ struct rotation_transform
 	- Visibility.
 **/
 
-class representation
-{
+class representation {
+
 	public:
 
 	//!Indicates blend modes.

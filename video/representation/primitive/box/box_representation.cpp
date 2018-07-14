@@ -36,10 +36,6 @@ box_representation::box_representation(const box_representation& p_otra)
 
 }
 
-//!Sets the width and height of the box. 
-
-//!These will extend to the right and down respectively.
-
 void box_representation::set_dimensions(int w, int h)
 {
 	int 	nx=points[0].x+w,
@@ -52,8 +48,6 @@ void box_representation::set_dimensions(int w, int h)
 
 	update_view_position();
 }
-
-//!Sets the box position and size.
 
 void box_representation::set_location(const rect& r)
 {

@@ -8,9 +8,13 @@ namespace ldv
 
 //!0.0f is 0 and 1.f is 255. Useful to communicate with OpenGL.
 
-struct rgba_color
-{
-	float 		r, g, b, a;
+struct rgba_color {
+	float 		r, //!< Red component (0. to 1.)
+			g, //!< Green component (0. to 1.).
+			b, //!< Blue component (0. to 1.).
+			a; //!< Alpha component (0. to 1.).
+
+	//!Comparison operator. Will return true if all components match.
 	bool		operator==(const rgba_color& o) const {return o.r==r && o.g==g && o.b==b && o.a==a;}
 };
 
@@ -20,7 +24,11 @@ struct rgba_color
 
 struct rgb_color
 {
-	float 		r, g, b;
+	float 		r, //!< Red component (0. to 1.)
+			g, //!< Green component (0. to 1.).
+			b; //!< Blue component (0. to 1.).
+
+	//!Comparison operator. Will return true if all components match.
 	bool		operator==(const rgb_color& o) const {return o.r==r && o.g==g && o.b==b;}
 };
 

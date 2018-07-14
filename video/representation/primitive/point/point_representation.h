@@ -17,15 +17,31 @@ class point_representation:
 	public primitive_representation
 {
 	public:
-	
+	//!Class constructor with alpha color. Creates an empty set.
 						point_representation(rgba_color);
+
+	//!Class constructor with color. Creates an empty set.
 						point_representation(rgb_color);
+	
+	//!Class constructor with alpha color from the given set of points.
 						point_representation(const std::vector<point>&, rgba_color);
+
+	//!Class constructor with color from the given set of points.
 						point_representation(const std::vector<point>&, rgb_color);
+
+	//!Class constructor with alpha color from the given point.
 						point_representation(point, rgba_color);
+
+	//!Class constructor with color from the given point.
 						point_representation(point, rgb_color);
+
+	//!Copy constructor.
 						point_representation(const point_representation&);
+
+	//!Virtual class destructor.
 	virtual 				~point_representation() {}
+
+	//!Assignment operator.
 						point_representation& operator=(const point_representation&);
 
 	//!Inserts a point.

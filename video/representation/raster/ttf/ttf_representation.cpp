@@ -45,10 +45,6 @@ ttf_representation::~ttf_representation()
 	free_texture();
 }
 
-//!Assignment operator.
-
-//!Texture is recreated as a different resource from the original.
-
 ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 {
 	raster_representation::operator=(o);

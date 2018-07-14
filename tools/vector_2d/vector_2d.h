@@ -24,7 +24,8 @@ namespace ldt
 template<typename T>
 struct vector_2d
 {
-	T 					x, y;
+	T 					x,	//!< X component.
+						y;	//!< Y component.
 
 	//! Constructs a vector with default values.
 						vector_2d()
