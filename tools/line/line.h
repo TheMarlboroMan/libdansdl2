@@ -76,7 +76,7 @@ class line
 	enum class torientation{vertical, horizontal, slope};
 
 	line(T pm=0.0, T pb=0.0, torientation po=torientation::slope):
-		rientation(po), m(pm), b(pb) {
+		orientation(po), m(pm), b(pb) {
 	}
 
 	torientation	orientation;

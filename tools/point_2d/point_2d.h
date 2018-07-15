@@ -87,6 +87,11 @@ struct point_2d
 		return p.x==x && p.y==y;
 	}
 
+	//!Checks if two points are different in value.
+	bool operator!=(const point_2d& p) const {
+		return p.x!=x || p.y!=y;
+	}
+
 	//!Returns the distance to the point.
 
 	T distance_to(const point_2d<T>& p) const {
