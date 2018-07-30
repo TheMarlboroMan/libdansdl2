@@ -106,7 +106,7 @@ class representation {
 	void 			set_rotation(float v);
 	void 			set_rotation_center(float x, float y);
 	//!Sets the visibility flag.
-	void 			set_visible(bool v) {visible=v;}
+	void			set_visible(bool v) {visible=v;}
 	//!Sets the blend mode. Alpha codified textures will not work if alpha is not selected. Alpha itself won't work too.
 	void 			set_blend(blends v) {blend_mode=v;}
 	//!Sets the alpha value in 0-255 range.

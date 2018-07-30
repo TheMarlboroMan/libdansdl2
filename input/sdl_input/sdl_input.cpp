@@ -204,6 +204,10 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_KEYDOWN:
 		{
+			if(event.key.repeat) {
+				return;
+			}
+
 			unsigned int index=event.key.keysym.scancode;
 
 				events_cache[keyboard_down]=true;
