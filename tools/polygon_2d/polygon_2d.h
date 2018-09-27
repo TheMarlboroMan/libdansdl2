@@ -24,8 +24,7 @@ template<typename T> bool is_clockwise(const std::vector<point_2d<T>>&);
 //!providing extended functionality.
 
 template<typename T>
-class polygon_2d_vertexes
-{
+class polygon_2d_vertexes {
 	public:
 
 	//!< Defines the type for a vertex.

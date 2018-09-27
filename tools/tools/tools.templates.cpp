@@ -79,8 +79,7 @@ bool ldt::point_in_box(T cx, T cy, U cw, U ch, T px, T py)
 //!arguments builds a "small" box, while the second builds the "large" one.
 
 template <typename T, typename U> 
-bool ldt::box_in_box(T pqx, T pqy, U pqw, U pqh, T grx, T gry, U grw, U grh)
-{
+bool ldt::box_in_box(T pqx, T pqy, U pqw, U pqh, T grx, T gry, U grw, U grh) {
 	T big_xf=grx+grw,
 	small_xf=pqx+pqw,
 	big_yf=gry+grh,
