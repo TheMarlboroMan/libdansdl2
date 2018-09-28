@@ -113,6 +113,8 @@ class polygon_2d_vertexes {
 	const tpoint&			get_centroid() const {return centroid;}
 	//!Returns all vertices.
 	const std::vector<tpoint>&	get_vertexes() const {return vertexes;}
+	//!Returns all vertices... In correct English.
+	const std::vector<tpoint>&	get_vertices() const {return vertexes;}
 	//!Returns the vertex at the index. May throw.
 	const tpoint&			get_vertex(size_t v) const {return vertexes.at(v);}
 	//!Returns the vertex at the index. May throw.
