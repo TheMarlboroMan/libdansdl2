@@ -86,6 +86,17 @@ ldv::polygon_representation representation_from_primitive(const box<T, U>& _b, c
 	return ldv::polygon_representation(_t, points, _c);
 }
 
+template<typename T>
+std::vector<ldv::point> vector_of_representation_points_from_vertices(const std::vector<T>& _v) {
+
+	std::vector<ldv::point> result;
+	result.reserve(_v.size());
+	for(const auto& v : _v) {
+		result.push_back(ldv::point(v.x, v.y));
+	}
+	return result;
+}
+
 } //End of namespace.
 
 #endif
