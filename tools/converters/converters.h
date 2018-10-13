@@ -86,6 +86,8 @@ ldv::polygon_representation representation_from_primitive(const box<T, U>& _b, c
 	return ldv::polygon_representation(_t, points, _c);
 }
 
+//!Gets a vector of representation points from a vector of points T such as 
+//!the ones found in 2d polygons.
 template<typename T>
 std::vector<ldv::point> vector_of_representation_points_from_vertices(const std::vector<T>& _v) {
 
