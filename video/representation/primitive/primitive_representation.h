@@ -24,6 +24,12 @@ class primitive_representation:
 	//!Assigns color (line, fill, dot... everything).
 	void		set_color(rgb_color c) {color=c;}
 
+	//Assigns color plus alpha.
+	void		set_color(rgba_color _c) {
+		set_color(rgb_color(_c.r, _c.g, _c.b));
+		set_alpha(_c.a * 255.f);
+	}
+
 	virtual void 	go_to(point)=0;
 	virtual point	get_position() const=0;
 	virtual rect	get_base_view_position() const=0;

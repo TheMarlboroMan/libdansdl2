@@ -22,6 +22,7 @@ raster_representation::raster_representation(const raster_representation& o)
 	:representation(o), texture_instance(o.texture_instance),
 	brush(o.brush), points(o.points), 
 	tex_points(o.tex_points),
+	rgb_colorize(o.rgb_colorize),
 	location(o.location), 
 	clip(o.clip)
 {

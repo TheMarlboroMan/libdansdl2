@@ -9,6 +9,26 @@ used to work with colors.
 
 using namespace ldv;
 
+//!Class constructor using float values.
+rgba_color::rgba_color(float _r, float _g, float _b, float _a)
+	:r(_r), g(_g), b(_b), a(_a) {
+}
+
+//!Copy constructor.
+rgba_color::rgba_color(const rgba_color& _c)
+	:r(_c.r), g(_c.g), b(_c.b), a(_c.a) {
+}
+
+//!Class constructor using float values.
+rgb_color::rgb_color(float _r, float _g, float _b)
+	:r(_r), g(_g), b(_b) {
+}
+
+//!Copy constructor
+rgb_color::rgb_color(const rgb_color& _c)
+	:r(_c.r), g(_c.g), b(_c.b) {
+}
+
 //!Converts an integer in the range 0-255 to a float in the range 0.f 1.f. Ranges are not enforced.
 
 float ldv::colorfi(int v)
@@ -36,3 +56,15 @@ rgb_color ldv::rgb8(int r, int g, int b)
 {
 	return rgb_color{colorfi(r), colorfi(g), colorfi(b)};
 }
+/*
+//!Conversion operator.
+rgba_color rgb_color::operator rgba_color() const {
+
+	return rgba8(r,g,b, 1.f);
+}
+
+//!Conversion operator.
+rgb_color rgba_color::operator rgb_color() const {
+	return rgb8(r,g,b);
+}
+*/
