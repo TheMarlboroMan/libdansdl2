@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdlib> //Para abs en windows.
 #include <vector>
+#include <functional>
 #include <map>
 #include <array>
 #include <string>

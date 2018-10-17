@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <sstream>
+#include <cmath>
 #include "../../tools/log/log.h"
 
 using namespace lda;

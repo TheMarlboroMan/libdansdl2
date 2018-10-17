@@ -11,4 +11,5 @@ WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -W
 CFLAGS=-c -g $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti
 CC=g++
 LIMPIAR=rm objects/*; rm ./libDanSDL2.a; touch objects/dummy;
+CREATE_OBJ_DIR=mkdir -p objects
 include makefile_comun

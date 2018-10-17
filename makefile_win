@@ -1,6 +1,7 @@
 CFLAGS=-DWINCOMPIL=1 -D__NO_INLINE__ -c -O3 -Wno-deprecated -Wall -pedantic -std=c++11 -fno-rtti
 CC=g++
-UNIDAD_DISCO=C
+DISKDRIVE=C
 LIMPIAR=del objects\*; del libDanSDL2.a;
-INCLUDES=-I$(UNIDAD_DISCO):/mingw_dev/include
+INCLUDES=-I$(DISKDRIVE):/mingw64/mingw32/include/ -I$(DISKDRIVE):/devel/include/ -I../log/src/
+CREATE_OBJ_DIR=	if not exist "objects" mkdir objects;
 include makefile_comun

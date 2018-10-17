@@ -150,8 +150,8 @@ T distance_between(const point_2d<T>& pt, const point_2d<T>& s1, const point_2d<
 		if(!l2) return dist(p, v);
 		T t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
 		t = std::max((T)0, std::min((T)1, t));
-		point_2d<T> near(v.x + t * (w.x - v.x), v.y + t * (w.y - v.y));
-		return dist(p, near);
+		point_2d<T> pnear(v.x + t * (w.x - v.x), v.y + t * (w.y - v.y));
+		return dist(p, pnear);
 	};
 
 	return std::sqrt(dist_to_segment_squared(pt, s1, s2));

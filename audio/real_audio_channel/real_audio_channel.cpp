@@ -1,5 +1,7 @@
 #include "real_audio_channel.h"
 
+#include <cmath>
+
 #include "../audio_controller/audio_controller.h"
 
 using namespace lda;
