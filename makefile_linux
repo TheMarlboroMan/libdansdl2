@@ -3,16 +3,16 @@ MINGWPATH=
 SDL2PATH=
 LOGPATH=../log/
 SYSTEM_FLAGS=
-DIR_O=./objects/
+DIR_OBJ=objects
 
 #Commands.
-CLEAN=rm -rf $(DIR_O); \
+CLEAN=rm -rf $(DIR_OBJ); \
 	rm ./libDanSDL2.a;
-CREATE_OBJ_DIR=mkdir -p $(DIR_O)
+CREATE_OBJ_DIR=mkdir -p $(DIR_OBJ)
 
 #Build specifics
 #OPTIMIZATION=-O2
-#DEBUG -g
+DEBUG -g
 
 #Fixed compiler definitions.
 CC=g++

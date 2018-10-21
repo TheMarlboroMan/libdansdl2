@@ -2,6 +2,7 @@ DIR_CLASS_V=./video/
 DIR_CLASS_A=./audio/
 DIR_CLASS_H=./tools/
 DIR_CLASS_I=./input/
+DIR_O=./$(DIR_OBJ)/
 OBJETOS=$(DIR_O)screen.o \
 	$(DIR_O)video_resource_manager.o \
 	$(DIR_O)texture.o \
@@ -49,7 +50,7 @@ create_obj:
 	$(CREATE_OBJ_DIR)	
 
 clean:
-	$(LIMPIAR)
+	$(CLEAN)
 	
 ################################################################################
 # VIDEO
