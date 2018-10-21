@@ -1,15 +1,23 @@
+#Machine specifics.
+MINGWPATH=
+SDL2PATH=
+LOGPATH=../log/
+SYSTEM_FLAGS=
+DIR_O=./objects/
+
+#Commands.
+CLEAN=rm -rf $(DIR_O); \
+	rm ./libDanSDL2.a;
+CREATE_OBJ_DIR=mkdir -p $(DIR_O)
+
+#Build specifics
 #OPTIMIZATION=-O2
 #DEBUG -g
 
-#These are either old or plain stupid :P.
-#OTHER_WARNING_FLAGS=-Wno-deprecated -Wfloat-equal
-
-INCLUDES=-I ../log/src/
-
-WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wfatal-errors -Werror
-
-CFLAGS=-c -g $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti
+#Fixed compiler definitions.
 CC=g++
-LIMPIAR=rm objects/*; rm ./libDanSDL2.a; touch objects/dummy;
-CREATE_OBJ_DIR=mkdir -p objects
+INCLUDES=-I$(LOGPATH)src/
+WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wfatal-errors -Werror
+CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti $(SYSTEM_FLAGS)
+
 include makefile_comun
