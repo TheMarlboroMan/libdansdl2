@@ -8,7 +8,8 @@
 #include <ctime>
 #include <cstring>
 #include <mutex>
-#include <log.h>
+
+#include <src/log.h>
 
 namespace ldt
 {

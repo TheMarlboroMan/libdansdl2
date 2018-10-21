@@ -9,7 +9,8 @@
 #include <map>
 #include <array>
 #include <string>
-#include "../../tools/log/log.h"
+
+#include <src/log.h>
 
 namespace ldi
 {

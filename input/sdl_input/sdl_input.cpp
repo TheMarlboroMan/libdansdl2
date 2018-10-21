@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "../../tools/log/log.h"
+
 using namespace ldi;
 
 //!Default constructor.
