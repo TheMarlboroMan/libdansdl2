@@ -8,11 +8,13 @@ DIR_OBJ=objects
 #Commands.
 CLEAN=rm -rf $(DIR_OBJ); \
 	rm ./libDanSDL2.a;
+
 CREATE_OBJ_DIR=mkdir -p $(DIR_OBJ)
 
 #Build specifics
 #OPTIMIZATION=-O2
-DEBUG -g
+
+DEBUG=-g
 
 #Fixed compiler definitions.
 CC=g++
