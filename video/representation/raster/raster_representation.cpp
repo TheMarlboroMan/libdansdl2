@@ -7,8 +7,8 @@ using namespace ldv;
 //!Constructs a raster_representation with position, clipping and alpha.
 
 raster_representation::raster_representation(rect pos, rect rec, int palpha)
-	:representation(palpha), texture_instance(nullptr), 
-	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f}, 
+	:representation(palpha), texture_instance(nullptr),
+	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f},
 	location(pos), clip(rec)
 {
 
@@ -20,10 +20,10 @@ raster_representation::raster_representation(rect pos, rect rec, int palpha)
 
 raster_representation::raster_representation(const raster_representation& o)
 	:representation(o), texture_instance(o.texture_instance),
-	brush(o.brush), points(o.points), 
+	brush(o.brush), points(o.points),
 	tex_points(o.tex_points),
 	rgb_colorize(o.rgb_colorize),
-	location(o.location), 
+	location(o.location),
 	clip(o.clip)
 {
 
@@ -86,7 +86,7 @@ void raster_representation::do_draw()
 			glColor4f(rgb_colorize.r, rgb_colorize.g, rgb_colorize.b, get_alphaf());
 		break;
 	}
-		
+
 	if(!points.size() || tex_points.size())
 	{
 		calculate_points();
@@ -109,12 +109,18 @@ void raster_representation::do_draw()
 void raster_representation::calculate_points()
 {
 	const rect& pos=get_location();
-	const rect& recor=get_clip();
-	
+	const rect& clip=get_clip();
+
 	if(!brush.w) brush.w=pos.w;
 	if(!brush.h) brush.h=pos.h;
 
-	float w_tex=texture_instance->get_w(), h_tex=texture_instance->get_h();
+	float w_tex=texture_instance->get_w(),
+			h_tex=texture_instance->get_h();
+
+std::cout<<"POS:"<<pos.origin.x<<" "<<pos.origin.y<<" ["<<pos.w<<","<<pos.h<<"]"<<std::endl;
+std::cout<<"BRUSH:"<<brush.w<<" x "<<brush.h<<std::endl;
+std::cout<<"CLIP:"<<clip.origin.x<<" "<<clip.origin.y<<" ["<<clip.w<<","<<clip.h<<"]"<<std::endl;
+std::cout<<"TEX:"<<w_tex<<" x "<<h_tex<<std::endl;
 
 	points.clear();
 	tex_points.clear();
@@ -135,11 +141,11 @@ void raster_representation::calculate_points()
 			//ptex_fx y ptex_fy calculations are a proportion between the brush
 			//and the space to be drawn (rule of three). This will only map
 			//the neccesary texture parts.
- 
-			GLfloat ptex_x=(GLfloat)recor.origin.x,
-				ptex_y=(GLfloat)recor.origin.y, 
-				ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)brush.w), 
-				ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
+
+			GLfloat ptex_x=(GLfloat)clip.origin.x,
+				ptex_y=(GLfloat)clip.origin.y,
+				ptex_fx=ptex_x+std::ceil( ( (GLfloat)dif_x * (GLfloat)clip.w) / (GLfloat)brush.w),
+				ptex_fy=ptex_y+std::ceil( ( (GLfloat)dif_y * (GLfloat)clip.h) / (GLfloat)brush.h);
 
 			texpoint ptex[]={
 				{ptex_x,	ptex_y},
@@ -162,7 +168,7 @@ void raster_representation::calculate_points()
 
 			for(auto &p : ptex)
 			{
-				p.x/=w_tex; 
+				p.x/=w_tex;
 				p.y/=h_tex;
 			}
 
@@ -244,7 +250,7 @@ void raster_representation::reset_calculations()
 //!Shortcut to get_texture()->get_w(). Will throw if there is no texture
 //!assigned.
 
-unsigned int raster_representation::get_w_texture_instance() const 
+unsigned int raster_representation::get_w_texture_instance() const
 {
 	if(!texture_instance) throw std::runtime_error("no texture for get_w_texture_instance");
 	return texture_instance->get_w();
@@ -255,7 +261,7 @@ unsigned int raster_representation::get_w_texture_instance() const
 //!Shortcut to get_texture()->get_h(). Will throw if there is no texture
 //!assigned.
 
-unsigned int raster_representation::get_h_texture_instance() const 
+unsigned int raster_representation::get_h_texture_instance() const
 {
 	if(!texture_instance) throw std::runtime_error("no texture for get_h_texture_instance");
 	return texture_instance->get_h();
