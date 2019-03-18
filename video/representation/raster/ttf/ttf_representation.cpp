@@ -198,12 +198,8 @@ if the text is right aligned itself (which works).
 		//TODO: This only makes sense if we have more than one line.
 		switch(alignment) {
 			case text_align::left: x=0; break;
-			case text_align::center: x=(total_w/2)-(w/2); break;
-
-			//TODO: Something weird is going on here....
-			case text_align::right:
-				x=canvas_w-w;
-			break;
+			case text_align::center: x=(canvas_w/2)-(w/2); break;
+			case text_align::right: x=canvas_w-w; break;
 		}
 
 		SDL_Rect pos{x, y, 0, 0};
