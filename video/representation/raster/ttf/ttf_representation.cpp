@@ -9,10 +9,10 @@ const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128
 //!Line height by default is constructed as font size values.
 
 ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor, std::string ptext, double lhr, text_align al, render_mode pmode)
-	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)), 
+	:raster_representation(rect{0,0,0,0}, rect{0,0,0,0}, colorif(pcolor.a)),
 	font(&pfont),
 	text(ptext),
-	mode(pmode), 
+	mode(pmode),
 	text_color{pcolor.r, pcolor.g, pcolor.b},
 	bg_shaded(rgba8(0,0,0,255)),
 	line_height_ratio(lhr),
@@ -27,7 +27,7 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 //!Texture is recreated as a different resource from the original.
 
 ttf_representation::ttf_representation(const ttf_representation& o)
-	:raster_representation(o), 
+	:raster_representation(o),
 	font(o.font),
 	text(o.text),
 	mode(o.mode),
@@ -60,7 +60,7 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 
 //!Creates the texture from text.
 
-//!This internal function is called whenever a change on text or font is 
+//!This internal function is called whenever a change on text or font is
 //!detected. It changes the clip and position of the representation.
 //!It may throw a std::runtime_error if the representation cannot be prepared
 //!, which happens when the TTF_* functions fail.
@@ -72,23 +72,19 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 //TODO: Check RGB and BGR and endianess and such.
 
 void ttf_representation::create_texture()
-{	
+{
 	//The text is prepared line by line in different surfaces.
 
-	auto explode=[](const std::string& _text, char delimiter)
-	{
+	auto explode=[](const std::string& _text, char delimiter) {
 		std::vector<std::string> result;
 		std::string temp;
 
-		for(const char& c : _text) 
-		{
-			if(c==delimiter) 
-			{	
+		for(const char& c : _text) {
+			if(c==delimiter) {
 				result.push_back(temp);
 				temp="";
 			}
-			else
-			{
+			else {
 				temp+=c;
 			}
 		}
@@ -99,11 +95,12 @@ void ttf_representation::create_texture()
 
 	std::vector<std::string> lines=explode(text, '\n');
 
+	//TODO: We should store these values where they must be..
+
 	//Measuring the full resulting texture...
 	int total_h=0, h=0, w=0, total_w=0;
 
-	for(const std::string& c : lines)
-	{
+	for(const std::string& c : lines) {
 		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &w, &h);
 		if(w > total_w) total_w=w;
 	}
@@ -126,7 +123,7 @@ void ttf_representation::create_texture()
 			s=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
 		break;
 		case render_mode::shaded:
-			s=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col, 
+			s=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col,
 				SDL_Color{(Uint8)colorif(bg_shaded.r), (Uint8)colorif(bg_shaded.g), (Uint8)colorif(bg_shaded.b), (Uint8)colorif(bg_shaded.a)});
 		break;
 		case render_mode::blended:
@@ -134,10 +131,8 @@ void ttf_representation::create_texture()
 		break;
 	}
 
-	auto get_next_power_of_2=[this](int v)->int
-	{
-		for(const auto& vs : valid_sizes)
-		{
+	auto get_next_power_of_2=[this](int v)->int {
+		for(const auto& vs : valid_sizes) {
 			if(v > vs) continue;
 			return vs;
 		}
@@ -145,29 +140,30 @@ void ttf_representation::create_texture()
 		throw std::runtime_error("Invalid text texture size");
 	};
 
+	auto canvas_w=get_next_power_of_2(total_w);
+	auto canvas_h=get_next_power_of_2(total_h);
+
 	std::unique_ptr<canvas> cnv(canvas::create(
-		get_next_power_of_2(total_w), 
-		get_next_power_of_2(total_h), 
+		canvas_w,
+		canvas_h,
 		s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 	SDL_FreeSurface(s);
 
 	//Creating surfaces for each lines, pasting them on the canvas...
 	int y=0;
 
-	for(std::string& c : lines)
-	{
+	for(std::string& c : lines) {
 		SDL_Surface * surf=nullptr;
 
 		text_replace(c, "\t", "    ");
 		const char * cad=c.size() ? c.c_str() : " \0";
 
-		switch(mode)
-		{
+		switch(mode) {
 			case render_mode::solid:
 				surf=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
 			break;
 			case render_mode::shaded:
-				surf=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col, 
+				surf=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col,
 					SDL_Color{(Uint8)colorif(bg_shaded.r), (Uint8)colorif(bg_shaded.g), (Uint8)colorif(bg_shaded.b), (Uint8)colorif(bg_shaded.a)});
 			break;
 			case render_mode::blended:
@@ -175,43 +171,60 @@ void ttf_representation::create_texture()
 			break;
 		}
 
-		if(!surf)
-		{
+		if(!surf) {
 			throw std::runtime_error("Unable to prepare ttf_representation : "+std::string(TTF_GetError())+" : "+c);
 		}
-		else
-		{
 
-			int x=0;
-			switch(alignment)
-			{
-				case text_align::left: x=0; break;
-				case text_align::center: x=(total_w/2)-(surf->w/2); break;
-				case text_align::right: x=total_w-surf->w; break;
-			}
+		//TODO: We should not do this again, it has been done earlier.
+		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), cad, &w, &h);
 
-			SDL_Rect pos{x, y, 0, 0}; 
-			SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
-			SDL_FreeSurface(surf);
-			y+=h+(line_height-h);
+		int x=0;
+
+//TODO:
+/*
+All this is terribly hacked: some implementations of OpenGL will botch the
+text if we use linear filtering and map anything else than the whole texture
+to a polygon of the full texture size... To solve this, we will map the
+clip and location to the full texture size (in powers of 2) rather than to the
+effective size of the text. This, in time, causes problems when aligning text
+to the right if we don't use the canvas_w as a measure and with the "align"
+method.
+
+Corollary: either fix that with virtual methods for the box size and such or
+accept that calling align with "to the inner right" as argument makes only sense
+if the text is right aligned itself (which works).
+*/
+
+		//TODO: This only makes sense if we have more than one line.
+		switch(alignment) {
+			case text_align::left: x=0; break;
+			case text_align::center: x=(total_w/2)-(w/2); break;
+
+			//TODO: Something weird is going on here....
+			case text_align::right:
+				x=canvas_w-w;
+			break;
 		}
+
+		SDL_Rect pos{x, y, 0, 0};
+		SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
+		SDL_FreeSurface(surf);
+		y+=h+(line_height-h);
 	}
 
-	if(!get_texture())
-	{
+	if(!get_texture())	{
 		ldv::texture * tex=new ldv::texture(*cnv);
 		set_texture(*tex);
 	}
-	else
-	{
+	else {
 		get_texture()->replace(*cnv);
 	}
-	
+
 //	const auto &ref_tex=get_texture();
 	set_blend(representation::blends::alpha);
-	set_clip({0,0, (unsigned)total_w, (unsigned)total_h});
+	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
-	set_location({0, 0, (unsigned)total_w, (unsigned)total_h});
+	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
 
 }
 
@@ -228,7 +241,7 @@ void ttf_representation::set_font(const ttf_font& f)
 
 //!Sets the text as a single character.
 
-//!Triggers a cleanse and recreation of the texture if unlocked. 
+//!Triggers a cleanse and recreation of the texture if unlocked.
 
 void ttf_representation::set_text(const char c)
 {
@@ -282,7 +295,7 @@ void ttf_representation::unlock_changes()
 void ttf_representation::text_replace(std::string& sujeto, const std::string& busca, const std::string& reemplaza)
 {
 	size_t pos = 0, l=reemplaza.length();
-	while ((pos = sujeto.find(busca, pos)) != std::string::npos) 
+	while ((pos = sujeto.find(busca, pos)) != std::string::npos)
 	{
 		sujeto.replace(pos, busca.length(), reemplaza);
 		pos += l;
@@ -295,7 +308,7 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 //!and a half and so on.
 //!This function will trigger a recreation of the texture if unlocked.
 
-void ttf_representation::set_line_height_ratio(double v) 
+void ttf_representation::set_line_height_ratio(double v)
 {
 	if(v==line_height_ratio) return;
 	line_height_ratio=v;
@@ -341,7 +354,7 @@ void ttf_representation::set_render_mode(render_mode r)
 
 //!Sets the text alignment.
 
-//!Triggers a texture recreation if changes and unlocked. Text alignment only 
+//!Triggers a texture recreation if changes and unlocked. Text alignment only
 //!matters when there is more than a single line in the text.
 
 void ttf_representation::set_text_align(text_align v)
