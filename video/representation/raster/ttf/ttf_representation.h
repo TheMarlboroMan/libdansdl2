@@ -41,6 +41,14 @@ class ttf_representation:
 	//!Returns the assigned text.
 	const std::string& 		get_text() const {return text;}
 
+	//!Specialization of go to: will move the text_position property too.
+	virtual void 			go_to(point);
+
+	//!Returns the rectangle of the text position, which may be different
+	//!from the texture size (textures are in powers of two, and are usually
+	//!larger than the text portion.
+	const rect&			get_text_position() const {return text_position;}
+
 	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
 	//!Must be accompanied by a call to "unlock_changes" that will perform recreation. 
 	//!Trying to draw a locked ttf_representation will throw,
@@ -71,6 +79,7 @@ class ttf_representation:
 	ttf_font const *		font; //! <This is a pointer so it can change.
 	std::string			text;
 
+	rect				text_position;
 	render_mode			mode;
 	rgb_color			text_color;
 	rgba_color			bg_shaded;
