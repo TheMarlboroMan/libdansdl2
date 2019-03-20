@@ -7,7 +7,7 @@ SDL2PATH=
 SYSTEM_FLAGS=
 
 #Commands.
-CLEAN=if [ -d $(DIR_OBJ) ]; them rm -rf $(DIR_OBJ); fi; if [ -f ./libDanSDL2.a ]; them rm ./libDanSDL2.a; fi;
+CLEAN=if [ -d $(DIR_OBJ) ]; them rm -rf $(DIR_OBJ); fi; if [ -f ./libDanSDL2.a ]; then rm ./libDanSDL2.a; fi;
 CREATE_OBJ_DIR=mkdir -p $(DIR_OBJ)
 
 #Build specifics
