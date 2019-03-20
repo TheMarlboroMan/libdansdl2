@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -n "Home directory: "
+echo -n "Home directory (with ending slash): "
 read home_dir;
 
 while true; do
