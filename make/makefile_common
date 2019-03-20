@@ -29,6 +29,7 @@ OBJETOS=$(DIR_O)screen.o \
 	$(DIR_CLASS_H)polygon_2d/polygon_2d.h \
 	$(DIR_CLASS_H)box/box.h \
 	$(DIR_CLASS_H)line/line.h \
+	$(DIR_O)log.o \
 	$(DIR_O)sdl_tools.o \
 	$(DIR_O)tools.o \
 	$(DIR_O)sdl_input.o \
@@ -190,6 +191,7 @@ $(DIR_CLASS_V)draw_info/draw_info.cpp
 
 $(DIR_O)sdl_video_tools.o: \
 $(DIR_O)tools.o \
+$(DIR_O)log.o \
 $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.h \
 $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp -o $(DIR_O)sdl_video_tools.o
@@ -231,6 +233,7 @@ $(DIR_CLASS_A)music/music.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)music/music.cpp -o $(DIR_O)music.o
 
 $(DIR_O)sound.o: \
+$(DIR_O)log.o \
 $(DIR_CLASS_A)sound/sound.h \
 $(DIR_CLASS_A)sound/sound.cpp
 	$(CC) $(CFLAGS) $(DIR_CLASS_A)sound/sound.cpp -o $(DIR_O)sound.o
@@ -246,6 +249,11 @@ $(DIR_CLASS_I)sdl_input/sdl_input.cpp
 ################################################################################
 # HERRAMIENTAS
 
+$(DIR_O)log.o: \
+$(DIR_CLASS_H)log/log.h \
+$(DIR_CLASS_H)log/log.cpp
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)log/log.cpp -o $(DIR_O)log.o
+
 $(DIR_O)sdl_tools.o: \
 $(DIR_CLASS_H)sdl_tools/sdl_tools.h \
 $(DIR_CLASS_H)sdl_tools/sdl_tools.cpp
@@ -256,3 +264,4 @@ $(DIR_CLASS_H)tools/tools.templates.cpp \
 $(DIR_CLASS_H)tools/tools.cpp \
 $(DIR_CLASS_H)tools/tools.h
 	$(CC) $(CFLAGS) $(DIR_CLASS_H)tools/tools.cpp -o $(DIR_O)tools.o
+
