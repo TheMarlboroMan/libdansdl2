@@ -16,8 +16,9 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 	text_color{pcolor.r, pcolor.g, pcolor.b},
 	bg_shaded(rgba8(0,0,0,255)),
 	line_height_ratio(lhr),
-	alignment(al)
-{
+	alignment(al),
+	text_position{0,0,0,0} {
+
 	create_texture();
 	update_view_position();
 }
@@ -32,21 +33,22 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	text(o.text),
 	mode(o.mode),
 	text_color(o.text_color),
-	bg_shaded(o.bg_shaded)
-{
+	bg_shaded(o.bg_shaded),
+	text_position{o.text_position} {
+
 	reset_texture();
 	create_texture();
 }
 
 //!Class destructor.
 
-ttf_representation::~ttf_representation()
-{
+ttf_representation::~ttf_representation() {
+
 	free_texture();
 }
 
-ttf_representation& ttf_representation::operator=(const ttf_representation& o)
-{
+ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
+
 	raster_representation::operator=(o);
 	font=o.font;
 	text=o.text;
@@ -71,11 +73,11 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 
 //TODO: Check RGB and BGR and endianess and such.
 
-void ttf_representation::create_texture()
-{
+void ttf_representation::create_texture() {
 	//The text is prepared line by line in different surfaces.
 
 	auto explode=[](const std::string& _text, char delimiter) {
+
 		std::vector<std::string> result;
 		std::string temp;
 
@@ -113,12 +115,13 @@ void ttf_representation::create_texture()
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
 
 	SDL_Color sdl_col{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
-	if(mode==render_mode::blended) sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
+	if(mode==render_mode::blended) {
+		sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
+	}
 
 	SDL_Surface * s=nullptr;
 
-	switch(mode)
-	{
+	switch(mode) {
 		case render_mode::solid:
 			s=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
 		break;
@@ -368,6 +371,13 @@ void ttf_representation::do_draw() {
 	raster_representation::do_draw();
 }
 
+=======
+	if(!perform_changes) throw std::runtime_error("ttf_representation is locked!");
+	raster_representation::do_draw();
+}
+
+
+>>>>>>> c8505695db0ed0511eb5e035c9e7758989cf774a
 void ttf_representation::go_to(point _p) {
 
 	text_position.origin=_p;
