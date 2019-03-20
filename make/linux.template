@@ -1,20 +1,18 @@
 #Machine specifics.
+__TEMPLATE_DIR_HOME__
+DIR_OBJ=objects
+LOGPATH=$(DIR_HOME)/log/
 MINGWPATH=
 SDL2PATH=
-LOGPATH=../log/
 SYSTEM_FLAGS=
-DIR_OBJ=objects
 
 #Commands.
-CLEAN=rm -rf $(DIR_OBJ); \
-	rm ./libDanSDL2.a;
-
+CLEAN=if [ -d $(DIR_OBJ) ]; them rm -rf $(DIR_OBJ); fi; if [ -f ./libDanSDL2.a ]; them rm ./libDanSDL2.a; fi;
 CREATE_OBJ_DIR=mkdir -p $(DIR_OBJ)
 
 #Build specifics
-#OPTIMIZATION=-O2
-
-DEBUG=-g
+__TEMPLATE_OPTIMIZATION__
+__TEMPLATE_DEBUG__
 
 #Fixed compiler definitions.
 CC=g++
@@ -22,4 +20,4 @@ INCLUDES=-I$(LOGPATH)
 WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wfatal-errors -Werror
 CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti $(SYSTEM_FLAGS)
 
-include makefile_comun
+include make/makefile_common

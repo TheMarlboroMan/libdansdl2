@@ -1,9 +1,10 @@
 #Machine specifics.
+DIR_HOME=
+DIR_OBJ=objects
+LOGPATH=$(DIR_HOME)/log/
 MINGWPATH=c:/devel/deps/mingw-w64/mingw32/
 SDL2PATH=c:/devel/deps/sdl2-plus-libs/
-LOGPATH=../log/
 SYSTEM_FLAGS=-DWINCOMPIL=1 -D__NO_INLINE__ 
-DIR_OBJ=objects
 
 #Commands.
 CLEAN=if exist $(DIR_OBJ) rmdir $(DIR_OBJ) /S /Q; if exist libDanSDL2.a del libDanSDL2.a;
@@ -19,4 +20,4 @@ INCLUDES=-I$(LOGPATH) -I$(MINGWPATH)include/ -I$(SDL2PATH)include/
 WARNING_FLAGS=-Wno-deprecated -Wall
 CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti
 
-include makefile_comun
+include make/makefile_common

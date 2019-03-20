@@ -47,11 +47,11 @@ libDanSDL2.a: create_obj $(OBJETOS)
 	ar rcs libDanSDL2.a $(OBJETOS)
 
 create_obj:
-	$(CREATE_OBJ_DIR)	
+	$(CREATE_OBJ_DIR)
 
 clean:
 	$(CLEAN)
-	
+
 ################################################################################
 # VIDEO
 
