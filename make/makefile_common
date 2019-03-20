@@ -29,7 +29,6 @@ OBJETOS=$(DIR_O)screen.o \
 	$(DIR_CLASS_H)polygon_2d/polygon_2d.h \
 	$(DIR_CLASS_H)box/box.h \
 	$(DIR_CLASS_H)line/line.h \
-	$(DIR_O)log.o \
 	$(DIR_O)sdl_tools.o \
 	$(DIR_O)tools.o \
 	$(DIR_O)sdl_input.o \
@@ -60,37 +59,37 @@ $(DIR_O)line_representation.o :\
 $(DIR_O)primitive_representation.o \
 $(DIR_CLASS_V)representation/primitive/line/line_representation.h \
 $(DIR_CLASS_V)representation/primitive/line/line_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/line/line_representation.cpp -o $(DIR_O)line_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/line/line_representation.cpp -o $(DIR_O)line_representation.o
 
 $(DIR_O)point_representation.o :\
 $(DIR_O)primitive_representation.o \
 $(DIR_CLASS_V)representation/primitive/point/point_representation.h \
 $(DIR_CLASS_V)representation/primitive/point/point_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/point/point_representation.cpp -o $(DIR_O)point_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/point/point_representation.cpp -o $(DIR_O)point_representation.o
 
 $(DIR_O)polygon_representation.o :\
 $(DIR_O)primitive_representation.o \
 $(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.h \
 $(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.cpp -o $(DIR_O)polygon_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/polygon/polygon_representation.cpp -o $(DIR_O)polygon_representation.o
 
 $(DIR_O)box_representation.o :\
 $(DIR_O)primitive_representation.o \
 $(DIR_CLASS_V)representation/primitive/box/box_representation.h \
 $(DIR_CLASS_V)representation/primitive/box/box_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/box/box_representation.cpp -o $(DIR_O)box_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/box/box_representation.cpp -o $(DIR_O)box_representation.o
 
 $(DIR_O)primitive_representation.o :\
 $(DIR_O)representation.o \
 $(DIR_CLASS_V)representation/primitive/primitive_representation.h \
 $(DIR_CLASS_V)representation/primitive/primitive_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/primitive_representation.cpp -o $(DIR_O)primitive_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/primitive/primitive_representation.cpp -o $(DIR_O)primitive_representation.o
 
 $(DIR_O)group_representation.o :\
 $(DIR_O)representation.o \
 $(DIR_CLASS_V)representation/group/group_representation.h \
 $(DIR_CLASS_V)representation/group/group_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/group/group_representation.cpp -o $(DIR_O)group_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/group/group_representation.cpp -o $(DIR_O)group_representation.o
 
 $(DIR_O)ttf_representation.o: \
 $(DIR_CLASS_V)representation/raster/ttf/ttf_representation.h \
@@ -98,13 +97,13 @@ $(DIR_CLASS_V)representation/raster/ttf/ttf_representation.cpp \
 $(DIR_O)raster_representation.o \
 $(DIR_O)texture.o \
 $(DIR_O)surface.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/raster/ttf/ttf_representation.cpp -o $(DIR_O)ttf_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/raster/ttf/ttf_representation.cpp -o $(DIR_O)ttf_representation.o
 
 $(DIR_O)bitmap_representation.o: \
 $(DIR_O)raster_representation.o \
 $(DIR_CLASS_V)representation/raster/bitmap/bitmap_representation.h \
 $(DIR_CLASS_V)representation/raster/bitmap/bitmap_representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/raster/bitmap/bitmap_representation.cpp -o $(DIR_O)bitmap_representation.o $(INCLUDES) 
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/raster/bitmap/bitmap_representation.cpp -o $(DIR_O)bitmap_representation.o 
 
 $(DIR_O)raster_representation.o: \
 $(DIR_CLASS_V)representation/raster/raster_representation.h \
@@ -112,7 +111,7 @@ $(DIR_CLASS_V)representation/raster/raster_representation.cpp \
 $(DIR_O)texture.o \
 $(DIR_O)representation.o \
 $(DIR_O)sdl_video_tools.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/raster/raster_representation.cpp -o $(DIR_O)raster_representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/raster/raster_representation.cpp -o $(DIR_O)raster_representation.o
 
 $(DIR_O)representation.o: \
 $(DIR_O)sdl_tools.o \
@@ -120,38 +119,38 @@ $(DIR_O)camera.o \
 $(DIR_O)screen.o \
 $(DIR_CLASS_V)representation/representation.h \
 $(DIR_CLASS_V)representation/representation.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation.cpp -o $(DIR_O)representation.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)representation/representation.cpp -o $(DIR_O)representation.o
 
 $(DIR_O)video_resource_manager.o: \
 $(DIR_CLASS_V)resource_manager/resource_manager.h \
 $(DIR_CLASS_V)resource_manager/resource_manager.cpp \
 $(DIR_O)surface.o\
 $(DIR_O)texture.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)resource_manager/resource_manager.cpp -o $(DIR_O)video_resource_manager.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)resource_manager/resource_manager.cpp -o $(DIR_O)video_resource_manager.o
 
 $(DIR_O)canvas.o: \
 $(DIR_O)surface.o \
 $(DIR_CLASS_V)surface/canvas.h \
 $(DIR_CLASS_V)surface/canvas.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)surface/canvas.cpp -o $(DIR_O)canvas.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)surface/canvas.cpp -o $(DIR_O)canvas.o
 
 $(DIR_O)image.o: \
 $(DIR_O)surface.o \
 $(DIR_CLASS_V)surface/image.h \
 $(DIR_CLASS_V)surface/image.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)surface/image.cpp -o $(DIR_O)image.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)surface/image.cpp -o $(DIR_O)image.o
 
 $(DIR_O)texture.o: \
 $(DIR_O)sdl_video_tools.o \
 $(DIR_O)surface.o \
 $(DIR_CLASS_V)texture/texture.h \
 $(DIR_CLASS_V)texture/texture.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)texture/texture.cpp -o $(DIR_O)texture.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)texture/texture.cpp -o $(DIR_O)texture.o
 
 $(DIR_O)surface.o: \
 $(DIR_CLASS_V)surface/surface.h \
 $(DIR_CLASS_V)surface/surface.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)surface/surface.cpp -o $(DIR_O)surface.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)surface/surface.cpp -o $(DIR_O)surface.o
 
 $(DIR_O)screen.o: \
 $(DIR_CLASS_V)screen/screen.h \
@@ -160,41 +159,40 @@ $(DIR_O)sdl_video_tools.o \
 $(DIR_O)draw_info.o\
 $(DIR_O)camera.o\
 $(DIR_O)color.o
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)screen/screen.cpp -o $(DIR_O)screen.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)screen/screen.cpp -o $(DIR_O)screen.o
 
 $(DIR_O)camera.o: \
 $(DIR_O)draw_info.o \
 $(DIR_CLASS_V)camera/camera.h \
 $(DIR_CLASS_V)camera/camera.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)camera/camera.cpp -o $(DIR_O)camera.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)camera/camera.cpp -o $(DIR_O)camera.o
 
 $(DIR_O)rect.o:\
 $(DIR_CLASS_H)box/box.h \
 $(DIR_CLASS_V)rect/rect.h \
 $(DIR_CLASS_V)rect/rect.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)rect/rect.cpp -o $(DIR_O)rect.o
 
 $(DIR_O)ttf_font.o: \
 $(DIR_CLASS_V)ttf_font/ttf_font.h \
 $(DIR_CLASS_V)ttf_font/ttf_font.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)ttf_font/ttf_font.cpp -o $(DIR_O)ttf_font.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)ttf_font/ttf_font.cpp -o $(DIR_O)ttf_font.o
 
 $(DIR_O)color.o: \
 $(DIR_CLASS_V)color/color.h \
 $(DIR_CLASS_V)color/color.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)color/color.cpp -o $(DIR_O)color.o
 
 $(DIR_O)draw_info.o: \
 $(DIR_CLASS_V)draw_info/draw_info.h \
 $(DIR_CLASS_V)draw_info/draw_info.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)draw_info/draw_info.cpp -o $(DIR_O)draw_info.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)draw_info/draw_info.cpp -o $(DIR_O)draw_info.o
 
 $(DIR_O)sdl_video_tools.o: \
 $(DIR_O)tools.o \
-$(DIR_O)log.o \
 $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.h \
 $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp -o $(DIR_O)sdl_video_tools.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_V)sdl_video_tools/sdl_video_tools.cpp -o $(DIR_O)sdl_video_tools.o
 
 ################################################################################
 # AUDIO
@@ -206,37 +204,36 @@ $(DIR_O)sound.o \
 $(DIR_O)music.o \
 $(DIR_CLASS_A)audio_controller/audio_controller.h \
 $(DIR_CLASS_A)audio_controller/audio_controller.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)audio_controller/audio_controller.cpp -o $(DIR_O)audio_controller.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)audio_controller/audio_controller.cpp -o $(DIR_O)audio_controller.o
 
 $(DIR_O)audio_channel.o: \
 $(DIR_CLASS_A)real_audio_channel/real_audio_channel.h \
 $(DIR_CLASS_A)real_audio_channel/real_audio_channel.cpp \
 $(DIR_CLASS_A)audio_channel/audio_channel.h \
 $(DIR_CLASS_A)audio_channel/audio_channel.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)audio_channel/audio_channel.cpp -o $(DIR_O)audio_channel.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)audio_channel/audio_channel.cpp -o $(DIR_O)audio_channel.o
 
 $(DIR_O)real_audio_channel.o: \
 $(DIR_CLASS_A)real_audio_channel/real_audio_channel.h \
 $(DIR_CLASS_A)real_audio_channel/real_audio_channel.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)real_audio_channel/real_audio_channel.cpp -o $(DIR_O)real_audio_channel.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)real_audio_channel/real_audio_channel.cpp -o $(DIR_O)real_audio_channel.o
 
 $(DIR_O)audio_resource_manager.o: \
 $(DIR_O)sound.o \
 $(DIR_O)music.o \
 $(DIR_CLASS_A)resource_manager/resource_manager.h \
 $(DIR_CLASS_A)resource_manager/resource_manager.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)resource_manager/resource_manager.cpp -o $(DIR_O)audio_resource_manager.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)resource_manager/resource_manager.cpp -o $(DIR_O)audio_resource_manager.o
 
 $(DIR_O)music.o: \
 $(DIR_CLASS_A)music/music.h \
 $(DIR_CLASS_A)music/music.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)music/music.cpp -o $(DIR_O)music.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)music/music.cpp -o $(DIR_O)music.o
 
 $(DIR_O)sound.o: \
-$(DIR_O)log.o \
 $(DIR_CLASS_A)sound/sound.h \
 $(DIR_CLASS_A)sound/sound.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_A)sound/sound.cpp -o $(DIR_O)sound.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_A)sound/sound.cpp -o $(DIR_O)sound.o
 
 ################################################################################
 # INPUT 
@@ -244,23 +241,18 @@ $(DIR_CLASS_A)sound/sound.cpp
 $(DIR_O)sdl_input.o: \
 $(DIR_CLASS_I)sdl_input/sdl_input.h \
 $(DIR_CLASS_I)sdl_input/sdl_input.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_I)sdl_input/sdl_input.cpp -o $(DIR_O)sdl_input.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_I)sdl_input/sdl_input.cpp -o $(DIR_O)sdl_input.o
 
 ################################################################################
 # HERRAMIENTAS
 
-$(DIR_O)log.o: \
-$(DIR_CLASS_H)log/log.h \
-$(DIR_CLASS_H)log/log.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)log/log.cpp -o $(DIR_O)log.o $(INCLUDES)
-
 $(DIR_O)sdl_tools.o: \
 $(DIR_CLASS_H)sdl_tools/sdl_tools.h \
 $(DIR_CLASS_H)sdl_tools/sdl_tools.cpp
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)sdl_tools/sdl_tools.cpp -o $(DIR_O)sdl_tools.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)sdl_tools/sdl_tools.cpp -o $(DIR_O)sdl_tools.o
 
 $(DIR_O)tools.o: \
 $(DIR_CLASS_H)tools/tools.templates.cpp \
 $(DIR_CLASS_H)tools/tools.cpp \
 $(DIR_CLASS_H)tools/tools.h
-	$(CC) $(CFLAGS) $(DIR_CLASS_H)tools/tools.cpp -o $(DIR_O)tools.o $(INCLUDES)
+	$(CC) $(CFLAGS) $(DIR_CLASS_H)tools/tools.cpp -o $(DIR_O)tools.o

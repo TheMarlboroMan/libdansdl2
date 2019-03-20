@@ -1,7 +1,15 @@
 #!/bin/bash
 
-echo -n "Home directory (with ending slash): "
-read home_dir;
+while true; do
+	echo -n "Home directory (with ending slash): "
+	read home_dir;
+
+	if [ -d "$home_dir" ]; then
+		break;
+	fi;
+
+	echo "Directory $home_dir does not exist"
+done;
 
 while true; do
 	echo -n "With optimizations (y/n): "

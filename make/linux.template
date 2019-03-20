@@ -16,7 +16,7 @@ __TEMPLATE_DEBUG__
 
 #Fixed compiler definitions.
 CC=g++
-INCLUDES=-I$(LOGPATH)
+INCLUDES=-I $(LOGPATH)
 WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wfatal-errors -Werror
 CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti $(SYSTEM_FLAGS)
 

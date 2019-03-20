@@ -18,6 +18,6 @@ DEBUG=-g
 CC=g++
 INCLUDES=-I$(LOGPATH) -I$(MINGWPATH)include/ -I$(SDL2PATH)include/
 WARNING_FLAGS=-Wno-deprecated -Wall
-CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++11 -fno-rtti
+CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) -ansi -pedantic -std=c++11 -fno-rtti $(INCLUDES) 
 
 include make/makefile_common
