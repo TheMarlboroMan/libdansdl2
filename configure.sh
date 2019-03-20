@@ -1,14 +1,20 @@
 #!/bin/bash
 
 while true; do
-	echo -n "Home directory (with ending slash): "
+	echo -n "Home directory (current $(pwd), must have trailing slash): "
 	read home_dir;
 
-	if [ -d "$home_dir" ]; then
-		break;
-	fi;
+	last_char="${home_dir: -1}";
 
-	echo "Directory $home_dir does not exist"
+	if [ "$last_char" != "/" ]; then
+		echo "ERROR: Home directory must end with a slash"
+	else 		
+		if [ -d "$home_dir" ]; then
+			break;
+		else 
+			echo "ERROR: Directory $home_dir does not exist"
+		fi;
+	fi;
 done;
 
 while true; do
@@ -29,10 +35,21 @@ while true; do
 	esac;
 done;
 
-cp make/linux.template ./makefile_linux;
+makefile_name='makefile';
 
-sed -i -e "s^__TEMPLATE_DIR_HOME__^DIR_HOME=$home_dir^g" ./makefile_linux;
-sed -i -e "s/__TEMPLATE_OPTIMIZATION__/$optimizations/g" ./makefile_linux;
-sed -i -e "s/__TEMPLATE_DEBUG__/$debug/g" ./makefile_linux;
+cp make/linux.template ./$makefile_name;
+
+sed -i -e "s^__TEMPLATE_DIR_HOME__^DIR_HOME=$home_dir^g" ./$makefile_name;
+sed -i -e "s/__TEMPLATE_OPTIMIZATION__/$optimizations/g" ./$makefile_name;
+sed -i -e "s/__TEMPLATE_DEBUG__/$debug/g" ./$makefile_name;
+
+while true; do
+	echo -n "Begin compilation (y/n)?: "
+	read begin_compilation;
+	case $begin_compilation in
+		[y] ) make clean; make all; break;;
+		[n] ) break;;
+	esac;
+done;
 
 echo "Done";

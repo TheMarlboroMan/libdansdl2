@@ -2,3 +2,4 @@ objects/*
 libDanSDL2.a
 html/*
 makefile_linux
+makefile
