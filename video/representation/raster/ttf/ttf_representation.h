@@ -16,8 +16,8 @@ namespace ldv
 
 //!Text representation using a TTF font.
 
-//!Generates and owns a texture using the SDL_ttf library. Textures generated 
-//!are always in powers of two, to avoid hardware issues. Also, note that 
+//!Generates and owns a texture using the SDL_ttf library. Textures generated
+//!are always in powers of two, to avoid hardware issues. Also, note that
 //!depending on the font used, the size will not always correspond to a certain
 //!pixel height.
 
@@ -27,22 +27,27 @@ class ttf_representation:
 	public:
 
 	//!Render modes. Default is blended.
-	enum class 			render_mode{solid, shaded, blended}; 
+	enum class 			render_mode{solid, shaded, blended};
 	//!Text alignment Default is left.
 	enum class			text_align{left, center, right};
 
-					ttf_representation(const ttf_font&, rgba_color, std::string="", double=1., text_align=text_align::left, render_mode=render_mode::blended);
-					ttf_representation(const ttf_representation&);
+						ttf_representation(const ttf_font&, rgba_color, std::string="", double=1., text_align=text_align::left, render_mode=render_mode::blended);
+						ttf_representation(const ttf_representation&);
 	virtual				~ttf_representation();
 
 	//!Assignment operator. Texture is recreated as a different resource from the original.
 	ttf_representation&		operator=(const ttf_representation&);
 
+	const rect&				get_text_position() const {return text_position;}
+
+	//!Specialization of go_to, which will move the text_position.
+	virtual void			go_to(point);
+
 	//!Returns the assigned text.
 	const std::string& 		get_text() const {return text;}
 
 	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
-	//!Must be accompanied by a call to "unlock_changes" that will perform recreation. 
+	//!Must be accompanied by a call to "unlock_changes" that will perform recreation.
 	//!Trying to draw a locked ttf_representation will throw,
 	void				lock_changes() {perform_changes=false;}
 	void				unlock_changes();
@@ -77,6 +82,7 @@ class ttf_representation:
 	double				line_height_ratio; //!< Expressed as a ratio of the font size.
 	text_align			alignment;
 	bool				perform_changes=true;
+	rect				text_position; //!<The text box is usually smaller than the power of 2 texture containing it. This variable stores the real text rect.
 
 	//!Lookup table for powers of two.
 	static const std::vector<int>	valid_sizes;

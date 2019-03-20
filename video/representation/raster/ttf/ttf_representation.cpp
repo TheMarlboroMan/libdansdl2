@@ -16,8 +16,9 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 	text_color{pcolor.r, pcolor.g, pcolor.b},
 	bg_shaded(rgba8(0,0,0,255)),
 	line_height_ratio(lhr),
-	alignment(al)
-{
+	alignment(al),
+	text_position{0,0,0,0} {
+
 	create_texture();
 	update_view_position();
 }
@@ -32,21 +33,22 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	text(o.text),
 	mode(o.mode),
 	text_color(o.text_color),
-	bg_shaded(o.bg_shaded)
-{
+	bg_shaded(o.bg_shaded),
+	text_position{o.text_position} {
+
 	reset_texture();
 	create_texture();
 }
 
 //!Class destructor.
 
-ttf_representation::~ttf_representation()
-{
+ttf_representation::~ttf_representation() {
+
 	free_texture();
 }
 
-ttf_representation& ttf_representation::operator=(const ttf_representation& o)
-{
+ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
+
 	raster_representation::operator=(o);
 	font=o.font;
 	text=o.text;
@@ -71,11 +73,11 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o)
 
 //TODO: Check RGB and BGR and endianess and such.
 
-void ttf_representation::create_texture()
-{
+void ttf_representation::create_texture() {
 	//The text is prepared line by line in different surfaces.
 
 	auto explode=[](const std::string& _text, char delimiter) {
+
 		std::vector<std::string> result;
 		std::string temp;
 
@@ -113,12 +115,13 @@ void ttf_representation::create_texture()
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
 
 	SDL_Color sdl_col{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
-	if(mode==render_mode::blended) sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
+	if(mode==render_mode::blended) {
+		sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
+	}
 
 	SDL_Surface * s=nullptr;
 
-	switch(mode)
-	{
+	switch(mode) {
 		case render_mode::solid:
 			s=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
 		break;
@@ -221,6 +224,7 @@ if the text is right aligned itself (which works).
 	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
 	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
+	text_position={0,0, (unsigned)total_w, (unsigned)total_h};
 
 }
 
@@ -228,8 +232,8 @@ if the text is right aligned itself (which works).
 
 //!Triggers a cleanse and recreation of the texture if unlocked.
 
-void ttf_representation::set_font(const ttf_font& f)
-{
+void ttf_representation::set_font(const ttf_font& f) {
+
 	font=&f;
 	if(!perform_changes) return;
 	create_texture();
@@ -239,8 +243,8 @@ void ttf_representation::set_font(const ttf_font& f)
 
 //!Triggers a cleanse and recreation of the texture if unlocked.
 
-void ttf_representation::set_text(const char c)
-{
+void ttf_representation::set_text(const char c) {
+
 	//This is absurd...
 	std::string temp("");
 	temp+=c;
@@ -251,8 +255,8 @@ void ttf_representation::set_text(const char c)
 
 //!Triggers a cleanse and recreation of the texture if unlocked.
 
-void ttf_representation::set_text(const std::string& c)
-{
+void ttf_representation::set_text(const std::string& c) {
+
 	set_text_internal(c);
 }
 
@@ -260,10 +264,9 @@ void ttf_representation::set_text(const std::string& c)
 
 //!Triggers a change of the text property and the creation of a new texture if unlocked.
 
-void ttf_representation::set_text_internal(const std::string& c)
-{
-	if(c!=text)
-	{
+void ttf_representation::set_text_internal(const std::string& c) {
+
+	if(c!=text) {
 		//The texture is going to be reused.
 		text=c;
 		if(!perform_changes) return;
@@ -275,8 +278,8 @@ void ttf_representation::set_text_internal(const std::string& c)
 }
 
 //!Unlocks the representation and refreshes its values.
-void ttf_representation::unlock_changes()
-{
+void ttf_representation::unlock_changes() {
+
 	perform_changes=true;
 	auto pos=get_position();
 	reset_calculations();
@@ -288,11 +291,10 @@ void ttf_representation::unlock_changes()
 
 //!Basically keeps this class independent from the "tools" project.
 
-void ttf_representation::text_replace(std::string& sujeto, const std::string& busca, const std::string& reemplaza)
-{
+void ttf_representation::text_replace(std::string& sujeto, const std::string& busca, const std::string& reemplaza) {
+
 	size_t pos = 0, l=reemplaza.length();
-	while ((pos = sujeto.find(busca, pos)) != std::string::npos)
-	{
+	while ((pos = sujeto.find(busca, pos)) != std::string::npos) {
 		sujeto.replace(pos, busca.length(), reemplaza);
 		pos += l;
 	}
@@ -304,8 +306,8 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 //!and a half and so on.
 //!This function will trigger a recreation of the texture if unlocked.
 
-void ttf_representation::set_line_height_ratio(double v)
-{
+void ttf_representation::set_line_height_ratio(double v) {
+
 	if(v==line_height_ratio) return;
 	line_height_ratio=v;
 	if(!perform_changes) return;
@@ -315,8 +317,8 @@ void ttf_representation::set_line_height_ratio(double v)
 //!Sets the font color.
 
 //!Will trigger a recreation of the texture if different and unlocked.
-void ttf_representation::set_color(rgb_color c)
-{
+void ttf_representation::set_color(rgb_color c) {
+
 	if(c==text_color) return;
 	text_color=c;
 	if(!perform_changes) return;
@@ -327,8 +329,8 @@ void ttf_representation::set_color(rgb_color c)
 
 //!Will trigger a recreation of the texture if the mode is shaded and changes (if unlocked).
 
-void ttf_representation::set_bg_shaded_color(rgba_color c)
-{
+void ttf_representation::set_bg_shaded_color(rgba_color c) {
+
 	if(c==bg_shaded) return;
 	bg_shaded=c;
 	if(mode!=render_mode::shaded) return;
@@ -340,8 +342,8 @@ void ttf_representation::set_bg_shaded_color(rgba_color c)
 
 //!Triggers a texture recreation if changes and unlocked.
 
-void ttf_representation::set_render_mode(render_mode r)
-{
+void ttf_representation::set_render_mode(render_mode r) {
+
 	if(r==mode) return;
 	mode=r;
 	if(!perform_changes) return;
@@ -353,16 +355,23 @@ void ttf_representation::set_render_mode(render_mode r)
 //!Triggers a texture recreation if changes and unlocked. Text alignment only
 //!matters when there is more than a single line in the text.
 
-void ttf_representation::set_text_align(text_align v)
-{
+void ttf_representation::set_text_align(text_align v) {
+
 	if(v==alignment) return;
 	alignment=v;
 	if(!perform_changes) return;
 	create_texture();
 }
 
-void ttf_representation::do_draw()
-{
+void ttf_representation::do_draw() {
+
 	if(!perform_changes) throw std::runtime_error("ttf_representation is locked!");
 	raster_representation::do_draw();
+}
+
+
+void ttf_representation::go_to(point _p) {
+
+	text_position.origin=_p;
+	raster_representation::go_to(_p);
 }
