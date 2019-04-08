@@ -13,11 +13,12 @@ CREATE_OBJ_DIR=mkdir -p $(DIR_OBJ)
 #Build specifics
 __TEMPLATE_OPTIMIZATION__
 __TEMPLATE_DEBUG__
+__TEMPLATE_CPPREV__
 
 #Fixed compiler definitions.
 CC=g++
 INCLUDES=-I $(LOGPATH)
 WARNING_FLAGS=-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wfatal-errors -Werror
-CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic -std=c++14 -fno-rtti $(SYSTEM_FLAGS)
+CFLAGS=-c $(DEBUG) $(OPTIMIZATION) $(WARNING_FLAGS) $(INCLUDES) -ansi -pedantic $(CPPREV) -fno-rtti $(SYSTEM_FLAGS)
 
 include make/makefile_common

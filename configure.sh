@@ -1,5 +1,23 @@
 #!/bin/bash
 
+#params: prompt value_y value_n 
+#return code:0 on y and 1 on no.
+#reference return: uses __retval
+function y_n_choice() {
+
+        local read_value;
+        while true;
+        do
+                echo -n "$1 (y/n): ";
+                read read_value;
+                case $read_value in
+                        "y") __retval=$2; return 0; break;;
+                        "n") __retval=$3; return 1; break;;
+                esac
+        done;
+}
+
+
 while true; do
 	echo -n "Home directory (current $(pwd), must have trailing slash, empty for previous directory): "
 	read home_dir;
@@ -22,39 +40,25 @@ while true; do
 	fi;
 done;
 
-while true; do
-	echo -n "With optimizations (y/n): "
-	read with_optimizations;
-	case $with_optimizations in
-		[y]* ) optimizations="OPTIMIZATION=-O2"; break;;
-		[n]* ) optimizations="#OPTIMIZATION=-O2"; break;;
-	esac
-done;
+y_n_choice "With optimizations" "OPTIMIZATION=-O2" "#OPTIMIZATION=-O2"
+optimizations=$__retval;
 
-while true; do
-	echo -n "With debug (y/n): "
-	read with_debug;
-	case $with_debug in
-		[y] ) debug="DEBUG=-g"; break;;
-		[n] ) debug="#DEBUG=-g"; break;;
-	esac;
-done;
+y_n_choice "With debug" "DEBUG=-g" "#DEBUG=-g"
+debug=$__retval;
+
+y_n_choice "With C++14" "CPPREV=-std=c++14" "CPPREV=-std=c++11"
+cpprev=$__retval
 
 makefile_name='makefile';
-
 cp make/linux.template ./$makefile_name;
 
 sed -i -e "s^__TEMPLATE_DIR_HOME__^DIR_HOME=$home_dir^g" ./$makefile_name;
 sed -i -e "s/__TEMPLATE_OPTIMIZATION__/$optimizations/g" ./$makefile_name;
 sed -i -e "s/__TEMPLATE_DEBUG__/$debug/g" ./$makefile_name;
+sed -i -e "s/__TEMPLATE_CPPREV__/$cpprev/g" ./$makefile_name;
 
-while true; do
-	echo -n "Begin compilation (y/n)?: "
-	read begin_compilation;
-	case $begin_compilation in
-		[y] ) make clean; make all; break;;
-		[n] ) break;;
-	esac;
-done;
+y_n_choice "Begin compilation" "" ""
+if [ $? -eq 0 ]; then 
+        make clean; make all; echo "Done";
+fi;
 
-echo "Done";
