@@ -1,18 +1,23 @@
 #!/bin/bash
 
 while true; do
-	echo -n "Home directory (current $(pwd), must have trailing slash): "
+	echo -n "Home directory (current $(pwd), must have trailing slash, empty for previous directory): "
 	read home_dir;
 
-	last_char="${home_dir: -1}";
+	if [ "" == "$home_dir" ]; then
+		home_dir=`pwd`"/../"
+		break;
+	else
+		last_char="${home_dir: -1}";
 
-	if [ "$last_char" != "/" ]; then
-		echo "ERROR: Home directory must end with a slash"
-	else 		
-		if [ -d "$home_dir" ]; then
-			break;
-		else 
-			echo "ERROR: Directory $home_dir does not exist"
+		if [ "$last_char" != "/" ]; then
+			echo "ERROR: Home directory must end with a slash"
+		else 		
+			if [ -d "$home_dir" ]; then
+				break;
+			else 
+				echo "ERROR: Directory $home_dir does not exist"
+			fi;
 		fi;
 	fi;
 done;
