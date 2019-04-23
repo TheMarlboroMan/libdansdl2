@@ -495,15 +495,50 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 		throw std::runtime_error("get_SAT_edge must be fed with a SAT_mtv_result that tests true for a collision");
 	}
 
-	//TODO: Find the farthest vertex from the normal. The normal is the fucking MTV.
-	const auto vertices=_poly.get_vertices();
-	//TODO Point to vertex.. reinterpret_cast?
-	T max=_sat_result.mtv.dot_product(_sat_result.mtv, { });
-	//TODO: Iterate the rest...	
+	//Find the furthest vertex from the normal, the normal being the  MTV.
+	const auto& vertices=_poly.get_vertices();
 
-	//TODO: Use the most perpendicular vertex to the normal.
+	auto get_dist=[this, &_sat_result, &vertices](size_t _index) {
 
-	return segment_2d<T>;
+		return dot_product(_sat_result.mtv, {vertices[_index].x, vertices[_index].y });
+	};
+
+	size_t index=0;
+	T max=get_dist(index);
+ 
+	for(size_t i=1; i < vertices.size(); i++) {
+
+		T proj=get_dist(i);
+		if(proj > max) {
+			max=proj;
+			index=i;
+		}
+	}
+
+	//TODO: Debug results to hell... WTF does the whole normal thing even mean?
+
+	//Use the most perpendicular vertex to the normal to get the edge. Might be
+	//the next vertex or the previous one (relative to the furthest one we 
+	//already discovered). We use clockwise winding.
+	const auto& vertex=vertices[index];
+	const auto& left=index==0 ? vertices.last() : vertices[index-1];
+	const auto& right=index==vertices.size() -1 ? vertices[0] : vertices[index+1];
+
+	//TODO: We should check this... The order in which shit is given might 
+	//change how it works.
+
+	//With these two, compose a vector
+	auto left_vector=vector_from_points(vertex, left).normalize();
+	auto right_vector=vector_from_points(vertex, right).normalize();
+
+	//TODO: Interestingly, this segment MIGHT NOT be the same as one in the
+	//polygon, due to winding stuffs. Check how these are declared in real
+	//cases.
+
+	//Look for the most perpendicular to the normal... The one closest to zero.
+	return dot_product(right_vector, _sat_result.mtv) <= dot_product(left_vector, _sat_result.mtv)
+		? return segment_2d<T>{vertex, left}
+		: return segment_2d<T>{vertex, right};
 }
 
 

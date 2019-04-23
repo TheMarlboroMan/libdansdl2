@@ -167,11 +167,12 @@ right	y,-x
 	}
 
 	//!Normalizes vector (sets largest value to 1).
-	void 					normalize()
+	vector_2d<T>&				normalize()
 	{
 		T m=this->magnitude();
 		this->x=this->x / m;
 		this->y=this->y / m;
+		return *this;
 	}
 
 	//!Returns a new, normalized vector (sets largest value to 1).
