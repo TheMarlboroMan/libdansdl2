@@ -215,15 +215,15 @@ vector_2d<T> vector_from_angle(T p_ang)
 
 //!Obtains a vector for the given angle and magnitude.
 template<typename T>
-vector_2d<T> vector_from_angle_and_magnitude(T angle, T magnitude)
-{
+vector_2d<T> vector_from_angle_and_magnitude(T angle, T magnitude) {
+
 	return {magnitude*cos(angle), magnitude*sin(angle)};
 }
 
 //!Creates the vector from point a to point b. Order is important.
 template<typename T>
-vector_2d<T> vector_from_points(point_2d<T> pa, point_2d<T> pb)
-{
+vector_2d<T> vector_from_points(point_2d<T> pa, point_2d<T> pb) {
+
 	vector_2d<T> r;
 
 	if(! (pa.x==pb.x && pa.y==pb.y))
@@ -239,8 +239,8 @@ vector_2d<T> vector_from_points(point_2d<T> pa, point_2d<T> pb)
 
 //!Calculates angle in radians for a vector in cartesian space.
 template<typename T>
-T angle_for_vector_rad(const vector_2d<T>& p_vector)
-{
+T angle_for_vector_rad(const vector_2d<T>& p_vector) {
+
 	//Atan2 uses the signs of arguments to get the right quadrant.
 	return std::atan2(p_vector.y, p_vector.x);
 }
@@ -249,8 +249,7 @@ T angle_for_vector_rad(const vector_2d<T>& p_vector)
 
 //!Returns its results in 0-360.
 template<typename T>
-T angle_for_vector_deg(const vector_2d<T>& p_vector)
-{
+T angle_for_vector_deg(const vector_2d<T>& p_vector) {
 	T res=(angle_for_vector_rad(p_vector) * (T)180.0) / M_PI;
 	if(res < (T).0) res+=(T)360.;
 	return res;
@@ -258,15 +257,15 @@ T angle_for_vector_deg(const vector_2d<T>& p_vector)
 
 //!Calculates the cross product of two vectors.
 template<typename T>
-T cross_product(const vector_2d<T>& a, const vector_2d<T>& b)
-{
+T dot_product(const vector_2d<T>& a, const vector_2d<T>& b) {
+
 	return a.x*b.x+a.y*b.y;
 }
 
 //!Calculates the determinant product of two vectors.
 template<typename T>
-T determinant(const vector_2d<T>& a, const vector_2d<T>& b)
-{
+T determinant(const vector_2d<T>& a, const vector_2d<T>& b) {
+
 	return (a.x*b.y)-(a.y*b.x);
 }
 

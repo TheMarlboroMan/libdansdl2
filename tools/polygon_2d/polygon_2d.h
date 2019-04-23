@@ -356,12 +356,12 @@ class polygon_2d:
 
 		//Precálculo...
 		const auto &vertex=this->vertexes[0];
-		T vmin=cross_product(vector_2d<T>{vertex.x, vertex.y}, axis), vmax=vmin;
+		T vmin=dot_product(vector_2d<T>{vertex.x, vertex.y}, axis), vmax=vmin;
 
 		for(const auto& v : this->vertexes)
 		{
 			if(v==*std::begin(this->vertexes)) continue; //Saltamos la primera iteración....
-			T pro=cross_product(vector_2d<T>{v.x, v.y}, axis);
+			T pro=dot_product(vector_2d<T>{v.x, v.y}, axis);
 			if(pro < vmin) vmin=pro; 
 			if (pro > vmax) vmax=pro;
 		}
@@ -410,17 +410,19 @@ class polygon_2d:
 //!Checks if there is a SAT collision check between two polygons.
 
 template<typename T>
-bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b)
-{
+bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b) {
+
 	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
 
-	auto f=[](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
-	{
-		for(const auto& s : pa.segments)
-		{
+	auto f=[](const polygon_2d<T>& pa, const polygon_2d<T>& pb) {
+
+		for(const auto& s : pa.segments) {
+
 			auto axis=s.direction.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
-			if(!is_projection_overlap(proy_a, proy_b)) return false;
+			if(!is_projection_overlap(proy_a, proy_b)) {
+				return false;
+			}
 		}
 		return true;
 	};
@@ -433,8 +435,7 @@ bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b)
 //!SAT collision response with minimum translation vector.
 
 template<typename T> 
-struct SAT_mtv_result
-{
+struct SAT_mtv_result {
 	//!Class constructor.
 			SAT_mtv_result():
 		collision(false), mtv{0., 0.} {
@@ -447,26 +448,29 @@ struct SAT_mtv_result
 //!Calculates SAT with the minumum translation vector.
 
 template<typename T>
-SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b)
-{
+SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b) {
+
 	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
 
 	SAT_mtv_result<T> res;
 	T current_magnitude=0.;
 
-	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
-	{
-		for(const auto& s : pa.segments)
-		{
+	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb) {
+
+		for(const auto& s : pa.segments) {
+
 			auto axis=s.direction.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 
-			if(!is_projection_overlap(proy_a, proy_b)) return false;
-			else 
-			{
+			if(!is_projection_overlap(proy_a, proy_b)) {
+
+				return false;
+			}
+			else {
+
 				T overlap=get_projection_overlap(proy_a, proy_b);
-				if(!res.collision || overlap < current_magnitude)
-				{
+				if(!res.collision || overlap < current_magnitude) {
+
 					current_magnitude=overlap;
 					res.mtv=ldt::vector_from_angle_and_magnitude(axis.get_angle_deg(), overlap);
 					res.collision=true;
@@ -482,6 +486,26 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2
 
 	return res;
 }
+
+//!Will return the edge in _poly for which the collision tested.
+template<typename T>
+segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2d<T>& _poly) {
+
+	if(!_sat_result.collision) {
+		throw std::runtime_error("get_SAT_edge must be fed with a SAT_mtv_result that tests true for a collision");
+	}
+
+	//TODO: Find the farthest vertex from the normal. The normal is the fucking MTV.
+	const auto vertices=_poly.get_vertices();
+	//TODO Point to vertex.. reinterpret_cast?
+	T max=_sat_result.mtv.dot_product(_sat_result.mtv, { });
+	//TODO: Iterate the rest...	
+
+	//TODO: Use the most perpendicular vertex to the normal.
+
+	return segment_2d<T>;
+}
+
 
 //!SAT collision response with collision edge
 
@@ -502,22 +526,26 @@ struct SAT_edge_result
 //!costly operation. TODO: Provide alternatives, like this function with edges
 //!instead of polygons, so they can be cached if static.
 
+//TODO: Actually, this can fuck shit up, we need a bit more of control, like
+//specifying EXACTLY which polygon we want the collision to be in, or something,
+//for not-so edge cases...
+
 template<typename T>
-SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon_2d<T>& b)
-{
+SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon_2d<T>& b){
+
 	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
 
 	SAT_edge_result<T> res;
 	T current_magnitude=0.;
 	
-	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb)
-	{
+	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb) {
+
 		//If there are parallel segments we can have problems... a convex
 		//polygon can have at most 2 parallel segments amongst themselves,
 		//so we'll not test the one furthest from "pa"'s center.
 
-		auto is_parallel=[](const segment_2d<T>& sa, const segment_2d<T>& sb)
-		{
+		auto is_parallel=[](const segment_2d<T>& sa, const segment_2d<T>& sb) {
+
 			auto na=sa.direction.get_normalized(), nb=sb.direction.get_normalized();
 			if(na==nb) throw std::runtime_error("SAT_collision_check_edge: coplanar edges found!");
 			auto v=na+nb;
@@ -551,18 +579,20 @@ SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon
 			to_check.push_back(pa.size()-1);
 
 		//True SAT testing.
-		for(const auto& index : to_check)
-		{
+		for(const auto& index : to_check) {
+
 			const auto& s=pa.segments[index];
 			auto axis=s.direction.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 
-			if(!is_projection_overlap(proy_a, proy_b)) return false;
-			else 
-			{
+			if(!is_projection_overlap(proy_a, proy_b)) {
+				return false;
+			}
+			else {
+
 				T overlap=get_projection_overlap(proy_a, proy_b);
-				if(!res.collision || overlap < current_magnitude)
-				{
+				if(!res.collision || overlap < current_magnitude) {
+
 					current_magnitude=overlap;
 					res.edge=s;
 					res.collision=true;
@@ -573,7 +603,8 @@ SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon
 		return true;
 	};
 	
-	//A bit messy, but easy. Do b to a... early exit if no collision exists. Else we could assume that the edge is in b as long as there is a collision.		
+	//A bit messy, but easy. Do b to a... early exit if no collision exists. 
+	//Else we could assume that the edge is in b as long as there is a collision.
 	if(!f(b, a)) return res;
 
 	//Now do a to b. If the magnitude is lower, we can assume that a had a new edge.
@@ -589,15 +620,15 @@ SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon
 //!Adapted from  de https://github.com/siebenschlaefer/line-segments-intersect/blob/included_line_segments/js/line-segments-intersect.js
 
 template<typename T>
-bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b)
-{
-	auto scalar_product=[](const point_2d<T>& pa, const point_2d<T>& pb)
-	{
+bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b) {
+
+	auto scalar_product=[](const point_2d<T>& pa, const point_2d<T>& pb) {
+
 		return (pa.x * pb.y) - (pa.y * pb.x);
 	};
 
-	auto are_equal=[](bool pa, bool pb, bool pc, bool pd)
-	{
+	auto are_equal=[](bool pa, bool pb, bool pc, bool pd) {
+
 		return pa==pb && pa==pc && pa==pd;
 	};
 
@@ -609,11 +640,11 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b)
 	T denominator=scalar_product(r, s);
 
 	//Part of the same line...
-	if(uNumerator==0.0 && denominator==0.0) 
-	{
+	if(uNumerator==0.0 && denominator==0.0) {
+
 		//There is a coincidence in points...
-		if(a.v1==b.v1 || a.v1==b.v2 || a.v2==b.v1 || a.v2==b.v2)
-		{
+		if(a.v1==b.v1 || a.v1==b.v2 || a.v2==b.v1 || a.v2==b.v2) {
+
 			return true;
 		}
 
@@ -632,8 +663,8 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b)
 	}
 
 	//Paralells.
-	if(denominator == 0) 
-	{
+	if(denominator == 0) {
+
 		return false;
 	}
 
@@ -713,7 +744,7 @@ bool is_concave(const std::vector<point_2d<T>>& vertexes)
 
 		auto vector_1=vector_from_points(ptc, pt1);
 		auto vector_2=vector_from_points(ptc, pt2);
-		double dot=cross_product(vector_1, vector_2);
+		double dot=dot_product(vector_1, vector_2);
 		double det=determinant(vector_1, vector_2);
 		double angle=ldt::rad_to_deg(atan2(det, dot));
 

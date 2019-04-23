@@ -1,5 +1,7 @@
 #!/bin/bash
 
+__retval='';
+
 #params: prompt value_y value_n 
 #return code:0 on y and 1 on no.
 #reference return: uses __retval
