@@ -498,7 +498,7 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	//Find the furthest vertex from the normal, the normal being the  MTV.
 	const auto& vertices=_poly.get_vertices();
 
-	auto get_dist=[this, &_sat_result, &vertices](size_t _index) {
+	auto get_dist=[&_sat_result, &vertices](size_t _index) {
 
 		return dot_product(_sat_result.mtv, {vertices[_index].x, vertices[_index].y });
 	};
@@ -516,6 +516,9 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	}
 
 	//TODO: Debug results to hell... WTF does the whole normal thing even mean?
+
+	//TODO: www.dyn4j.org/2011/11/contact-points-using-clipping/#cpg-find has
+	//some examples. Perhaps we could use them to check our values.
 
 	//Use the most perpendicular vertex to the normal to get the edge. Might be
 	//the next vertex or the previous one (relative to the furthest one we 
@@ -537,8 +540,8 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 
 	//Look for the most perpendicular to the normal... The one closest to zero.
 	return dot_product(right_vector, _sat_result.mtv) <= dot_product(left_vector, _sat_result.mtv)
-		? return segment_2d<T>{vertex, left}
-		: return segment_2d<T>{vertex, right};
+		? segment_2d<T>{vertex, left}
+		: segment_2d<T>{vertex, right};
 }
 
 
