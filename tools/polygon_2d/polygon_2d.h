@@ -481,6 +481,7 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2
 
 			if(!is_projection_overlap(proy_a, proy_b)) {
 
+				res.collision=false;				
 				return false;
 			}
 			else {
