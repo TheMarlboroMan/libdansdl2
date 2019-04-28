@@ -176,13 +176,17 @@ class polygon_2d_vertexes {
 
 //!A segment is a couple of points joined by a bearing vector... 
 
+//TODO: I think we don't really need this!.
+//TODO: Pretty much sure we can use a point and a single vector to represent this.
 template<typename T>
 struct segment_2d
 {
+	
+
 	//!Defines the point type.
 	typedef	point_2d<T>		tpoint;
-	tpoint				v1, 		//!< Starting vertex of the segment.
-					v2;		//!< End vertex of the segment.
+	tpoint					v1, 		//!< Starting vertex of the segment.
+							v2;			//!< End vertex of the segment.
 	vector_2d<T>			direction;	//!< Direction of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
 
 	//!Creates a segment from v1 to v2.
@@ -214,10 +218,11 @@ struct segment_2d
 };
 
 //Calculates the middle point of a segment...
-
 template<typename T>
 point_2d<T> segment_middle_point(const segment_2d<T>& s)
 {
+	//TODO: If segments are changed, must be changed a bit...
+
 	return {	(s.v1.x+s.v2.x) / 2., 
 			(s.v1.y+s.v2.y) / 2.};
 }
@@ -270,6 +275,8 @@ template<typename T> SAT_edge_result<T> SAT_collision_check_edge(const polygon_2
 //!closed manually (method "close") creating a segment between the first and 
 //!last vertex. There is no built-in protection against adding new vertices
 //!after closing, but the behaviour of collisions is going to be way off.
+
+//TODO: I think we can remove the segments...
 
 template<typename T>
 class polygon_2d:
@@ -412,13 +419,18 @@ class polygon_2d:
 template<typename T>
 bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b) {
 
-	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
-
 	auto f=[](const polygon_2d<T>& pa, const polygon_2d<T>& pb) {
 
-		for(const auto& s : pa.segments) {
+		const auto& vertices=pa.get_vertices();
+		size_t size=vertices.size();
 
-			auto axis=s.direction.left_normal(); //Vector normal...
+		for(size_t i=0; i<size; i++) {
+
+			vector_2d<T> s=i==size-1
+				? vector_from_points(vertices[i], vertices[0])
+				: vector_from_points(vertices[i], vertices[i+1]);
+
+			auto axis=s.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 			if(!is_projection_overlap(proy_a, proy_b)) {
 				return false;
@@ -450,25 +462,32 @@ struct SAT_mtv_result {
 template<typename T>
 SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b) {
 
-	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
-
 	SAT_mtv_result<T> res;
 	T current_magnitude=0.;
 
 	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb) {
 
-		for(const auto& s : pa.segments) {
+		const auto& vertices=pa.get_vertices();
+		size_t size=vertices.size();
 
-			auto axis=s.direction.left_normal(); //Vector normal...
+		for(size_t i=0; i<size; i++) {
+
+			vector_2d<T> s=i==size-1
+				? vector_from_points(vertices[i], vertices[0])
+				: vector_from_points(vertices[i], vertices[i+1]);
+			
+			auto axis=s.left_normal(); //Vector normal...
 			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 
 			if(!is_projection_overlap(proy_a, proy_b)) {
 
+				res.collision=false;				
 				return false;
 			}
 			else {
 
 				T overlap=get_projection_overlap(proy_a, proy_b);
+
 				if(!res.collision || overlap < current_magnitude) {
 
 					current_magnitude=overlap;
@@ -524,7 +543,7 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	//the next vertex or the previous one (relative to the furthest one we 
 	//already discovered). We use clockwise winding.
 	const auto& vertex=vertices[index];
-	const auto& left=index==0 ? vertices.last() : vertices[index-1];
+	const auto& left=index==0 ? vertices.back() : vertices[index-1];
 	const auto& right=index==vertices.size() -1 ? vertices[0] : vertices[index+1];
 
 	//TODO: We should check this... The order in which shit is given might 
@@ -551,7 +570,7 @@ template<typename T>
 struct SAT_edge_result
 {
 	bool 			collision=false,		//!< Indicates whether there is a collision.
-				edge_in_poly_a=false;		//!< Indicates whether this edge is colliding.
+					edge_in_poly_a=false;		//!< Indicates whether this edge is colliding.
 	segment_2d<T>		edge;				//!< Edge part of the collision.
 };
 
@@ -568,9 +587,13 @@ struct SAT_edge_result
 //specifying EXACTLY which polygon we want the collision to be in, or something,
 //for not-so edge cases...
 
+//TODO: This will surely be deleted.
+
 template<typename T>
 SAT_edge_result<T> SAT_collision_check_edge(const polygon_2d<T>& a,const polygon_2d<T>& b){
 
+	//TODO: Remove the segments... please. Do that. Make this structure lighter.
+	//TODO: are these segments really used?????
 	assert(a.get_vertexes().size() == a.get_segments().size() && b.get_vertexes().size() == b.get_segments().size());
 
 	SAT_edge_result<T> res;
@@ -716,8 +739,10 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b) {
 //!Checks an intersection between a segment and a polygon.
 
 template<typename T>
-bool intersection_segment_polygon(const segment_2d<T>& s, const polygon_2d<T> p)
-{
+bool intersection_segment_polygon(const segment_2d<T>& s, const polygon_2d<T> p) {
+
+	//TODO: Reconstruct segments from vertices, way easier, I guess.
+
 	const auto& segs=p.get_segments();
 
 	for(const auto& sg : segs)

@@ -97,8 +97,8 @@ struct vector_2d
 	}
 
 	//!Multiplies the given vector for the current one.
-	vector_2d<T>&				operator*=(const vector_2d<T> &o)
-	{
+	vector_2d<T>&				operator*=(const vector_2d<T> &o) {
+
 		this->x*=o.x;
 		this->y*=o.y;
 		return *this;
@@ -119,24 +119,23 @@ struct vector_2d
 	}
 
 	//!Gets a new vector by dividing both factors of the current one. Divide by zero will still do bad things.
-	vector_2d<T> 				operator/(const T v)
-	{
+	vector_2d<T> 				operator/(const T v) {
+		
 		return vector_2d<T>(this->x/v, this->y/v);
 	}
 
 	//!Multiplies the current vector for a value.
-	vector_2d<T>& 				operator*=(const T v)
-	{
-		this->x*=v;
-		this->y*=v;
+	vector_2d<T>& 				operator*=(T _v) {
+
+		this->x*=_v;
+		this->y*=_v;
 		return *this;
 	}
 
 	//!Divides the current vector for a value.
-	vector_2d<T>& 				operator/=(const T v)
-	{
-		this->x/=v;
-		this->y/=v;
+	vector_2d<T>& 				operator/=( T _v) {
+		this->x/=_v;
+		this->y/=_v;
 		return *this;
 	}
 /*
@@ -208,17 +207,16 @@ right	y,-x
 
 //!Creates a unit vector pointing towards the angle in degrees, using cartesian space (0 is right).
 template<typename T>
-vector_2d<T> vector_from_angle(T p_ang)
-{
+vector_2d<T> vector_from_angle(T p_ang) {
 	T rad=ldt::deg_to_rad(p_ang);
 	return {cos(rad), sin(rad)};
 }
 
 //!Obtains a vector for the given angle and magnitude.
 template<typename T>
-vector_2d<T> vector_from_angle_and_magnitude(T angle, T magnitude) {
+vector_2d<T> vector_from_angle_and_magnitude(T _angle, T _magnitude) {
 
-	return {magnitude*cos(angle), magnitude*sin(angle)};
+	return vector_from_angle(_angle)*_magnitude;
 }
 
 //!Creates the vector from point a to point b. Order is important.
