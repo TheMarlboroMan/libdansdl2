@@ -56,6 +56,12 @@ struct vector_2d
 		return x==v.x && y==v.y;
 	}
 
+	//!Checks for equality in values.
+	bool					operator!=(const vector_2d<T>& _other) const
+	{
+		return ! (*this==_other);
+	}
+
 	//!Adds two vectors and returns the result as a new object.
 	vector_2d<T> operator+(const vector_2d<T> &o)
 	{
@@ -69,13 +75,13 @@ struct vector_2d
 	}
 
 	//!Multiplies two vectors and returns the result as a new object.
-	vector_2d<T> 				operator*(const vector_2d<T> &o)
+	vector_2d<T> 				operator*(const vector_2d<T> &o) const
 	{
 		return vector_2d<T>(this->x*o.x, this->y*o.y);
 	}
 
 	//!Divides two vectors and returns the result as a new object.
-	vector_2d<T> 				operator/(const vector_2d<T> &o)
+	vector_2d<T> 				operator/(const vector_2d<T> &o) const
 	{
 		return vector_2d<T>(this->x/o.x, this->y/o.y);
 	}
@@ -202,6 +208,13 @@ right	y,-x
 		return angle_for_vector_deg(*this);
 	}
 };
+
+template<typename T> 
+vector_2d<T> operator*(T _val, const vector_2d<T>& _vec) {
+
+	vector_2d<T> res=_vec;
+	return res * _val;
+}
 
 //Vector yielding functions...
 

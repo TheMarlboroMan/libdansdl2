@@ -460,48 +460,81 @@ struct SAT_mtv_result {
 //!Calculates SAT with the minumum translation vector.
 
 template<typename T>
-SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& a,const polygon_2d<T>& b) {
+SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& _polygon_a,const polygon_2d<T>& _polygon_b) {
 
 	SAT_mtv_result<T> res;
 	T current_magnitude=0.;
 
-	auto f=[&res, &current_magnitude](const polygon_2d<T>& pa, const polygon_2d<T>& pb) {
+	//Get all axes...
+	std::vector<vector_2d<T> > all_axes;
+	auto get_axes=[&all_axes](const polygon_2d<T>& _polygon) {
 
-		const auto& vertices=pa.get_vertices();
+		const auto& vertices=_polygon.get_vertices();
 		size_t size=vertices.size();
-
 		for(size_t i=0; i<size; i++) {
-
 			vector_2d<T> s=i==size-1
 				? vector_from_points(vertices[i], vertices[0])
 				: vector_from_points(vertices[i], vertices[i+1]);
-			
-			auto axis=s.left_normal(); //Vector normal...
-			auto proy_a=pa.project(axis), proy_b=pb.project(axis); 	//Projections in the normal...
 
-			if(!is_projection_overlap(proy_a, proy_b)) {
-
-				res.collision=false;				
-				return false;
-			}
-			else {
-
-				T overlap=get_projection_overlap(proy_a, proy_b);
-
-				if(!res.collision || overlap < current_magnitude) {
-
-					current_magnitude=overlap;
-					res.mtv=ldt::vector_from_angle_and_magnitude(axis.get_angle_deg(), overlap);
-					res.collision=true;
-				}
-			}
-		}
-
-		return true;
+			all_axes.push_back(s.left_normal());
+		};
 	};
+
+	get_axes(_polygon_a);
+	get_axes(_polygon_b);
+
+	//TODO: Remove paralell axes...
+	//Two vectors are perpendicular if their determinant is zero.
+//	for(const auto& v : all_axes) {
+//		for(const auto& other : all_axes) {
+//			if(other.x!=v.x && other.y!=v.y) {
+//				bool paralell=determinant(v, other);
+//				std::cout<<v.x<<","<<v.y<<" vs "<<other.x<<","<<other.y<<" => determinant: "<<paralell<<std::endl;
+//			}
+//		}
+//	}
+
+
+	//Now for the real checks...
+	for(const auto& axis: all_axes) {
+
+std::cout<<"axis "<<axis.x<<","<<axis.y<<" ";
+
+		auto	proy_a=_polygon_a.project(axis), 
+				proy_b=_polygon_b.project(axis); 	//Projections in the normal...
+
+		if(!is_projection_overlap(proy_a, proy_b)) {
+
+std::cout<<"CAN EXIT NOW"<<std::endl;
+			res.collision=false;				
+			break;
+		}
+		else {
+
+			T overlap=get_projection_overlap(proy_a, proy_b);
+			auto debug_vec=ldt::vector_from_angle_and_magnitude(axis.get_angle_deg(), overlap);
+
+std::cout<<"overlap "<<overlap<<" ("<<current_magnitude
+	<<") angle="<<axis.get_angle_deg()
+	<<" mtv="<<debug_vec.x<<","<<debug_vec.y;
+
+			if(!res.collision || overlap < current_magnitude) {
+
+std::cout<<" <<< NEW >>";
+				current_magnitude=overlap;
+				res.mtv=ldt::vector_from_angle_and_magnitude(axis.get_angle_deg(), overlap);
+				res.collision=true;
+			}
+std::cout<<std::endl;
+		}
+	}
 	
-	if(!f(b, a)) return res;	//Early exit if no collision exists.
-	f(a, b);			//No early exit at this point.
+	if(res.collision) {
+
+//TODO: Check the MTV actually points where it is supposed to point (having a
+//move away from b.
+
+	}
 
 	return res;
 }
