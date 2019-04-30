@@ -111,6 +111,7 @@ class polygon_2d_vertexes {
 	const tpoint&			get_rotation_center() const {return rotation_center;}
 	//!Returns the centroid.
 	const tpoint&			get_centroid() const {return centroid;}
+//	tpoint					get_centroid() {return centroid;}
 	//!Returns all vertices.
 	const std::vector<tpoint>&	get_vertexes() const {return vertexes;}
 	//!Returns all vertices... In correct English.
@@ -483,17 +484,14 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& _polygon_a,const 
 	get_axes(_polygon_a);
 	get_axes(_polygon_b);
 
-	//TODO: Remove paralell axes...
-	//Two vectors are perpendicular if their determinant is zero.
-//	for(const auto& v : all_axes) {
-//		for(const auto& other : all_axes) {
-//			if(other.x!=v.x && other.y!=v.y) {
-//				bool paralell=determinant(v, other);
-//				std::cout<<v.x<<","<<v.y<<" vs "<<other.x<<","<<other.y<<" => determinant: "<<paralell<<std::endl;
-//			}
-//		}
-//	}
-
+	//Remove paralell axes.
+	for(auto it=std::begin(all_axes); it!=std::end(all_axes); ++it) {
+		for(auto it_next=it+1; it_next!=std::end(all_axes); ++it_next) {
+			if(!determinant(*it, *it_next)) {
+				it_next=all_axes.erase(it);
+			}
+		}
+	}	
 
 	//Now for the real checks...
 	for(const auto& axis: all_axes) {
@@ -506,7 +504,7 @@ std::cout<<"axis "<<axis.x<<","<<axis.y<<" ";
 		if(!is_projection_overlap(proy_a, proy_b)) {
 
 std::cout<<"CAN EXIT NOW"<<std::endl;
-			res.collision=false;				
+			res.collision=false;
 			break;
 		}
 		else {
@@ -531,9 +529,20 @@ std::cout<<std::endl;
 	
 	if(res.collision) {
 
-//TODO: Check the MTV actually points where it is supposed to point (having a
-//move away from b.
+		//Check the MTV actually points where it is supposed to point (having a
+		//move away from b).
+		//The theory behind this: if the dot product of two vectors is positive 
+		//they are pointing more or less at the same direction.
+		auto pointing=vector_from_points(_polygon_a.get_centroid(), _polygon_b.get_centroid());
 
+std::cout<<"MTV:"<<res.mtv.x<<","<<res.mtv.y<<std::endl;
+std::cout<<"POINTING:"<<pointing.x<<","<<pointing.y<<std::endl;
+std::cout<<"DOT:"<<dot_product(res.mtv, pointing)<<std::endl;
+
+		if(dot_product(res.mtv, pointing) >= 0.) {
+std::cout<<"INVERTING"<<std::endl;
+			res.mtv*=-1.;
+		}
 	}
 
 	return res;

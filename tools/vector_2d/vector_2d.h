@@ -232,14 +232,14 @@ vector_2d<T> vector_from_angle_and_magnitude(T _angle, T _magnitude) {
 	return vector_from_angle(_angle)*_magnitude;
 }
 
-//!Creates the vector from point a to point b. Order is important.
+//!Creates the vector from point a to point b. Order is important: the result
+//!will be the vector from a to b in cartesian space.
 template<typename T>
 vector_2d<T> vector_from_points(point_2d<T> pa, point_2d<T> pb) {
 
 	vector_2d<T> r;
 
-	if(! (pa.x==pb.x && pa.y==pb.y))
-	{
+	if(! (pa.x==pb.x && pa.y==pb.y)) {
 		r.x=pb.x-pa.x;
 		r.y=pb.y-pa.y;
 	}
