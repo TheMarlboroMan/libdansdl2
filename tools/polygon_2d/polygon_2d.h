@@ -23,6 +23,8 @@ template<typename T> bool is_clockwise(const std::vector<point_2d<T>>&);
 //!Many additional function templates are defined in the same header, 
 //!providing extended functionality.
 
+//TODO: Perhaps we could add a "scale" method.
+
 template<typename T>
 class polygon_2d_vertexes {
 	public:
@@ -239,6 +241,8 @@ struct polygon_projection{
 		max;	//!< Maximum range component.
 };
 
+
+//TODO: All this thing should go into different libraries.
 //!Evaluates if two projections overlap.
 
 //!Defined in terms of segments_overlap.
