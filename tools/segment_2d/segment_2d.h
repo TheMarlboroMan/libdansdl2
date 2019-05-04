@@ -16,46 +16,56 @@ struct segment_2d
 
 	//!Defines the point type.
 	typedef	point_2d<T>		tpoint;
-	tpoint					v1, 		//!< Starting vertex of the segment.
-							v2;			//!< End vertex of the segment.
-	vector_2d<T>			direction;	//!< Direction of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
+	tpoint					point; 		//!< Starting vertex of the segment.
+	vector_2d<T>			vector;	//!< vector of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
 
-	//!Creates a segment from v1 to v2.
-					segment_2d<T>(tpoint pv1, tpoint pv2)
-		:v1(pv1), v2(pv2), direction(vector_from_points(v1, v2))
-	{}
+	//!Creates a segment from point to v2.
+					segment_2d<T>(tpoint _point, tpoint _point_2)
+		:point(_point), vector(vector_from_points(_point, _point_2)) {
+
+	}
 
 					segment_2d<T>()
-		:v1(tpoint(0,0)), v2(tpoint(0,0)), direction(vector_2d<T>(0,0))
-	{}
+		:point(tpoint(0,0)), vector(vector_2d<T>(0,0)) {
+
+	}
 
 	//!Copy constructor.
 					segment_2d<T>(const segment_2d<T>& o)
-	:v1(o.v1), v2(o.v2), direction(o.direction)
-	{}
+	:point(o.point), vector(o.vector) {
+
+	}
 
 	//!Moves the segment by p units.
-	void				move(tpoint p)
-	{
-		v1+=p;
-		v2+=p;
+	segment_2d<T>&		move(tpoint p) {
+		point+=p;
+		return *this;
+	}
+
+	//!Returns the point that marks the end of the segment
+	tpoint				end() const {
+
+		return {point.x+vector.x, point.y+vector.y};
 	}
 
 	//!Checks for strict equality.
-	bool				operator==(const segment_2d<T> s) const
-	{
-		return v1==s.v1 && v2==s.v2 && direction==s.direction;
+	bool				operator==(const segment_2d<T> s) const {
+
+		return point==s.point 
+			&& vector==s.vector;
 	}
 };
 
 //Calculates the middle point of a segment...
 template<typename T>
-point_2d<T> segment_middle_point(const segment_2d<T>& s)
-{
-	//TODO: If segments are changed, must be changed a bit...
+point_2d<T> segment_middle_point(const segment_2d<T>& _segment) {
 
-	return {	(s.v1.x+s.v2.x) / 2., 
-			(s.v1.y+s.v2.y) / 2.};
+	auto v2=_segment.end();
+
+	return {
+		(_segment.point.x+v2.x) / 2.,
+		(_segment.point.y+v2.y) / 2.
+	};
 }
 
 //!Checks if two segments are intersecting.
@@ -76,9 +86,12 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b) {
 		return pa==pb && pa==pc && pa==pd;
 	};
 
-	point_2d<T> r=a.v2 - a.v1;
-	point_2d<T> s=b.v2 - b.v1;
-	point_2d<T> bminusa=b.v1-a.v1;
+	auto av2=a.end();
+	auto bv2=b.end();
+
+	point_2d<T> r=av2 - a.point;
+	point_2d<T> s=bv2 - b.point;
+	point_2d<T> bminusa=b.point-a.point;
 
 	T uNumerator=scalar_product(bminusa, r);
 	T denominator=scalar_product(r, s);
@@ -87,23 +100,22 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b) {
 	if(uNumerator==0.0 && denominator==0.0) {
 
 		//There is a coincidence in points...
-		if(a.v1==b.v1 || a.v1==b.v2 || a.v2==b.v1 || a.v2==b.v2) {
+		if(a.point==b.point || a.point==bv2 || av2==b.point || av2==bv2) {
 
 			return true;
 		}
 
 		//Crossing check: are all points in the same bearing of the same sign?
 		return !are_equal(
-				(b.v1.x - a.v1.x < 0),
-				(b.v1.x - a.v2.x < 0),
-				(b.v2.x - a.v1.x < 0),
-				(b.v2.x - a.v2.x < 0)) ||
+				(b.point.x - a.point.x < 0),
+				(b.point.x - av2.x < 0),
+				(bv2.x - a.point.x < 0),
+				(bv2.x - av2.x < 0)) ||
 			!are_equal(
-				(b.v1.y - a.v1.y < 0),
-				(b.v1.y - a.v2.y < 0),
-				(b.v2.y - a.v1.y < 0),
-				(b.v2.y - a.v2.y < 0));
-
+				(b.point.y - a.point.y < 0),
+				(b.point.y - av2.y < 0),
+				(bv2.y - a.point.y < 0),
+				(bv2.y - av2.y < 0));
 	}
 
 	//Paralells.
@@ -112,14 +124,13 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b) {
 		return false;
 	}
 
-	point_2d<T> npt=b.v1-a.v1;
+	point_2d<T> npt=b.point-a.point;
 	T u=uNumerator / denominator;
 	T t=scalar_product(npt, s) / denominator;
 
-	return (t >= 0) && (t <= 1) && (u >= 0) && (u <= 1);
+	return t >= 0 && t <= 1 && u >= 0 && u <= 1;
 }
 
-
-}
+}//End of namespace.
 
 #endif
