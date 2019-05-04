@@ -4,8 +4,10 @@
 #include <algorithm>
 
 #include "../box/box.h"
+#include "../point_2d/point_2d.h"
 #include "../polygon_2d/polygon_2d.h"
 #include "../../video/representation/primitive/polygon/polygon_representation.h"
+#include "../../video/rect/rect.h" //ldv::point
 
 /**
 This is a set of utilities to convert back and forth between types: polygons to
@@ -97,6 +99,13 @@ std::vector<ldv::point> vector_of_representation_points_from_vertices(const std:
 		result.push_back(ldv::point(v.x, v.y));
 	}
 	return result;
+}
+
+//!Converts any point to the integer specialization of the point.
+template<typename T>
+ldv::point		to_video(const point_2d<T> _pt) {
+
+	return {(int)_pt.x, (int)_pt.y};
 }
 
 } //End of namespace.
