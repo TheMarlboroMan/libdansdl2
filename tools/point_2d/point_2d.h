@@ -2,6 +2,7 @@
 #define POINT_2D_LIBDANSDL_H
 
 #include <cmath>
+#include <vector>
 #include "../tools/tools.h" //Por si acaso no hay M_PI...
 
 namespace ldt
@@ -155,6 +156,80 @@ T distance_between(const point_2d<T>& pt, const point_2d<T>& s1, const point_2d<
 	};
 
 	return std::sqrt(dist_to_segment_squared(pt, s1, s2));
+}
+
+//!Checks if a vector of vertices is concave.
+template<typename T>
+bool is_concave(const std::vector<point_2d<T>>& vertexes)
+{
+	if(vertexes.size() <= 3) return false;
+
+	size_t i=0;
+	while(i < vertexes.size())
+	{
+		auto ptc=vertexes.at(i),
+			pt1=ptc, pt2=ptc;
+
+		if(i==0)
+		{
+			pt1=vertexes.at(vertexes.size()-1);
+			pt2=vertexes.at(i+1);
+		}
+		else if(i==vertexes.size()-1)
+		{
+			pt1=vertexes.at(i-1);
+			pt2=vertexes.at(0);
+		}
+		else
+		{
+			pt1=vertexes.at(i-1);
+			pt2=vertexes.at(i+1);
+		}
+
+		auto vector_1=vector_from_points(ptc, pt1);
+		auto vector_2=vector_from_points(ptc, pt2);
+		double dot=dot_product(vector_1, vector_2);
+		double det=determinant(vector_1, vector_2);
+		double angle=ldt::rad_to_deg(atan2(det, dot));
+
+		angle=angle < 0.0 ? 360.0-angle : -angle;
+		if(angle > 180.0) return true;
+		++i;
+	}
+
+	return false;
+}
+
+//!Checks if a vector of vertices is winded clockwise.
+
+//!Adapted from http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order
+//!point[0] = (5,0)
+//!point[1] = (6,4)
+//!point[2] = (4,5)
+//!point[3] = (1,5)
+//!point[4] = (1,0)
+//!point[0] = (5,0)   edge[0]: (6-5)(4+0) =   4
+//!point[1] = (6,4)   edge[1]: (4-6)(5+4) = -18
+//!point[2] = (4,5)   edge[2]: (1-4)(5+5) = -30
+//!point[3] = (1,5)   edge[3]: (1-1)(0+5) =   0
+//!point[4] = (1,0)   edge[4]: (5-1)(0+0) =   0
+//!                                         ---
+//!                                         -44  counter-clockwise
+
+template<typename T>
+bool is_clockwise(const std::vector<point_2d<T>>& vertexes)
+{
+	size_t tam=vertexes.size();
+	if(tam < 3) return false;
+
+	int sum=0;
+	for(size_t i=1; i<tam; ++i)
+	{
+		sum+=(vertexes[i].x-vertexes[i-1].x)*(vertexes[i].y+vertexes[i-1].y);
+	}
+
+	sum+=(vertexes[0].x-vertexes[tam-1].x)*(vertexes[0].y+vertexes[tam-1].y);
+	return sum >= (T)0;
 }
 
 } //End of namespace...

@@ -181,7 +181,7 @@ right	y,-x
 	}
 
 	//!Returns a new, normalized vector (sets largest value to 1).
-	vector_2d<T>				get_normalized() const
+	vector_2d<T>				normalize() const
 	{
 		vector_2d<T> res{*this};
 		T m=res.magnitude();

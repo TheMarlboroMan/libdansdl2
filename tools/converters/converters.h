@@ -19,10 +19,10 @@ namespace ldt {
 //!The axis aligned box templated type will have both its types as the same
 //!templated type of the original polygon.
 template<typename T>
-box<T, T> box_from_poly(const polygon_2d_vertexes<T>& _p) {
+box<T, T> box_from_poly(const polygon_2d<T>& _p) {
 
 	std::vector<T> xs, ys;
-	for(auto p : _p.get_vertexes()) {
+	for(auto p : _p.get_vertices()) {
 		xs.push_back(p.x);
 		ys.push_back(p.y);
 	}
