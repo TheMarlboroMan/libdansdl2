@@ -108,6 +108,14 @@ ldv::point		to_video(const point_2d<T> _pt) {
 	return {(int)_pt.x, (int)_pt.y};
 }
 
+//!Converts any point to the integer specialization of the point, inverts the
+//!y axis.
+template<typename T>
+ldv::point		to_screen(const point_2d<T> _pt) {
+
+	return {(int)_pt.x, -(int)_pt.y};
+}
+
 } //End of namespace.
 
 #endif
