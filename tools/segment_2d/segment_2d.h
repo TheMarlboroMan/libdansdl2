@@ -8,16 +8,12 @@ namespace ldt {
 
 //!A segment is a couple of points joined by a bearing vector... 
 
-//TODO: Pretty much sure we can use a point and a single vector to represent this.
 template<typename T>
-struct segment_2d
-{
-	
+struct segment_2d {
 
-	//!Defines the point type.
-	typedef	point_2d<T>		tpoint;
+	typedef	point_2d<T>		tpoint;		//!<Defines the point type.
 	tpoint					point; 		//!< Starting vertex of the segment.
-	vector_2d<T>			vector;	//!< vector of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
+	vector_2d<T>			vector;		//!< vector of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
 
 	//!Creates a segment from point to v2.
 					segment_2d<T>(tpoint _point, tpoint _point_2)

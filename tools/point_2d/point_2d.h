@@ -100,10 +100,10 @@ struct point_2d
 	}
 
 	//!Rotates the point around a center. Negative rotations are clockwise.
-	void rotate(T grados, const point_2d<T> centro) {
+	point_2d<T>& rotate(T grados, const point_2d<T> _center) {
 		//Take to origin...
-		T ox=x - centro.x;
-		T oy=y - centro.y;
+		T ox=x - _center.x;
+		T oy=y - _center.y;
 
 		//Precalculate...
 		T rad=ldt::deg_to_rad(grados);
@@ -115,8 +115,10 @@ struct point_2d
 		T ry=(oy * cr) + (ox * sr);
 
 		//Move again...
-		x = rx + centro.x;
-		y = ry + centro.y;
+		x = rx + _center.x;
+		y = ry + _center.y;
+
+		return this;
 	}
 
 };
@@ -124,8 +126,8 @@ struct point_2d
 //!Returns the distance between two points.
 
 template<typename T>
-T distance_between(const point_2d<T>& p1, const point_2d<T>& p2)
-{
+T distance_between(const point_2d<T>& p1, const point_2d<T>& p2) {
+
 	T x=(p1.x-p2.x)*(p1.x-p2.x);
 	T y=(p1.y-p2.y)*(p1.y-p2.y);
 	return sqrt(x+y);
@@ -138,15 +140,14 @@ T distance_between(const point_2d<T>& p1, const point_2d<T>& p2)
 //Only god know what this is and does ... https://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment/1501725.
 
 template<typename T>
-T distance_between(const point_2d<T>& pt, const point_2d<T>& s1, const point_2d<T>& s2)
-{
-	auto dist=[](const point_2d<T>& v, const point_2d<T>& w)
-	{
+T distance_between(const point_2d<T>& pt, const point_2d<T>& s1, const point_2d<T>& s2) {
+
+	auto dist=[](const point_2d<T>& v, const point_2d<T>& w) {
 		return 	((v.x-w.x)*(v.x-w.x)) + ((v.y-w.y)*(v.y-w.y));
 	};
 
-	auto dist_to_segment_squared=[&dist](const point_2d<T>& p, const point_2d<T>& v, const point_2d<T>& w)
-	{
+	auto dist_to_segment_squared=[&dist](const point_2d<T>& p, const point_2d<T>& v, const point_2d<T>& w) {
+
 		auto l2=dist(v, w);
 		if(!l2) return dist(p, v);
 		T t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
@@ -159,31 +160,29 @@ T distance_between(const point_2d<T>& pt, const point_2d<T>& s1, const point_2d<
 }
 
 //!Checks if a vector of vertices is concave.
+
+//!Will return false if the polygon has less than 3 vertices.
 template<typename T>
-bool is_concave(const std::vector<point_2d<T>>& vertexes)
-{
-	if(vertexes.size() <= 3) return false;
+bool is_concave(const std::vector<point_2d<T>>& vertices) {
+
+	if(vertices.size() <= 3) return false;
 
 	size_t i=0;
-	while(i < vertexes.size())
-	{
-		auto ptc=vertexes.at(i),
+	while(i < vertices.size()) {
+		auto ptc=vertices.at(i),
 			pt1=ptc, pt2=ptc;
 
-		if(i==0)
-		{
-			pt1=vertexes.at(vertexes.size()-1);
-			pt2=vertexes.at(i+1);
+		if(i==0) {
+			pt1=vertices.at(vertices.size()-1);
+			pt2=vertices.at(i+1);
 		}
-		else if(i==vertexes.size()-1)
-		{
-			pt1=vertexes.at(i-1);
-			pt2=vertexes.at(0);
+		else if(i==vertices.size()-1) {
+			pt1=vertices.at(i-1);
+			pt2=vertices.at(0);
 		}
-		else
-		{
-			pt1=vertexes.at(i-1);
-			pt2=vertexes.at(i+1);
+		else {
+			pt1=vertices.at(i-1);
+			pt2=vertices.at(i+1);
 		}
 
 		auto vector_1=vector_from_points(ptc, pt1);
@@ -217,18 +216,18 @@ bool is_concave(const std::vector<point_2d<T>>& vertexes)
 //!                                         -44  counter-clockwise
 
 template<typename T>
-bool is_clockwise(const std::vector<point_2d<T>>& vertexes)
-{
-	size_t tam=vertexes.size();
+bool is_clockwise(const std::vector<point_2d<T>>& vertices) {
+
+	size_t tam=vertices.size();
 	if(tam < 3) return false;
 
 	int sum=0;
 	for(size_t i=1; i<tam; ++i)
 	{
-		sum+=(vertexes[i].x-vertexes[i-1].x)*(vertexes[i].y+vertexes[i-1].y);
+		sum+=(vertices[i].x-vertices[i-1].x)*(vertices[i].y+vertices[i-1].y);
 	}
 
-	sum+=(vertexes[0].x-vertexes[tam-1].x)*(vertexes[0].y+vertexes[tam-1].y);
+	sum+=(vertices[0].x-vertices[tam-1].x)*(vertices[0].y+vertices[tam-1].y);
 	return sum >= (T)0;
 }
 

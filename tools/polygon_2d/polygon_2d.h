@@ -18,8 +18,6 @@ namespace ldt
 //!Many additional function templates are defined in the same header, 
 //!providing extended functionality.
 
-//TODO: Perhaps we could add a "scale" method.
-
 template<typename T>
 class polygon_2d {
 	public:

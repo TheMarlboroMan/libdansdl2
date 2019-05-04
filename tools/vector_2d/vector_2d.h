@@ -14,16 +14,15 @@ application code but also appears in other libdansdl2 parts.
 #include "../tools/tools.h"
 #include "../point_2d/point_2d.h"
 
-namespace ldt
-{
+namespace ldt {
 
 //!Template for a 2d vector in a regular cartesian space. 
 
 //!Positive Y is up and negative Y is down.
 
 template<typename T>
-struct vector_2d
-{
+struct vector_2d {
+
 	T 					x,	//!< X component.
 						y;	//!< Y component.
 
@@ -43,60 +42,60 @@ struct vector_2d
 	{}
 
 	//!Assignment operator.
-	vector_2d<T>& 				operator=(const vector_2d<T> &o)
-	{
+	vector_2d<T>& 				operator=(const vector_2d<T> &o) {
+
 		this->x=o.x;
 		this->y=o.y;
 		return *this;
 	}
 
 	//!Checks for equality in values.
-	bool					operator==(const vector_2d<T>& v) const
-	{
+	bool					operator==(const vector_2d<T>& v) const {
+
 		return x==v.x && y==v.y;
 	}
 
 	//!Checks for equality in values.
-	bool					operator!=(const vector_2d<T>& _other) const
-	{
+	bool					operator!=(const vector_2d<T>& _other) const {
+
 		return ! (*this==_other);
 	}
 
 	//!Adds two vectors and returns the result as a new object.
-	vector_2d<T> operator+(const vector_2d<T> &o)
-	{
+	vector_2d<T> operator+(const vector_2d<T> &o) {
+
 		return vector_2d<T>(this->x+o.x, this->y+o.y);
 	}
 
 	//!Substracts two vectors and returns the result as a new object.
-	vector_2d<T> 				operator-(const vector_2d<T> &o)
-	{
+	vector_2d<T> 				operator-(const vector_2d<T> &o) {
+
 		return vector_2d<T>(this->x-o.x, this->y-o.y);
 	}
 
 	//!Multiplies two vectors and returns the result as a new object.
-	vector_2d<T> 				operator*(const vector_2d<T> &o) const
-	{
+	vector_2d<T> 				operator*(const vector_2d<T> &o) const {
+
 		return vector_2d<T>(this->x*o.x, this->y*o.y);
 	}
 
 	//!Divides two vectors and returns the result as a new object.
-	vector_2d<T> 				operator/(const vector_2d<T> &o) const
-	{
+	vector_2d<T> 				operator/(const vector_2d<T> &o) const {
+
 		return vector_2d<T>(this->x/o.x, this->y/o.y);
 	}
 
 	//!Adds the given vector to the current one.
-	vector_2d<T>& 				operator+=(const vector_2d<T> &o)
-	{
+	vector_2d<T>& 				operator+=(const vector_2d<T> &o) {
+
 		this->x+=o.x;
 		this->y+=o.y;
 		return *this;
 	}
 
 	//!Substracts the given vector from the current one.
-	vector_2d<T>&				operator-=(const vector_2d<T> &o)
-	{
+	vector_2d<T>&				operator-=(const vector_2d<T> &o) {
+
 		this->x-=o.x;
 		this->y-=o.y;
 		return *this;
@@ -111,16 +110,16 @@ struct vector_2d
 	}
 
 	//!Divides the given vector for the current one.
-	vector_2d<T>& 				operator/=(const vector_2d<T> &o)
-	{
+	vector_2d<T>& 				operator/=(const vector_2d<T> &o) {
+
 		this->x/=o.x;
 		this->y/=o.y;
 		return *this;
 	}
 
 	//!Gets a new vector by multiplying both factors of the current one.
-	vector_2d<T> 				operator*(const T v)
-	{
+	vector_2d<T> 				operator*(const T v) {
+
 		return vector_2d<T>(this->x*v, this->y*v);
 	}
 
@@ -144,36 +143,22 @@ struct vector_2d
 		this->y/=_v;
 		return *this;
 	}
-/*
-		right	left	up	down
-		1,0	-1,0	0,1	0,-1
 
-		up	down	left	right
-left	-y,x	-0,1	-0,-1	-1,0	1,0
-
-right	y,-x
-
-*/
-
-
-//-128, 0
-//left:	-0, 128
-//right:	0, -128
 	//!Gets the left normal (perpendicular) vector to this one.
-	vector_2d<T>				left_normal() const
-	{
+	vector_2d<T>				left_normal() const {
+
 		return vector_2d<T>{-this->y, this->x};
 	}
 
 	//!Gets the right normal (perpendicular) vector to this one.
-	vector_2d<T>				right_normal() const
-	{
+	vector_2d<T>				right_normal() const {
+
 		return vector_2d<T>{this->y, -this->x};
 	}
 
 	//!Normalizes vector (sets largest value to 1).
-	vector_2d<T>&				normalize()
-	{
+	vector_2d<T>&				normalize() {
+
 		T m=this->magnitude();
 		this->x=this->x / m;
 		this->y=this->y / m;
@@ -181,8 +166,7 @@ right	y,-x
 	}
 
 	//!Returns a new, normalized vector (sets largest value to 1).
-	vector_2d<T>				normalize() const
-	{
+	vector_2d<T>				normalize() const {
 		vector_2d<T> res{*this};
 		T m=res.magnitude();
 		res.x=res.x / m;
@@ -191,20 +175,20 @@ right	y,-x
 	}
 
 	//!Calculates the lenght of the vector.
-	T 					magnitude() const
-	{
+	T 					magnitude() const {
+
 		return sqrtf(this->x*this->x + this->y*this->y);
 	}
 
 	//!Gets angle in radians.
-	T 					get_angle_rad() const
-	{
+	T 					get_angle_rad() const {
+
 		return angle_for_vector_rad(*this);
 	}
 
 	//!Gets angle in degrees.
-	T 					get_angle_deg() const
-	{
+	T 					get_angle_deg() const {
+
 		return angle_for_vector_deg(*this);
 	}
 };

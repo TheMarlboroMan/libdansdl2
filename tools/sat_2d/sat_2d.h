@@ -156,8 +156,6 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 		}
 	}
 
-	//TODO: Debug results to hell... WTF does the whole normal thing even mean?
-
 	//TODO: www.dyn4j.org/2011/11/contact-points-using-clipping/#cpg-find has
 	//some examples. Perhaps we could use them to check our values.
 
@@ -167,9 +165,6 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	const auto& vertex=vertices[index];
 	const auto& left=index==0 ? vertices.back() : vertices[index-1];
 	const auto& right=index==vertices.size() -1 ? vertices[0] : vertices[index+1];
-
-	//TODO: We should check this... The order in which shit is given might 
-	//change how it works.
 
 	//With these two, compose a vector
 	auto left_vector=vector_from_points(vertex, left).normalize();
