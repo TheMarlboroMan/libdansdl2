@@ -169,14 +169,34 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	auto left_vector=vector_from_points(vertex, left).normalize();
 	auto right_vector=vector_from_points(vertex, right).normalize();
 
-	//TODO: Interestingly, this segment MIGHT NOT be the same as one in the
+	//Look for the most perpendicular to the normal... The one closest to zero.
+	//Interestingly, this segment MIGHT NOT be the same as one in the
 	//polygon, due to winding stuffs. Check how these are declared in real
 	//cases.
 
-	//Look for the most perpendicular to the normal... The one closest to zero.
-	return dot_product(right_vector, _sat_result.mtv) <= dot_product(left_vector, _sat_result.mtv)
+	segment_2d<T> model=dot_product(right_vector, _sat_result.mtv) <= dot_product(left_vector, _sat_result.mtv)
 		? segment_2d<T>{vertex, left}
 		: segment_2d<T>{vertex, right};
+
+	segment_2d<T> inverted{model.end(), model.point};
+
+	//Now, polygons are made out of vertices. There MUST be one vertex that
+	//is equal to "model.point" or "inverted.point" and whose next vertex
+	//is "model.end()" or "inverted.end()". This way we return the segment as
+	//the original winding was declared.
+
+	size_t last=vertices.size()-1;
+	for(size_t i=0; i <= last; i++) {
+
+		size_t next=i==last ? 0 : i+1;
+		segment_2d<T> current{vertices[i], vertices[next]};
+
+		if(current==model || current==inverted) {
+			return current;
+		}
+	}
+
+	throw std::runtime_error("get_SAT_edge could not find matching edge");
 }
 
 /*
