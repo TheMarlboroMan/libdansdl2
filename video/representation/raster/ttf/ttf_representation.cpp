@@ -219,13 +219,11 @@ if the text is right aligned itself (which works).
 		get_texture()->replace(*cnv);
 	}
 
-//	const auto &ref_tex=get_texture();
 	set_blend(representation::blends::alpha);
 	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
 	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
-	text_position={0,0, (unsigned)total_w, (unsigned)total_h};
-
+	text_position={0, 0, (unsigned)total_w, (unsigned)total_h};
 }
 
 //!Sets a new ttf font.
@@ -295,6 +293,7 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 
 	size_t pos = 0, l=reemplaza.length();
 	while ((pos = sujeto.find(busca, pos)) != std::string::npos) {
+
 		sujeto.replace(pos, busca.length(), reemplaza);
 		pos += l;
 	}
@@ -365,11 +364,20 @@ void ttf_representation::set_text_align(text_align v) {
 
 void ttf_representation::do_draw() {
 
+	if(!perform_changes) {
+		throw std::runtime_error("ttf_representation is locked!");
+	}
+
+	raster_representation::do_draw();
+}
+
+=======
 	if(!perform_changes) throw std::runtime_error("ttf_representation is locked!");
 	raster_representation::do_draw();
 }
 
 
+>>>>>>> c8505695db0ed0511eb5e035c9e7758989cf774a
 void ttf_representation::go_to(point _p) {
 
 	text_position.origin=_p;
