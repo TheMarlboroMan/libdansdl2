@@ -48,8 +48,7 @@ ttf_font& ttf_font::operator=(const ttf_font& f)
 
 ttf_font::~ttf_font()
 {
-	if(font)
-	{
+	if(nullptr!=font) {
 		TTF_CloseFont(font);
 	}
 }
@@ -62,8 +61,7 @@ ttf_font::~ttf_font()
 void ttf_font::load_font()
 {
 	font=TTF_OpenFont(name.c_str(), size);
-	if(font==nullptr)
-	{
+	if(font==nullptr) {
 		throw std::runtime_error("ERROR: unable to open font "+name);
 	}
 }

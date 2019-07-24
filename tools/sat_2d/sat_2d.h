@@ -174,6 +174,8 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	//polygon, due to winding stuffs. Check how these are declared in real
 	//cases.
 
+	//TODO: Too verbose... I only I knew what I was doing...
+
 	segment_2d<T> model=dot_product(right_vector, _sat_result.mtv) <= dot_product(left_vector, _sat_result.mtv)
 		? segment_2d<T>{vertex, left}
 		: segment_2d<T>{vertex, right};
