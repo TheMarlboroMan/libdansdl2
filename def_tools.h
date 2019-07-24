@@ -9,6 +9,7 @@
 #include "tools/vector_2d/vector_2d.h"
 #include "tools/point_2d/point_2d.h"
 #include "tools/tools/tools.h"
+#include "tools/sat_2d/sat_2d.h"
 #include "tools/converters/converters.h"
 
 #endif
