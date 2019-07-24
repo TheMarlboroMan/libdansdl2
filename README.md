@@ -30,5 +30,8 @@ Starting in 2018 and for the first time there is an external dependency on the "
 
 ## TODO: 
 
+- Reestructure dependencies: have each module depend only on what it needs and
+	leave the generic def_xxx.h files in some other directory, for backwards
+	compatibility reasons.
 - Revise uppercase constants.
 - In the future, fork for OPENGL 1.4 and the rest.
