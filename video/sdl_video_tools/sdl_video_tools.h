@@ -21,6 +21,8 @@ struct video_display_mode {
 //!Returns a video_display_mode with the current w, h and refresh_rate. Might
 //!throw a std runtime error.
 video_display_mode		get_display_info(int=0);
+
+//!Displays or hides the cursor.
 void 					set_cursor_visible(bool v);
 void					set_vsync(bool v);
 bool					get_vsync();

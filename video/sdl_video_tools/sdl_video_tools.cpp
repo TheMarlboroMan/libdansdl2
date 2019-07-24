@@ -11,7 +11,6 @@
 
 using namespace ldv;
 
-//!Displays or hides the cursor.
 void ldv::set_cursor_visible(bool v)
 {
 	log_lsdl::get()<<"set_cursor_visible "<<v<<std::endl;
@@ -111,33 +110,19 @@ Uint32 ldv::SDL_GetPixel(SDL_Surface *surface, int x, int y)
 	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 	if(SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
 
-	switch(bpp) 
-	{
-		case 1:
-			return *p;
-		break;
-
-		case 2:
-			return *(Uint16 *)p;
-		break;
-
+	switch(bpp) {
+		case 1:			return *p;
+		case 2:			return *(Uint16 *)p;
 		case 3:
 			if(SDL_BYTEORDER == SDL_BIG_ENDIAN) return p[0] << 16 | p[1] << 8 | p[2];
 			else return p[0] | p[1] << 8 | p[2] << 16;
-		break;
-
-		case 4:
-			return *(Uint32 *)p;
-		break;
-
-		default:
-			return 0;    {
+		case 4:			return *(Uint32 *)p;
+		default:		return 0;
    /* shouldn't happen, but avoids warnings */
-		break;
 	}
 }
 
-video_display_mode		ldv::get_display_info(int _display) {
+ldv::video_display_mode	ldv::get_display_info(int _display) {
 
 	int displays=SDL_GetNumVideoDisplays();
 	if(displays < 0) {
@@ -151,7 +136,7 @@ video_display_mode		ldv::get_display_info(int _display) {
 	}
 
 	SDL_DisplayMode dm;
-	if(0!=SDL_GetCurrentDisplayMode(_display, dm)) {
+	if(0!=SDL_GetCurrentDisplayMode(_display, &dm)) {
 
 		throw std::runtime_error("ldv::get_display_info failed");
 	}

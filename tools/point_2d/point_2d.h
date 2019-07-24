@@ -118,7 +118,7 @@ struct point_2d
 		x = rx + _center.x;
 		y = ry + _center.y;
 
-		return this;
+		return *this;
 	}
 
 };

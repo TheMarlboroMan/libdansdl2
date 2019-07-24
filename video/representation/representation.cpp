@@ -194,14 +194,14 @@ void representation::update_view_position()
 
 //!Calculates the view position when rotation transformations are involved.
 
-rect representation::calculate_view_position() const
-{
+rect representation::calculate_view_position() const {
+
 	const auto p=get_base_view_position();
 	const auto pos=get_position();
 
 	auto c=transformation.center;
 
-	polygon_2d_vertexes<double> polig(
+	polygon_2d<double> polig(
 		{ 
 			{(double)p.origin.x, (double)p.origin.y},
 			{(double)(p.origin.x+p.w), (double)p.origin.y},
@@ -209,9 +209,8 @@ rect representation::calculate_view_position() const
 			{(double)p.origin.x, (double)(p.origin.y+p.h)},        
 		}, {(double)c.x+pos.x, (double)c.y+pos.y});
 		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
-	float a=transformation.angle;
 
-	polig.rotate(a);
+	polig.rotate(transformation.angle);
 
 	//Sacar las medidas para la nueva caja...
 	std::vector<double> xs={polig.get_vertex(0).x, polig.get_vertex(1).x, polig.get_vertex(2).x, polig.get_vertex(3).x};
@@ -228,8 +227,8 @@ rect representation::calculate_view_position() const
 
 //!Aligns this representation with respect to the parameter
 
-void representation::align(const representation& o, const representation_alignment& ra)
-{
+void representation::align(const representation& o, const representation_alignment& ra) {
+
 	align(o.get_base_view_position(), ra);
 }
 
@@ -239,8 +238,8 @@ void representation::align(const representation& o, const representation_alignme
 //!inverted. This function only takes into account screen coordinates (as 
 //!it aligns representations, not logic objects).
 
-void representation::align(const rect& r, const representation_alignment& ra)
-{
+void representation::align(const rect& r, const representation_alignment& ra) {
+
 	auto pos=get_position();
 	auto mrect=get_base_view_position();
 	int mh=ra.margin_horizontal, mv=ra.margin_vertical;

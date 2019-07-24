@@ -92,7 +92,9 @@ class polygon_2d {
 	//!Rotates the polygon around its rotation_center.
 	polygon_2d<T>&			rotate(T degrees) {
 
-		for(auto &p : vertices) p.rotate(degrees, rotation_center);
+		for(auto &p : vertices) {
+			p.rotate(degrees, rotation_center);
+		}
 		centroid.rotate(degrees, rotation_center);
 		return *this;
 	}
