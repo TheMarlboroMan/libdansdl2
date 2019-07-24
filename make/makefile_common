@@ -43,6 +43,10 @@ OBJETOS=$(DIR_O)screen.o \
 
 all: create_obj libDanSDL2.a
 
+ifndef VERBOSE
+.SILENT:
+endif
+
 libDanSDL2.a: create_obj $(OBJETOS)
 	ar rcs libDanSDL2.a $(OBJETOS)
 
