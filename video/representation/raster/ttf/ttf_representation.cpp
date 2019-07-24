@@ -371,13 +371,6 @@ void ttf_representation::do_draw() {
 	raster_representation::do_draw();
 }
 
-=======
-	if(!perform_changes) throw std::runtime_error("ttf_representation is locked!");
-	raster_representation::do_draw();
-}
-
-
->>>>>>> c8505695db0ed0511eb5e035c9e7758989cf774a
 void ttf_representation::go_to(point _p) {
 
 	text_position.origin=_p;

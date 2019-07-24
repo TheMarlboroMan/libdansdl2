@@ -38,16 +38,11 @@ class ttf_representation:
 	//!Assignment operator. Texture is recreated as a different resource from the original.
 	ttf_representation&		operator=(const ttf_representation&);
 
-	const rect&				get_text_position() const {return text_position;}
-
 	//!Specialization of go_to, which will move the text_position.
 	virtual void			go_to(point);
 
 	//!Returns the assigned text.
 	const std::string& 		get_text() const {return text;}
-
-	//!Specialization of go to: will move the text_position property too.
-	virtual void 			go_to(point);
 
 	//!Returns the rectangle of the text position, which may be different
 	//!from the texture size (textures are in powers of two, and are usually
@@ -84,7 +79,6 @@ class ttf_representation:
 	ttf_font const *		font; //! <This is a pointer so it can change.
 	std::string			text;
 
-	rect				text_position;
 	render_mode			mode;
 	rgb_color			text_color;
 	rgba_color			bg_shaded;
