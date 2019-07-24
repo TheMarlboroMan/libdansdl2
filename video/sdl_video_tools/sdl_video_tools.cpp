@@ -131,7 +131,32 @@ Uint32 ldv::SDL_GetPixel(SDL_Surface *surface, int x, int y)
 		break;
 
 		default:
-			return 0;       /* shouldn't happen, but avoids warnings */
+			return 0;    {
+   /* shouldn't happen, but avoids warnings */
 		break;
 	}
+}
+
+video_display_mode		ldv::get_display_info(int _display) {
+
+	int displays=SDL_GetNumVideoDisplays();
+	if(displays < 0) {
+
+		throw std::runtime_error("ldv::get_display_info was unable to retrieve number of displays");
+	}
+
+	if(_display >= displays) {
+
+		throw std::runtime_error("ldv::get_display_info, requested invalid display "+std::to_string(_display));
+	}
+
+	SDL_DisplayMode dm;
+	if(0!=SDL_GetCurrentDisplayMode(_display, dm)) {
+
+		throw std::runtime_error("ldv::get_display_info failed");
+	}
+
+	return video_display_mode{
+		dm.w, dm.h, dm.refresh_rate
+	};
 }

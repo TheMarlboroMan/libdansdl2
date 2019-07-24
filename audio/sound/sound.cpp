@@ -17,6 +17,7 @@ sound::sound()
 
 //!Constructs a sound object and attempts to load the file.
 
+//TODO: Fix this behaviour.
 //!This function may be buggy exception-wise, as load may throw.
 
 //TODO: Except.

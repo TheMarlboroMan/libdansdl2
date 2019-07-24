@@ -103,7 +103,6 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& _polygon_a,const 
 		else {
 
 			T overlap=get_projection_overlap(proy_a, proy_b);
-//			auto debug_vec=ldt::vector_from_angle_and_magnitude(axis.get_angle_deg(), overlap);
 
 			if(!res.collision || overlap < current_magnitude) {
 				current_magnitude=overlap;
