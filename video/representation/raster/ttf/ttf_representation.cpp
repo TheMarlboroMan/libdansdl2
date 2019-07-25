@@ -193,21 +193,6 @@ std::cout<<"TEXTURE OF "<<canvas_w<<" w"<<std::endl;
 
 		int x=0;
 
-//TODO:
-/*
-All this is terribly hacked: some implementations of OpenGL will botch the
-text if we use linear filtering and map anything else than the whole texture
-to a polygon of the full texture size... To solve this, we will map the
-clip and location to the full texture size (in powers of 2) rather than to the
-effective size of the text. This, in time, causes problems when aligning text
-to the right if we don't use the canvas_w as a measure and with the "align"
-method.
-
-Corollary: either fix that with virtual methods for the box size and such or
-accept that calling align with "to the inner right" as argument makes only sense
-if the text is right aligned itself (which works).
-*/
-
 		//TODO: This only makes sense if we have more than one line.
 		switch(alignment) {
 			case text_align::left: x=0; break;
