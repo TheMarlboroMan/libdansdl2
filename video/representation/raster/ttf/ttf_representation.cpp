@@ -153,8 +153,6 @@ void ttf_representation::create_texture() {
 	auto canvas_w=get_next_power_of_2(total_w);
 	auto canvas_h=get_next_power_of_2(total_h);
 
-std::cout<<"TEXTURE OF "<<canvas_w<<" w"<<std::endl;
-
 	std::unique_ptr<canvas> cnv(canvas::create(
 		canvas_w,
 		canvas_h,
@@ -222,8 +220,6 @@ std::cout<<"TEXTURE OF "<<canvas_w<<" w"<<std::endl;
 	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
 
 	text_x_displacement=text_x;
-std::cout<<"Text displacement of "<<text_x_displacement<<std::endl;
-std::cout<<"Text w of "<<total_w<<std::endl;
 	text_position={text_x_displacement, 0, (unsigned)total_w, (unsigned)total_h};
 }
 

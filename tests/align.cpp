@@ -16,7 +16,6 @@ This program will test the text representation aligment capabilities.
 /*
 //TODO: We should have a script to help output this sort of thing...
 g++ tests/align.cpp -o align.out -ansi -pedantic -I ../log/ -L ./ -L ../log/ -lDanSDL2 -llog  -lSDL2 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -lGL -Wall -Wextra -fno-rtti --std=c++11 
- -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual  --std=c++11
 */
 
 struct pair {
