@@ -78,8 +78,8 @@ void screen::init(int p_w, int p_h, int flags_window)
 //!Calling this method in fullscreen mode is guaranteed to have funky 
 //!results.
 
-void screen::set_size(int pw, int ph)
-{
+void screen::set_size(int pw, int ph) {
+
 	w=pw;
 	h=ph;
 	SDL_SetWindowSize(window, w, h);

@@ -376,3 +376,37 @@ void ttf_representation::go_to(point _p) {
 	text_position.origin=_p;
 	raster_representation::go_to(_p);
 }
+
+ttf_representation&	ttf_representation::reset_style() {
+
+	TTF_Font * fontptr=const_cast<TTF_Font*>(font->get_font());
+	if(nullptr==fontptr) {
+		throw std::runtime_error("cannot reset style on null font");
+	}
+
+	if(TTF_STYLE_NORMAL != TTF_GetFontStyle(fontptr)) {
+
+		TTF_SetFontStyle(fontptr, TTF_STYLE_NORMAL);
+	}
+
+	return *this;
+}
+
+ttf_representation&	ttf_representation::set_style(int _flags) {
+
+	TTF_Font * fontptr=const_cast<TTF_Font*>(font->get_font());
+	if(nullptr==fontptr) {
+		throw std::runtime_error("cannot set style on null font");
+	}
+
+	//TODO: Please, check it.
+	//This is supposed to leave out invalid flags.
+	int flags=_flags & (
+		TTF_STYLE_BOLD | TTF_STYLE_ITALIC | TTF_STYLE_UNDERLINE | TTF_STYLE_STRIKETHROUGH
+	);
+
+
+	TTF_SetFontStyle(fontptr, flags);
+	
+	return *this;
+}

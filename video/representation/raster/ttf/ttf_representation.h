@@ -26,6 +26,13 @@ class ttf_representation:
 {
 	public:
 
+	//Enum for set_style.
+	enum 				font_faces {
+		bold=TTF_STYLE_BOLD,
+		italic=TTF_STYLE_ITALIC, 
+		underline=TTF_STYLE_UNDERLINE, 
+		striketrough=TTF_STYLE_STRIKETHROUGH};
+
 	//!Render modes. Default is blended.
 	enum class 			render_mode{solid, shaded, blended};
 	//!Text alignment Default is left.
@@ -59,6 +66,12 @@ class ttf_representation:
 	void				set_bg_shaded_color(rgba_color);
 
 	void				set_text_align(text_align);
+
+	//!Resets the font to its default style.
+	ttf_representation&	reset_style();
+
+	//!Enables typeface styles according to the font_faces flag.
+	ttf_representation&	set_style(int);
 
 	void 				set_font(const ttf_font&);
 	void 				set_text(const char);

@@ -7,7 +7,8 @@ using namespace ldv;
 
 //!Class constructor.
 
-//!Creates a texture from a ldv::surface object.
+//!Creates a texture from a ldv::surface object. The surface itself can be
+//!discarded later.
 
 texture::texture(const surface& s):
 	index(0), mode(GL_RGB), w(0), h(0)
