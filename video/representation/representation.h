@@ -17,8 +17,8 @@ namespace ldv
 //!This is a companion to the "align" method, which helps set positions of
 //!representations relative to other representations or rectangles.
 
-struct representation_alignment
-{
+struct representation_alignment {
+
 	//!Defines the types or horizontal aligment in human-readable format.
 	enum class h{
 		none, 
@@ -38,6 +38,8 @@ struct representation_alignment
 		outer_bottom} 	vertical; //!< Vertical margin type.
 
 
+	representation_alignment(h _h, v _v, int _hm=0, int _vm=0);
+
 	int			margin_horizontal,	//!< Horizontal margin in px.
 				margin_vertical;	//!< Vertical margin in px.
 };
@@ -46,8 +48,8 @@ struct representation_alignment
 
 //!Provides with a few convenience functions. Used by representations.
 
-struct rotation_transform
-{
+struct rotation_transform {
+
 	float 				angle;		//!< Rotation angle. Defaults to 0.f
 	ldt::point_2d<float>		center;		//!< Center of rotation. Defaults to 0,0.
 

@@ -5,6 +5,15 @@
 
 using namespace ldv;
 
+
+representation_alignment::representation_alignment(representation_alignment::h _h, representation_alignment::v _v, int _hm, int _vm):
+	horizontal(_h), 
+	vertical(_v), 
+	margin_horizontal(_hm), 
+	margin_vertical(_vm) {
+
+}
+
 //!Class constructor.
 
 //!Alpha value defaults to max.
@@ -171,10 +180,8 @@ void representation::set_rotation(float v)
 //!The rotation center is the axis around which a representation rotates. By
 //!default it is its top-left corner.
 
-void representation::set_rotation_center(float x, float y) 
-{
-	transformation.center.x=x;
-	transformation.center.y=y;
+void representation::set_rotation_center(float x, float y) {
+	transformation.center={x, y};
 	update_view_position();
 }
 
@@ -182,14 +189,9 @@ void representation::set_rotation_center(float x, float y)
 
 void representation::update_view_position()
 {
-	if(!transformation.is_transformed())
-	{
-		view_position=get_base_view_position();
-	}
-	else
-	{
-		view_position=calculate_view_position();
-	}
+	view_position=!transformation.is_transformed()
+		? get_base_view_position()
+		: calculate_view_position();
 }
 
 //!Calculates the view position when rotation transformations are involved.
@@ -241,6 +243,7 @@ void representation::align(const representation& o, const representation_alignme
 void representation::align(const rect& r, const representation_alignment& ra) {
 
 	auto pos=get_position();
+
 	auto mrect=get_base_view_position();
 	int mh=ra.margin_horizontal, mv=ra.margin_vertical;
 

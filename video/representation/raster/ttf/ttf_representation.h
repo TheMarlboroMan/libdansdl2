@@ -56,6 +56,9 @@ class ttf_representation:
 	//!larger than the text portion.
 	const rect&			get_text_position() const {return text_position;}
 
+	//!Allows correct use of the "align" method. 
+	virtual rect		get_base_view_position() const;
+
 	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
 	//!Must be accompanied by a call to "unlock_changes" that will perform recreation.
 	//!Trying to draw a locked ttf_representation will throw,
@@ -67,6 +70,9 @@ class ttf_representation:
 
 	void				set_text_align(text_align);
 
+	//!Returns the horizontal text alignment.
+	text_align			get_text_align() const {return alignment;}
+
 	//!Resets the font to its default style.
 	ttf_representation&	reset_style();
 
@@ -74,8 +80,10 @@ class ttf_representation:
 	ttf_representation&	set_style(int);
 
 	void 				set_font(const ttf_font&);
+
+	//!Sets the text as a string. Triggers a cleanse and recreation of the texture if unlocked.
 	void 				set_text(const char);
-	void 				set_text(const std::string&);
+	void 				set_text(const std::string& _c) {set_text_internal(_c);}
 	void				set_render_mode(render_mode r);
 	void				set_line_height_ratio(double);
 
@@ -99,6 +107,7 @@ class ttf_representation:
 	text_align			alignment;
 	bool				perform_changes=true;
 	rect				text_position; //!<The text box is usually smaller than the power of 2 texture containing it. This variable stores the real text rect.
+	int					text_x_displacement;
 
 	//!Lookup table for powers of two.
 	static const std::vector<int>	valid_sizes;

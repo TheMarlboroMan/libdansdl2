@@ -2,6 +2,9 @@
 
 using namespace ldv;
 
+//TODO: Remove...
+#include <iostream>
+
 const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048};
 
 //!Default class constructor.
@@ -17,7 +20,8 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 	bg_shaded(rgba8(0,0,0,255)),
 	line_height_ratio(lhr),
 	alignment(al),
-	text_position{0,0,0,0} {
+	text_position{0,0,0,0},
+	text_x_displacement{0} {
 
 	create_texture();
 	update_view_position();
@@ -34,7 +38,8 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	mode(o.mode),
 	text_color(o.text_color),
 	bg_shaded(o.bg_shaded),
-	text_position{o.text_position} {
+	text_position{o.text_position},
+	text_x_displacement{o.text_x_displacement} {
 
 	reset_texture();
 	create_texture();
@@ -55,6 +60,8 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 	mode=o.mode;
 	text_color=o.text_color;
 	bg_shaded=o.bg_shaded;
+	text_position=o.text_position;
+	text_x_displacement=o.text_x_displacement;
 	create_texture();
 
 	return *this;
@@ -146,6 +153,8 @@ void ttf_representation::create_texture() {
 	auto canvas_w=get_next_power_of_2(total_w);
 	auto canvas_h=get_next_power_of_2(total_h);
 
+std::cout<<"TEXTURE OF "<<canvas_w<<" w"<<std::endl;
+
 	std::unique_ptr<canvas> cnv(canvas::create(
 		canvas_w,
 		canvas_h,
@@ -154,6 +163,7 @@ void ttf_representation::create_texture() {
 
 	//Creating surfaces for each lines, pasting them on the canvas...
 	int y=0;
+	int text_x=total_w; //A suitably large value...
 
 	for(std::string& c : lines) {
 		SDL_Surface * surf=nullptr;
@@ -205,6 +215,8 @@ if the text is right aligned itself (which works).
 			case text_align::right: x=canvas_w-w; break;
 		}
 
+		text_x=x < text_x ? x : text_x;
+
 		SDL_Rect pos{x, y, 0, 0};
 		SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
 		SDL_FreeSurface(surf);
@@ -223,7 +235,11 @@ if the text is right aligned itself (which works).
 	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
 	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
-	text_position={0, 0, (unsigned)total_w, (unsigned)total_h};
+
+	text_x_displacement=text_x;
+std::cout<<"Text displacement of "<<text_x_displacement<<std::endl;
+std::cout<<"Text w of "<<total_w<<std::endl;
+	text_position={text_x_displacement, 0, (unsigned)total_w, (unsigned)total_h};
 }
 
 //!Sets a new ttf font.
@@ -249,14 +265,6 @@ void ttf_representation::set_text(const char c) {
 	set_text_internal(temp);
 }
 
-//!Sets the text as a string.
-
-//!Triggers a cleanse and recreation of the texture if unlocked.
-
-void ttf_representation::set_text(const std::string& c) {
-
-	set_text_internal(c);
-}
 
 //!Internal function to change text.
 
@@ -374,6 +382,7 @@ void ttf_representation::do_draw() {
 void ttf_representation::go_to(point _p) {
 
 	text_position.origin=_p;
+	_p.x-=text_x_displacement;
 	raster_representation::go_to(_p);
 }
 
@@ -409,4 +418,14 @@ ttf_representation&	ttf_representation::set_style(int _flags) {
 	TTF_SetFontStyle(fontptr, flags);
 	
 	return *this;
+}
+
+rect ttf_representation::get_base_view_position() const {
+
+
+	auto result=text_position;
+	//result.origin.x+=location.origin.x;
+	//result.origin.y+=location.origin.y;
+
+	return result;
 }

@@ -2,24 +2,24 @@
 
 using namespace ldv;
 
-box_representation::box_representation(polygon_representation::type t,const rect& p_pos, const rgba_color& c)
-	:polygon_representation(t, { 
+box_representation::box_representation(const rect& p_pos, const rgba_color& c, type t)
+	:polygon_representation({ 
 		{p_pos.origin.x, p_pos.origin.y}, 
 		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y}, 
 		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h}, 
 		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}}, 
-		c)
+		c, t)
 {
 
 }
 
-box_representation::box_representation(polygon_representation::type t,const rect& p_pos, const rgb_color& c)
-	:polygon_representation(t, { 
+box_representation::box_representation(const rect& p_pos, const rgb_color& c, type t)
+	:polygon_representation({ 
 		{p_pos.origin.x, p_pos.origin.y}, 
 		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y}, 
 		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h}, 
 		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}}, 
-		c)
+		c, t)
 {
 
 }

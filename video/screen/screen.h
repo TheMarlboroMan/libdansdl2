@@ -22,11 +22,13 @@ namespace ldv
 
 //!So far we can only have one.
 
+//TODO: Should be called "window".
+
 class screen
 {
 	public:
 
-					screen();
+					screen(int, int, int=SDL_WINDOW_OPENGL);
 					~screen();
 
 	//!Returns a handle to the SDL window.
@@ -50,7 +52,6 @@ class screen
 	void 				set_logical_size(int, int);
 	void				set_fullscreen(bool);
 
-	void 				init(int, int, int=SDL_WINDOW_OPENGL);
 	void 				clear(const rgba_color&);
 	void 				update();
 
@@ -64,6 +65,8 @@ class screen
 	rect				get_rect() {return rect{0,0,(unsigned)w,(unsigned)h};}
 
 	private:
+
+	void 				init(int);
 
 	//Properties...
 

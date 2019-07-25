@@ -2,14 +2,14 @@
 
 using namespace ldv;
 
-polygon_representation::polygon_representation(type t, const std::vector<point>& pt, rgba_color c)
+polygon_representation::polygon_representation(const std::vector<point>& pt, rgba_color c, type t)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 { 
 	normalize();
 	update_view_position();
 }
 
-polygon_representation::polygon_representation(type t, const std::vector<point>& pt, rgb_color c)
+polygon_representation::polygon_representation(const std::vector<point>& pt, rgb_color c, type t)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 { 
 	normalize();

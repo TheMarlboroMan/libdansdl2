@@ -16,10 +16,10 @@ class box_representation
 	public:
 	
 	//!Constructor from rectangle and alpha color.
-				box_representation(polygon_representation::type, const rect& p_pos, const rgba_color&);
+				box_representation(const rect& p_pos, const rgba_color&, type=type::fill);
 
 	//!Constructor from rectangle and color.
-				box_representation(polygon_representation::type, const rect& p_pos, const rgb_color&);
+				box_representation(const rect& p_pos, const rgb_color&, type=type::fill);
 
 	//!Copy constructor.
 				box_representation(const box_representation& p_otra);

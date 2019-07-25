@@ -84,8 +84,12 @@ class raster_representation:
 	void 			clip_to_texture();
 
 	virtual void 		go_to(point);
-	virtual point		get_position() const;
-	virtual rect		get_base_view_position() const;
+
+	//!Gets the position.
+	virtual point		get_position() const {return location.origin;}
+
+	//!Gets the base view position.
+	virtual rect		get_base_view_position() const {return location;}
 
 	private:
 

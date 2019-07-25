@@ -22,10 +22,10 @@ class polygon_representation
 	enum class			type{fill, line};
 
 	//!Class constructor with alpha color.
-					polygon_representation(type, const std::vector<point>&, rgba_color);
+					polygon_representation(const std::vector<point>&, rgba_color, type=type::fill);
 
 	//!Class constructor with color.
-					polygon_representation(type, const std::vector<point>&, rgb_color);
+					polygon_representation(const std::vector<point>&, rgb_color, type=type::fill);
 
 	//!Copy constructor.
 					polygon_representation(const polygon_representation&);

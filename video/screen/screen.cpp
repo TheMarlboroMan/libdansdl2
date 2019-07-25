@@ -4,16 +4,15 @@
 
 using namespace ldv;
 
-//!Constructs the window in a non-initialised state.
+//!Constructs the window in an initialised state.
 
-//!A call to "init" is necessary before working with the window, usually right
-//!after it is constructed.
-
-screen::screen():
+screen::screen(int p_w, int p_h, int flags_window):
 	window(nullptr), current_camera(nullptr), 
 	draw_info_instance{0,0,0,0,0,0,1.0},
-	w(0), h(0), 
+	w(p_w), h(p_h), 
 	w_logic(w), h_logic(h) {
+
+	init(flags_window);
 }
 
 screen::~screen() {
@@ -44,13 +43,9 @@ void screen::update() {
 //!create a window (in an undefined position) with SDL_WINDOW_OPENGL
 //!flags by default and set the logical size of w and h.
 
-void screen::init(int p_w, int p_h, int flags_window)
+void screen::init(int flags_window)
 {
-	w=p_w;
-	h=p_h;
-
-	if(window)
-	{
+	if(nullptr!=window) {
 		throw std::runtime_error("window was already init");
 	}
 

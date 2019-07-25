@@ -214,20 +214,6 @@ void raster_representation::go_to(point p)
 	update_view_position();
 }
 
-//!Gets the position.
-
-point raster_representation::get_position() const
-{
-	return location.origin;
-}
-
-//!Gets the base view position.
-
-rect raster_representation::get_base_view_position() const
-{
-	return location;
-}
-
 //!Resets all stored fields.
 
 //!Internally called when the clipping box changes.
