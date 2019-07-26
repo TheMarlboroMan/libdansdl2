@@ -50,6 +50,9 @@ class screen
 	void 				reset_clip();
 	void				set_size(int, int);
 	void 				set_logical_size(int, int);
+	void				set_fake_fullscreen(bool);
+
+	//!Sets or removes underlying library fullscreen mode.
 	void				set_fullscreen(bool);
 
 	void 				clear(const rgba_color&);
@@ -75,7 +78,7 @@ class screen
 	camera const *			current_camera;
 	draw_info			draw_info_instance;
 
-	int 				w, 
+	int 				w,
 					h;
 
 	int 				w_logic, //! <Rendered size. May differ from window dimensions.

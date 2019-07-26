@@ -7,9 +7,9 @@ using namespace ldv;
 //!Constructs the window in an initialised state.
 
 screen::screen(int p_w, int p_h, int flags_window):
-	window(nullptr), current_camera(nullptr), 
+	window(nullptr), current_camera(nullptr),
 	draw_info_instance{0,0,0,0,0,0,1.0},
-	w(p_w), h(p_h), 
+	w(p_w), h(p_h),
 	w_logic(w), h_logic(h) {
 
 	init(flags_window);
@@ -17,7 +17,7 @@ screen::screen(int p_w, int p_h, int flags_window):
 
 screen::~screen() {
 	if(window) SDL_DestroyWindow(window);
-	SDL_GL_DeleteContext(context); 
+	SDL_GL_DeleteContext(context);
 }
 
 //!Clears the screen with the given color.
@@ -54,7 +54,7 @@ void screen::init(int flags_window)
 	//This is very important...
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
-	window=SDL_CreateWindow("", 
+	window=SDL_CreateWindow("",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		w, h, flags_window); //Por defecto SDL_WINDOW_OPENGL
@@ -69,8 +69,8 @@ void screen::init(int flags_window)
 
 //!Sets the phisical size of the screen and adjusts the viewport accordingly.
 
-//!The viewport will not preserve the original proportions if these change. 
-//!Calling this method in fullscreen mode is guaranteed to have funky 
+//!The viewport will not preserve the original proportions if these change.
+//!Calling this method in fullscreen mode is guaranteed to have funky
 //!results.
 
 void screen::set_size(int pw, int ph) {
@@ -81,17 +81,33 @@ void screen::set_size(int pw, int ph) {
 	glViewport(0.f, 0.f, w, h);
 }
 
+//TODO: The interaction between real and fake is sketchy.
+//!This method will do a real videomode change. It is not advised to mix this
+//!with set_fake_fullscreen.
+void screen::set_fullscreen(bool _value) {
+
+	if(fullscreen==_value) return;
+
+	fullscreen=_value;
+	//TODO: Perhaps we should be able to configure the window to use
+	//SDL_WINDOW_FULLSCREEN or SDL_WINDOW_FULLSCREEN_DESKTOP
+	if(0!=SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0)) {
+
+		throw std::runtime_error(std::string("unable to set fullscreen mode: ")+SDL_GetError());
+	}
+}
+
 //!Sets or removes fake fullscreen mode.
 
 //!This function does not do videomode changes: it just gets the current display
-//!desktop size and adjusts the viewport so it retains its proportions, 
-//!letterboxing the rest. You can still put other windows on top, or even see 
+//!desktop size and adjusts the viewport so it retains its proportions,
+//!letterboxing the rest. You can still put other windows on top, or even see
 //!the OS bars. The w and h properties of the screen (and transitively, stuff
 //!such as "get_rect" will NOT change).
 //!Calling this method with a screen size larger than the display size will
 //!have funky results.
 
-void screen::set_fullscreen(bool v) 
+void screen::set_fake_fullscreen(bool v)
 {
 	if(fullscreen==v) return;
 
@@ -128,7 +144,7 @@ void screen::set_fullscreen(bool v)
 void screen::set_logical_size(int pw, int ph)
 {
 	//Projection matrix...
-	glMatrixMode(GL_PROJECTION); 
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	w_logic=pw;
@@ -139,7 +155,7 @@ void screen::set_logical_size(int pw, int ph)
 	//Sets 0.0 to be top left. Adjust 0.5f to get the pixel centre.
 	glOrtho(-0.5f, (float)w_logic-.5f, (float)h_logic-.5f, -0.5f, 1.f, -1.0f);
 
-	glMatrixMode(GL_MODELVIEW); 
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
@@ -171,19 +187,19 @@ void screen::set_clip(rect p_caja)
 	glStencilFunc(GL_NEVER, 1, 1);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 
-	int	fx=p_caja.origin.x+p_caja.w, 
+	int	fx=p_caja.origin.x+p_caja.w,
 		fy=p_caja.origin.y+p_caja.h;
 
 	struct pt {int x, y;};
-	std::vector<pt> puntos{ 
-		{p_caja.origin.x, p_caja.origin.y}, 
-		{fx, p_caja.origin.y}, 
-		{fx, fy}, 
+	std::vector<pt> puntos{
+		{p_caja.origin.x, p_caja.origin.y},
+		{fx, p_caja.origin.y},
+		{fx, fy},
 		{p_caja.origin.x, fy}};
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_INT, 0, puntos.data());
 	glDrawArrays(GL_POLYGON, 0, puntos.size());
-	glDisableClientState(GL_VERTEX_ARRAY); 
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	//Now, just render when the value is the same and keep the pixel...
 	glStencilFunc(GL_EQUAL, 1, 1);
@@ -207,6 +223,6 @@ void screen::set_camera(const camera& c)
 
 void screen::reset_clip()
 {
-	glDisable(GL_STENCIL_TEST); 
+	glDisable(GL_STENCIL_TEST);
 	current_camera=nullptr;
 }
