@@ -106,8 +106,8 @@ void raster_representation::do_draw()
 
 //!Calculates and stores vertex and texture points.
 
-void raster_representation::calculate_points()
-{
+void raster_representation::calculate_points() {
+
 	const rect& pos=get_location();
 	const rect& recor=get_clip();
 	
@@ -121,13 +121,12 @@ void raster_representation::calculate_points()
 
 	int itx=0;
 
-	for(int x=0; x < (int)pos.w; x+=brush.w)
-	{
+	for(int x=0; x < (int)pos.w; x+=brush.w) {
 		int ity=0;
 		const int dif_x=x+brush.w > (int)pos.w ? pos.w - (itx * brush.w)  : brush.w;
 
-		for(int y=0; y < (int)pos.h; y+=brush.h)
-		{
+		for(int y=0; y < (int)pos.h; y+=brush.h) {
+
 			const int dif_y=y+brush.h > (int)pos.h ? pos.w - (ity * brush.h) : brush.h;
 
 			point pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
@@ -148,20 +147,19 @@ void raster_representation::calculate_points()
 				{ptex_x,	ptex_fy}};
 
 			//Inversion means resampling too.
-			if(transformation.horizontal)
-			{
+			if(transformation.horizontal) {
 				std::swap(ptex[0].x, ptex[1].x);
 				std::swap(ptex[2].x, ptex[3].x);
 			}
 
-			if(transformation.vertical)
-			{
+			//TODO; This causes a visible fuckup in textures with a solid bar
+			//on top.
+			if(transformation.vertical) {
 				std::swap(ptex[0].y, ptex[2].y);
 				std::swap(ptex[1].y, ptex[3].y);
 			}
 
-			for(auto &p : ptex)
-			{
+			for(auto &p : ptex) {
 				p.x/=w_tex; 
 				p.y/=h_tex;
 			}
@@ -179,10 +177,9 @@ void raster_representation::calculate_points()
 //!This should only be called if the representation owns the texture. I cannot
 //!think of a single example when this is useful.
 
-void raster_representation::free_texture()
-{
-	if(texture_instance)
-	{
+void raster_representation::free_texture() {
+
+	if(texture_instance) {
 		delete texture_instance;
 		texture_instance=nullptr;
 	}
@@ -192,24 +189,24 @@ void raster_representation::free_texture()
 
 //!go_to is used to set the position without altering the size.
 
-void raster_representation::set_location(rect c)
-{
+void raster_representation::set_location(rect c) {
+
 	location=c;
 	update_view_position();
 }
 
 //!Sets the texture clip.
 
-void raster_representation::set_clip(rect p_caja)
-{
+void raster_representation::set_clip(rect p_caja) {
+
 	clip=p_caja;
 	reset_calculations();
 }
 
 //!Sets the position without altering size.
 
-void raster_representation::go_to(point p)
-{
+void raster_representation::go_to(point p) {
+
 	location.origin=p;
 	update_view_position();
 }
@@ -218,8 +215,8 @@ void raster_representation::go_to(point p)
 
 //!Internally called when the clipping box changes.
 
-void raster_representation::reset_calculations()
-{
+void raster_representation::reset_calculations() {
+
 	brush={0,0};
 	points.clear();
 	tex_points.clear();
@@ -230,9 +227,12 @@ void raster_representation::reset_calculations()
 //!Shortcut to get_texture()->get_w(). Will throw if there is no texture
 //!assigned.
 
-unsigned int raster_representation::get_w_texture_instance() const 
-{
-	if(!texture_instance) throw std::runtime_error("no texture for get_w_texture_instance");
+unsigned int raster_representation::get_w_texture_instance() const {
+
+	if(!texture_instance) {
+		throw std::runtime_error("no texture for get_w_texture_instance");
+	}
+
 	return texture_instance->get_w();
 }
 
@@ -241,8 +241,11 @@ unsigned int raster_representation::get_w_texture_instance() const
 //!Shortcut to get_texture()->get_h(). Will throw if there is no texture
 //!assigned.
 
-unsigned int raster_representation::get_h_texture_instance() const 
-{
-	if(!texture_instance) throw std::runtime_error("no texture for get_h_texture_instance");
+unsigned int raster_representation::get_h_texture_instance() const {
+
+	if(!texture_instance) {
+		throw std::runtime_error("no texture for get_h_texture_instance");
+	}
+
 	return texture_instance->get_h();
 }

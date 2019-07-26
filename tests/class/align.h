@@ -120,14 +120,14 @@ class align_test {
 			ldv::representation_alignment::v::outer_bottom
 		};
 
-		std::vector<pair> types;
+		std::vector<pair> res;
 		for(const auto& h : ha) {
 			for(const auto& v : va) {
-				types.push_back({h, v});
+				res.push_back({h, v});
 			}
 		}
 
-		return types;
+		return res;
 	}
 };
 
