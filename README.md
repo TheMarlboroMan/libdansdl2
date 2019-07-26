@@ -10,23 +10,11 @@ As of mid July 2016 all the library has been translated into english. All public
 
 ## Building on linux:
 
-Execute the ./configure.sh command to setup the neccesary variables.
+Execute the ./configure.sh command to setup the neccesary variables. Do "make" afterwards.
 
 ## Dependencies.
 
 Starting in 2018 and for the first time there is an external dependency on the "log" project in github.com/TheMarlboroMan/log. You'll need to link every project against the log.o created when building that project.
-
-## Changelog
-
-- August 2017: 
-	- added doxygen support and comments.
-	- removed unused functions (old functions with window parameters...).
-	- normalised a few functions that got two integers instead of a point class.
-	- removed the sound_queue class. Each application should have its own.
-	- draconian compiler flags.
-	- camera margin settings.
-	- Powers of 2 for text textures.
-	- VSync configuration.
 
 ## TODO: 
 

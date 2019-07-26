@@ -11,6 +11,9 @@
 namespace ldv
 {
 
+//TODO: This is a candidate for "libdansdl2-tools", as it has no place in the
+//larger library.
+
 //!A single entry-point to manage textures and surfaces.
 /**Provides an easy, tried and true interface to insert textures and surfaces
 and retrieve them later. 
