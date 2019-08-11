@@ -86,15 +86,32 @@ SDL_Surface * ldv::copy_sdl_surface(SDL_Surface const * porigin, const SDL_Rect&
 
 //This goes well with open_gl. Use this one.
 
-SDL_Surface * ldv::load_image(const std::string& path)
-{
-        SDL_Surface * temp=IMG_Load(path.c_str());
-        if (!temp) 
-        {
+SDL_Surface * ldv::load_image(const std::string& path) {
+
+	SDL_Surface * temp=IMG_Load(path.c_str());
+	if (!temp) {
 		throw std::runtime_error(std::string("ldv::load_image() : unable to load image ")+path);
-        }
+	}
 
 	return temp;
+}
+
+SDL_Surface * ldv::load_image_from_memory(const std::vector<unsigned char>& _seq) {
+
+	SDL_RWops * rw=SDL_RWFromConstMem(_seq.data(), _seq.size());
+	if(nullptr==rw) {
+		//TODO: Every exception should belong to the library.
+		throw std::runtime_error(std::string("ldv::load_image_from_memory() : unable to load data ")+SDL_GetError());
+	}
+
+	SDL_Surface * result=IMG_Load_RW(rw, 0);
+	if(nullptr==result) {
+		SDL_RWclose(rw);
+		throw std::runtime_error(std::string("ldv::load_image_from_memory() : unable to load data ")+IMG_GetError());
+	}
+
+	SDL_RWclose(rw);
+	return result;
 }
 
 //!Gets the uint32 value of a surface pixel.

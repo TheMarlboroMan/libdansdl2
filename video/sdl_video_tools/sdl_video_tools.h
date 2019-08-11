@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include <src/log.h>
 
@@ -31,6 +32,7 @@ SDL_Surface * 			new_sdl_surface(SDL_Surface const *, const SDL_Rect&, Uint32=0,
 SDL_Surface * 			copy_sdl_surface(const SDL_Surface *);
 SDL_Surface * 			copy_sdl_surface(const SDL_Surface *, const SDL_Rect&, Uint32=0, Uint32=0);
 SDL_Surface * 			load_image(const std::string&);
+SDL_Surface * 			load_image_from_memory(const std::vector<unsigned char>& _seq);
 Uint32 					SDL_GetPixel(SDL_Surface *, int, int);
 
 } //Fin namespace DLibV

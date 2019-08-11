@@ -13,12 +13,18 @@ image::image(SDL_Surface * psurface)
 }
 
 //!Creates an image from a string path.
-
 image::image(const std::string& path)
 	:surface(ldv::load_image(path))
 {
 
 }
+
+image::image(const std::vector<unsigned char>& _seq)
+	:surface(ldv::load_image_from_memory(_seq))
+{
+
+}
+
 
 //!Assignment operator.
 
