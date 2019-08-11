@@ -28,6 +28,9 @@ class image:
 			//!Construct from a memory sequence...
 			image(const std::vector<unsigned char>&);
 
+			//!Construct from a memory sequence...
+			image(const unsigned char *, size_t);
+
 			image(const image&);
 
 	image& 		operator=(const image&);

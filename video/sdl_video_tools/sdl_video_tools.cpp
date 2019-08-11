@@ -96,7 +96,7 @@ SDL_Surface * ldv::load_image(const std::string& path) {
 	return temp;
 }
 
-SDL_Surface * ldv::load_image_from_memory(unsigned char const * const _seq, size_t _size) {
+SDL_Surface * ldv::load_image_from_memory(const unsigned char * _seq, size_t _size) {
 
 	SDL_RWops * rw=SDL_RWFromConstMem(_seq, _size);
 	if(nullptr==rw) {

@@ -31,8 +31,12 @@ ldv::bitmap_representation bmp(tex, r, r);
 */
 
 image::image(const std::vector<unsigned char>& _seq)
-	:surface(ldv::load_image_from_memory(_seq))
-{
+	:surface(ldv::load_image_from_memory(_seq)) {
+
+}
+
+image::image(const unsigned char * _seq, size_t _size)
+	:surface(ldv::load_image_from_memory(_seq, _size)) {
 
 }
 
