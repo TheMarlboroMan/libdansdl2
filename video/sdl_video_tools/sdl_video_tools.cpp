@@ -96,9 +96,9 @@ SDL_Surface * ldv::load_image(const std::string& path) {
 	return temp;
 }
 
-SDL_Surface * ldv::load_image_from_memory(const std::vector<unsigned char>& _seq) {
+SDL_Surface * ldv::load_image_from_memory(unsigned char const * const _seq, size_t _size) {
 
-	SDL_RWops * rw=SDL_RWFromConstMem(_seq.data(), _seq.size());
+	SDL_RWops * rw=SDL_RWFromConstMem(_seq, _size);
 	if(nullptr==rw) {
 		//TODO: Every exception should belong to the library.
 		throw std::runtime_error(std::string("ldv::load_image_from_memory() : unable to load data ")+SDL_GetError());
@@ -112,6 +112,11 @@ SDL_Surface * ldv::load_image_from_memory(const std::vector<unsigned char>& _seq
 
 	SDL_RWclose(rw);
 	return result;
+}
+
+SDL_Surface * ldv::load_image_from_memory(const std::vector<unsigned char>& _seq) {
+
+	return load_image_from_memory(_seq.data(), _seq.size());
 }
 
 //!Gets the uint32 value of a surface pixel.

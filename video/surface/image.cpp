@@ -19,6 +19,17 @@ image::image(const std::string& path)
 
 }
 
+/* Use example:
+std::string funk=tools::dump_file("file.jpg");
+std::vector<unsigned char> raw(std::begin(funk), std::end(funk));
+
+ldv::image img(raw);
+ldv::texture tex(img);
+
+ldv::rect r{0,0, tex.get_w(), tex.get_h()};
+ldv::bitmap_representation bmp(tex, r, r);
+*/
+
 image::image(const std::vector<unsigned char>& _seq)
 	:surface(ldv::load_image_from_memory(_seq))
 {
