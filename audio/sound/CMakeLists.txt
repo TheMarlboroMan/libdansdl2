@@ -1,0 +1,6 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/sound.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/sound.h
+   PARENT_SCOPE
+)

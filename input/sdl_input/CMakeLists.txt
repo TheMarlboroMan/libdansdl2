@@ -1,0 +1,6 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/sdl_input.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/sdl_input.h
+   PARENT_SCOPE
+)

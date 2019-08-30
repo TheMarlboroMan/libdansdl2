@@ -5,3 +5,4 @@ makefile_linux
 makefile
 .vscode
 *.out
+build

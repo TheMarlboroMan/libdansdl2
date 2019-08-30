@@ -1,0 +1,13 @@
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/camera")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/color")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/draw_info")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/rect")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/representation")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/resource_manager")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/screen")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/sdl_video_tools")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/surface")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/texture")
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/ttf_font")
+
+set(SOURCE ${SOURCE} PARENT_SCOPE)

@@ -1,0 +1,6 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/ttf_font.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/ttf_font.h
+   PARENT_SCOPE
+)

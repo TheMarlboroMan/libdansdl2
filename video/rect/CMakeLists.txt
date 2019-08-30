@@ -1,0 +1,6 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/rect.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/rect.h
+   PARENT_SCOPE
+)
