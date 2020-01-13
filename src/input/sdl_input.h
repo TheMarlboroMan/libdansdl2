@@ -1,7 +1,5 @@
 #pragma once
 
-#include <src/log.h>
-
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <cstdlib> //Para abs en windows.
@@ -554,4 +552,3 @@ class sdl_input
 
 }
 
-#endif

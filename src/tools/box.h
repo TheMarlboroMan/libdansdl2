@@ -3,6 +3,7 @@
 #include "point_2d.h"
 #include "tools.h"
 
+#include <SDL2/SDL.h>
 namespace ldt
 {
 

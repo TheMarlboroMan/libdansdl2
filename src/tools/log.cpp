@@ -3,5 +3,5 @@
 using namespace ldt;
 
 std::unique_ptr<lm::logger> log_lsdl::l;
-ldt::lsdl_log::types log_lsdl::type=ldt::lsdl_log:types::file;
+ldt::log_lsdl::types log_lsdl::type=ldt::log_lsdl::types::file;
 std::string ldt::log_lsdl::filename;

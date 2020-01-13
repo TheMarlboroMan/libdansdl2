@@ -1,7 +1,8 @@
 #include "sdl_input.h"
 
-#include "../../tools/log/log.h"
+#include "../tools/log.h"
 
+#include <src/sentry.h>
 #include <algorithm>
 
 using namespace ldi;
@@ -39,7 +40,7 @@ void sdl_input::init_joysticks()
 	{
 		SDL_JoystickEventState(SDL_ENABLE);
 
-		ldt::log_lsdl::get()<<"Located "<<joysticks_size<<" joysticks"<<std::endl;
+		lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Located "<<joysticks_size<<" joysticks"<<std::endl;
 
 		for(int i=0; i<joysticks_size; i++)
 		{
@@ -59,7 +60,7 @@ void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 
 	auto& j=joysticks.at(index);
 
-	ldt::log_lsdl::get()<<"Init joystick "<<index<<" with "<<
+	lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Init joystick "<<index<<" with "<<
 		j.buttons<<" buttons, "<<
 		j.hats_size<<" hats, "<<
 		j.axis_size<<" axis."<<std::endl;
@@ -171,7 +172,7 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_JOYDEVICEADDED:
 		case SDL_CONTROLLERDEVICEADDED:
-			ldt::log_lsdl::get()<<"New joystick detected."<<std::endl;
+			lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"New joystick detected."<<std::endl;
 		
 			if(!is_joystick_registered_by_device_id(event.cdevice.which))
 			{
@@ -181,13 +182,13 @@ void sdl_input::process_event(SDL_Event& event)
 			}
 			else
 			{
-				ldt::log_lsdl::get()<<"The joystick had been already registered."<<std::endl;
+				lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"The joystick had been already registered."<<std::endl;
 			}
 		break;
 
 		case SDL_JOYDEVICEREMOVED:
 		case SDL_CONTROLLERDEVICEREMOVED:
-			ldt::log_lsdl::get()<<"Joystick removal detected."<<std::endl;
+			lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Joystick removal detected."<<std::endl;
 			joysticks.erase(id_joystick_to_index[event.cdevice.which]);
 			--joysticks_size;
 		break;

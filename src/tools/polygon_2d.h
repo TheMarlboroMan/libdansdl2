@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../point_2d/point_2d.h"
-#include "../vector_2d/vector_2d.h"
+#include "point_2d.h"
+#include "vector_2d.h"
 
 #include <vector>
 #include <stdexcept>

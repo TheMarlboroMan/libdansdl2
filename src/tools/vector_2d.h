@@ -6,7 +6,7 @@
 application code but also appears in other libdansdl2 parts.
 */
 
-#include "../point_2d/point_2d.h"
+#include "point_2d.h"
 
 #include <algorithm>
 #include <cmath>
