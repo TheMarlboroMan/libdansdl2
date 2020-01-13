@@ -18,6 +18,7 @@ set(LOG_DIR "../log" CACHE STRING "Directory where the log repository is (-DLOG_
 include_directories(${LOG_DIR})
 
 set(SOURCE "")
-add_subdirectory("${PROJECT_SOURCE_DIR}/src");
+message("I AM AT ${PROJECT_SOURCE_DIR}")
+add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 
 add_library(dansdl2 STATIC ${SOURCE})

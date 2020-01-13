@@ -1,8 +1,10 @@
 #pragma once
 
 #include <src/file_logger.h>
+#include <src/void_logger.h>
+#include <src/ostream_logger.h>
 
-#include <sstream>
+#include <iostream>
 #include <stdexcept>
 #include <memory>
 
@@ -10,7 +12,7 @@ namespace ldt
 {
 
 //!Singleton instance for internal use of the library, implemented in terms of
-//!log::log. The call sequence should be set_type, set_filename (if needed)
+//!lm::log. The call sequence should be set_type, set_filename (if needed)
 //!and finally, get.
 class log_lsdl
 {
@@ -31,7 +33,7 @@ class log_lsdl
 			throw std::runtime_error("cannot set location of non-file log_lsdl");
 		}
 
-		log_location=_str;
+		filename=_str;
 	}
 
 	//!Allows the log type to be set. Throws when the log has been already
@@ -47,7 +49,7 @@ class log_lsdl
 	//!Gets the log instance, building the log if it wasn't built already.
 	//!Might throw if a file_logger is being built and the file location
 	//!was not specified.
-	static tools::logger& get()
+	static lm::logger& get()
 	{
 		if(nullptr!=l) {
 			switch(type) {
@@ -55,14 +57,15 @@ class log_lsdl
 					if(!filename.size()) {
 						throw std::runtime_error("lsdl_log file needs a filename");
 					}
-					l.reset(new log::file_logger(filename));
+					l.reset(new lm::file_logger(filename.c_str()));
 				break;
 				case types::out:
-					l.reset(new log::ostream_logger(std::cout));
+					l.reset(new lm::ostream_logger(std::cout));
 				break;
 				case types::null:
-					l.reset(new log::void_logger());
+					l.reset(new lm::void_logger());
 				break;
+			}
 		}
 		
 		return *(l.get());
@@ -72,7 +75,7 @@ class log_lsdl
 
 	static types type;
 	static std::string filename;
-	static std::unique_ptr<tools::logger> l;
+	static std::unique_ptr<lm::logger> l;
 };
 
 }

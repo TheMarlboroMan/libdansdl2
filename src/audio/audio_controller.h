@@ -1,4 +1,5 @@
 #pragma once
+
 #include "sound.h"
 #include "music.h"
 #include "audio_channel.h"
@@ -107,4 +108,3 @@ class audio_controller
 };
 
 }
-#endif

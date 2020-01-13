@@ -1,5 +1,7 @@
 #include "audio_controller.h"
-#include "../../tools/log/log.h"
+#include "../tools/log.h"
+
+#include <src/sentry.h>
 
 #include <stdexcept>
 #include <sstream>
@@ -24,12 +26,12 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	music_playing(false)
 {
 	
-	ldt::log_lsdl::get()<<"Init audio controller with "<<requested_channels<<" channels, "<<buffers<<" buffers, "<<out<<" outputs and a ratio of "<<ratio<<std::endl;
+	lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Init audio controller with "<<requested_channels<<" channels, "<<buffers<<" buffers, "<<out<<" outputs and a ratio of "<<ratio<<std::endl;
 
 	//Comprobar que el audio está arrancado.
 	if(SDL_WasInit(SDL_INIT_AUDIO)==0)
 	{
-		ldt::log_lsdl::get()<<"Starting sdl audio subsystem."<<std::endl;
+		lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Starting sdl audio subsystem."<<std::endl;
 		if(SDL_InitSubSystem(SDL_INIT_AUDIO)==-1)
 		{
 			throw std::runtime_error("Unable to init audio system");
@@ -55,13 +57,13 @@ audio_controller::audio_controller(const audio_controller_config& c):
 		callback_channels[ch.get_index()]=&ch;
 	}
 
-	ldt::log_lsdl::get()<<"Starting sdl mixer and setting callback function."<<std::endl;
+	lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Starting sdl mixer and setting callback function."<<std::endl;
 	Mix_ChannelFinished(audio_play_callback);
 }
 
 audio_controller::~audio_controller()
 {
-	ldt::log_lsdl::get()<<"Unmounting audio controller..."<<std::endl;
+	lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Unmounting audio controller..."<<std::endl;
 
 	stop_music();
 
@@ -71,14 +73,14 @@ audio_controller::~audio_controller()
 		callback_channels.erase(c.get_index());
 	}
 
-	ldt::log_lsdl::get()<<callback_channels.size()<<" callback channels remain."<<std::endl;
+	lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<callback_channels.size()<<" callback channels remain."<<std::endl;
 
 	channels.clear();
 
 	//Check if there are still channels before closing the mixer.
 	if(!callback_channels.size())
 	{
-		ldt::log_lsdl::get()<<"Closing sdl mixer."<<std::endl;
+		lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Closing sdl mixer."<<std::endl;
 		Mix_CloseAudio();
 	}
 }
@@ -107,7 +109,7 @@ void audio_controller::play_sound(const sound_struct& pstruct)
 {
 	if(!pstruct.is_ready())
 	{
-		ldt::log_lsdl::get()<<"Sound reference not ready to be played"<<std::endl;
+		lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Sound reference not ready to be played"<<std::endl;
 		return;
 	}
 
@@ -169,7 +171,7 @@ void audio_controller::play_music(const music_struct& m)
 {
 	if(!m.is_ready())
 	{
-		ldt::log_lsdl::get()<<"Music reference not ready to be played"<<std::endl;
+		lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Music reference not ready to be played"<<std::endl;
 		return; 
 	}
 
