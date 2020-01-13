@@ -1,8 +1,6 @@
-#ifndef LIBDANSDL2_REAL_AUDIO_CHANNEL_H
-#define LIBDANSDL2_REAL_AUDIO_CHANNEL_H
-
-#include "../sound/sound.h"
-#include "../audio_callback_interface/audio_callback_interface.h"
+#pragma once
+#include "sound.h"
+#include "audio_callback_interface.h"
 
 namespace lda
 {
@@ -78,5 +76,3 @@ class real_audio_channel
 	friend class			audio_channel_safe;
 };
 }
-
-#endif

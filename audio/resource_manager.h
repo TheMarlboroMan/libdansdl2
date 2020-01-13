@@ -1,15 +1,14 @@
-#ifndef LIBDANSDL2_AUDIO_RESOURCE_MANAGER_H
-#define LIBDANSDL2_AUDIO_RESOURCE_MANAGER_H
+#pragma once
 
-#include <map>
-#include <memory>
-#include <string>
+#include "sound.h"
+#include "music.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "../sound/sound.h"
-#include "../music/music.h"
+#include <map>
+#include <memory>
+#include <string>
 
 namespace lda
 {
@@ -44,5 +43,3 @@ class resource_manager
 };
 
 }
-
-#endif

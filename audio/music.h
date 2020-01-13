@@ -1,5 +1,4 @@
-#ifndef LIBDANSDL2_MUSIC_H
-#define LIBDANSDL2_MUSIC_H
+#pragma once
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -65,5 +64,3 @@ struct music_struct
 };
 
 }
-
-#endif

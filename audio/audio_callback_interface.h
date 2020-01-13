@@ -1,5 +1,4 @@
-#ifndef LIBDANSDL2_AUDIO_CALLBACK_INTERFACE_H
-#define LIBDANSDL2_AUDIO_CALLBACK_INTERFACE_H
+#pragma once
 
 namespace lda
 {
@@ -22,5 +21,3 @@ class audio_callback_interface
 };
 
 }
-
-#endif

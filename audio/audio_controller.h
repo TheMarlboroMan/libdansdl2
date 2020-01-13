@@ -1,17 +1,15 @@
-#ifndef CONTROLADOR_AUDIO_SDL_H
-#define CONTROLADOR_AUDIO_SDL_H
-
-#include <vector>
-#include <map>
-#include <iostream>
+#pragma once
+#include "sound.h"
+#include "music.h"
+#include "audio_channel.h"
+#include "real_audio_channel.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "../sound/sound.h"
-#include "../music/music.h"
-#include "../audio_channel/audio_channel.h"
-#include "../real_audio_channel/real_audio_channel.h"
+#include <vector>
+#include <map>
+#include <iostream>
 
 namespace lda
 {

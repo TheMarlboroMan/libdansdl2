@@ -1,10 +1,8 @@
-#ifndef LIBDANSDL2_SOUND_H
-#define LIBDANSDL2_SOUND_H
-
+#pragma once
+#include "../../tools/log/log.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <string>
-#include "../../tools/log/log.h"
 
 namespace lda
 {
@@ -81,5 +79,3 @@ struct sound_struct
 };
 
 }
-
-#endif

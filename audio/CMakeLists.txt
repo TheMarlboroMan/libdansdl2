@@ -1,8 +1,16 @@
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/audio_channel")
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/audio_controller")
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/music")
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/real_audio_channel")
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/resource_manager")
-add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/sound")
-
-set(SOURCE ${SOURCE} PARENT_SCOPE)
+set(SOURCE
+	${SOURCE}
+	${CMAKE_CURRENT_SOURCE_DIR}/audio_channel.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/audio_channel.h
+	${CMAKE_CURRENT_SOURCE_DIR}/audio_controller.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/audio_controller.h
+	${CMAKE_CURRENT_SOURCE_DIR}/music.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/music.h
+	${CMAKE_CURRENT_SOURCE_DIR}/real_audio_channel.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/real_audio_channel.h
+	${CMAKE_CURRENT_SOURCE_DIR}/resource_manager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/resource_manager.h
+	${CMAKE_CURRENT_SOURCE_DIR}/sound.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sound.h
+	PARENT_SCOPE
+)

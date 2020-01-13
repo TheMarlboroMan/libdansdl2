@@ -1,6 +1,4 @@
-#ifndef LIBDANSDL_2_VECTOR_2D_H
-#define LIBDANSDL_2_VECTOR_2D_H
-
+#pragma once
 /*! \file vector_2d.h
     \brief Vectors.
     
@@ -11,7 +9,6 @@ application code but also appears in other libdansdl2 parts.
 #include <algorithm>
 #include <cmath>
 
-#include "../tools/tools.h"
 #include "../point_2d/point_2d.h"
 
 namespace ldt {
@@ -267,4 +264,3 @@ T determinant(const vector_2d<T>& a, const vector_2d<T>& b) {
 
 } //End namespace.
 
-#endif

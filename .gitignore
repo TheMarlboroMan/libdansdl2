@@ -6,3 +6,5 @@ makefile
 .vscode
 *.out
 build
+*.swp
+*~

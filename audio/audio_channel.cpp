@@ -1,5 +1,5 @@
 #include "audio_channel.h"
-#include "../real_audio_channel/real_audio_channel.h"
+#include "real_audio_channel.h"
 
 using namespace lda;
 

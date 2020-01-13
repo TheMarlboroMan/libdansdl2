@@ -1,10 +1,9 @@
 #include "audio_controller.h"
+#include "../../tools/log/log.h"
 
 #include <stdexcept>
 #include <sstream>
 #include <cmath>
-#include "../../tools/log/log.h"
-
 using namespace lda;
 
 std::map<int, real_audio_channel *> audio_controller::callback_channels;

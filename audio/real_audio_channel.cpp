@@ -1,9 +1,8 @@
 #include "real_audio_channel.h"
 
+#include "audio_controller.h"
+
 #include <cmath>
-
-#include "../audio_controller/audio_controller.h"
-
 using namespace lda;
 
 //!Default class constructor.

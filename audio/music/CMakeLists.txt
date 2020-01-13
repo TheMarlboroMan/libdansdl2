@@ -1,6 +1,0 @@
-set(SOURCE
-   ${SOURCE}
-   ${CMAKE_CURRENT_SOURCE_DIR}/music.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/music.h
-   PARENT_SCOPE
-)
