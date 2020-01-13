@@ -1,6 +1,0 @@
-set(SOURCE
-   ${SOURCE}
-   ${CMAKE_CURRENT_SOURCE_DIR}/log.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/log.h
-   PARENT_SCOPE
-)

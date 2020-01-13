@@ -18,10 +18,6 @@ set(LOG_DIR "../log" CACHE STRING "Directory where the log repository is (-DLOG_
 include_directories(${LOG_DIR})
 
 set(SOURCE "")
-
-add_subdirectory("${PROJECT_SOURCE_DIR}/audio")
-add_subdirectory("${PROJECT_SOURCE_DIR}/input")
-add_subdirectory("${PROJECT_SOURCE_DIR}/tools")
-add_subdirectory("${PROJECT_SOURCE_DIR}/video")
+add_subdirectory("${PROJECT_SOURCE_DIR}/src");
 
 add_library(dansdl2 STATIC ${SOURCE})

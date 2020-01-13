@@ -1,6 +1,0 @@
-set(SOURCE
-   ${SOURCE}
-   ${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/color.h
-   PARENT_SCOPE
-)

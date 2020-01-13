@@ -1,6 +1,0 @@
-set(SOURCE
-   ${SOURCE}
-   ${CMAKE_CURRENT_SOURCE_DIR}/draw_info.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/draw_info.h
-   PARENT_SCOPE
-)

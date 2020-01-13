@@ -1,6 +1,0 @@
-set(SOURCE
-   ${SOURCE}
-   ${CMAKE_CURRENT_SOURCE_DIR}/screen.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/screen.h
-   PARENT_SCOPE
-)
