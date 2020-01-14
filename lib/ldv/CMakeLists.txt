@@ -1,0 +1,25 @@
+set(SOURCE
+	${SOURCE}
+	${CMAKE_CURRENT_SOURCE_DIR}/group_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/bitmap_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/box_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/camera.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/canvas.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/color.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/group_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/image.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/line_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/point_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/polygon_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/primitive_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/raster_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/resource_manager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/screen.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sdl_video_tools.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/surface.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ttf_font.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ttf_representation.cpp
+	PARENT_SCOPE
+)

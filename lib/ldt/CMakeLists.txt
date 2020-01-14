@@ -1,0 +1,6 @@
+set(SOURCE 
+	${SOURCE} 
+	${CMAKE_CURRENT_SOURCE_DIR}/log.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sdl_tools.cpp
+	PARENT_SCOPE
+)

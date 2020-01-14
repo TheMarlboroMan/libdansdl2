@@ -1,24 +1,30 @@
 cmake_minimum_required(VERSION 3.5.1)
-
 project(libdansdl2)
-
 set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wno-deprecated -ansi -pedantic -fno-rtti)
 
-#TODO: Should also allow for c++14
-add_compile_options(-std=c++11)
+option(BUILD_SHARED "Build a shared library" OFF)
 
-#TODO: Add the rest of flags...
-#y_n_choice "With debug" "DEBUG=-g" "#DEBUG=-g"
-#debug=$__retval;
+#Add the include directory
+include_directories("include")
 
 #The cache thing means that this is user settable from the command line.
 set(LOG_DIR "../log" CACHE STRING "Directory where the log repository is (-DLOG_DIR=xxx)")
 include_directories(${LOG_DIR})
 
 set(SOURCE "")
-message("I AM AT ${PROJECT_SOURCE_DIR}")
 add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 
-add_library(dansdl2 STATIC ${SOURCE})
+if(${BUILD_SHARED})
+	add_library(dansdl2 SHARED ${SOURCE})
+else()
+	add_library(dansdl2 STATIC ${SOURCE})
+endif()
+	
+install(TARGETS dansdl2 DESTINATION install/lib)
+install(DIRECTORY include/ DESTINATION install/include)
+
