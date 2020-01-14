@@ -1,21 +1,19 @@
 #pragma once
 
-#include <src/file_logger.h>
-#include <src/void_logger.h>
-#include <src/ostream_logger.h>
+#include <lm/file_logger.h>
+#include <lm/void_logger.h>
+#include <lm/ostream_logger.h>
 
 #include <iostream>
 #include <stdexcept>
 #include <memory>
 
-namespace ldt
-{
+namespace ldt {
 
 //!Singleton instance for internal use of the library, implemented in terms of
 //!lm::log. The call sequence should be set_type, set_filename (if needed)
 //!and finally, get.
-class log_lsdl
-{
+class log_lsdl {
 	public:
 	
 	//!Specifies the kind of logger that will be used.

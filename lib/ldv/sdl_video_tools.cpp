@@ -2,7 +2,7 @@
 
 #include <ldt/log.h>
 
-#include <log/sentry.h>
+#include <lm/sentry.h>
 #include <stdexcept>
 
 /*! \file sdl_video_tools.h

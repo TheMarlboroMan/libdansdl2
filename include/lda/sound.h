@@ -1,5 +1,5 @@
 #pragma once
-#include "../tools/log.h"
+#include <ldt/log.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <string>

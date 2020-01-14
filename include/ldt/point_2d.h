@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../tools/tools.h" //Por si acaso no hay M_PI...
+#include <ldt/tools.h> //Por si acaso no hay M_PI...
 
 #include <cmath>
 #include <vector>

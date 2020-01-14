@@ -5,7 +5,7 @@
 #include "camera.h"
 #include "draw_info.h"
 #include "screen.h"
-#include "../tools/polygon_2d.h"
+#include <ldt/polygon_2d.h>
 
 #include <SDL2/SDL.h>
 namespace ldv

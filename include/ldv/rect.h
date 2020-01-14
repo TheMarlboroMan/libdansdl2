@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../tools/box.h"
+#include <ldt/box.h>
 #include <SDL2/SDL.h>
 
 namespace ldv

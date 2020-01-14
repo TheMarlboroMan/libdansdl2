@@ -2,7 +2,7 @@
 
 #include <ldt/log.h>
 
-#include <log/sentry.h>
+#include <lm/sentry.h>
 #include <algorithm>
 
 using namespace ldi;

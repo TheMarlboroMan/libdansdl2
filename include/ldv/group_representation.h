@@ -1,7 +1,7 @@
 #pragma once
 
 #include "representation.h"
-#include "../tools/sdl_tools.h"
+#include <ldt/sdl_tools.h>
 
 #include <vector>
 #include <memory>

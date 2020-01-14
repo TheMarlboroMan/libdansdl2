@@ -9,15 +9,13 @@ add_compile_options(-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical
 
 option(BUILD_SHARED "Build a shared library" OFF)
 
-#Add the include directory
-include_directories("include")
-
+#Add the include directories
 #The cache thing means that this is user settable from the command line.
-set(LOG_DIR "../log" CACHE STRING "Directory where the log repository is (-DLOG_DIR=xxx)")
-include_directories(${LOG_DIR})
+set(LOG_DIR "${PROJECT_SOURCE_DIR}/../log/include/" CACHE STRING "Directory where the log repository is (-DLOG_DIR=xxx)")
+include_directories("include" ${LOG_DIR})
 
 set(SOURCE "")
-add_subdirectory("${PROJECT_SOURCE_DIR}/src")
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib")
 
 if(${BUILD_SHARED})
 	add_library(dansdl2 SHARED ${SOURCE})

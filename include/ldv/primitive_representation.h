@@ -2,7 +2,7 @@
 
 #include "representation.h"
 #include "color.h"
-#include "../tools/sdl_tools.h"
+#include <ldt/sdl_tools.h>
 
 namespace ldv
 {

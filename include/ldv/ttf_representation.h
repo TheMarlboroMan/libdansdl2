@@ -6,8 +6,8 @@
 #include "surface.h"
 #include "canvas.h"
 #include "image.h"
-#include "../tools/log.h"
-#include "../tools/tools.h"
+#include <ldt/log.h>
+#include <ldt/tools.h>
 
 #include <memory>
 namespace ldv

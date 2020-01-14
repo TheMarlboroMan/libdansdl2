@@ -2,7 +2,7 @@
 
 #include "representation.h"
 #include "texture.h"
-#include "../tools/log.h"
+#include <ldt/log.h>
 
 #include <GL/gl.h>
 #ifdef WINCOMPIL

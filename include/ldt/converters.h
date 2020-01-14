@@ -3,8 +3,8 @@
 #include "box.h"
 #include "point_2d.h"
 #include "polygon_2d.h"
-#include "../video/polygon_representation.h"
-#include "../video/rect.h" //ldv::point
+#include <ldv/polygon_representation.h>
+#include <ldv/rect.h> //ldv::point
 
 #include <algorithm>
 /**
