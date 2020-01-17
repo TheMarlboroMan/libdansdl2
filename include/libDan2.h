@@ -21,7 +21,7 @@
 #include "ldt/point_2d.h"
 #include "ldt/tools.h"
 #include "ldt/sat_2d.h"
-#include "tools/converters.h"
+#include "ldt/converters.h"
 
 #include "ldi/sdl_input.h"
 
@@ -43,7 +43,7 @@
 #include "ldv/ttf_representation.h"
 #include "ldv/group_representation.h"
 #include "ldv/primitive_representation.h"
-#include "ldv/box/box_representation.h"
+#include "ldv/box_representation.h"
 #include "ldv/line_representation.h"
 #include "ldv/polygon_representation.h"
 #include "ldv/point_representation.h"
