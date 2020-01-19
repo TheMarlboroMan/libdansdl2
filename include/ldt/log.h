@@ -47,9 +47,9 @@ class log_lsdl {
 	//!Gets the log instance, building the log if it wasn't built already.
 	//!Might throw if a file_logger is being built and the file location
 	//!was not specified.
-	static lm::logger& get()
-	{
-		if(nullptr!=l) {
+	static lm::logger& get() {
+
+		if(nullptr==l) {
 			switch(type) {
 				case types::file:
 					if(!filename.size()) {
@@ -65,7 +65,6 @@ class log_lsdl {
 				break;
 			}
 		}
-		
 		return *(l.get());
 	}
 	
