@@ -8,9 +8,11 @@ Given that my hardware has an openGL implementation with version 1.4 expect a lo
 
 As of mid July 2016 all the library has been translated into english. All public interfaces have been translated and most of them have been retooled (hopefully it's all a little easier to use). As a result of these changes, all compatibility with previous versions has been broken. Copies of the old versions are to be found in the "master-es" and "classic" branches, but these will be developed no more.
 
+As of January 2020 the library has broken all compatibility again. This time, files have been reorganized so the filesystem represents the namespaces and not so many directories are needed. The old "include all video/audio/etc" include files have been removed too, as including only what's necessary is the better way.
+
 ## Building on linux:
 
-Execute the ./configure.sh command to setup the neccesary variables. Do "make" afterwards.
+Use Cmake.
 
 ## Dependencies.
 
@@ -18,8 +20,6 @@ Starting in 2018 and for the first time there is an external dependency on the "
 
 ## TODO: 
 
-- Reestructure dependencies: have each module depend only on what it needs and
-	leave the generic def_xxx.h files in some other directory, for backwards
-	compatibility reasons.
+- Add a test directory where all uses are tested.
 - Revise uppercase constants.
 - In the future, fork for OPENGL 1.4 and the rest.
