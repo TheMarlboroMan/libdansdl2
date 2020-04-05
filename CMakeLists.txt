@@ -23,6 +23,6 @@ else()
 	add_library(dansdl2 STATIC ${SOURCE})
 endif()
 	
-install(TARGETS dansdl2 DESTINATION install/lib)
-install(DIRECTORY include/ DESTINATION install/include)
+install(TARGETS dansdl2 DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include)
 
