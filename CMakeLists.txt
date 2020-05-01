@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wno-deprecated -ansi -pedantic -fno-rtti)
 
-option(BUILD_SHARED "Build a shared library" OFF)
+option(BUILD_STATIC "Build a static library" OFF)
 
 #Add the include directories
 #The cache thing means that this is user settable from the command line.
@@ -17,10 +17,10 @@ include_directories("include" ${LOG_DIR})
 set(SOURCE "")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib")
 
-if(${BUILD_SHARED})
-	add_library(dansdl2 SHARED ${SOURCE})
-else()
+if(${BUILD_STATIC})
 	add_library(dansdl2 STATIC ${SOURCE})
+else()
+	add_library(dansdl2 SHARED ${SOURCE})
 endif()
 	
 install(TARGETS dansdl2 DESTINATION lib)

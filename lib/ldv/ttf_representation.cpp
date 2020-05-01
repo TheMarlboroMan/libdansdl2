@@ -144,7 +144,7 @@ void ttf_representation::create_texture() {
 			return vs;
 		}
 
-		throw std::runtime_error("Invalid text texture size");
+		throw std::runtime_error(std::string{"Invalid text texture size "}+std::to_string(v)+std::string{" for text "}+text);
 	};
 
 	auto canvas_w=get_next_power_of_2(total_w);
