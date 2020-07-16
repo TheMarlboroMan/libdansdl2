@@ -85,8 +85,6 @@ void ttf_representation::create_texture() {
 
 void ttf_representation::create_texture_free_size() {
 
-//TODO: I think this is the part that changes.
-
 	//The text is prepared line by line in different surfaces.
 	auto lines=explode(text, '\n');
 
@@ -110,6 +108,57 @@ void ttf_representation::create_texture_free_size() {
 	auto canvas_h=get_next_power_of_two(total_h);
 
 	create_texture_internal(canvas_w, canvas_h, total_w, total_h, line_height, lines);
+}
+
+void ttf_representation::create_texture_fixed_width() {
+
+	//The text is prepared line by line in different surfaces.
+//	auto lines=explode(text, '\n');
+
+	//Measuring the full resulting texture...
+//	int total_h=0, h=0, w=0;
+//	for(std::string& c : lines) {
+
+//		int words_in_line=0;
+
+//		text_replace(c, "\t", "    ");
+
+/*
+create an empty str
+while there are words in the line
+	grab a word
+	add word to str
+	measure str
+	if less than fixed_w
+		add subsequent spaces to str
+		++words in line
+	else
+		if 0!=words_in_line
+			remove word from str
+			put word back into the line
+		endif
+
+		push str into array of lines
+		clear str
+	endif
+endwhile
+if str.size()
+	push str into array of lines
+endif
+	*/
+
+//		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &w, &h);
+//	}
+
+
+//	int line_height=(double)font->get_size()*line_height_ratio;
+//	total_h=(lines.size() * h) + ( (lines.size()-1) * (line_height-h)); //The last spacing is removed, of course.
+
+	//TODO: Yeah, no the fixed w.
+//	auto canvas_w=get_next_power_of_two(fixed_w);
+//	auto canvas_h=get_next_power_of_two(total_h);
+
+//	create_texture_internal(canvas_w, canvas_h, fixed_w, total_h, line_height, lines);
 }
 
 void ttf_representation::create_texture_internal(
