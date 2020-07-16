@@ -64,6 +64,12 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 	return *this;
 }
 
+void ttf_representation::create_texture() {
+
+	//TODO: here we should decide if max size or not.
+	create_texture_free_size();
+}
+
 //!Creates the texture from text.
 
 //!This internal function is called whenever a change on text or font is
@@ -77,44 +83,44 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 
 //TODO: Check RGB and BGR and endianess and such.
 
-void ttf_representation::create_texture() {
+void ttf_representation::create_texture_free_size() {
+
+//TODO: I think this is the part that changes.
+
 	//The text is prepared line by line in different surfaces.
-
-	auto explode=[](const std::string& _text, char delimiter) {
-
-		std::vector<std::string> result;
-		std::string temp;
-
-		for(const char& c : _text) {
-			if(c==delimiter) {
-				result.push_back(temp);
-				temp="";
-			}
-			else {
-				temp+=c;
-			}
-		}
-
-		result.push_back(temp);
-		return result;
-	};
-
-	std::vector<std::string> lines=explode(text, '\n');
-
-	//TODO: We should store these values where they must be..
+	auto lines=explode(text, '\n');
 
 	//Measuring the full resulting texture...
 	int total_h=0, h=0, w=0, total_w=0;
+	for(std::string& c : lines) {
 
-	for(const std::string& c : lines) {
+		text_replace(c, "\t", "    ");
+
 		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &w, &h);
-		if(w > total_w) total_w=w;
+		if(w > total_w) {
+			total_w=w;
+		}
 	}
 
-	int line_height=(double)font->get_size()*line_height_ratio;
 
+	int line_height=(double)font->get_size()*line_height_ratio;
 	total_h=(lines.size() * h) + ( (lines.size()-1) * (line_height-h)); //The last spacing is removed, of course.
 
+	auto canvas_w=get_next_power_of_two(total_w);
+	auto canvas_h=get_next_power_of_two(total_h);
+
+	create_texture_internal(canvas_w, canvas_h, total_w, total_h, line_height, lines);
+}
+
+void ttf_representation::create_texture_internal(
+	int _canvas_w,
+	int _canvas_h,
+	int _total_w,
+	int _total_h,
+	int _line_height,
+	const std::vector<std::string>& _lines) {
+
+	//A raw surface will be created with a given color, so we can extract its internal flags.
 	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
 
@@ -123,8 +129,8 @@ void ttf_representation::create_texture() {
 		sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
 	}
 
+	//TODO: raw pointers!
 	SDL_Surface * s=nullptr;
-
 	switch(mode) {
 		case render_mode::solid:
 			s=TTF_RenderUTF8_Solid(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
@@ -138,32 +144,20 @@ void ttf_representation::create_texture() {
 		break;
 	}
 
-	auto get_next_power_of_2=[this](int v)->int {
-		for(const auto& vs : valid_sizes) {
-			if(v > vs) continue;
-			return vs;
-		}
-
-		throw std::runtime_error(std::string{"Invalid text texture size "}+std::to_string(v)+std::string{" for text "}+text);
-	};
-
-	auto canvas_w=get_next_power_of_2(total_w);
-	auto canvas_h=get_next_power_of_2(total_h);
-
 	std::unique_ptr<canvas> cnv(canvas::create(
-		canvas_w,
-		canvas_h,
+		_canvas_w,
+		_canvas_h,
 		s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
+
 	SDL_FreeSurface(s);
 
 	//Creating surfaces for each lines, pasting them on the canvas...
 	int y=0;
-	int text_x=total_w; //A suitably large value...
+	int text_x=_total_w; //A suitably large value...
 
-	for(std::string& c : lines) {
+	for(const std::string& c : _lines) {
+
 		SDL_Surface * surf=nullptr;
-
-		text_replace(c, "\t", "    ");
 		const char * cad=c.size() ? c.c_str() : " \0";
 
 		switch(mode) {
@@ -184,6 +178,7 @@ void ttf_representation::create_texture() {
 		}
 
 		//TODO: We should not do this again, it has been done earlier.
+		int w=0, h=0;
 		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), cad, &w, &h);
 
 		int x=0;
@@ -191,8 +186,8 @@ void ttf_representation::create_texture() {
 		//TODO: This only makes sense if we have more than one line.
 		switch(alignment) {
 			case text_align::left: x=0; break;
-			case text_align::center: x=(canvas_w/2)-(w/2); break;
-			case text_align::right: x=canvas_w-w; break;
+			case text_align::center: x=(_canvas_w/2)-(w/2); break;
+			case text_align::right: x=_canvas_w-w; break;
 		}
 
 		text_x=x < text_x ? x : text_x;
@@ -200,7 +195,7 @@ void ttf_representation::create_texture() {
 		SDL_Rect pos{x, y, 0, 0};
 		SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
 		SDL_FreeSurface(surf);
-		y+=h+(line_height-h);
+		y+=h+(_line_height-h);
 	}
 
 	if(!get_texture())	{
@@ -212,12 +207,12 @@ void ttf_representation::create_texture() {
 	}
 
 	set_blend(representation::blends::alpha);
-	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
+	set_clip({0,0, (unsigned)_canvas_w, (unsigned)_canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
-	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
+	set_location({0, 0, (unsigned)_canvas_w, (unsigned)_canvas_h});
 
 	text_x_displacement=text_x;
-	text_position={text_x_displacement, 0, (unsigned)total_w, (unsigned)total_h};
+	text_position={text_x_displacement, 0, (unsigned)_total_w, (unsigned)_total_h};
 }
 
 //!Sets a new ttf font.
@@ -227,7 +222,9 @@ void ttf_representation::create_texture() {
 void ttf_representation::set_font(const ttf_font& f) {
 
 	font=&f;
-	if(!perform_changes) return;
+	if(!perform_changes) {
+		return;
+	}
 	create_texture();
 }
 
@@ -253,7 +250,9 @@ void ttf_representation::set_text_internal(const std::string& c) {
 	if(c!=text) {
 		//The texture is going to be reused.
 		text=c;
-		if(!perform_changes) return;
+		if(!perform_changes) {
+			return;
+		}
 		auto pos=get_position();
 		reset_calculations();
 		create_texture();
@@ -293,9 +292,15 @@ void ttf_representation::text_replace(std::string& sujeto, const std::string& bu
 
 void ttf_representation::set_line_height_ratio(double v) {
 
-	if(v==line_height_ratio) return;
+	if(v==line_height_ratio) {
+		return;
+	}
+
 	line_height_ratio=v;
-	if(!perform_changes) return;
+	if(!perform_changes) {
+		return;
+	}
+
 	create_texture();
 }
 
@@ -304,9 +309,15 @@ void ttf_representation::set_line_height_ratio(double v) {
 //!Will trigger a recreation of the texture if different and unlocked.
 void ttf_representation::set_color(rgb_color c) {
 
-	if(c==text_color) return;
+	if(c==text_color) {
+		return;
+	}
+
 	text_color=c;
-	if(!perform_changes) return;
+	if(!perform_changes) {
+		return;
+	}
+
 	create_texture();
 }
 
@@ -394,7 +405,7 @@ ttf_representation&	ttf_representation::set_style(int _flags) {
 
 
 	TTF_SetFontStyle(fontptr, flags);
-	
+
 	return *this;
 }
 
@@ -406,4 +417,33 @@ rect ttf_representation::get_base_view_position() const {
 	//result.origin.y+=location.origin.y;
 
 	return result;
+}
+
+std::vector<std::string> ttf_representation::explode(const std::string& _text, char _delimiter) {
+
+	std::vector<std::string> result;
+	std::string temp;
+
+	for(const char& c : _text) {
+		if(c==_delimiter) {
+			result.push_back(temp);
+			temp="";
+		}
+		else {
+			temp+=c;
+		}
+	}
+
+	result.push_back(temp);
+	return result;
+}
+
+int ttf_representation::get_next_power_of_two(int _v) const {
+
+	for(const auto& vs : valid_sizes) {
+		if(_v > vs) continue;
+		return vs;
+	}
+
+	throw std::runtime_error(std::string{"Invalid text texture size "}+std::to_string(_v)+std::string{" for text "}+text);
 }
