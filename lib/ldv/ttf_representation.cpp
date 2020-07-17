@@ -1,4 +1,5 @@
 #include <ldv/ttf_representation.h>
+#include <sstream>
 
 using namespace ldv;
 
@@ -89,7 +90,7 @@ void ttf_representation::create_texture_free_size() {
 	auto lines=explode(text, '\n');
 
 	//Measuring the full resulting texture...
-	int total_h=0, h=0, w=0, total_w=0;
+	int h=0, w=0, total_w=0;
 	for(std::string& c : lines) {
 
 		text_replace(c, "\t", "    ");
@@ -100,74 +101,120 @@ void ttf_representation::create_texture_free_size() {
 		}
 	}
 
-
-	int line_height=(double)font->get_size()*line_height_ratio;
-	total_h=(lines.size() * h) + ( (lines.size()-1) * (line_height-h)); //The last spacing is removed, of course.
-
-	auto canvas_w=get_next_power_of_two(total_w);
-	auto canvas_h=get_next_power_of_two(total_h);
-
-	create_texture_internal(canvas_w, canvas_h, total_w, total_h, line_height, lines);
+	create_texture_internal(total_w, h, lines);
 }
 
 void ttf_representation::create_texture_fixed_width() {
 
 	//The text is prepared line by line in different surfaces.
-//	auto lines=explode(text, '\n');
+	auto original_lines=explode(text, '\n');
+	std::vector<std::string> lines;
 
 	//Measuring the full resulting texture...
-//	int total_h=0, h=0, w=0;
-//	for(std::string& c : lines) {
+	int h=0, w=0, total_w=0;
+	for(auto& line : original_lines) {
 
-//		int words_in_line=0;
+		text_replace(line, "\t", "    ");
+		std::string word{}, curline{};
+		std::size_t consecutive_spaces=0;
+		std::stringstream ss{line};
+		bool done=false;
 
-//		text_replace(c, "\t", "    ");
+		auto add_line=[&total_w, &lines](const std::string& _str, int _size) {
 
-/*
-create an empty str
-while there are words in the line
-	grab a word
-	add word to str
-	measure str
-	if less than fixed_w
-		add subsequent spaces to str
-		++words in line
-	else
-		if 0!=words_in_line
-			remove word from str
-			put word back into the line
-		endif
+			if(_size > total_w) {
+				total_w=_size;
+			}
 
-		push str into array of lines
-		clear str
-	endif
-endwhile
-if str.size()
-	push str into array of lines
-endif
-	*/
+			lines.push_back(_str);
+		};
 
-//		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &w, &h);
-//	}
+		while(true) {
 
+			char c=ss.get();
+			if(ss.eof()) {
+				c=' '; //Add a space to trigger the end of the word.
+				done=true;
+			}
 
-//	int line_height=(double)font->get_size()*line_height_ratio;
-//	total_h=(lines.size() * h) + ( (lines.size()-1) * (line_height-h)); //The last spacing is removed, of course.
+			if(isspace(c)) {
 
-	//TODO: Yeah, no the fixed w.
-//	auto canvas_w=get_next_power_of_two(fixed_w);
-//	auto canvas_h=get_next_power_of_two(total_h);
+				if(!word.size()) {
+					++consecutive_spaces;
+				}
+				else {
+					//End of the word... put the space back, pls...
+					if(!done) {
+						ss.unget();
+					}
 
-//	create_texture_internal(canvas_w, canvas_h, fixed_w, total_h, line_height, lines);
+					std::string spacing=consecutive_spaces
+						? std::string(consecutive_spaces, ' ')
+						: std::string{};
+
+					TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), (spacing+word).c_str(), &w, &h);
+					int wordsize_with_spacing=w;
+
+					TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), curline.c_str(), &w, &h);
+					int curlinesize=w;
+
+					//There's place for something more...
+					if(wordsize_with_spacing+curlinesize <= max_width) {
+
+						curline+=spacing+word;
+						if(done) { //Last word was reached and there was still place...
+
+							add_line(curline, wordsize_with_spacing+curlinesize);
+							curline.clear();
+						}
+					}
+					//can't fit it...
+					else {
+						//there were words... spacing does not count.
+						if(curline.size()) {
+
+							add_line(curline, curlinesize);
+							curline=word; //stray word is set as the beginning of the next line.
+						}
+						//there were no words yet, spacing counts...
+						else {
+
+							add_line(spacing+word, wordsize_with_spacing);
+						}
+					}
+
+					//Clear counters.
+					word.clear();
+					consecutive_spaces=0;
+				}
+
+				if(done) {
+
+					TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), curline.c_str(), &w, &h);
+					add_line(curline, w);
+					break;
+				}
+			}
+			else {
+				word+=c;
+			}
+		}
+	}
+
+	create_texture_internal(total_w, h, lines);
 }
 
 void ttf_representation::create_texture_internal(
-	int _canvas_w,
-	int _canvas_h,
+
 	int _total_w,
-	int _total_h,
-	int _line_height,
+	int _h,
 	const std::vector<std::string>& _lines) {
+
+	int line_height=(double)font->get_size()*line_height_ratio;
+	int total_h=(_lines.size() * _h) + ( (_lines.size()-1) * (line_height-_h)); //The last spacing is removed, of course.
+
+	auto canvas_w=get_next_power_of_two(_total_w);
+	auto canvas_h=get_next_power_of_two(total_h);
 
 	//A raw surface will be created with a given color, so we can extract its internal flags.
 	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
@@ -194,8 +241,8 @@ void ttf_representation::create_texture_internal(
 	}
 
 	std::unique_ptr<canvas> cnv(canvas::create(
-		_canvas_w,
-		_canvas_h,
+		canvas_w,
+		canvas_h,
 		s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
 
 	SDL_FreeSurface(s);
@@ -235,8 +282,8 @@ void ttf_representation::create_texture_internal(
 		//TODO: This only makes sense if we have more than one line.
 		switch(alignment) {
 			case text_align::left: x=0; break;
-			case text_align::center: x=(_canvas_w/2)-(w/2); break;
-			case text_align::right: x=_canvas_w-w; break;
+			case text_align::center: x=(canvas_w/2)-(w/2); break;
+			case text_align::right: x=canvas_w-w; break;
 		}
 
 		text_x=x < text_x ? x : text_x;
@@ -244,7 +291,7 @@ void ttf_representation::create_texture_internal(
 		SDL_Rect pos{x, y, 0, 0};
 		SDL_BlitSurface(surf, nullptr, cnv->get_surface(), &pos);
 		SDL_FreeSurface(surf);
-		y+=h+(_line_height-h);
+		y+=h+(line_height-h);
 	}
 
 	if(!get_texture())	{
@@ -256,12 +303,12 @@ void ttf_representation::create_texture_internal(
 	}
 
 	set_blend(representation::blends::alpha);
-	set_clip({0,0, (unsigned)_canvas_w, (unsigned)_canvas_h});
+	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
-	set_location({0, 0, (unsigned)_canvas_w, (unsigned)_canvas_h});
+	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
 
 	text_x_displacement=text_x;
-	text_position={text_x_displacement, 0, (unsigned)_total_w, (unsigned)_total_h};
+	text_position={text_x_displacement, 0, (unsigned)_total_w, (unsigned)total_h};
 }
 
 //!Sets a new ttf font.

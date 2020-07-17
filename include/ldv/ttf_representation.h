@@ -69,6 +69,18 @@ class ttf_representation:
 
 	void                set_text_align(text_align);
 
+	//!Sets the max width to auto: textures will be as wide as they need to be
+	//!and each text line will be represented with a single line, without
+	//!artificial line breaks.
+	void                set_fixed_size() {max_width=-1;}
+
+	//!Sets the maximum text width, which does not neccesarily mean that
+	//!the longest line will measure that, but rather that it will try that
+	//!lines are no longer that the value using artificial line breaks.
+	//!Very long words or very small widths can result of a line being longer
+	//!than expected.
+	void                set_max_width(int _v) {max_width=_v;}
+
 	//!Returns the horizontal text alignment.
 	text_align          get_text_align() const {return alignment;}
 
@@ -95,7 +107,7 @@ class ttf_representation:
 	void                create_texture();
 	void                create_texture_free_size();
 	void                create_texture_fixed_width();
-	void                create_texture_internal(int, int, int, int, int, const std::vector<std::string>&);
+	void                create_texture_internal(int, int, const std::vector<std::string>&);
 	void                set_text_internal(const std::string&);
 	void                text_replace(std::string&, const std::string&, const std::string&);
 	std::vector<std::string> explode(const std::string&, char);
@@ -112,6 +124,7 @@ class ttf_representation:
 	bool                perform_changes=true; //!< Internal flag, read lock_changes and unlock_changes.
 	rect                text_position; //!<The text box is usually smaller than the power of 2 texture containing it. This variable stores the real text rect.
 	int                 text_x_displacement;
+	int                 max_width=-1;   //!<Max width of the generated text, when -1 there's no limit.
 
 	//!Lookup table for powers of two.
 	static const std::vector<int>	valid_sizes;
