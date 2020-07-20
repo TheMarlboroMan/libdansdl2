@@ -67,8 +67,12 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 
 void ttf_representation::create_texture() {
 
-	//TODO: here we should decide if max size or not.
-	create_texture_free_size();
+	if(-1==max_width) {
+		create_texture_free_size();
+	}
+	else {
+		create_texture_fixed_width();
+	}
 }
 
 //!Creates the texture from text.

@@ -7,8 +7,8 @@ using namespace ldv;
 //!Constructs a raster_representation with position, clipping and alpha.
 
 raster_representation::raster_representation(rect pos, rect rec, int palpha)
-	:representation(palpha), texture_instance(nullptr), 
-	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f}, 
+	:representation(palpha), texture_instance(nullptr),
+	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f},
 	location(pos), clip(rec)
 {
 
@@ -20,10 +20,10 @@ raster_representation::raster_representation(rect pos, rect rec, int palpha)
 
 raster_representation::raster_representation(const raster_representation& o)
 	:representation(o), texture_instance(o.texture_instance),
-	brush(o.brush), points(o.points), 
+	brush(o.brush), points(o.points),
 	tex_points(o.tex_points),
 	rgb_colorize(o.rgb_colorize),
-	location(o.location), 
+	location(o.location),
 	clip(o.clip)
 {
 
@@ -86,7 +86,7 @@ void raster_representation::do_draw()
 			glColor4f(rgb_colorize.r, rgb_colorize.g, rgb_colorize.b, get_alphaf());
 		break;
 	}
-		
+
 	if(!points.size() || tex_points.size())
 	{
 		calculate_points();
@@ -110,11 +110,17 @@ void raster_representation::calculate_points() {
 
 	const rect& pos=get_location();
 	const rect& recor=get_clip();
-	
-	if(!brush.w) brush.w=pos.w;
-	if(!brush.h) brush.h=pos.h;
 
-	float w_tex=texture_instance->get_w(), h_tex=texture_instance->get_h();
+	if(!brush.w) {
+		brush.w=pos.w;
+	}
+
+	if(!brush.h) {
+		brush.h=pos.h;
+	}
+
+	const float     w_tex=texture_instance->get_w(),
+	                h_tex=texture_instance->get_h();
 
 	points.clear();
 	tex_points.clear();
@@ -122,6 +128,7 @@ void raster_representation::calculate_points() {
 	int itx=0;
 
 	for(int x=0; x < (int)pos.w; x+=brush.w) {
+
 		int ity=0;
 		const int dif_x=x+brush.w > (int)pos.w ? pos.w - (itx * brush.w)  : brush.w;
 
@@ -129,43 +136,56 @@ void raster_representation::calculate_points() {
 
 			const int dif_y=y+brush.h > (int)pos.h ? pos.w - (ity * brush.h) : brush.h;
 
-			point pts[]={{x, y}, {x+dif_x, y}, {x+dif_x, y+dif_y}, {x, y+dif_y}};
+			point pts[]={
+				{x, y},
+				{x+dif_x, y},
+				{x+dif_x, y+dif_y},
+				{x, y+dif_y}
+			};
+
+			points.insert(std::end(points), pts, pts+4);
 
 			//ptex_fx y ptex_fy calculations are a proportion between the brush
 			//and the space to be drawn (rule of three). This will only map
 			//the neccesary texture parts.
- 
+
 			GLfloat ptex_x=(GLfloat)recor.origin.x,
-				ptex_y=(GLfloat)recor.origin.y, 
-				ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)brush.w), 
-				ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
+			        ptex_y=(GLfloat)recor.origin.y,
+			        ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)brush.w),
+			        ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
 
 			texpoint ptex[]={
-				{ptex_x,	ptex_y},
-				{ptex_fx,	ptex_y},
-				{ptex_fx,	ptex_fy},
-				{ptex_x,	ptex_fy}};
+				{ptex_x+0.5f,	ptex_y+0.5f},
+				{ptex_fx+0.5f,	ptex_y+0.5f},
+				{ptex_fx+0.5f,	ptex_fy+0.5f},
+				{ptex_x+0.5f,	ptex_fy+0.5f}};
 
 			//Inversion means resampling too.
 			if(transformation.horizontal) {
 				std::swap(ptex[0].x, ptex[1].x);
 				std::swap(ptex[2].x, ptex[3].x);
+
+				for(auto& p : ptex) {
+					p.x-=1.f;
+				}
 			}
 
-			//TODO; This causes a visible fuckup in textures with a solid bar
-			//on top.
 			if(transformation.vertical) {
 				std::swap(ptex[0].y, ptex[2].y);
 				std::swap(ptex[1].y, ptex[3].y);
+
+				for(auto& p : ptex) {
+					p.y-=1.f;
+				}
 			}
 
 			for(auto &p : ptex) {
-				p.x/=w_tex; 
+
+				p.x/=w_tex;
 				p.y/=h_tex;
 			}
 
 			tex_points.insert(std::end(tex_points), ptex, ptex+4);
-			points.insert(std::end(points), pts, pts+4);
 			++ity;
 		}
 		++itx;

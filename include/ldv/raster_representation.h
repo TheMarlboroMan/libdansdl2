@@ -35,7 +35,7 @@ class raster_representation:
 	public representation
 {
 	public:
-	
+
 				raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, int=representation::alpha_max);
 				raster_representation(const raster_representation&);
 				raster_representation& operator=(const raster_representation &);
@@ -43,7 +43,7 @@ class raster_representation:
 
 	//!Gets the assigned texture.
 	const texture * 	get_texture() const {return texture_instance;}
-	//!Gets the assigned texture. 
+	//!Gets the assigned texture.
 	texture * 		get_texture() {return texture_instance;}
 	unsigned int		get_w_texture_instance() const;
 	unsigned int		get_h_texture_instance() const;
@@ -58,7 +58,7 @@ class raster_representation:
 	rect 			get_clip() {return clip;}
 	//!Gets the transformation structure.
 	const invert_transform& get_transformation_invert() const {return transformation;}
-	//!Gets the rgb color that tints the representation. 
+	//!Gets the rgb color that tints the representation.
 	//TODO: HOW DOES THIS REALLY WORK????.
 	rgb_color		get_colorize() {return rgb_colorize;}
 	//!Gets indicates whether there is rotation or flipping.
@@ -73,7 +73,7 @@ class raster_representation:
 	void 			set_clip(rect);
 	//!Sets the texture.
 	void 			set_texture(const texture& v) {texture_instance=&const_cast <texture&> (v);}
-	//!Sets the rgb_color tint. 
+	//!Sets the rgb_color tint.
 	//TODO: How does this work????
 	void			set_colorize(rgb_color col) {rgb_colorize=col;}
 
@@ -102,7 +102,10 @@ class raster_representation:
 
 	struct 	{int w, h;}	brush;
 
+	//!Space points.
 	std::vector<point>	points;
+
+	//!Texture mapping points.
 	std::vector<texpoint>	tex_points;
 	rgb_color		rgb_colorize;
 
