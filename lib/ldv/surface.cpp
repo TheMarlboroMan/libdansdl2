@@ -34,13 +34,20 @@ surface::~surface()
 	}
 }
 
+surface::surface(const surface& _other):
+	sdl_surface{ldv::copy_sdl_surface(_other.sdl_surface)},
+	with_colorkey{_other.with_colorkey}
+{
+
+}
+
 //!Assignment operator.
 
 //!Copies the reference surface to the result. The reference surface remains
 //!unchanged.
 
 surface& surface::operator=(const surface& o)
-{	
+{
 	with_colorkey=o.with_colorkey;
 	sdl_surface=ldv::copy_sdl_surface(o.sdl_surface);
 
@@ -67,7 +74,7 @@ void surface::set_colorkey(Uint32 color)
 	{
 		SDL_SetColorKey(sdl_surface, SDL_TRUE, color);
 	}
-	else 
+	else
 	{
 		throw std::runtime_error("calling set_colorkey(Uint8, Uint8, Uint8, bool) with no sdl_surface.");
 	}
@@ -86,7 +93,7 @@ void surface::set_colorkey(Uint8 r, Uint8 g, Uint8 b)
 
 void surface::clear(Uint8 r, Uint8 g, Uint8 b)
 {
-	if(sdl_surface) 
+	if(sdl_surface)
 	{
 		clear(map_color(r,g,b));
 	}
@@ -103,11 +110,11 @@ void surface::clear(Uint8 r, Uint8 g, Uint8 b)
 
 void surface::clear(Uint32 c)
 {
-	if(sdl_surface) 
+	if(sdl_surface)
 	{
 		SDL_FillRect(sdl_surface, nullptr, c);
 	}
-	else 
+	else
 	{
 		throw std::runtime_error("calling clear(Uint32) with no sdl_surface");
 	}
@@ -119,12 +126,12 @@ void surface::clear(Uint32 c)
 
 void surface::clear_colorkey()
 {
-	if(sdl_surface) 
+	if(sdl_surface)
 	{
-		SDL_SetColorKey(sdl_surface, SDL_FALSE, 0); 
+		SDL_SetColorKey(sdl_surface, SDL_FALSE, 0);
 		with_colorkey=false;
 	}
-	else 
+	else
 	{
 		throw std::runtime_error("calling clear_colorkey() with no sdl_surface");
 	}

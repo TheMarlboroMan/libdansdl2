@@ -155,10 +155,10 @@ void raster_representation::calculate_points() {
 			        ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
 
 			texpoint ptex[]={
-				{ptex_x+0.5f,	ptex_y+0.5f},
-				{ptex_fx+0.5f,	ptex_y+0.5f},
-				{ptex_fx+0.5f,	ptex_fy+0.5f},
-				{ptex_x+0.5f,	ptex_fy+0.5f}};
+				{ptex_x,	ptex_y},
+				{ptex_fx,	ptex_y},
+				{ptex_fx,	ptex_fy},
+				{ptex_x,	ptex_fy}};
 
 			//Inversion means resampling too.
 			if(transformation.horizontal) {

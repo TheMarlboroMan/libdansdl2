@@ -14,6 +14,7 @@ class surface
 	public:
 
 			surface();
+			surface(const surface&);
 			surface(SDL_Surface *);
 			virtual ~surface();
 			surface& operator=(const surface&);
@@ -50,7 +51,7 @@ class surface
 
 	bool 		with_colorkey;	//!< Indicates if colorkeying will be applied.
 
-	
+
 };
 
 } //Fin namespace DLibV
