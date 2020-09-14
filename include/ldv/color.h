@@ -17,16 +17,24 @@ float colorfi(int);
 int colorif(float);
 
 struct rgba_color {
-	float 		r, //!< Red component (0. to 1.)
-			g, //!< Green component (0. to 1.).
-			b, //!< Blue component (0. to 1.).
-			a; //!< Alpha component (0. to 1.).
+	float       r, //!< Red component (0. to 1.)
+	            g, //!< Green component (0. to 1.).
+	            b, //!< Blue component (0. to 1.).
+	            a; //!< Alpha component (0. to 1.).
+
+	            rgba_color(float, float, float, float);
+	            rgba_color(const rgba_color&);
+	rgba_color& operator=(const rgba_color& _other) {
+
+					r=_other.r;
+					g=_other.g;
+					b=_other.b;
+					a=_other.a;
+					return *this;
+				}
 
 	//!Comparison operator. Will return true if all components match.
-			rgba_color(float, float, float, float);
-			rgba_color(const rgba_color&);
-	bool		operator==(const rgba_color& o) const {return o.r==r && o.g==g && o.b==b && o.a==a;}
-//			operator rgb_color() const;
+	bool        operator==(const rgba_color& o) const {return o.r==r && o.g==g && o.b==b && o.a==a;}
 };
 
 //!A struct of r,g and b expressed in floats.
@@ -35,15 +43,21 @@ struct rgba_color {
 
 struct rgb_color
 {
-	float 		r, //!< Red component (0. to 1.)
-			g, //!< Green component (0. to 1.).
-			b; //!< Blue component (0. to 1.).
+	float       r, //!< Red component (0. to 1.)
+	            g, //!< Green component (0. to 1.).
+	            b; //!< Blue component (0. to 1.).
 
 	//!Comparison operator. Will return true if all components match.
-			rgb_color(float, float, float);
-			rgb_color(const rgb_color&);
-	bool		operator==(const rgb_color& o) const {return o.r==r && o.g==g && o.b==b;}
-//			operator rgba_color() const;
+	            rgb_color(float, float, float);
+	            rgb_color(const rgb_color&);
+	rgb_color&  operator=(const rgb_color& _other) {
+
+					r=_other.r;
+					g=_other.g;
+					b=_other.b;
+					return *this;
+				}
+	bool        operator==(const rgb_color& o) const {return o.r==r && o.g==g && o.b==b;}
 };
 
 }
