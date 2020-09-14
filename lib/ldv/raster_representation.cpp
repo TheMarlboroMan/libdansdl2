@@ -154,28 +154,61 @@ void raster_representation::calculate_points() {
 			        ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)brush.w),
 			        ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
 
+/*
+			struct extrapt {
+				float x=0.f, y=0.f;
+			};
+
+			std::vector<extrapt> extra;
+			extra.insert(std::begin(extra), 8, extrapt{0.f, 0.f});
+			std::ifstream testfile{"/mnt/dev/other/sdl2-opengl-pivot/thing.txt"};
+			std::string str;
+			for(int line=0; line<8; ++line) {
+
+				std::getline(testfile, str);
+				std::stringstream ss(str);
+				ss>>extra[line].x>>extra[line].y;
+				std::cout<<line<<" -> "<<extra[line].x<<","<<extra[line].y<<std::endl;
+			}
+*/
+
 			texpoint ptex[]={
 				{ptex_x,	ptex_y},
 				{ptex_fx,	ptex_y},
 				{ptex_fx,	ptex_fy},
 				{ptex_x,	ptex_fy}};
 
-			//Inversion means resampling too.
-			if(transformation.horizontal) {
-				std::swap(ptex[0].x, ptex[1].x);
-				std::swap(ptex[2].x, ptex[3].x);
+			if(!transformation.horizontal && !transformation.vertical) {
 
-				for(auto& p : ptex) {
-					p.x-=1.f;
-				}
+					ptex[0].x+=0.1f;
+					ptex[1].x+=0.1f;
+					ptex[2].x+=0.1f;
+					ptex[3].x+=0.1f;
+
+					ptex[0].y-=0.1f;
+					ptex[1].y-=0.1f;
+					ptex[2].y-=0.1f;
+					ptex[3].y-=0.1f;
 			}
+			else {
 
-			if(transformation.vertical) {
-				std::swap(ptex[0].y, ptex[2].y);
-				std::swap(ptex[1].y, ptex[3].y);
+				//Inversion means resampling too.
+				if(transformation.horizontal) {
 
-				for(auto& p : ptex) {
-					p.y-=1.f;
+					std::swap(ptex[0].x, ptex[1].x);
+					std::swap(ptex[2].x, ptex[3].x);
+
+					ptex[2].x-=1.f;
+					ptex[3].x-=1.f;
+
+					ptex[2].y-=0.5f;
+					ptex[3].y-=0.5f;
+				}
+
+				if(transformation.vertical) {
+
+					std::swap(ptex[0].y, ptex[2].y);
+					std::swap(ptex[1].y, ptex[3].y);
 				}
 			}
 
