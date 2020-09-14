@@ -72,10 +72,11 @@ void raster_representation::do_draw()
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//Alpha...
-	switch(get_blend())
-	{
+	switch(get_blend()) {
 		case representation::blends::none:
 			glDisable(GL_BLEND);
 			glColor3f(rgb_colorize.r, rgb_colorize.g, rgb_colorize.b);
@@ -87,8 +88,7 @@ void raster_representation::do_draw()
 		break;
 	}
 
-	if(!points.size() || tex_points.size())
-	{
+	if(!points.size() || tex_points.size()) {
 		calculate_points();
 	}
 
@@ -96,7 +96,10 @@ void raster_representation::do_draw()
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
 
 	glVertexPointer(2, GL_INT, 0, points.data());
-	glTexCoordPointer(2, GL_FLOAT, 0, tex_points.data());
+
+	//glTexCoordPointer(2, GL_FLOAT, 0, tex_points.data());
+
+	glTexCoordPointer(2, GL_DOUBLE, 0, tex_points.data());
 	glDrawArrays(GL_QUADS, 0, points.size());
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -119,7 +122,7 @@ void raster_representation::calculate_points() {
 		brush.h=pos.h;
 	}
 
-	const float     w_tex=texture_instance->get_w(),
+	const double    w_tex=texture_instance->get_w(),
 	                h_tex=texture_instance->get_h();
 
 	points.clear();
@@ -149,14 +152,14 @@ void raster_representation::calculate_points() {
 			//and the space to be drawn (rule of three). This will only map
 			//the neccesary texture parts.
 
-			GLfloat ptex_x=(GLfloat)recor.origin.x,
-			        ptex_y=(GLfloat)recor.origin.y,
-			        ptex_fx=ptex_x+( ( (GLfloat)dif_x * (GLfloat)recor.w) / (GLfloat)brush.w),
-			        ptex_fy=ptex_y+( ( (GLfloat)dif_y * (GLfloat)recor.h) / (GLfloat)brush.h);
+			point_type ptex_x=(point_type)recor.origin.x,
+			        ptex_y=(point_type)recor.origin.y,
+			        ptex_fx=ptex_x+( ( (point_type)dif_x * (point_type)recor.w) / (point_type)brush.w),
+			        ptex_fy=ptex_y+( ( (point_type)dif_y * (point_type)recor.h) / (point_type)brush.h);
 
 /*
 			struct extrapt {
-				float x=0.f, y=0.f;
+				double x=0.f, y=0.f;
 			};
 
 			std::vector<extrapt> extra;
@@ -175,20 +178,31 @@ void raster_representation::calculate_points() {
 			texpoint ptex[]={
 				{ptex_x,	ptex_y},
 				{ptex_fx,	ptex_y},
-				{ptex_fx,	ptex_fy},
-				{ptex_x,	ptex_fy}};
+				{ptex_fx,	ptex_fy-0.005},
+				{ptex_x,	ptex_fy-0.005}};
+
+
+std::cout<<"---------------------------"<<std::endl;
+			//Convert again to 0:1 ratio.
+			for(auto &p : ptex) {
+
+				p.x/=w_tex;
+				p.y/=h_tex;
+
+std::cout<<p.x<<", "<<p.y<<std::endl;
+			}
 
 			if(!transformation.horizontal && !transformation.vertical) {
 
-					ptex[0].x+=0.1f;
-					ptex[1].x+=0.1f;
-					ptex[2].x+=0.1f;
-					ptex[3].x+=0.1f;
+//					ptex[0].x+=0.1f;
+//					ptex[1].x+=0.1f;
+//					ptex[2].x+=0.1f;
+//					ptex[3].x+=0.1f;
 
-					ptex[0].y-=0.1f;
-					ptex[1].y-=0.1f;
-					ptex[2].y-=0.1f;
-					ptex[3].y-=0.1f;
+//					ptex[0].y-=0.1f;
+//					ptex[1].y-=0.1f;
+//					ptex[2].y-=0.1f;
+//					ptex[3].y-=0.1f;
 			}
 			else {
 
@@ -198,11 +212,11 @@ void raster_representation::calculate_points() {
 					std::swap(ptex[0].x, ptex[1].x);
 					std::swap(ptex[2].x, ptex[3].x);
 
-					ptex[2].x-=1.f;
-					ptex[3].x-=1.f;
+//					ptex[2].x-=1.f;
+//					ptex[3].x-=1.f;
 
-					ptex[2].y-=0.5f;
-					ptex[3].y-=0.5f;
+//					ptex[2].y-=0.5f;
+//					ptex[3].y-=0.5f;
 				}
 
 				if(transformation.vertical) {
@@ -212,17 +226,13 @@ void raster_representation::calculate_points() {
 				}
 			}
 
-			for(auto &p : ptex) {
-
-				p.x/=w_tex;
-				p.y/=h_tex;
-			}
-
 			tex_points.insert(std::end(tex_points), ptex, ptex+4);
 			++ity;
 		}
 		++itx;
 	}
+
+std::cout<<"END"<<std::endl;
 }
 
 //!Deletes the texture assigned.

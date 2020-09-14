@@ -92,7 +92,8 @@ class raster_representation:
 
 	private:
 
-	struct texpoint {GLfloat x, y;};
+	using point_type=GLdouble;
+	struct texpoint {point_type x, y;};
 
 	void			calculate_points();
 
