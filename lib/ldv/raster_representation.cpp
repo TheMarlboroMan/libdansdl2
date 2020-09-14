@@ -183,20 +183,12 @@ void raster_representation::calculate_points() {
 
 				std::swap(ptex[0].x, ptex[1].x);
 				std::swap(ptex[2].x, ptex[3].x);
-
-				ptex[0].x-=0.005;
-				ptex[2].x-=0.005;
 			}
 
 			if(transformation.vertical) {
 
 				std::swap(ptex[0].y, ptex[2].y);
 				std::swap(ptex[1].y, ptex[3].y);
-			}
-			else {
-
-				ptex[2].y-=0.005;
-				ptex[3].y-=0.005;
 			}
 
 //Convert again to 0:1 ratio.

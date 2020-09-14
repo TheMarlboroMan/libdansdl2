@@ -152,8 +152,8 @@ void screen::set_logical_size(int pw, int ph)
 	//glViewport(0.f, 0.f, w, h);
 
 	//left, right, top, bottom, near and far.
-	//Sets 0.0 to be top left. Adjust 0.5f to get the pixel centre.
-	glOrtho(-0.5f, (float)w_logic-.5f, (float)h_logic-.5f, -0.5f, 1.f, -1.0f);
+	//Sets 0.0 to be top left.
+	glOrtho(0.f, (float)w_logic, (float)h_logic, 0.f, 1.f, -1.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
