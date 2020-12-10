@@ -196,8 +196,11 @@ void sdl_input::process_event(SDL_Event& event)
 		case SDL_TEXTINPUT:
 //			if(SDL_IsTextInputActive())
 //			{
-				events_cache[text]=true;
-				input_text+=event.text.text;
+				if(!f_text_filter || f_text_filter(event)) {
+
+					events_cache[text]=true;
+					input_text+=event.text.text;
+				}
 //			}
 		break;
 

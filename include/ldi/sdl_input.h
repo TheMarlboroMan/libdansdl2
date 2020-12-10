@@ -383,6 +383,9 @@ class sdl_input
 	//!the default function defined by this class.
 	typedef				std::function<bool(SDL_Event& event, tf_default&)> tf_event;
 
+	//!Defines a text filter event.
+	using               text_filter=std::function<bool(const SDL_Event& event)>;
+
 	private:
 
 	keyboard		 	device_keyboard;
@@ -400,6 +403,7 @@ class sdl_input
 
 	tf_event			f_process_event;		//!< Custom event processing function to be set with a call to set_event_processing_function.
 	tf_default			f_default_process_event;	//!< Default event processing function, which is to call "process_event".
+	text_filter         f_text_filter; //!Custom text processing function.
 
 	void 				init_joysticks();
 	void 				clear_joysticks_state();
@@ -445,6 +449,16 @@ class sdl_input
 	bool 			is_text_input() const {return SDL_IsTextInputActive();}
 	//!Sets whether or not to pass backspace or enter to the input_text when text input is active.
 	void			set_keydown_control_text_filter(bool v) {keydown_control_text_filter=v;}
+	//!Sets the text filter function, which must return true for the input to be accepted.
+	void                set_text_filter(text_filter _f) {
+
+		f_text_filter=_f;
+	}
+	//!Removes the text filter function
+	void                clear_text_filter() {
+
+		f_text_filter=nullptr;
+	}
 
 	bool 	 		pump_events(SDL_Event &, bool=true);
 	//!Gets the full mouse structure.
