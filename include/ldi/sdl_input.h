@@ -384,7 +384,7 @@ class sdl_input
 	typedef				std::function<bool(SDL_Event& event, tf_default&)> tf_event;
 
 	//!Defines a text filter event.
-	using               text_filter=std::function<bool(const SDL_Event& event)>;
+	using               text_filter=std::function<bool(const SDL_Event&)>;
 
 	private:
 
