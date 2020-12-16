@@ -11,10 +11,13 @@
 namespace ldt
 {
 
+template<typename T>
+point_2d<T> calculate_centroid(const std::vector<point_2d<T>>& vertices);
+
 //!Simple 2d polygon defined from vertices. Clockwise winding.
 
-//!A polygon is defined by a rotation point and a vector of point (vertices). 
-//!Many additional function templates are defined in the same header, 
+//!A polygon is defined by a rotation point and a vector of point (vertices).
+//!Many additional function templates are defined in the same header,
 //!providing extended functionality.
 
 template<typename T>
@@ -26,7 +29,7 @@ class polygon_2d {
 
 	//!Constructs an empty polygon.
 					polygon_2d() {
-	
+
 	}
 
 	//!Constructs a polygon with the given points and rotation center.
@@ -124,7 +127,7 @@ class polygon_2d {
 	//!Scales the polygon from its rotation center by a factor of _factor.
 
 	//!A value of 2 will double the polygon's size. A value of 0.5 will halve
-	//!it. Will throw if called with negative values. 
+	//!it. Will throw if called with negative values.
 	polygon_2d<T>&			scale(double _factor) {
 
 		if(_factor < 0.0) {
@@ -151,7 +154,7 @@ class polygon_2d {
 		return centroid;
 	}
 
-	//!Returns all vertices... 
+	//!Returns all vertices...
 	const std::vector<tpoint>&	get_vertices() const {
 		return vertices;
 	}
@@ -173,8 +176,8 @@ class polygon_2d {
 
 	//!Checks polygon equality (in both vertices and centers).
 	bool				operator==(const polygon_2d<T>& p) const {
-		return rotation_center==p.rotation_center 
-			&& centroid==p.centroid 
+		return rotation_center==p.rotation_center
+			&& centroid==p.centroid
 			&& vertices==p.vertices;
 	}
 
@@ -182,35 +185,12 @@ class polygon_2d {
 
 	//!Calculates the centroid (median center point) of the polygon.
 
-	//!Centroids can be calculated, so they are radically different from 
+	//!Centroids can be calculated, so they are radically different from
 	//!a rotation center.
 	//!Thanks to https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon#
 	void				calculate_centroid() {
 
-		if(size() >= 3) {
-
-			T signedArea=0.0;
-			T x0=0.0, y0=0.0; // Current vertex X and Y.
-			T x1=0.0, y1=0.0; // Next vertex X and Y.
-			T a = 0.0;  // Partial signed area
-
-			// For all vertices
-			size_t i=0;
-			for (i=0; i<vertices.size(); ++i) {
-				x0 = vertices[i].x;
-				y0 = vertices[i].y;
-				x1 = vertices[(i+1) % vertices.size()].x;
-				y1 = vertices[(i+1) % vertices.size()].y;
-				a = x0*y1 - x1*y0;
-				signedArea += a;
-				centroid.x += (x0 + x1)*a;
-				centroid.y += (y0 + y1)*a;
-			}
-
-			signedArea *= 0.5;
-			centroid.x /= (6.0*signedArea);
-			centroid.y /= (6.0*signedArea);
-		}
+		centroid=ldt::calculate_centroid(vertices);
 	}
 
 	std::vector<tpoint>		vertices;		//!< Internal vertex data.
@@ -218,5 +198,42 @@ class polygon_2d {
 	tpoint				rotation_center;	//!< Rotation center for the polygon.
 };
 
+//!Calculates the centroid (median center point) of the polygon made up by the vertices.
+
+//!Centroids can be calculated, so they are radically different from
+//!a rotation center.
+//!Thanks to https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon#
+template<typename T>
+point_2d<T> calculate_centroid(const std::vector<point_2d<T>>& vertices) {
+
+	point_2d<T> centroid{0,0};
+
+	if(vertices.size() >= 3) {
+
+		T signedArea=0.0;
+		T x0=0.0, y0=0.0; // Current vertex X and Y.
+		T x1=0.0, y1=0.0; // Next vertex X and Y.
+		T a = 0.0;  // Partial signed area
+
+		// For all vertices
+		size_t i=0;
+		for (i=0; i<vertices.size(); ++i) {
+			x0 = vertices[i].x;
+			y0 = vertices[i].y;
+			x1 = vertices[(i+1) % vertices.size()].x;
+			y1 = vertices[(i+1) % vertices.size()].y;
+			a = x0*y1 - x1*y0;
+			signedArea += a;
+			centroid.x += (x0 + x1)*a;
+			centroid.y += (y0 + y1)*a;
+		}
+
+		signedArea *= 0.5;
+		centroid.x /= (6.0*signedArea);
+		centroid.y /= (6.0*signedArea);
+	}
+
+	return centroid;
+}
 
 }
