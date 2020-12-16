@@ -9,7 +9,7 @@ namespace ldt {
 
 //!SAT collision response with minimum translation vector.
 
-template<typename T> 
+template<typename T>
 struct SAT_mtv_result {
 	//!Class constructor.
 			SAT_mtv_result():
@@ -37,7 +37,7 @@ bool SAT_collision_check(const polygon_2d<T>& a,const polygon_2d<T>& b) {
 				: vector_from_points(vertices[i], vertices[i+1]);
 
 			auto axis=s.left_normal(); //Vector normal...
-			auto 	proy_a=project(pa, axis), 
+			auto 	proy_a=project(pa, axis),
 					proy_b=project(pb, axis); 	//Projections in the normal...
 
 			if(!is_projection_overlap(proy_a, proy_b)) {
@@ -85,12 +85,12 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& _polygon_a,const 
 				it_next=all_axes.erase(it);
 			}
 		}
-	}	
+	}
 
 	//Now for the real checks...
 	for(const auto& axis: all_axes) {
 
-		auto	proy_a=project(_polygon_a, axis), 
+		auto	proy_a=project(_polygon_a, axis),
 				proy_b=project(_polygon_b, axis); 	//Projections in the normal...
 
 		if(!is_projection_overlap(proy_a, proy_b)) {
@@ -109,12 +109,12 @@ SAT_mtv_result<T> SAT_collision_check_mtv(const polygon_2d<T>& _polygon_a,const 
 			}
 		}
 	}
-	
+
 	if(res.collision) {
 
 		//Check the MTV actually points where it is supposed to point (having a
 		//move away from b).
-		//The theory behind this: if the dot product of two vectors is positive 
+		//The theory behind this: if the dot product of two vectors is positive
 		//they are pointing more or less at the same direction.
 		auto pointing=vector_from_points(_polygon_a.get_centroid(), _polygon_b.get_centroid());
 		if(dot_product(res.mtv, pointing) >= 0.) {
@@ -143,7 +143,7 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 
 	size_t index=0;
 	T max=get_dist(index);
- 
+
 	for(size_t i=1; i < vertices.size(); i++) {
 
 		T proj=get_dist(i);
@@ -157,7 +157,7 @@ segment_2d<T> get_SAT_edge(const SAT_mtv_result<T>& _sat_result, const polygon_2
 	//some examples. Perhaps we could use them to check our values.
 
 	//Use the most perpendicular vertex to the normal to get the edge. Might be
-	//the next vertex or the previous one (relative to the furthest one we 
+	//the next vertex or the previous one (relative to the furthest one we
 	//already discovered). We use clockwise winding.
 	const auto& vertex=vertices[index];
 	const auto& left=index==0 ? vertices.back() : vertices[index-1];
@@ -224,15 +224,22 @@ bool intersection_segment_polygon(const segment_2d<T>& s, const polygon_2d<T> p)
 
 //!Adapted from de https://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
 template<typename T>
-bool point_in_polygon(const polygon_2d<T> p, const point_2d<T> pt)
+bool point_in_polygon(const polygon_2d<T>& p, const point_2d<T>& pt)
 {
+	return point_in_polygon(p.vertices, pt);
+}
+
+template<typename T>
+bool point_in_polygon(
+	const std::vector<point_2d<T>>& vertices,
+	const point_2d<T>& pt
+) {
 	bool res=false;
 	T testx=pt.x, testy=pt.y;
-	const auto& vertices=p.get_vertices();
 	size_t i=0, j=0, nvert=vertices.size();
 
 	for(i = 0, j = nvert-1; i < nvert; j = i++) {
-		if( 
+		if(
 			((vertices[i].y > testy) != (vertices[j].y > testy)) &&
 			(testx < ( vertices[j].x-vertices[i].x) * (testy - vertices[i].y) / (vertices[j].y-vertices[i].y) + vertices[i].x) ) {
 			res=!res;
@@ -240,6 +247,7 @@ bool point_in_polygon(const polygon_2d<T> p, const point_2d<T> pt)
 	}
 	return res;
 }
+
 
 } //End of namespace
 
