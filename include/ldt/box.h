@@ -7,7 +7,17 @@
 namespace ldt
 {
 
-//!A box. 
+//!A box.
+
+enum class box_edges {top, bottom, left, right};
+
+template<typename T, typename U> class box;
+
+template<typename T, typename U>
+void snap_to_edge(box<T, U>&, T, box_edges);
+
+template<typename T, typename U>
+void snap_to_edge(box<T, U>&, const box<T, U>&, box_edges);
 
 //!The only thing that is enforced here is that height goes towards the positive
 //!infinite in the Y axis. This means "down" in screen coordinates and "up"
@@ -22,7 +32,7 @@ class box
 	U 		w, 		//!< Box width.
 			h;		//!< Box height.
 
-	//!Creates a box from a SDL rect. After all, this whole library is an 
+	//!Creates a box from a SDL rect. After all, this whole library is an
 	//!SDL wrapper
 	box(SDL_Rect r):
 		origin{r.x,r.y}, w(r.w), h(r.h) {
@@ -56,7 +66,23 @@ class box
 		return *this;
 	}
 
-	//!Returns true if this box collides with the given box  The second 
+	/**
+	* Adjusts the box so its edge _edge rests in _edge_position.
+	*/
+	void            snap_to_edge(box_edges _edge, T _edge_position) {
+
+		ldt::snap_to_edge(*this, _edge_position, _edge);
+	}
+
+	/**
+	* Adjusts the box so its edge _edge rests in _edge_position.
+	*/
+	void            snap_to_edge(const box& _obstacle, box_edges _edge) {
+
+		ldt::snap_to_edge(*this, _obstacle, _edge);
+	}
+
+	//!Returns true if this box collides with the given box  The second
 	//!parameter is legacy as it comes, governing whether a mere coincidence
 	//!of edge values should be considered a collision.
 	bool 			collides_with(const box& c, bool unit_is_collision=false) const {
@@ -90,5 +116,60 @@ class box
 		return ldt::box_in_box(peq.origin.x, peq.origin.y, peq.w, peq.h, origin.x, origin.y, w, h);
 	}
 };
+
+/**box
+* Adjusts the box so its edge _edge rests in _edge_position.
+*/
+template<typename T, typename U>
+void snap_to_edge(
+	box<T, U>& _box,
+	T _edge_position,
+	box_edges _edge
+) {
+
+	switch(_edge) {
+
+		case box_edges::top:
+			_box.origin.y=_edge_position-_box.h;
+			return;
+		case box_edges::left:
+			_box.origin.x=_edge_position;
+			return;
+		case box_edges::right:
+			_box.origin.x=_edge_position-_box.w;
+			return;
+		case box_edges::bottom:
+			_box.origin.y=_edge_position;
+			return;
+	}
+}
+
+/**box
+* Adjusts the box so its edge _edge rests in the opposite edge of _obstacle.
+*/
+template<typename T, typename U>
+void snap_to_edge(
+	box<T, U>& _box,
+	const box<T, U>& _obstacle,
+	box_edges _edge
+) {
+
+	switch(_edge) {
+
+		case box_edges::top:
+			_box.origin.y=_obstacle.origin.y-_box.h;
+			return;
+		case box_edges::left:
+			_box.origin.x=_obstacle.origin.x+_obstacle.w;
+			return;
+		case box_edges::right:
+			_box.origin.x=_obstacle.origin.x-_box.w;
+			return;
+		case box_edges::bottom:
+			_box.origin.y=_obstacle.origin.y+_obstacle.h;
+			return;
+	}
+}
+
 
 }
