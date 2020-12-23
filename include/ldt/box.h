@@ -213,13 +213,14 @@ struct alignment {
 		margin_horizontal(_hm),
 		margin_vertical(_vm) {}
 
-	int			margin_horizontal{0},	//!< Horizontal margin in px.
-				margin_vertical{0};	//!< Vertical margin in px.
+	int         margin_horizontal{0},	//!< Horizontal margin in px.
+	            margin_vertical{0};	//!< Vertical margin in px.
 };
 
 /**
 * Adjusts the box so it is aligned with the given "container" according to the
-* specifications given in the alignment object.
+* specifications given in the alignment object.The margin indicates a separation
+* from the given edge and can be negative.
 */
 template<typename T, typename U>
 void align(
@@ -258,21 +259,21 @@ void align(
 	{
 		case alignment::v::none: break;
 		case alignment::v::outer_top:
-			pos.y=_container.origin.y-_box.h;
-			mv=-mv;
+			pos.y=_container.origin.y+_container.h;
 		break;
 		case alignment::v::inner_top:
-			pos.y=_container.origin.y;
+			pos.y=_container.origin.y+_container.h-_box.h;
+			mv=-mv;
 		break;
 		case alignment::v::center:
 			pos.y=(_container.origin.y+_container.h / 2)-(_box.h/2);
 		break;
 		case alignment::v::inner_bottom:
-			pos.y=_container.origin.y+_container.h-_box.h;
-			mv=-mv;
+			pos.y=_container.origin.y;
 		break;
 		case alignment::v::outer_bottom:
-			pos.y=_container.origin.y+_container.h;
+			pos.y=_container.origin.y-_box.h;
+			mv=-mv;
 		break;
 	}
 
