@@ -11,37 +11,7 @@
 namespace ldv
 {
 
-//!An alignment object.
-
-//!This is a companion to the "align" method, which helps set positions of
-//!representations relative to other representations or rectangles.
-
-struct representation_alignment {
-
-	//!Defines the types or horizontal aligment in human-readable format.
-	enum class h{
-		none, 
-		outer_left, 
-		inner_left, 
-		center, 
-		inner_right, 
-		outer_right} 	horizontal;	//!< Horizontal margin type.
-
-	//!Defines the types or vertical aligment in human-readable format.
-	enum class v{
-		none,
-		outer_top, 
-		inner_top, 
-		center, 
-		inner_bottom, 
-		outer_bottom} 	vertical; //!< Vertical margin type.
-
-
-	representation_alignment(h _h, v _v, int _hm=0, int _vm=0);
-
-	int			margin_horizontal,	//!< Horizontal margin in px.
-				margin_vertical;	//!< Vertical margin in px.
-};
+using representation_alignment=ldt::alignment;
 
 //!Structure that contains rotation information.
 
@@ -143,7 +113,7 @@ class representation {
 	rect	 		view_position;
 
 	protected:
-	
+
 	void 			update_view_position();
 	rect			calculate_view_position() const;
 	void			pre_render_transform(const draw_info&);

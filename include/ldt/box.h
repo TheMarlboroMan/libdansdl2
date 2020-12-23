@@ -144,7 +144,7 @@ void snap_to_edge(
 	}
 }
 
-/**box
+/**
 * Adjusts the box so its edge _edge rests in the opposite edge of _obstacle.
 */
 template<typename T, typename U>
@@ -171,5 +171,103 @@ void snap_to_edge(
 	}
 }
 
+/**
+* Defines an alignment structure for boxes.
+*/
+struct alignment {
+
+	//!Defines the types or horizontal aligment in human-readable format.
+	enum class h{
+		none,
+		outer_left,
+		inner_left,
+		center,
+		inner_right,
+		outer_right} 	horizontal;	//!< Horizontal margin type.
+
+	//!Defines the types or vertical aligment in human-readable format.
+	enum class v{
+		none,
+		outer_top,
+		inner_top,
+		center,
+		inner_bottom,
+		outer_bottom} 	vertical; //!< Vertical margin type.
+
+	alignment(h _h, v _v, int _hm=0, int _vm=0):
+		horizontal(_h),
+		vertical(_v),
+		margin_horizontal(_hm),
+		margin_vertical(_vm) {}
+
+	int			margin_horizontal{0},	//!< Horizontal margin in px.
+				margin_vertical{0};	//!< Vertical margin in px.
+};
+
+/**
+* Adjusts the box so it is aligned with the given "container" according to the
+* specifications given in the alignment object.
+*/
+template<typename T, typename U>
+void align(
+	box<T, U>& _box,
+	const box<T, U>& _container,
+	alignment _alignment
+) {
+	auto pos=_box.origin;
+
+	int mh=_alignment.margin_horizontal,
+		mv=_alignment.margin_vertical;
+
+	switch(_alignment.horizontal)
+	{
+		case alignment::h::none: break;
+		case alignment::h::outer_left:
+			pos.x=_container.origin.x-_box.w;
+			mh=-mh;
+		break;
+		case alignment::h::inner_left:
+			pos.x=_container.origin.x;
+		break;
+		case alignment::h::center:
+			pos.x=(_container.origin.x+_container.w / 2)-(_box.w/2);
+		break;
+		case alignment::h::inner_right:
+			pos.x=_container.origin.x+_container.w-_box.w;
+			mh=-mh;
+		break;
+		case alignment::h::outer_right:
+			pos.x=_container.origin.x+_container.w;
+		break;
+	}
+
+	switch(_alignment.vertical)
+	{
+		case alignment::v::none: break;
+		case alignment::v::outer_top:
+			pos.y=_container.origin.y-_box.h;
+			mv=-mv;
+		break;
+		case alignment::v::inner_top:
+			pos.y=_container.origin.y;
+		break;
+		case alignment::v::center:
+			pos.y=(_container.origin.y+_container.h / 2)-(_box.h/2);
+		break;
+		case alignment::v::inner_bottom:
+			pos.y=_container.origin.y+_container.h-_box.h;
+			mv=-mv;
+		break;
+		case alignment::v::outer_bottom:
+			pos.y=_container.origin.y+_container.h;
+		break;
+	}
+
+	pos.x+=mh;
+	pos.y+=mv;
+	_box.origin=pos;
+}
+
 
 }
+

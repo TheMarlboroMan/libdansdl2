@@ -5,22 +5,13 @@
 
 using namespace ldv;
 
-
-representation_alignment::representation_alignment(representation_alignment::h _h, representation_alignment::v _v, int _hm, int _vm):
-	horizontal(_h), 
-	vertical(_v), 
-	margin_horizontal(_hm), 
-	margin_vertical(_vm) {
-
-}
-
 //!Class constructor.
 
 //!Alpha value defaults to max.
 
 representation::representation(int valpha):
 	visible(true),
-	blend_mode(blends::none), 
+	blend_mode(blends::none),
 	val_alpha{colorfi(valpha)},
 	view_position{0,0,0,0}
 {
@@ -30,7 +21,7 @@ representation::representation(int valpha):
 //!Copy constructor.
 
 representation::representation(const representation& o):
-	visible(o.visible), 
+	visible(o.visible),
 	blend_mode(blends::none),
 	val_alpha(o.val_alpha),
 	view_position(o.view_position)
@@ -52,7 +43,7 @@ representation& representation::operator=(const representation& o)
 //!Draws to screen with camera. The third parameter skips camera checks and draws anyway.
 
 //!This function actually delegates to do_draw on each derived class.
-//!skip_take is mostly useful for group repesentations, specially when rotations 
+//!skip_take is mostly useful for group repesentations, specially when rotations
 //are applied to them.
 
 void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take)
@@ -138,11 +129,11 @@ void representation::debug_trace_box() const
 void representation::pre_render_transform(const draw_info& iv)
 {
 	glMatrixMode(GL_MODELVIEW);
-	
+
 	//Here we are always dealing with screen values...
 
 	auto pos=get_position();
-	int 	x=iv.pos_x+pos.x-iv.rel_x, 
+	int 	x=iv.pos_x+pos.x-iv.rel_x,
 		y=iv.pos_y+pos.y-iv.rel_y;
 
 	//Compensating the movement that zoom and scale causes... We displace
@@ -166,10 +157,10 @@ void representation::pre_render_transform(const draw_info& iv)
 
 //!Sets rotation angle (0.f-360.f).
 
-//!Rotated representations have different view_position boxes that 
+//!Rotated representations have different view_position boxes that
 //!not transformed ones.
 
-void representation::set_rotation(float v) 
+void representation::set_rotation(float v)
 {
 	transformation.angle=fmod(v, 360.f);
 	update_view_position();
@@ -204,11 +195,11 @@ rect representation::calculate_view_position() const {
 	auto c=transformation.center;
 
 	polygon_2d<double> polig(
-		{ 
+		{
 			{(double)p.origin.x, (double)p.origin.y},
 			{(double)(p.origin.x+p.w), (double)p.origin.y},
 			{(double)(p.origin.x+p.w), (double)(p.origin.y+p.h)},
-			{(double)p.origin.x, (double)(p.origin.y+p.h)},        
+			{(double)p.origin.x, (double)(p.origin.y+p.h)},
 		}, {(double)c.x+pos.x, (double)c.y+pos.y});
 		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
 
@@ -237,7 +228,7 @@ void representation::align(const representation& o, const representation_alignme
 //Aligns this representation relative to the rectangle.
 
 //!In the inner left/top and outer right/bottom position, the margin becomes
-//!inverted. This function only takes into account screen coordinates (as 
+//!inverted. This function only takes into account screen coordinates (as
 //!it aligns representations, not logic objects).
 
 void representation::align(const rect& r, const representation_alignment& ra) {
