@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <vector>
+#include <ostream>
 
 namespace ldt
 {
@@ -121,7 +122,19 @@ struct point_2d
 		return *this;
 	}
 
+	template<typename Z>
+	friend std::ostream& operator<<(std::ostream&, const point_2d<Z>&);
 };
+
+template<typename T>
+std::ostream& operator<<(
+	std::ostream& _stream,
+	const point_2d<T>& _point
+) {
+
+	_stream<<_point.x<<","<<_point.y;
+	return _stream;
+}
 
 //!Returns the distance between two points.
 

@@ -115,7 +115,20 @@ class box
 	bool 			contains(const box& peq) const {
 		return ldt::box_in_box(peq.origin.x, peq.origin.y, peq.w, peq.h, origin.x, origin.y, w, h);
 	}
+
+	template<typename Y, typename Z>
+	friend std::ostream& operator<<(std::ostream&, const box<Y, Z>&);
 };
+
+template<typename T, typename U>
+std::ostream& operator<<(
+	std::ostream& _stream,
+	const box<T, U>& _box
+) {
+
+	_stream<<_box.origin<<" "<<_box.w<<"x"<<_box.h;
+	return _stream;
+}
 
 /**box
 * Adjusts the box so its edge _edge rests in _edge_position.
