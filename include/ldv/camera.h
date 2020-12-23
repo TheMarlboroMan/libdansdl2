@@ -81,12 +81,6 @@ class camera
 	//Methods...
 	void            sync();
 
-	static point    world_to_pos_screen(point p, point origin) {return p-origin;}
-	static point    world_to_pos_cartesian(point p, point origin) {return {p.x-origin.x, -p.y+origin.y};}
-
-	point           world_to_pos(point) const;
-	rect            world_to_pos(const rect&) const;
-
 	//Properties...
 	draw_info       d_info;		//!< Whatever the coordinate system chosen, this always stores values in screen space.
 	rect            focus_box;	//!< Box pointed at in world values. Width and height are related to zoom values.
@@ -99,8 +93,6 @@ class camera
 	rect            limit_margin;
 
 	tsystem         coordinate_system;
-
-	std::function<point(point, point)>	world_to_pos_f;
 };
 
 } //Fin namespace DLibV

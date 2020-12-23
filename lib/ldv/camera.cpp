@@ -3,7 +3,7 @@
 using namespace ldv;
 
 camera::camera(rect foco, point pos):
-	d_info{pos.x, pos.y, foco.origin.x, foco.origin.y, (int)foco.w, (int)foco.h, 1.0}, 
+	d_info{pos.x, pos.y, foco.origin.x, foco.origin.y, (int)foco.w, (int)foco.h, 1.0},
 	focus_box(foco), pos_box(pos.x, pos.y, focus_box.w, focus_box.h),
 	with_limit(false), limits{0,0,0,0}, with_margin(false), limit_margin{0,0,0,0},
 	coordinate_system(tsystem::screen)
@@ -14,7 +14,7 @@ camera::camera(rect foco, point pos):
 
 //!Syncs camera boxes and performs neccesary coordinate system conversions.
 
-//!This is a private function. Basically feeds a draw_info struct with the 
+//!This is a private function. Basically feeds a draw_info struct with the
 //!camera values and converts its y coordinates to screen space if neccesary.
 
 void camera::sync()
@@ -22,8 +22,8 @@ void camera::sync()
 	d_info.pos_x=pos_box.origin.x;
 	d_info.pos_y=pos_box.origin.y;
 	d_info.rel_x=focus_box.origin.x;
-	d_info.rel_y=coordinate_system==tsystem::screen ? 
-		focus_box.origin.y : 
+	d_info.rel_y=coordinate_system==tsystem::screen ?
+		focus_box.origin.y :
 		-focus_box.origin.y-focus_box.h; //Set to screen space.
 	d_info.view_w=focus_box.w;
 	d_info.view_h=focus_box.h;
@@ -35,8 +35,8 @@ void camera::sync()
 //!If the camera is limited, movement may not happen... Also, there is a slight
 //!chance that the camera will go out of limits into the limited space: if
 //!the focus box has a dimension smaller than the camera, the camera will try
-//!to center on it, triggering this behaviour and creating sort of a 
-//!"letterbox" effect. 
+//!to center on it, triggering this behaviour and creating sort of a
+//!"letterbox" effect.
 
 void camera::go_to(point p)
 {
@@ -62,7 +62,7 @@ void camera::go_to(point p)
 				return ((limit_dimension-foc_dimension) / 2) + limit_origin;
 			}
 		};
-		
+
 		focus_box.origin.x=calculate(focus_box.w, limits.origin.x, limits.w, p.x);
 		focus_box.origin.y=calculate(focus_box.h, limits.origin.y, limits.h, p.y);
 	}
@@ -84,11 +84,13 @@ void camera::center_on(point p)
 {
 	if(with_margin)
 	{
+
 		//Limit margin is expressed in terms of pos_box so the point must be converted.
-		auto pt=world_to_pos(p);
+		auto pt=p-focus_box.origin;
 
 		if(limit_margin.point_inside(pt))
 		{
+
 			return;
 		}
 		else
@@ -157,9 +159,9 @@ void camera::clear_limits()
 	with_limit=false;
 }
 
-//!Sets the zoom value, which in time alters the focus box. 
+//!Sets the zoom value, which in time alters the focus box.
 
-//!Zoom works by ratio: a zoom 1 is in a 1:1 ratio. A zoom of 2 draws 
+//!Zoom works by ratio: a zoom 1 is in a 1:1 ratio. A zoom of 2 draws
 //!everything twice as large. Larger zoom values imply smaller focus boxes.
 //!Zoom is done from the top-left corner of the camera so the view must
 //!be adjusted accordingly. In cartesian mode the zoom happens from the bottom-
@@ -174,10 +176,10 @@ void camera::set_zoom(double v)
 	sync();
 }
 
-//!Sets a margin for camera movement when using center_on functions. 
+//!Sets a margin for camera movement when using center_on functions.
 
-//!Objects still within the margin will cause no camera movement. 
-//!The rect is interpreted as relative to pos_box and always in screen 
+//!Objects still within the margin will cause no camera movement.
+//!The rect is interpreted as relative to pos_box and always in screen
 //!coordinates.
 
 void camera::set_center_margin(const rect& r)
@@ -194,35 +196,14 @@ void camera::clear_center_margin()
 	limit_margin={0,0,0,0};
 }
 
-//!Converts world point to pos point
-
-//!Where pos point is absolute position on the screen. The value returned
-//!from this function is affected by the coordinate system of the camera.
-
-point camera::	world_to_pos(point p) const
-{
-	return world_to_pos_f(p, focus_box.origin);
-}
-
-//!Converts world rect to pos rect
-
-//!Where pos rect is absolute position on the screen. The values returned
-//!from this function depend on the coordinate system of the camera.
-
-rect camera::world_to_pos(const rect& r) const
-{
-	auto orig=world_to_pos(r.origin);
-	return {orig.x, orig.y, r.w, r.h};
-}
-
 //!Sets the pos box of the camera.
 
 //!Repositions the camera on the screen using screen coordinates. Has no effect
 //!in the focused area of the world space.
 
-void camera::set_position(point v) 
+void camera::set_position(point v)
 {
-	pos_box.origin=v; 
+	pos_box.origin=v;
 	sync();
 }
 
@@ -231,23 +212,23 @@ void camera::set_position(point v)
 void camera::set_coordinate_system(tsystem v)
 {
 	coordinate_system=v;
-	
+
 	switch(coordinate_system)
 	{
 		case tsystem::screen:
-			world_to_pos_f=camera::world_to_pos_screen;
+
 		break;
 		case tsystem::cartesian:
-			world_to_pos_f=camera::world_to_pos_cartesian;
+
 		break;
 	}
 	sync();
 }
 
-//!Checks if the rect is completely or partly inside the camera focus. 
+//!Checks if the rect is completely or partly inside the camera focus.
 
 //!The rect is expected to represent the bounding box of an object in world
-//!coordinates (not a drawable object). This function is sensitive to the 
+//!coordinates (not a drawable object). This function is sensitive to the
 //!coordinate system selected.
 
 bool camera::in_focus(const rect& r) const
