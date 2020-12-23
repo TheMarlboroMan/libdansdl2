@@ -65,6 +65,7 @@ class ttf_representation:
 	void                unlock_changes();
 
 	void                set_color(rgb_color);
+	void                set_color(rgba_color);
 	void                set_bg_shaded_color(rgba_color);
 
 	void                set_text_align(text_align);

@@ -421,6 +421,25 @@ void ttf_representation::set_color(rgb_color c) {
 	create_texture();
 }
 
+//!Will trigger a recreation of the texture if different and unlocked.
+void ttf_representation::set_color(rgba_color _c) {
+
+	auto c=ldv::rgb8(_c.r, _c.g, _c.b);
+
+	if(c==text_color && get_alphaf()==_c.a) {
+		return;
+	}
+
+	text_color=c;
+	raster_representation::set_alphaf(_c.a);
+	if(!perform_changes) {
+		return;
+	}
+
+	create_texture();
+}
+
+
 //!Sets the background color for the shaded mode.
 
 //!Will trigger a recreation of the texture if the mode is shaded and changes (if unlocked).
