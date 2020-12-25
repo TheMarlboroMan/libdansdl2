@@ -377,11 +377,11 @@ class sdl_input
 
 	//!Defines a default event handling function that can be passed to a 
 	//!custom event handling function.
-	typedef				std::function<void(SDL_Event& event)> tf_default;
+	using               tf_default=std::function<void(SDL_Event& event)> ;
 
 	//!Defines a custom event handling function that receives the event and
 	//!the default function defined by this class.
-	typedef				std::function<bool(SDL_Event& event, tf_default&)> tf_event;
+	using               tf_event=std::function<bool(SDL_Event& event, tf_default&)> ;
 
 	//!Defines a text filter event.
 	using               text_filter=std::function<bool(const SDL_Event&)>;
@@ -420,7 +420,7 @@ class sdl_input
 	enum events_index{text=0, 
 		mousemove, mousedown, mouseup,
 		keyboard_down, keyboard_up, 
-		joystick_axis, joystick_hat, joystick_button_up, joystick_button_down, joystick_connected, 
+		joystick_axis, joystick_hat, joystick_button_up, joystick_button_down, joystick_connected, joystick_disconnected,
 		max_cache_index};
 
 	std::vector<bool> events_cache;
@@ -463,19 +463,34 @@ class sdl_input
 	bool 	 		pump_events(SDL_Event &, bool=true);
 	//!Gets the full mouse structure.
 	const mouse& 		get_mouse() const {return device_mouse;}
+	//!Returns true if a joystick with the given id exists
+	bool                has_joystick(int index) const {return joysticks.count(index);}
 	//!Gets the indicated joystick. May throw if not available.
-	const joystick& 	get_joystick(int index) const {return joysticks.at(index);}
+	const joystick&     get_joystick(int index) const {return joysticks.at(index);}
 	//!Gets the indicated joystick. May throw if not available.
-	joystick& 		get_joystick(int index) {return joysticks.at(index);}
+	joystick&           get_joystick(int index) {return joysticks.at(index);}
+	/**
+	* Returns a vector will all the available joystick indexes. These are not
+	* neccesarily the internal SDL indexes, but the ones used by this input 
+	* library.
+	*/
+	std::vector<int>    get_joystick_indexes() const;
 	//!Instruct the joystick to virtualize its hats as buttons.
-	void			virtualize_joystick_hats(int index) {joysticks.at(index).virtualize_hats();}
+	void                virtualize_joystick_hats(int index) {joysticks.at(index).virtualize_hats();}
 	//!Instruct the joystick to virtualize its axes as buttons.
-	void			virtualize_joystick_axis(int index, int threshold) {joysticks.at(index).virtualize_axis(threshold);}
-	void 			loop();
+	void                virtualize_joystick_axis(int index, int threshold) {joysticks.at(index).virtualize_axis(threshold);}
+	//!Must be called before each app iteration that needs fresh input!
+	void                loop();
 	//!Indicates if a new joystick was connected
-	bool			is_event_joystick_connected() const {return events_cache[joystick_connected];}
+	bool                is_event_joystick_connected() const {return events_cache[joystick_connected];}
+	/**
+	* Indicates if a joystick was removed. No way to know which, actually, it
+	* falls upon the application to keep track of this with calls to 
+	* get_joystick_indexes.
+	*/
+	bool                is_event_joystick_disconnected() const {return events_cache[joystick_disconnected];}
 	//!Moves the mouse cursor to the specified position.
-	void 			warp_mouse(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
+	void                warp_mouse(SDL_Window * w, unsigned int p_x, unsigned int p_y) {SDL_WarpMouseInWindow(w, p_x, p_y);}
 	//!Checks if the key is pressed as expressed in SDL scancodes.
 	bool 			is_key_pressed(int pkey) const {return device_keyboard.keys_pressed[pkey];}
 	//!Checks if the key is down as expressed in SDL scancodes.
