@@ -179,6 +179,7 @@ void sdl_input::process_event(SDL_Event& event)
 				init_joystick(SDL_JoystickOpen(event.cdevice.which), joysticks.size());
 				++joysticks_size;
 				events_cache[joystick_connected]=true;
+				lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Joystick registered"<<std::endl;
 			}
 			else
 			{
@@ -452,21 +453,5 @@ int sdl_input::get_joystick_index_from_id(SDL_JoystickID id) const
 {
 	if(!id_joystick_to_index.count(id)) throw std::runtime_error("Invalid joystick id in get_joystick_index_from_id");
 	return id_joystick_to_index.at(id);
-}
-
-std::vector<int> sdl_input::get_joystick_indexes() const {
-
-	std::vector<int> result;
-
-	std::transform(
-		std::begin(joysticks),
-		std::end(joysticks),
-		std::back_inserter(result),
-		[](const auto _pair) {
-			return _pair.first;
-		}
-	);
-
-	return result;
 }
 

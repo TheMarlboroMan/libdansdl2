@@ -469,12 +469,6 @@ class sdl_input
 	const joystick&     get_joystick(int index) const {return joysticks.at(index);}
 	//!Gets the indicated joystick. May throw if not available.
 	joystick&           get_joystick(int index) {return joysticks.at(index);}
-	/**
-	* Returns a vector will all the available joystick indexes. These are not
-	* neccesarily the internal SDL indexes, but the ones used by this input 
-	* library.
-	*/
-	std::vector<int>    get_joystick_indexes() const;
 	//!Instruct the joystick to virtualize its hats as buttons.
 	void                virtualize_joystick_hats(int index) {joysticks.at(index).virtualize_hats();}
 	//!Instruct the joystick to virtualize its axes as buttons.
@@ -504,13 +498,13 @@ class sdl_input
 	//!Checks if the mouse button is pressed.
 	bool 			is_mouse_button_pressed(int pbutton) const {return device_mouse.buttons_pressed[pbutton];}
 	//!Checks if the mouse has been moved.
-	bool 			is_mouse_movement() const {return device_mouse.movement;}
-	bool 			is_joystick_button_down(unsigned int, unsigned int) const;
-	bool 			is_joystick_button_up(unsigned int, unsigned int) const;
-	bool 			is_joystick_button_pressed(unsigned int, unsigned int) const;
-	bool 			is_joystick_button_released(unsigned int, unsigned int) const;
-	Sint16 			get_joystick_axis(unsigned int, unsigned int) const;
-	int			get_joystick_hat(unsigned int, unsigned int) const;
+	bool            is_mouse_movement() const {return device_mouse.movement;}
+	bool            is_joystick_button_down(unsigned int, unsigned int) const;
+	bool            is_joystick_button_up(unsigned int, unsigned int) const;
+	bool            is_joystick_button_pressed(unsigned int, unsigned int) const;
+	bool            is_joystick_button_released(unsigned int, unsigned int) const;
+	Sint16          get_joystick_axis(unsigned int, unsigned int) const;
+	int             get_joystick_hat(unsigned int, unsigned int) const;
 	//!Returns the number of connected joysticks.
 	unsigned short int 	get_joysticks_size() const {return joysticks_size;}
 	//!Returns the current mouse position.
@@ -519,48 +513,48 @@ class sdl_input
 	bool 			is_exit_signal() const {return exit_signal;}
 	//!Checks if there has been an acivity event (minimize, maximize...).
 	bool 			is_event_activity() const {return activity_event_instance.is_activity_event_registered();}
-	//!Checks if the activity event has focus. //TODO: What does this even mean????
+	//!Checks if the current window has focus. I guess...
 	bool 			is_event_activity_focus() const {return activity_event_instance.is_focused();}
 	//!Returns the kind of activity event. //TODO: Again, what is this???
 	Uint8 			get_activity_event() const {return activity_event_instance.get_state();}
-	int			get_key_down_index() const;
-	int			get_mouse_button_down_index() const;
-	int			get_joystick_button_down_index(int) const;
+	int             get_key_down_index() const;
+	int             get_mouse_button_down_index() const;
+	int             get_joystick_button_down_index(int) const;
 
 	//!Indicates if a text event has taken place.
-	bool 			is_event_text() const {return events_cache[text];}
+	bool            is_event_text() const {return events_cache[text];}
 	//!Indicates if a mouse event has taken place.
-	bool 			is_event_mouse() const {return events_cache[mousemove] || events_cache[mousedown] || events_cache[mouseup];}
+	bool            is_event_mouse() const {return events_cache[mousemove] || events_cache[mousedown] || events_cache[mouseup];}
 	//!Indicates if a mouse movement event has taken place.
-	bool 			is_event_mouse_movement() const {return events_cache[mousemove];}
+	bool            is_event_mouse_movement() const {return events_cache[mousemove];}
 	//!Indicates if a mouse button down event has taken place.
-	bool 			is_event_mouse_button_down() const {return events_cache[mousedown];}
+	bool            is_event_mouse_button_down() const {return events_cache[mousedown];}
 	//!Indicates if a mouse button up event has taken place.
-	bool 			is_event_mouse_button_up() const {return events_cache[mouseup];}
+	bool            is_event_mouse_button_up() const {return events_cache[mouseup];}
 	//!Indicates if any keyboard event has taken place.
-	bool 			is_event_keyboard() const {return events_cache[keyboard_up] || events_cache[keyboard_down];}
+	bool            is_event_keyboard() const {return events_cache[keyboard_up] || events_cache[keyboard_down];}
 	//!Indicates if a keyboard down event has taken place.
-	bool 			is_event_keyboard_down() const {return events_cache[keyboard_down];}
+	bool            is_event_keyboard_down() const {return events_cache[keyboard_down];}
 	//!Indicates if a keyboard up event has taken place.
-	bool 			is_event_keyboard_up() const {return events_cache[keyboard_up];}
+	bool            is_event_keyboard_up() const {return events_cache[keyboard_up];}
 	//!Indicates if a keyboard pressed event has taken place.
-	bool 			is_event_keyboard_pressed() const {return device_keyboard.keys_pressed_size;}
+	bool            is_event_keyboard_pressed() const {return device_keyboard.keys_pressed_size;}
 	//!Indicates any joystick event has taken place.
-	bool 			is_event_joystick() const {return events_cache[joystick_axis] || events_cache[joystick_hat] || events_cache[joystick_button_up] || events_cache[joystick_button_down] ;}
+	bool            is_event_joystick() const {return events_cache[joystick_axis] || events_cache[joystick_hat] || events_cache[joystick_button_up] || events_cache[joystick_button_down] ;}
 	//!Indicates any joystick axis event has taken place.
-	bool 			is_event_joystick_axis() const {return events_cache[joystick_axis];}
+	bool            is_event_joystick_axis() const {return events_cache[joystick_axis];}
 	//!Indicates any joystick hat event has taken place.
-	bool 			is_event_joystick_hat() const {return events_cache[joystick_hat];}
+	bool            is_event_joystick_hat() const {return events_cache[joystick_hat];}
 	//!Indicates any joystick button event has taken place.
-	bool 			is_event_joystick_button() const {return events_cache[joystick_button_up] || events_cache[joystick_button_down];}
+	bool            is_event_joystick_button() const {return events_cache[joystick_button_up] || events_cache[joystick_button_down];}
 	//!Indicates a joystick button up event has taken place.
-	bool 			is_event_joystick_button_up() const {return events_cache[joystick_button_up];}
+	bool            is_event_joystick_button_up() const {return events_cache[joystick_button_up];}
 	//!Indicates a joystick button down event has taken place.
-	bool 			is_event_joystick_button_down() const {return events_cache[joystick_button_down];}
+	bool            is_event_joystick_button_down() const {return events_cache[joystick_button_down];}
 	//!Indicates if any input is received.
-	bool 			is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
+	bool            is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
 	//!Same as before, but with key presses (not really events) too.
-	bool 			is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
+	bool            is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
 
 		
 	//!Resets the custom processing function to its default value, which
