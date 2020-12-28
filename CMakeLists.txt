@@ -24,6 +24,12 @@ include_directories("include" ${LOG_DIR})
 set(SOURCE "")
 add_subdirectory("${PROJECT_SOURCE_DIR}/lib")
 
+if(WIN32)
+	add_library(lm SHARED IMPORTED)
+	set_target_properties(lm PROPERTIES IMPORTED_LOCATION "C:/Program Files (x86)/lm/lib/liblm.dll")
+	set_target_properties(lm PROPERTIES IMPORTED_IMPLIB "C:/Program Files (x86)/lm/lib/liblm.dll")
+endif()
+
 add_library(dansdl2_static STATIC ${SOURCE})
 set_target_properties(dansdl2_static PROPERTIES OUTPUT_NAME dansdl2)
 
@@ -33,3 +39,8 @@ set_target_properties(dansdl2_shared PROPERTIES OUTPUT_NAME dansdl2)
 install(TARGETS dansdl2_shared DESTINATION lib)
 install(TARGETS dansdl2_static DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include)
+if(WIN32)
+	target_link_libraries(dansdl2_static lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
+	target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
+endif()
+

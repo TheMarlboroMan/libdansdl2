@@ -8,6 +8,11 @@
 #include <ldt/polygon_2d.h>
 
 #include <SDL2/SDL.h>
+
+#ifndef GL_CLAMP_TO_EDGE
+#define GL_CLAMP_TO_EDGE 0x812F
+#endif
+
 namespace ldv
 {
 
