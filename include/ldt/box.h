@@ -220,7 +220,7 @@ void match_edge(
 			_box.origin.x=_obstacle.origin.x;
 			return;
 		case box_edges::right:
-			_box.origin.xobstacle.origin.x+_obstacle.w-_box.w;
+			_box.origin.x=_obstacle.origin.x+_obstacle.w-_box.w;
 			return;
 		case box_edges::bottom:
 			_box.origin.y=_obstacle.origin.y;
