@@ -13,6 +13,7 @@ enum class box_edges {top, bottom, left, right};
 
 template<typename T, typename U> class box;
 
+//These are less verbose ways to say "align".
 template<typename T, typename U>
 void snap_to_edge(box<T, U>&, T, box_edges);
 
@@ -22,6 +23,17 @@ void snap_to_edge(box<T, U>&, const box<T, U>&, box_edges);
 template<typename T, typename U>
 void match_edge(box<T, U>&, const box<T, U>&, box_edges);
 
+template<typename T, typename U>
+void center_horizontally(box<T, U>&, T);
+
+template<typename T, typename U>
+void center_horizontally(box<T, U>&, const box<T, U>&);
+
+template<typename T, typename U>
+void center_vertically(box<T, U>&, T);
+
+template<typename T, typename U>
+void center_vertically(box<T, U>&, const box<T, U>&);
 //!The only thing that is enforced here is that height goes towards the positive
 //!infinite in the Y axis. This means "down" in screen coordinates and "up"
 //!in cartesian ones. If this rule is respected, its functions should work.
@@ -91,6 +103,40 @@ class box
 	void            match_edge(const box& _obstacle, box_edges _edge) {
 
 		ldt::match_edge(*this, _obstacle, _edge);
+	}
+
+	/**
+	* Makes the horizontal center rest on _center.
+	*/ 
+
+	void            center_horizontally(T _center) {
+
+		ldt::center_horizontally(*this, _center);
+	}
+
+	/**
+	* Makes the horizontal center match the one on _obstacle.
+	*/ 
+	void            center_horizontally(const box& _obstacle) {
+
+		ldt::center_horizontally(*this, _obstacle);
+	}
+
+	/**
+	* Makes the vertical center rest on _center.
+	*/ 
+
+	void            center_vertically(T _center) {
+
+		ldt::center_vertically(*this, _center);
+	}
+
+	/**
+	* Makes the vertical center match the one on _obstacle.
+	*/ 
+	void            center_vertically(const box& _obstacle) {
+
+		ldt::center_vertically(*this, _obstacle);
 	}
 
 	//!Returns true if this box collides with the given box  The second
@@ -226,6 +272,42 @@ void match_edge(
 			_box.origin.y=_obstacle.origin.y;
 			return;
 	}
+}
+
+template<typename T, typename U>
+void center_horizontally(
+	box<T, U>& _box, 
+	T _center
+) {
+
+	_box.origin.x=_center-(_box.w/2);
+}
+
+template<typename T, typename U>
+void center_horizontally(
+	box<T, U>& _box, 
+	const box<T, U>& _container
+) {
+
+	center_horizontally(_box, _container.origin.x+(_container.w / 2));
+}
+
+template<typename T, typename U>
+void center_vertically(
+	box<T, U>& _box, 
+	T _center
+) {
+
+	_box.origin.y=_center-(_box.h/2);
+}
+
+template<typename T, typename U>
+void center_vertically(
+	box<T, U>& _box, 
+	const box<T, U>& _container
+) {
+
+	center_vertically(_box, _container.origin.y+(_container.h / 2));
 }
 
 /**
