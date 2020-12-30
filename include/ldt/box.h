@@ -19,6 +19,9 @@ void snap_to_edge(box<T, U>&, T, box_edges);
 template<typename T, typename U>
 void snap_to_edge(box<T, U>&, const box<T, U>&, box_edges);
 
+template<typename T, typename U>
+void match_edge(box<T, U>&, const box<T, U>&, box_edges);
+
 //!The only thing that is enforced here is that height goes towards the positive
 //!infinite in the Y axis. This means "down" in screen coordinates and "up"
 //!in cartesian ones. If this rule is respected, its functions should work.
@@ -75,11 +78,19 @@ class box
 	}
 
 	/**
-	* Adjusts the box so its edge _edge rests in _edge_position.
+	* Adjusts the box so its edge _edge rests in the opposite _edge_position.
 	*/
 	void            snap_to_edge(const box& _obstacle, box_edges _edge) {
 
 		ldt::snap_to_edge(*this, _obstacle, _edge);
+	}
+
+	/**
+	* Adjusts the box so its edge _edge is the same as the one in _obstacle
+	*/
+	void            match_edge(const box& _obstacle, box_edges _edge) {
+
+		ldt::match_edge(*this, _obstacle, _edge);
 	}
 
 	//!Returns true if this box collides with the given box  The second
@@ -131,7 +142,8 @@ std::ostream& operator<<(
 }
 
 /**box
-* Adjusts the box so its edge _edge rests in _edge_position.
+* Adjusts _box so its_edge rests in _edge_position. Edges make sense in 
+* cartesian space only.
 */
 template<typename T, typename U>
 void snap_to_edge(
@@ -159,6 +171,7 @@ void snap_to_edge(
 
 /**
 * Adjusts the box so its edge _edge rests in the opposite edge of _obstacle.
+* Might make sense only in cartesian space.
 */
 template<typename T, typename U>
 void snap_to_edge(
@@ -166,6 +179,8 @@ void snap_to_edge(
 	const box<T, U>& _obstacle,
 	box_edges _edge
 ) {
+
+	//TODO: can be implemented in terms of the other overload.
 
 	switch(_edge) {
 
@@ -180,6 +195,35 @@ void snap_to_edge(
 			return;
 		case box_edges::bottom:
 			_box.origin.y=_obstacle.origin.y+_obstacle.h;
+			return;
+	}
+}
+
+/*
+* Adjusts _box so its _edge matches the one in _obstacle. Might work only in
+* cartesian space.
+*/
+
+template<typename T, typename U>
+void match_edge(
+	box<T, U>& _box, 
+	const box<T, U>& _obstacle, 
+	box_edges _edge
+) {
+
+	switch(_edge) {
+
+		case box_edges::top:
+			_box.origin.y=_obstacle.origin.y+_obstacle.h-_box.h;
+			return;
+		case box_edges::left:
+			_box.origin.x=_obstacle.origin.x;
+			return;
+		case box_edges::right:
+			_box.origin.xobstacle.origin.x+_obstacle.w-_box.w;
+			return;
+		case box_edges::bottom:
+			_box.origin.y=_obstacle.origin.y;
 			return;
 	}
 }
