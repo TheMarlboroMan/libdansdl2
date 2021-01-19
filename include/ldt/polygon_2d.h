@@ -196,6 +196,7 @@ class polygon_2d {
 	std::vector<tpoint>		vertices;		//!< Internal vertex data.
 	tpoint				centroid;		//!< Centroid (median center) for the polygon.
 	tpoint				rotation_center;	//!< Rotation center for the polygon.
+
 };
 
 //!Calculates the centroid (median center point) of the polygon made up by the vertices.

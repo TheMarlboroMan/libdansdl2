@@ -226,7 +226,7 @@ bool intersection_segment_polygon(const segment_2d<T>& s, const polygon_2d<T> p)
 template<typename T>
 bool point_in_polygon(const polygon_2d<T>& p, const point_2d<T>& pt)
 {
-	return point_in_polygon(p.vertices, pt);
+	return point_in_polygon(p.get_vertices(), pt);
 }
 
 template<typename T>
