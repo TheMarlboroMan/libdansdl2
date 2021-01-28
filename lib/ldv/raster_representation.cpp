@@ -6,10 +6,19 @@ using namespace ldv;
 
 //!Constructs a raster_representation with position, clipping and alpha.
 
-raster_representation::raster_representation(rect pos, rect rec, int palpha)
-	:representation(palpha), texture_instance(nullptr),
-	brush{0,0}, rgb_colorize{1.f, 1.f, 1.f},
-	location(pos), clip(rec)
+raster_representation::raster_representation(
+	rect pos, 
+	rect rec, 
+	int palpha
+):
+	representation(palpha), 
+	texture_instance(nullptr),
+	brush{0,0}, 
+	points{{0,0},{0,0},{0,0},{0,0}},
+	tex_points{{0.,0.},{0.,0.},{0.,0.},{0.,0.}},
+	rgb_colorize{1.f, 1.f, 1.f},
+	location(pos), 
+	clip(rec)
 {
 
 }
@@ -88,7 +97,7 @@ void raster_representation::do_draw()
 		break;
 	}
 
-	if(!points.size() || tex_points.size()) {
+	if(calculate) {
 		calculate_points();
 	}
 
@@ -112,7 +121,6 @@ void raster_representation::do_draw()
 void raster_representation::calculate_points() {
 
 	const rect& pos=get_location();
-	const rect& recor=get_clip();
 
 	if(!brush.w) {
 		brush.w=pos.w;
@@ -122,11 +130,80 @@ void raster_representation::calculate_points() {
 		brush.h=pos.h;
 	}
 
+	if(brush.w!=(int)pos.h || brush.h!=(int)pos.h) {
+
+		calculate_points_brush();
+		calculate=false;
+		return;
+	}
+
+	if(points.size()!=4) {
+
+		points.resize(4);
+	}
+
+	if(tex_points.size()!=4) {
+
+		tex_points.resize(4);
+	}
+
+	points[0]={0, 0},
+	points[1]={(int)pos.w, 0},
+	points[2]={(int)pos.w, (int)pos.h},
+	points[3]={0, (int)pos.h};
+
+	const rect& recor=get_clip();
 	const double    w_tex=texture_instance->get_w(),
 	                h_tex=texture_instance->get_h();
+	const int dif_x=brush.w > (int)pos.w ? pos.w : brush.w;
+	const int dif_y=brush.h > (int)pos.h ? pos.w : brush.h;
+
+	//ptex_fx y ptex_fy calculations are a proportion between the brush
+	//and the space to be drawn (rule of three). This will only map
+	//the neccesary texture parts.
+
+	point_type ptex_x=(point_type)recor.origin.x,
+	        ptex_y=(point_type)recor.origin.y,
+	        ptex_fx=ptex_x+( ( (point_type)dif_x * (point_type)recor.w) / (point_type)brush.w),
+	        ptex_fy=ptex_y+( ( (point_type)dif_y * (point_type)recor.h) / (point_type)brush.h);
+
+	tex_points[0]={ptex_x,	ptex_y},
+	tex_points[1]={ptex_fx,	ptex_y},
+	tex_points[2]={ptex_fx,	ptex_fy},
+	tex_points[3]={ptex_x,	ptex_fy};
+
+	if(transformation.horizontal) {
+
+		std::swap(tex_points[0].x, tex_points[1].x);
+		std::swap(tex_points[2].x, tex_points[3].x);
+	}
+
+	if(transformation.vertical) {
+
+		std::swap(tex_points[0].y, tex_points[2].y);
+		std::swap(tex_points[1].y, tex_points[3].y);
+	}
+
+	//Convert again to 0:1 ratio.
+	for(auto &p : tex_points) {
+
+		p.x/=w_tex;
+		p.y/=h_tex;
+	}
+
+	calculate=false;
+}
+
+void raster_representation::calculate_points_brush() {
+
+	const rect& pos=get_location();
+	const rect& recor=get_clip();
 
 	points.clear();
 	tex_points.clear();
+
+	const double    w_tex=texture_instance->get_w(),
+	                h_tex=texture_instance->get_h();
 
 	int itx=0;
 
@@ -138,6 +215,12 @@ void raster_representation::calculate_points() {
 		for(int y=0; y < (int)pos.h; y+=brush.h) {
 
 			const int dif_y=y+brush.h > (int)pos.h ? pos.w - (ity * brush.h) : brush.h;
+/*
+			points[0]={x, y},
+			points[1]={x+dif_x, y},
+			points[2]={x+dif_x, y+dif_y},
+			points[3]={x, y+dif_y};
+*/
 
 			point pts[]={
 				{x, y},
@@ -145,7 +228,6 @@ void raster_representation::calculate_points() {
 				{x+dif_x, y+dif_y},
 				{x, y+dif_y}
 			};
-
 			points.insert(std::end(points), pts, pts+4);
 
 			//ptex_fx y ptex_fy calculations are a proportion between the brush
@@ -203,6 +285,8 @@ void raster_representation::calculate_points() {
 		}
 		++itx;
 	}
+
+	calculate=false;
 }
 
 //!Deletes the texture assigned.
@@ -234,6 +318,7 @@ void raster_representation::set_clip(rect p_caja) {
 
 	clip=p_caja;
 	reset_calculations();
+	brush={0,0};
 }
 
 //!Sets the position without altering size.
@@ -242,17 +327,6 @@ void raster_representation::go_to(point p) {
 
 	location.origin=p;
 	update_view_position();
-}
-
-//!Resets all stored fields.
-
-//!Internally called when the clipping box changes.
-
-void raster_representation::reset_calculations() {
-
-	brush={0,0};
-	points.clear();
-	tex_points.clear();
 }
 
 //!Gets assigned texture width.

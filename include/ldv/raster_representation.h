@@ -68,7 +68,11 @@ class raster_representation:
 	//!Flips the representation vertically without changing its position.
 	void 			set_invert_vertical(bool v) {transformation.vertical=v;}
 	//!Sets the fill brush values. When these are set to anything than 0, the "location" rect will be filled with "brush" sizes patches of "clip".
-	void			set_brush(int w, int h) {brush.w=w; brush.h=h;}
+	void			set_brush(int w, int h) {
+		brush.w=w; 
+		brush.h=h; 
+		reset_calculations();
+	}
 	void 			set_location(rect);
 	void 			set_clip(rect);
 	//!Sets the texture.
@@ -96,6 +100,7 @@ class raster_representation:
 	struct texpoint {point_type x, y;};
 
 	void			calculate_points();
+	void            calculate_points_brush();
 
 	invert_transform 	transformation;
 
@@ -108,6 +113,8 @@ class raster_representation:
 
 	//!Texture mapping points.
 	std::vector<texpoint>	tex_points;
+
+	bool            calculate{true};
 	rgb_color		rgb_colorize;
 
 	protected:
@@ -115,7 +122,7 @@ class raster_representation:
 	rect 			location; 	//!< Location in which it is drawm.
 	rect	 		clip;		//!< Section of the texture used.
 
-	void			reset_calculations();
+	void			reset_calculations() {calculate=true;}
 	void 			free_texture();
 	//!Removes the texture.
 	void 			reset_texture() {texture_instance=nullptr;}
