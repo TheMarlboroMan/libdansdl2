@@ -102,8 +102,8 @@ void raster_representation::calculate_points() {
 
 	point_type ptex_x=(point_type)recor.origin.x,
 	        ptex_y=(point_type)recor.origin.y,
-	        ptex_fx=ptex_x+pos.w,
-	        ptex_fy=ptex_y+pos.h;
+	        ptex_fx=ptex_x+recor.w,
+	        ptex_fy=ptex_y+recor.h;
 
 	tex_points[0]={ptex_x,	ptex_y},
 	tex_points[1]={ptex_fx,	ptex_y},

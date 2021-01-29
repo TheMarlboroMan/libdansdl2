@@ -76,6 +76,7 @@ void representation::draw(screen& pscreen, bool skip_take)
 	glLoadIdentity();
 }
 
+#ifndef NDEBUG
 //!Directly uses openGL to trace the view position.
 
 //!This function should not be used beyond debug purposes.
@@ -100,6 +101,8 @@ void representation::debug_trace_box() const
 	glDrawArrays(GL_POLYGON, 0, points.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
+
+#endif
 
 //!Applies all SDL transformations of zoom, position and rotation.
 

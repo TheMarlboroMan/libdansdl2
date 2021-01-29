@@ -89,7 +89,9 @@ class representation {
 	void            set_alphaf(float v) {val_alpha=v;}
 	//!Resets rotation transformation data.
 	virtual void    reset_transform() {transformation.reset();}
+#ifndef NDEBUG
 	void            debug_trace_box() const;
+#endif
 	void            align(const representation&, const representation_alignment&);
 	void            align(const rect&, const representation_alignment&);
 	//!Toogles visibility flag.
