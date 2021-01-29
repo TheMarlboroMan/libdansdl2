@@ -17,29 +17,6 @@ representation::representation(int valpha):
 {
 
 }
-
-//!Copy constructor.
-
-representation::representation(const representation& o):
-	visible(o.visible),
-	blend_mode(blends::none),
-	val_alpha(o.val_alpha),
-	view_position(o.view_position)
-{
-
-}
-
-//!Assignment operator.
-
-representation& representation::operator=(const representation& o)
-{
-	visible=o.visible;
-	val_alpha=o.val_alpha;
-	view_position=o.view_position;
-	blend_mode=o.blend_mode;
-	return *this;
-}
-
 //!Draws to screen with camera. The third parameter skips camera checks and draws anyway.
 
 //!This function actually delegates to do_draw on each derived class.

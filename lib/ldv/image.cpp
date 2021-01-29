@@ -40,28 +40,3 @@ image::image(const unsigned char * _seq, size_t _size)
 
 }
 
-
-//!Assignment operator.
-
-//!Makes a copy of the underlying surface without changing the reference.
-
-image& image::operator=(const image& o)
-{
-	surface::operator=(o);
-	return *this;
-}
-
-//!Copy constructor.
-
-//!Makes a copy of the underlying surface without changing the reference.
-
-image::image(const image& o)
-	:surface(o)
-{
-
-}
-
-image::~image()
-{
-
-}

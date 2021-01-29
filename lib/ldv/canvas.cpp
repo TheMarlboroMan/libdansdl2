@@ -4,40 +4,12 @@ using namespace ldv;
 
 //!Default constructor.
 
-//!Creates an empty canvas... It is private so can only be called from 
+//!Creates an empty canvas... It is private so can only be called from
 //!statis functions.
 
 canvas::canvas()
 	:surface(), generated(false)
 {
-}
-
-//!Copy constructor.
-
-canvas::canvas(const canvas& o)
-	:surface(o), generated(o.generated)
-{
-
-}
-
-//!Assignment operator.
-
-//!Copies the referenced canvas without changing it. The underlying surface
-//!is also copied.
-
-canvas& canvas::operator=(const canvas& o)
-	
-{
-	surface::operator=(o);
-	generated=o.generated;
-	return *this;
-}
-
-//!Class destructor.
-
-canvas::~canvas()
-{
-
 }
 
 //!Creates a canvas with the specified size and surface parameters.

@@ -13,10 +13,7 @@ class canvas:
 	public surface
 {
 	public:
-	
-	virtual 		~canvas();
-				canvas(const canvas&);
-				canvas& operator=(const canvas&);
+
 	static canvas * 	create(int, int, const SDL_Surface *);
 	static canvas * 	create(int, int, int bpp, Uint32 maskr, Uint32 maskg, Uint32 maskb, Uint32 maskalpha);
 

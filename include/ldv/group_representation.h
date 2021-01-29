@@ -23,8 +23,6 @@ class group_representation:
 	//!Creates a group representation with its top-left at the given point.
 				group_representation(point);
 
-	//!Virtual class destructor.
-	virtual 		~group_representation();
 	void	 		insert(representation *);
 
 	void 			clear();

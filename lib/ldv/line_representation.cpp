@@ -16,20 +16,6 @@ line_representation::line_representation(point p1, point p2, rgb_color c)
 	update_view_position();
 }
 
-line_representation::line_representation(const line_representation& o)
-	:primitive_representation(o), points(o.points), origin(o.origin)
-{
-
-}
-
-line_representation& line_representation::operator=(const line_representation& o)
-{
-	primitive_representation::operator=(o);
-	points=o.points;
-	origin=o.origin;
-	return *this;
-}
-
 //!Reassigns the points.
 
 void line_representation::set_points(point p1, point p2)

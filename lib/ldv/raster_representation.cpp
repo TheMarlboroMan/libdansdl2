@@ -7,54 +7,21 @@ using namespace ldv;
 //!Constructs a raster_representation with position, clipping and alpha.
 
 raster_representation::raster_representation(
-	rect pos, 
-	rect rec, 
+	rect pos,
+	rect rec,
 	int palpha
 ):
-	representation(palpha), 
+	representation(palpha),
 	texture_instance(nullptr),
-	brush{0,0}, 
+	brush{0,0},
 	points{{0,0},{0,0},{0,0},{0,0}},
 	tex_points{{0.,0.},{0.,0.},{0.,0.},{0.,0.}},
 	rgb_colorize{1.f, 1.f, 1.f},
-	location(pos), 
+	location(pos),
 	clip(rec)
 {
 
 }
-
-//!Class copy constructor.
-
-//!Texture is assigned. It must not be owned by the class, but by an external manager.
-
-raster_representation::raster_representation(const raster_representation& o)
-	:representation(o), texture_instance(o.texture_instance),
-	brush(o.brush), points(o.points),
-	tex_points(o.tex_points),
-	rgb_colorize(o.rgb_colorize),
-	location(o.location),
-	clip(o.clip)
-{
-
-}
-
-//!Assignment operator.
-
-//!Texture is assigned. It must not be owned by the class, but by an external manager.
-
-raster_representation& raster_representation::operator=(const raster_representation& o)
-{
-	representation::operator=(o);
-	texture_instance=o.texture_instance;
-	location=o.location;
-	clip=o.clip;
-	brush=o.brush;
-	points=o.points;
-	tex_points=o.tex_points;
-
-	return *this;
-}
-
 //!Sets the clip to the full size of the texture.
 
 //!Correspondingly adjusts the location box to the clipping size.
@@ -98,7 +65,9 @@ void raster_representation::do_draw()
 	}
 
 	if(calculate) {
-		calculate_points();
+		with_brush
+			? calculate_points_brush()
+			: calculate_points();
 	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -122,31 +91,6 @@ void raster_representation::calculate_points() {
 
 	const rect& pos=get_location();
 
-	if(!brush.w) {
-		brush.w=pos.w;
-	}
-
-	if(!brush.h) {
-		brush.h=pos.h;
-	}
-
-	if(brush.w!=(int)pos.h || brush.h!=(int)pos.h) {
-
-		calculate_points_brush();
-		calculate=false;
-		return;
-	}
-
-	if(points.size()!=4) {
-
-		points.resize(4);
-	}
-
-	if(tex_points.size()!=4) {
-
-		tex_points.resize(4);
-	}
-
 	points[0]={0, 0},
 	points[1]={(int)pos.w, 0},
 	points[2]={(int)pos.w, (int)pos.h},
@@ -155,17 +99,11 @@ void raster_representation::calculate_points() {
 	const rect& recor=get_clip();
 	const double    w_tex=texture_instance->get_w(),
 	                h_tex=texture_instance->get_h();
-	const int dif_x=brush.w > (int)pos.w ? pos.w : brush.w;
-	const int dif_y=brush.h > (int)pos.h ? pos.w : brush.h;
-
-	//ptex_fx y ptex_fy calculations are a proportion between the brush
-	//and the space to be drawn (rule of three). This will only map
-	//the neccesary texture parts.
 
 	point_type ptex_x=(point_type)recor.origin.x,
 	        ptex_y=(point_type)recor.origin.y,
-	        ptex_fx=ptex_x+( ( (point_type)dif_x * (point_type)recor.w) / (point_type)brush.w),
-	        ptex_fy=ptex_y+( ( (point_type)dif_y * (point_type)recor.h) / (point_type)brush.h);
+	        ptex_fx=ptex_x+pos.w,
+	        ptex_fy=ptex_y+pos.h;
 
 	tex_points[0]={ptex_x,	ptex_y},
 	tex_points[1]={ptex_fx,	ptex_y},
@@ -199,6 +137,13 @@ void raster_representation::calculate_points_brush() {
 	const rect& pos=get_location();
 	const rect& recor=get_clip();
 
+	if(!brush.w || !brush.h) {
+
+		throw std::runtime_error("brush must be set to positive values");
+	}
+
+	//TODO: We should be able to precalculate these and resize them.
+
 	points.clear();
 	tex_points.clear();
 
@@ -215,12 +160,6 @@ void raster_representation::calculate_points_brush() {
 		for(int y=0; y < (int)pos.h; y+=brush.h) {
 
 			const int dif_y=y+brush.h > (int)pos.h ? pos.w - (ity * brush.h) : brush.h;
-/*
-			points[0]={x, y},
-			points[1]={x+dif_x, y},
-			points[2]={x+dif_x, y+dif_y},
-			points[3]={x, y+dif_y};
-*/
 
 			point pts[]={
 				{x, y},
@@ -238,23 +177,7 @@ void raster_representation::calculate_points_brush() {
 			        ptex_y=(point_type)recor.origin.y,
 			        ptex_fx=ptex_x+( ( (point_type)dif_x * (point_type)recor.w) / (point_type)brush.w),
 			        ptex_fy=ptex_y+( ( (point_type)dif_y * (point_type)recor.h) / (point_type)brush.h);
-/*
-			struct extrapt {
-				double x=0.f, y=0.f;
-			};
 
-			std::vector<extrapt> extra;
-			extra.insert(std::begin(extra), 8, extrapt{0.f, 0.f});
-			std::ifstream testfile{"/mnt/dev/other/sdl2-opengl-pivot/thing.txt"};
-			std::string str;
-			for(int line=0; line<8; ++line) {
-
-				std::getline(testfile, str);
-				std::stringstream ss(str);
-				ss>>extra[line].x>>extra[line].y;
-				std::cout<<line<<" -> "<<extra[line].x<<","<<extra[line].y<<std::endl;
-			}
-*/
 			texpoint ptex[]={
 				{ptex_x,	ptex_y},
 				{ptex_fx,	ptex_y},
@@ -273,7 +196,7 @@ void raster_representation::calculate_points_brush() {
 				std::swap(ptex[1].y, ptex[3].y);
 			}
 
-//Convert again to 0:1 ratio.
+			//Convert again to 0:1 ratio.
 			for(auto &p : ptex) {
 
 				p.x/=w_tex;
@@ -302,6 +225,23 @@ void raster_representation::free_texture() {
 	}
 }
 
+void raster_representation::set_brush(
+	int _w,
+	int _h
+) {
+	brush={_w, _h};
+	with_brush=true;
+	reset_calculations();
+}
+
+void raster_representation::reset_brush() {
+	brush={0, 0};
+	with_brush=false;
+	points.resize(4);
+	tex_points.resize(4);
+	reset_calculations();
+}
+
 //!Sets the position and size of the representation.
 
 //!go_to is used to set the position without altering the size.
@@ -318,7 +258,6 @@ void raster_representation::set_clip(rect p_caja) {
 
 	clip=p_caja;
 	reset_calculations();
-	brush={0,0};
 }
 
 //!Sets the position without altering size.

@@ -26,13 +26,6 @@ class polygon_representation
 	//!Class constructor with color.
 					polygon_representation(const std::vector<point>&, rgb_color, type=type::fill);
 
-	//!Copy constructor.
-					polygon_representation(const polygon_representation&);
-
-	//!Assignment operator. Texture is recreated as a different resource from the original.
-					polygon_representation& operator=(const polygon_representation&);
-	virtual 			~polygon_representation() {}
-
 	virtual void 			go_to(point);
 	virtual point			get_position() const;
 	virtual rect			get_base_view_position() const;

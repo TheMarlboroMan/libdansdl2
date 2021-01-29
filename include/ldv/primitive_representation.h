@@ -16,10 +16,7 @@ class primitive_representation:
 
 			primitive_representation(rgba_color);
 			primitive_representation(rgb_color);
-			primitive_representation(const primitive_representation&);
-			primitive_representation& operator=(const primitive_representation&);
-	virtual 	~primitive_representation() {}
-	
+
 	//!Assigns color (line, fill, dot... everything).
 	void		set_color(rgb_color c) {color=c;}
 

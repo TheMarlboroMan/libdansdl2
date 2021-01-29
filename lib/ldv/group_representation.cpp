@@ -7,12 +7,6 @@ group_representation::group_representation(point p)
 {
 	update_view_position();
 }
-
-group_representation::~group_representation()
-{
-	clear();
-}
-
 //!Empties the group.
 
 //!All representations will be destroyed.
@@ -22,7 +16,7 @@ void group_representation::clear()
 	data.clear();
 }
 
-//!Draws the group to the screen using a camera. 
+//!Draws the group to the screen using a camera.
 
 //!Parameters are the same as in a regular representation object.
 
@@ -67,7 +61,7 @@ void group_representation::draw(screen& p_screen, bool skip_take)
 //!Internal draw function.
 
 //!The position of each representation will be added to the group position, so
-//!top-left of the group is 0.0. Group alpha is applied to each item whenever 
+//!top-left of the group is 0.0. Group alpha is applied to each item whenever
 //!it is not opaque. In other words, it is not accumulative nor it does blend.
 
 void group_representation::draw_internal(screen& p_screen, camera const * pcamera)
@@ -152,7 +146,7 @@ void  group_representation::go_to(point p)
 	update_view_position();
 }
 
-//!Gets the group position as a point. 
+//!Gets the group position as a point.
 
 //!Each part of the group may go into the group negative space.
 

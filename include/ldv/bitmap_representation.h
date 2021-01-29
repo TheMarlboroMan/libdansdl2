@@ -16,8 +16,6 @@ class bitmap_representation:
 
 			bitmap_representation();
 			bitmap_representation(const texture&, rect={0,0,0,0}, rect={0,0,0,0});
-			bitmap_representation(const bitmap_representation&);
-			bitmap_representation& operator=(const bitmap_representation &);
 };
 
 } //Fin namespace DLibV

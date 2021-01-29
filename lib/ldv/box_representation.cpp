@@ -3,35 +3,23 @@
 using namespace ldv;
 
 box_representation::box_representation(const rect& p_pos, const rgba_color& c, type t)
-	:polygon_representation({ 
-		{p_pos.origin.x, p_pos.origin.y}, 
-		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y}, 
-		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h}, 
-		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}}, 
+	:polygon_representation({
+		{p_pos.origin.x, p_pos.origin.y},
+		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y},
+		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h},
+		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}},
 		c, t)
 {
 
 }
 
 box_representation::box_representation(const rect& p_pos, const rgb_color& c, type t)
-	:polygon_representation({ 
-		{p_pos.origin.x, p_pos.origin.y}, 
-		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y}, 
-		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h}, 
-		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}}, 
+	:polygon_representation({
+		{p_pos.origin.x, p_pos.origin.y},
+		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y},
+		{p_pos.origin.x+(int)p_pos.w, p_pos.origin.y+(int)p_pos.h},
+		{p_pos.origin.x, p_pos.origin.y+(int)p_pos.h}},
 		c, t)
-{
-
-}
-
-box_representation& box_representation::operator=(const box_representation& p_otro)
-{
-	polygon_representation::operator=(p_otro);
-	return *this;
-}
-
-box_representation::box_representation(const box_representation& p_otra)
-	:polygon_representation(p_otra) 
 {
 
 }
@@ -57,7 +45,7 @@ void box_representation::set_location(const rect& r)
 
 	int 	fx=r.origin.x+r.w,
 		fy=r.origin.y+r.h;
-		
+
 	points.push_back({r.origin.x, r.origin.y});
 	points.push_back({fx, r.origin.y});
 	points.push_back({fx, fy});

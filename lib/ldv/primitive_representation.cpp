@@ -11,7 +11,7 @@ primitive_representation::primitive_representation(rgba_color c)
 
 }
 
-//!Constructs the primitive with colour. 
+//!Constructs the primitive with colour.
 
 //!Alpha will be set to max by default.
 
@@ -21,25 +21,6 @@ primitive_representation::primitive_representation(rgb_color c)
 {
 
 }
-
-//!Copy constructor.
-
-primitive_representation::primitive_representation(const primitive_representation& o)
-	:representation(o),
-	color(o.color)
-{
-
-}
-
-//!Assignment operator.
-
-primitive_representation& primitive_representation::operator=(const primitive_representation& o)
-{
-	representation::operator=(o);
-	color=o.color;
-	return *this;
-}
-
 //!Sets the primitive color.
 
 //!Primitives are only assigned one color throughout. Alpha is applied if the

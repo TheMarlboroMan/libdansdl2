@@ -42,21 +42,6 @@ point_representation::point_representation(rgb_color c)
 {
 	update_view_position();
 }
-
-point_representation::point_representation(const point_representation& p_otra)
-	:primitive_representation(p_otra), points(p_otra.points), origin(p_otra.origin)
-{
-
-}
-
-point_representation& point_representation::operator=(const point_representation& p_otro)
-{
-	primitive_representation::operator=(p_otro);
-	points=p_otro.points;
-	origin=p_otro.origin;
-	return *this;
-}
-
 //!Inserts a vector of points.
 
 //!Current points are not erased.
@@ -100,7 +85,7 @@ rect point_representation::get_base_view_position() const
 	}
 	else
 	{
-		//Del manual: 
+		//Del manual:
 		//The value returned indicates whether the element passed as first argument is considered less than the second.
 		struct {bool operator() (point a, point b) {return a.x < b.x;}}fx;
 		struct {bool operator() (point a, point b) {return a.y < b.y;}}fy;

@@ -6,7 +6,7 @@
 namespace ldv
 {
 
-//!A surface loaded with a previously existing surface or image. 
+//!A surface loaded with a previously existing surface or image.
 
 //!I think it only exists to create textures from it.
 
@@ -29,11 +29,6 @@ class image:
 
 			//!Construct from a memory sequence...
 			image(const unsigned char *, size_t);
-
-			image(const image&);
-
-	image& 		operator=(const image&);
-	virtual 	~image();
 };
 
 } //Fin namespace DLibV

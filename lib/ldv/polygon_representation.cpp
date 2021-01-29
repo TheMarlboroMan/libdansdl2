@@ -4,33 +4,17 @@ using namespace ldv;
 
 polygon_representation::polygon_representation(const std::vector<point>& pt, rgba_color c, type t)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
-{ 
+{
 	normalize();
 	update_view_position();
 }
 
 polygon_representation::polygon_representation(const std::vector<point>& pt, rgb_color c, type t)
 	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
-{ 
+{
 	normalize();
 	update_view_position();
 }
-
-polygon_representation::polygon_representation(const polygon_representation& o)
-	:primitive_representation(o), points(o.points), origin(o.origin), filltype(o.filltype)
-{
-
-}
-
-polygon_representation& polygon_representation::operator=(const polygon_representation& o)
-{
-	primitive_representation::operator=(o);
-	points=o.points;
-	origin=o.origin;
-	filltype=o.filltype;
-	return *this;
-}
-
 //!Sets the points from a vector of points.
 
 //!The vector does not need to be normalized. Data will be normalized upon

@@ -20,7 +20,7 @@ class point_representation:
 
 	//!Class constructor with color. Creates an empty set.
 						point_representation(rgb_color);
-	
+
 	//!Class constructor with alpha color from the given set of points.
 						point_representation(const std::vector<point>&, rgba_color);
 
@@ -33,15 +33,6 @@ class point_representation:
 	//!Class constructor with color from the given point.
 						point_representation(point, rgb_color);
 
-	//!Copy constructor.
-						point_representation(const point_representation&);
-
-	//!Virtual class destructor.
-	virtual 				~point_representation() {}
-
-	//!Assignment operator.
-						point_representation& operator=(const point_representation&);
-
 	//!Inserts a point.
 	void					insert(point p) {internal_insert(p, true);}
 	void					insert(const std::vector<point>&);
@@ -51,7 +42,7 @@ class point_representation:
 	virtual point				get_position() const;
 	virtual rect				get_base_view_position() const;
 
-	protected: 
+	protected:
 
 	virtual void				do_draw();
 
