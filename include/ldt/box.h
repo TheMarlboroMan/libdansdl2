@@ -81,6 +81,13 @@ class box
 		return *this;
 	}
 
+	bool operator==(const box& _box) const {
+
+		return _box.origin==origin
+			&& _box.w==w
+			&& _box.h==h;
+	}
+
 	/**
 	* Adjusts the box so its edge _edge rests in _edge_position.
 	*/
