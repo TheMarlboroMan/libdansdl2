@@ -146,15 +146,6 @@ void  group_representation::go_to(point p)
 	update_view_position();
 }
 
-//!Gets the group position as a point.
-
-//!Each part of the group may go into the group negative space.
-
-point group_representation::get_position() const
-{
-	return position;
-}
-
 //!Returns the box of all representations put together.
 
 rect group_representation::get_base_view_position() const

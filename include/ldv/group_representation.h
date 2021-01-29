@@ -31,7 +31,10 @@ class group_representation:
 	unsigned int 		size() const {return data.size();}
 
 	virtual void 		go_to(point);
-	virtual point		get_position() const;
+	//!Gets the group position as a point.
+
+	//!Each part of the group may go into the group negative space.
+	virtual const point& get_position() const {return position;}
 	virtual rect		get_base_view_position() const;
 
 	virtual void		draw(screen&, const camera&, bool=false);

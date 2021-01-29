@@ -35,8 +35,11 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 		)))
 	{
 		pscreen.set_camera(pcamera);
-		pre_render_transform(pcamera.get_draw_info());
+		pre_render_transform(cf);
 		do_draw();
+#ifndef NDEBUG
+		pscreen.draw_count++;
+#endif
 	}
 
 	//Do not forget this.
@@ -52,6 +55,8 @@ void representation::draw(screen& pscreen, bool skip_take)
 {
 	auto in_screen=[this](screen &screen)
 	{
+		//TODO: There are functions for this, the screen already has a rect...
+
 		int ex=view_position.origin.x+view_position.w,
 			ey=view_position.origin.y+view_position.h;
 
@@ -70,6 +75,9 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 		pre_render_transform(pscreen.get_draw_info());
 		do_draw();
+#ifndef NDEBUG
+		pscreen.draw_count++;
+#endif
 	}
 
 	//Es importante que esto siempre esté presente...
@@ -112,9 +120,9 @@ void representation::pre_render_transform(const draw_info& iv)
 
 	//Here we are always dealing with screen values...
 
-	auto pos=get_position();
+	const auto& pos=get_position();
 	int 	x=iv.pos_x+pos.x-iv.rel_x,
-		y=iv.pos_y+pos.y-iv.rel_y;
+			y=iv.pos_y+pos.y-iv.rel_y;
 
 	//Compensating the movement that zoom and scale causes... We displace
 	//one half, two thirds, three fourths...
@@ -160,7 +168,14 @@ void representation::set_rotation_center(float x, float y) {
 
 void representation::update_view_position()
 {
+
+	//TODO: Perhaps we could so with a "lock-unlock" system.
+
+	//TODO:
+	//There's ALWAYS a copy here... Perhaps it should be a pointer to something
+	//each rep stores.
 	view_position=!transformation.is_transformed()
+		//TODO: Can this be referenced???
 		? get_base_view_position()
 		: calculate_view_position();
 }
@@ -169,8 +184,11 @@ void representation::update_view_position()
 
 rect representation::calculate_view_position() const {
 
+
+	//TODO: We should cache this. This is hardcore shit.
+	//TODO: Can this be referenced???
 	const auto p=get_base_view_position();
-	const auto pos=get_position();
+	const auto& pos=get_position();
 
 	auto c=transformation.center;
 

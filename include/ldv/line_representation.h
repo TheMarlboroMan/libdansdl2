@@ -23,7 +23,10 @@ class line_representation:
 					line_representation(point, point, rgb_color);
 
 	virtual void 			go_to(point p);
-	virtual point			get_position() const;
+	//!Retrieves the position.
+
+	//!The position is the origin (first point specified).
+	virtual const point&	get_position() const {return origin;}
 	virtual rect			get_base_view_position() const;
 
 	void 				set_points(point, point);

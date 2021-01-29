@@ -76,25 +76,3 @@ void line_representation::go_to(point p)
 	update_view_position();
 }
 
-//!Retrieves the position.
-
-//!The position is the origin (first point specified).
-
-point line_representation::get_position() const
-{
-	return origin;
-/*	int x, y;
-
-	//TODO sooo..... what?.
-	auto f=[](int v1, int v2, int& pos)
-	{
-		if(v1 < v2) pos=v1;
-		else pos=v2;
-	};
-
-	f(points[0].x+origin.x, points[1].x+origin.x, x);
-	f(points[0].y+origin.y, points[1].y+origin.y, y);
-
-	return point{x, y};
-*/
-}

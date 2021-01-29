@@ -39,7 +39,13 @@ class point_representation:
 	void					clear();
 
 	virtual void 				go_to(point p);
-	virtual point				get_position() const;
+//!Returns the position.
+
+//!Position is expressed as the top-left most point relative to the origin
+//!That is, if origin is 10,10 and there is a point in -5,-5 this function
+//!will return 5,5.
+//!Will throw if the representation has no points.
+	virtual const point&		get_position() const {return position;}
 	virtual rect				get_base_view_position() const;
 
 	protected:
@@ -52,6 +58,7 @@ class point_representation:
 
 	std::vector<point>			points;
 	point					origin;
+	point                   position;
 };
 
 }

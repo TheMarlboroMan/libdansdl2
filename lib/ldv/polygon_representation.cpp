@@ -84,12 +84,3 @@ void polygon_representation::go_to(point p)
 	update_view_position();
 }
 
-//!Returns the position.
-
-//!Position is expressed in terms of origin: the first point as it was
-//!given to the class.
-
-point polygon_representation::get_position() const
-{
-	return point{origin.x, origin.y};
-}

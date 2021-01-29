@@ -27,7 +27,12 @@ class polygon_representation
 					polygon_representation(const std::vector<point>&, rgb_color, type=type::fill);
 
 	virtual void 			go_to(point);
-	virtual point			get_position() const;
+
+	//!Returns the position.
+
+	//!Position is expressed in terms of origin: the first point as it was
+	//!given to the class.
+	virtual const point&    get_position() const {return origin;}
 	virtual rect			get_base_view_position() const;
 	//!Sets the filltype.
 	void				set_filltype(type t) {filltype=t;}

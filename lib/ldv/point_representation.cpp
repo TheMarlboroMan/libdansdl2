@@ -62,6 +62,13 @@ void point_representation::internal_insert(point p, bool update_state)
 	if(!points.size()) origin=p;
 	points.push_back({p.x-origin.x, p.y-origin.y});
 	if(update_state) update_view_position();
+
+	struct {bool operator() (point a, point b) {return a.x < b.x;}}fx;
+	struct {bool operator() (point a, point b) {return a.y < b.y;}}fy;
+	auto min_x=*std::min_element(std::begin(points), std::end(points), fx);
+	auto min_y=*std::min_element(std::begin(points), std::end(points), fy);
+
+	position={min_x.x+origin.x, min_y.y+origin.y};
 }
 
 //!Removes all points.
@@ -125,25 +132,3 @@ void point_representation::go_to(point p)
 	update_view_position();
 }
 
-//!Returns the position.
-
-//!Position is expressed as the top-left most point relative to the origin
-//!That is, if origin is 10,10 and there is a point in -5,-5 this function
-//!will return 5,5.
-//!Will throw if the representation has no points.
-
-point point_representation::get_position() const
-{
-	if(!points.size())
-	{
-		throw std::runtime_error("there are no points");
-	}
-
-	struct {bool operator() (point a, point b) {return a.x < b.x;}}fx;
-	struct {bool operator() (point a, point b) {return a.y < b.y;}}fy;
-
-	auto min_x=*std::min_element(std::begin(points), std::end(points), fx);
-	auto min_y=*std::min_element(std::begin(points), std::end(points), fy);
-
-	return point{min_x.x+origin.x, min_y.y+origin.y};
-}

@@ -99,7 +99,7 @@ class representation {
 	//!Moves the top-left point of the view position to the given point.
 	virtual void    go_to(point p)=0;
 	//!Each derived class must define how to get the position.
-	virtual point   get_position() const=0;
+	virtual const point& get_position() const=0;
 	//!Each derived class must define how to get the base_view_position (the one without rotation transformations).
 	virtual rect    get_base_view_position() const=0;
 
