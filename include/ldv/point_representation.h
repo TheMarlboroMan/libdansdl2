@@ -47,6 +47,7 @@ class point_representation:
 //!Will throw if the representation has no points.
 	virtual const point&    get_position() const {return position;}
 	virtual const rect&     get_base_view_position() const {return base_view_position;}
+	virtual rect&           get_base_view_position() {return base_view_position;}
 
 	protected:
 

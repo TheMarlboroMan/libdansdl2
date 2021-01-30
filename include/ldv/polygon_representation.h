@@ -18,40 +18,41 @@ class polygon_representation
 	public:
 
 	//!May be colour filled or be a line. Line width is not adjustable.
-	enum class			type{fill, line};
+	enum class              type{fill, line};
 
 	//!Class constructor with alpha color.
-					polygon_representation(const std::vector<point>&, rgba_color, type=type::fill);
+	                        polygon_representation(const std::vector<point>&, rgba_color, type=type::fill);
 
 	//!Class constructor with color.
-					polygon_representation(const std::vector<point>&, rgb_color, type=type::fill);
+	                        polygon_representation(const std::vector<point>&, rgb_color, type=type::fill);
 
-	virtual void 			go_to(point);
+	virtual void            go_to(point);
 
 	//!Returns the position.
 
 	//!Position is expressed in terms of origin: the first point as it was
 	//!given to the class.
 	virtual const point&    get_position() const {return origin;}
-	virtual const rect&		get_base_view_position() const {return base_view_position;}
+	virtual const rect&     get_base_view_position() const {return base_view_position;}
+	virtual rect&           get_base_view_position() {return base_view_position;}
 	//!Sets the filltype.
-	void				set_filltype(type t) {filltype=t;}
-	void				set_points(const std::vector<point>&);
+	void                    set_filltype(type t) {filltype=t;}
+	void                    set_points(const std::vector<point>&);
 
 	private:
 
-	void                update_base_view_position();
+	void                    update_base_view_position();
 
 	protected:
 
-	virtual void		do_draw();
-	void				normalize();
+	virtual void            do_draw();
+	void                    normalize();
 
 
-	std::vector<point>		points;		//!<Internal vertex structure.
-	point				origin;		//!< Saves the first original point before normalizing.
-	type				filltype;	//!< Type of fille selected.I27
-	rect                base_view_position;
+	std::vector<point>      points;		//!<Internal vertex structure.
+	point                   origin;		//!< Saves the first original point before normalizing.
+	type                    filltype;	//!< Type of fille selected.I27
+	rect                    base_view_position;
 };
 
 }

@@ -28,6 +28,7 @@ class line_representation:
 	//!The position is the origin (first point specified).
 	virtual const point&        get_position() const {return origin;}
 	virtual const rect&         get_base_view_position() const {return base_view_position;}
+	virtual rect&               get_base_view_position() {return base_view_position;}
 
 	void                        set_points(point, point);
 

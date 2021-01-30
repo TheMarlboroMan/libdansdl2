@@ -124,6 +124,7 @@ class representation {
 
 	//!Each derived class must define how to get the base_view_position (the one without rotation transformations).
 	virtual const rect& get_base_view_position() const=0;
+	virtual rect&   get_base_view_position() =0;
 
 	//These are virtuals because grouped representations need it.
 	virtual void    draw(screen&, const camera&, bool=false);

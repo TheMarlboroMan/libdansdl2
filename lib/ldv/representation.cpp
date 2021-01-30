@@ -58,7 +58,7 @@ void representation::draw(screen& pscreen, bool skip_take)
 		//TODO: There are functions for this, the screen already has a rect...
 		const auto& vp=get_view_position();
 
-		int ex=vp.origin.x+vp.w,
+		const int ex=vp.origin.x+vp.w,
 			ey=vp.origin.y+vp.h;
 
 		return 	ex >= 0
@@ -92,7 +92,8 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 void representation::debug_trace_box() const
 {
-	auto rect=calculate_transformed_view_position();
+	calculate_transformed_view_position()
+	const auto& rect=transformed_view_position;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f(1.f, 0.f, 0.f, 0.25f);
@@ -172,27 +173,29 @@ void representation::calculate_transformed_view_position() {
 	const auto& p=get_base_view_position();
 	const auto& pos=get_position();
 
-	auto c=transformation.center;
-
 	polygon_2d<double> polig(
 		{
 			{(double)p.origin.x, (double)p.origin.y},
 			{(double)(p.origin.x+p.w), (double)p.origin.y},
 			{(double)(p.origin.x+p.w), (double)(p.origin.y+p.h)},
 			{(double)p.origin.x, (double)(p.origin.y+p.h)},
-		}, {(double)c.x+pos.x, (double)c.y+pos.y});
+		}, {(double)transformation.center.x+pos.x, (double)transformation.center.y+pos.y});
 		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
 
 	polig.rotate(transformation.angle);
 
 	//Sacar las medidas para la nueva caja...
-	std::vector<double> xs={polig.get_vertex(0).x, polig.get_vertex(1).x, polig.get_vertex(2).x, polig.get_vertex(3).x};
-	std::vector<double> ys={polig.get_vertex(0).y, polig.get_vertex(1).y, polig.get_vertex(2).y, polig.get_vertex(3).y};
+	const std::vector<double> xs={polig.get_vertex(0).x, polig.get_vertex(1).x, polig.get_vertex(2).x, polig.get_vertex(3).x};
+	const std::vector<double> ys={polig.get_vertex(0).y, polig.get_vertex(1).y, polig.get_vertex(2).y, polig.get_vertex(3).y};
 
-	transformed_view_position.origin.x=*std::min_element(std::begin(xs), std::end(xs));
-	transformed_view_position.origin.y=*std::min_element(std::begin(ys), std::end(ys));
-	transformed_view_position.w=*std::max_element(std::begin(xs), std::end(xs))-transformed_view_position.origin.x;
-	transformed_view_position.h=*std::max_element(std::begin(ys), std::end(ys))-transformed_view_position.origin.y;
+	transformed_view_position={
+		{
+			*std::min_element(std::begin(xs), std::end(xs)),
+			*std::min_element(std::begin(ys), std::end(ys))
+		},
+		*std::max_element(std::begin(xs), std::end(xs))-transformed_view_position.origin.x,
+		*std::max_element(std::begin(ys), std::end(ys))-transformed_view_position.origin.y
+	};
 }
 
 //!Aligns this representation with respect to the parameter
@@ -210,9 +213,7 @@ void representation::align(const representation& o, const representation_alignme
 
 void representation::align(const rect& r, const representation_alignment& ra) {
 
-	auto mrect=get_base_view_position();
 	auto inverted_alignment=ra;
-
 	switch(ra.vertical) {
 		case representation_alignment::v::none:
 		case representation_alignment::v::center:
@@ -231,6 +232,7 @@ void representation::align(const rect& r, const representation_alignment& ra) {
 		break;
 	}
 
+	auto& mrect=get_base_view_position();
 	ldt::align(mrect, r, inverted_alignment);
 	go_to(mrect.origin);
 }
