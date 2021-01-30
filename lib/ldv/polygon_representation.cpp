@@ -3,16 +3,14 @@
 using namespace ldv;
 
 polygon_representation::polygon_representation(const std::vector<point>& pt, rgba_color c, type t)
-	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t),
-	base_view_position{0,0,0,0}
+	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 {
 	normalize();
 	update_base_view_position();
 }
 
 polygon_representation::polygon_representation(const std::vector<point>& pt, rgb_color c, type t)
-	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t),
-	base_view_position{0,0,0,0}
+	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
 {
 	normalize();
 	update_base_view_position();
@@ -75,7 +73,10 @@ void polygon_representation::update_base_view_position()
 		else if(p.y > maxy) maxy=p.y;
 	}
 
-	base_view_position={x, y, (unsigned int)maxx-x, (unsigned int)maxy-y};
+	base_view_position.origin.x=x;
+	base_view_position.origin.y=y;
+	base_view_position.w=(unsigned int)maxx-x;
+	base_view_position.h=(unsigned int)maxy-y;
 }
 
 //!Moves the polygon.

@@ -4,8 +4,7 @@ using namespace ldv;
 
 line_representation::line_representation(point p1, point p2, rgba_color c)
 	:primitive_representation(c),
-	origin{p1},
-	base_view_position{0,0,0,0}
+	origin{p1}
 {
 	set_points(p1, p2);
 	update_base_view_position();
@@ -13,8 +12,7 @@ line_representation::line_representation(point p1, point p2, rgba_color c)
 
 line_representation::line_representation(point p1, point p2, rgb_color c)
 	:primitive_representation(c),
-	origin{p1},
-	base_view_position{0,0,0,0}
+	origin{p1}
 {
 	set_points(p1, p2);
 	update_base_view_position();
@@ -54,7 +52,10 @@ void line_representation::update_base_view_position()
 	f(points[0].x+origin.x, points[1].x+origin.x, x, w);
 	f(points[0].y+origin.y, points[1].y+origin.y, y, h);
 
-	base_view_position={x, y, (unsigned int)w, (unsigned int)h};
+	base_view_position.origin.x=x;
+	base_view_position.origin.y=y;
+	base_view_position.w=(unsigned int)w;
+	base_view_position.h=(unsigned int)h;
 }
 
 //!Does the drawing.

@@ -7,13 +7,22 @@ using namespace ldv;
 
 //!Class constructor.
 
-//!Alpha value defaults to max.
-
 representation::representation(int valpha):
 	visible(true),
 	blend_mode(blends::none),
 	val_alpha{colorfi(valpha)},
-	transformed_view_position{0,0,0,0}
+	transformed_view_position{0,0,0,0},
+	base_view_position{0,0,0,0}
+{
+
+}
+
+representation::representation(int valpha, const rect& _bvp):
+	visible(true),
+	blend_mode(blends::none),
+	val_alpha{colorfi(valpha)},
+	transformed_view_position{0,0,0,0},
+	base_view_position{_bvp}
 {
 
 }
@@ -170,7 +179,7 @@ void representation::set_rotation_center(float x, float y) {
 
 void representation::calculate_transformed_view_position() {
 
-	const auto& p=get_base_view_position();
+	const auto& p=base_view_position;
 	const auto& pos=get_position();
 
 	polygon_2d<double> polig(
@@ -202,7 +211,7 @@ void representation::calculate_transformed_view_position() {
 
 void representation::align(const representation& o, const representation_alignment& ra) {
 
-	align(o.get_base_view_position(), ra);
+	align(o.base_view_position, ra);
 }
 
 //Aligns this representation relative to the rectangle.
@@ -232,7 +241,6 @@ void representation::align(const rect& r, const representation_alignment& ra) {
 		break;
 	}
 
-	auto& mrect=get_base_view_position();
-	ldt::align(mrect, r, inverted_alignment);
-	go_to(mrect.origin);
+	ldt::align(base_view_position, r, inverted_alignment);
+	go_to(base_view_position.origin);
 }

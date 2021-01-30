@@ -11,13 +11,12 @@ raster_representation::raster_representation(
 	rect rec,
 	int palpha
 ):
-	representation(palpha),
+	representation(palpha, pos),
 	texture_instance(nullptr),
 	brush{0,0},
 	points{{0,0},{0,0},{0,0},{0,0}},
 	tex_points{{0.,0.},{0.,0.},{0.,0.},{0.,0.}},
 	rgb_colorize{1.f, 1.f, 1.f},
-	location(pos),
 	clip(rec)
 {
 
@@ -30,8 +29,8 @@ raster_representation::raster_representation(
 void raster_representation::clip_to_texture()
 {
 	set_clip({0,0, get_w_texture_instance(), get_h_texture_instance()});
-	location.w=clip.w;
-	location.h=clip.h;
+	base_view_position.w=clip.w;
+	base_view_position.h=clip.h;
 }
 
 //!Does the drawing work.
@@ -89,7 +88,7 @@ void raster_representation::do_draw()
 
 void raster_representation::calculate_points() {
 
-	const rect& pos=get_location();
+	const rect& pos=base_view_position;
 
 	points[0]={0, 0},
 	points[1]={(int)pos.w, 0},
@@ -134,7 +133,7 @@ void raster_representation::calculate_points() {
 
 void raster_representation::calculate_points_brush() {
 
-	const rect& pos=get_location();
+	const rect& pos=base_view_position;
 	const rect& recor=get_clip();
 
 	if(!brush.w || !brush.h) {
@@ -246,14 +245,14 @@ void raster_representation::reset_brush() {
 
 //!go_to is used to set the position without altering the size.
 
-void raster_representation::set_location(rect c) {
+void raster_representation::set_location(const rect& c) {
 
-	location=c;
+	base_view_position=c;
 }
 
 //!Sets the texture clip.
 
-void raster_representation::set_clip(rect p_caja) {
+void raster_representation::set_clip(const rect& p_caja) {
 
 	clip=p_caja;
 	reset_calculations();
@@ -263,7 +262,7 @@ void raster_representation::set_clip(rect p_caja) {
 
 void raster_representation::go_to(point p) {
 
-	location.origin=p;
+	base_view_position.origin=p;
 }
 
 //!Gets assigned texture width.

@@ -4,8 +4,7 @@ using namespace ldv;
 
 group_representation::group_representation(point p)
 	:representation(),
-	position{p},
-	base_view_position{0,0,0,0}
+	position{p}
 {
 	update_base_view_position();
 }
@@ -154,18 +153,20 @@ void group_representation::update_base_view_position()
 {
 	if(!data.size()) {
 
-		base_view_position={position.x,position.y,0,0};
+		base_view_position.origin=position;
+		base_view_position.w=0;
+		base_view_position.h=0;
 	}
 	else {
 
-		base_view_position=data[0]->get_base_view_position();
+		base_view_position=data[0]->base_view_position;
 
 		int 	fx=base_view_position.origin.x+base_view_position.w,
 			fy=base_view_position.origin.y+base_view_position.h;
 
 		for(const auto& r : data)
 		{
-			rect pr=r->get_base_view_position();
+			const auto& pr=r->base_view_position;
 
 			if(pr.origin.x < base_view_position.origin.x) base_view_position.origin.x=pr.origin.x;
 			if(pr.origin.y < base_view_position.origin.y) base_view_position.origin.y=pr.origin.y;

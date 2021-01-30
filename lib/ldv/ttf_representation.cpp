@@ -18,7 +18,6 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 	bg_shaded(rgba8(0,0,0,255)),
 	line_height_ratio(lhr),
 	alignment(al),
-	text_position{0,0,0,0},
 	text_x_displacement{0} {
 
 	create_texture();
@@ -35,7 +34,6 @@ ttf_representation::ttf_representation(const ttf_representation& o)
 	mode(o.mode),
 	text_color(o.text_color),
 	bg_shaded(o.bg_shaded),
-	text_position{o.text_position},
 	text_x_displacement{o.text_x_displacement} {
 
 	reset_texture();
@@ -57,7 +55,6 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 	mode=o.mode;
 	text_color=o.text_color;
 	bg_shaded=o.bg_shaded;
-	text_position=o.text_position;
 	text_x_displacement=o.text_x_displacement;
 	create_texture();
 
@@ -311,7 +308,10 @@ void ttf_representation::create_texture_internal(
 	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
 
 	text_x_displacement=text_x;
-	text_position={text_x_displacement, 0, (unsigned)_total_w, (unsigned)total_h};
+	base_view_position.origin.x=text_x_displacement;
+	base_view_position.origin.y=0;
+	base_view_position.w=(unsigned)_total_w;
+	base_view_position.h=(unsigned)total_h;
 }
 
 //!Sets a new ttf font.
@@ -488,7 +488,7 @@ void ttf_representation::do_draw() {
 
 void ttf_representation::go_to(point _p) {
 
-	text_position.origin=_p;
+	base_view_position.origin=_p;
 	_p.x-=text_x_displacement;
 	raster_representation::go_to(_p);
 }

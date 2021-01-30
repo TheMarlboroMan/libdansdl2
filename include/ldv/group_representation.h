@@ -35,8 +35,6 @@ class group_representation:
 
 	//!Each part of the group may go into the group negative space.
 	virtual const point&    get_position() const {return position;}
-	virtual const rect&     get_base_view_position() const {return base_view_position;}
-	virtual rect&           get_base_view_position() {return base_view_position;}
 
 	virtual void            draw(screen&, const camera&, bool=false);
 	virtual void            draw(screen&, bool=false);
@@ -47,7 +45,6 @@ class group_representation:
 	void                    update_base_view_position();
 
 	point                   position;
-	rect                    base_view_position;
 
 	//!Cannot be copied.
 	group_representation&   operator=(const group_representation &)=delete;

@@ -50,10 +50,12 @@ struct rotation_transform {
 	- Visibility.
 **/
 
+//Forward for a hack...
+class group_representation;
+
 class representation {
 
 	public:
-
 	//!Indicates blend modes.
 	enum class      blends{none, alpha};
 
@@ -61,6 +63,7 @@ class representation {
 	enum            alpha{alpha_min=0, alpha_max=255};
 
 	//!By default all representations have 255 as alpha value.
+					representation(int, const rect&);
 					representation(int=alpha_max);
 	virtual         ~representation() {}
 
@@ -71,7 +74,7 @@ class representation {
 	const rect&     get_view_position() const {
 		return transformation.is_transformed()
 			? transformed_view_position
-			: get_base_view_position();
+			: base_view_position;
 	}
 
 	//!Gets the alpha value in 0-255 range.
@@ -122,10 +125,6 @@ class representation {
 	//!Each derived class must define how to get the position.
 	virtual const point& get_position() const=0;
 
-	//!Each derived class must define how to get the base_view_position (the one without rotation transformations).
-	virtual const rect& get_base_view_position() const=0;
-	virtual rect&   get_base_view_position() =0;
-
 	//These are virtuals because grouped representations need it.
 	virtual void    draw(screen&, const camera&, bool=false);
 
@@ -144,10 +143,13 @@ class representation {
 
 	protected:
 
+	rect            base_view_position;
 	void            pre_render_transform(const draw_info&);
 
 	//!Real drawing functions must be defined by each subclass.
 	virtual void    do_draw()=0;
+
+	friend class group_representation;
 };
 
 } //Fin namespace DLibV

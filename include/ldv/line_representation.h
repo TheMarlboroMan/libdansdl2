@@ -27,8 +27,6 @@ class line_representation:
 
 	//!The position is the origin (first point specified).
 	virtual const point&        get_position() const {return origin;}
-	virtual const rect&         get_base_view_position() const {return base_view_position;}
-	virtual rect&               get_base_view_position() {return base_view_position;}
 
 	void                        set_points(point, point);
 
@@ -42,7 +40,6 @@ class line_representation:
 
 	std::array<point, 2>        points; //!<Points as described as relative to a 0.0...
 	point                       origin; //!<this is that 0.0.
-	rect                        base_view_position;
 };
 
 }

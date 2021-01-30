@@ -52,12 +52,10 @@ class ttf_representation:
 
 	//!Returns the rectangle of the text position, which may be different
 	//!from the texture size (textures are in powers of two, and are usually
-	//!larger than the text portion.
-	const rect&         get_text_position() const {return text_position;}
+	//!larger than the text portion. 
+	const rect&         get_text_position() const {return base_view_position;}
 
 	//!Allows correct use of the "align" method.
-	virtual const rect& get_base_view_position() const {return text_position;}
-	virtual rect&       get_base_view_position() {return text_position;}
 
 	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
 	//!Must be accompanied by a call to "unlock_changes" that will perform recreation.
@@ -124,7 +122,6 @@ class ttf_representation:
 	double              line_height_ratio; //!< Expressed as a ratio of the font size.
 	text_align          alignment;
 	bool                perform_changes=true; //!< Internal flag, read lock_changes and unlock_changes.
-	rect                text_position; //!<The text box is usually smaller than the power of 2 texture containing it. This variable stores the real text rect.
 	int                 text_x_displacement;
 	int                 max_width=-1;   //!<Max width of the generated text, when -1 there's no limit.
 

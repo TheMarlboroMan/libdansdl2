@@ -5,7 +5,6 @@ using namespace ldv;
 
 point_representation::point_representation(point p, rgba_color c)
 	:primitive_representation(c),
-	base_view_position{0,0,0,0},
 	origin{0,0}
 {
 	internal_insert(p, false);
@@ -14,7 +13,6 @@ point_representation::point_representation(point p, rgba_color c)
 
 point_representation::point_representation(point p, rgb_color c)
 	:primitive_representation(c),
-	base_view_position{0,0,0,0},
 	origin{0,0}
 {
 	internal_insert(p, false);
@@ -23,7 +21,6 @@ point_representation::point_representation(point p, rgb_color c)
 
 point_representation::point_representation(const std::vector<point>& pts, rgba_color c)
 	:primitive_representation(c),
-	base_view_position{0,0,0,0},
 	origin{0,0}
 {
 	insert(pts);
@@ -31,7 +28,6 @@ point_representation::point_representation(const std::vector<point>& pts, rgba_c
 
 point_representation::point_representation(const std::vector<point>& pts, rgb_color c)
 	:primitive_representation(c),
-	base_view_position{0,0,0,0},
 	origin{0,0}
 {
 	insert(pts);
@@ -39,7 +35,6 @@ point_representation::point_representation(const std::vector<point>& pts, rgb_co
 
 point_representation::point_representation(rgba_color c)
 	:primitive_representation(c),
-	base_view_position{0,0,0,0},
 	origin{0,0}
 {
 	update_base_view_position();
@@ -47,7 +42,6 @@ point_representation::point_representation(rgba_color c)
 
 point_representation::point_representation(rgb_color c)
 	:primitive_representation(c),
-	base_view_position{0,0,0,0},
 	origin{0,0}
 {
 	update_base_view_position();
@@ -100,7 +94,10 @@ void point_representation::update_base_view_position()
 {
 	if(!points.size())
 	{
-		base_view_position={0,0,0,0};
+		base_view_position.origin.x=0;
+		base_view_position.origin.y=0;
+		base_view_position.w=0;
+		base_view_position.h=0;
 	}
 	else
 	{
@@ -114,9 +111,10 @@ void point_representation::update_base_view_position()
 		auto min_y=*std::min_element(std::begin(points), std::end(points), fy);
 		auto max_y=*std::max_element(std::begin(points), std::end(points), fy);
 
-		base_view_position={min_x.x, min_y.y, (unsigned int)max_x.x-min_x.x, (unsigned int)max_y.y-min_y.y};
-		base_view_position.origin.x+=origin.x;
-		base_view_position.origin.y+=origin.y;
+		base_view_position.origin.x=min_x.x+origin.x;
+		base_view_position.origin.y=min_y.y+origin.y;
+		base_view_position.w=(unsigned int)max_x.x-min_x.x;
+		base_view_position.h=(unsigned int)max_y.y-min_y.y;
 	}
 }
 

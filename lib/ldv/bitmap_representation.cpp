@@ -16,7 +16,7 @@ bitmap_representation::bitmap_representation(const texture& p_rec, rect pos, rec
 {
 	set_texture(p_rec);
 
-	if(!pos.w) location.w=clip.w;
-	if(!pos.h) location.h=clip.h;
+	if(!pos.w) base_view_position.w=clip.w;
+	if(!pos.h) base_view_position.h=clip.h;
 
 }

@@ -46,8 +46,6 @@ class point_representation:
 //!will return 5,5.
 //!Will throw if the representation has no points.
 	virtual const point&    get_position() const {return position;}
-	virtual const rect&     get_base_view_position() const {return base_view_position;}
-	virtual rect&           get_base_view_position() {return base_view_position;}
 
 	protected:
 
@@ -59,7 +57,6 @@ class point_representation:
 	void                    internal_insert(point, bool=true);
 
 	std::vector<point>      points;
-	rect                    base_view_position;
 	point                   origin;
 	point                   position;
 };

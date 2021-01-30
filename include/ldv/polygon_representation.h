@@ -33,8 +33,6 @@ class polygon_representation
 	//!Position is expressed in terms of origin: the first point as it was
 	//!given to the class.
 	virtual const point&    get_position() const {return origin;}
-	virtual const rect&     get_base_view_position() const {return base_view_position;}
-	virtual rect&           get_base_view_position() {return base_view_position;}
 	//!Sets the filltype.
 	void                    set_filltype(type t) {filltype=t;}
 	void                    set_points(const std::vector<point>&);
@@ -52,7 +50,6 @@ class polygon_representation
 	std::vector<point>      points;		//!<Internal vertex structure.
 	point                   origin;		//!< Saves the first original point before normalizing.
 	type                    filltype;	//!< Type of fille selected.I27
-	rect                    base_view_position;
 };
 
 }

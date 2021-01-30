@@ -46,9 +46,11 @@ class raster_representation:
 	unsigned int        get_h_texture_instance() const;
 
 	//!Gets the full rect of the representation.
-	const rect&         get_location() const {return location;}
+	//TODO: Should be made obsolete.
+	const rect&         get_location() const {return base_view_position;}
 	//!Gets the full rect of the representation.
-	rect                get_location() {return location;}
+	//TODO: Should be made obsolete.
+	rect                get_location() {return base_view_position;}
 	//!Gets the texture clip of the representation.
 	const rect&         get_clip() const {return clip;}
 	//!Gets the texture clip of the representation.
@@ -68,8 +70,9 @@ class raster_representation:
 	void                set_brush(int w, int h);
 	//!Removes the brush.
 	void                reset_brush();
-	void                set_location(rect);
-	void                set_clip(rect);
+	//TODO: Obsolete??
+	void                set_location(const rect&);
+	void                set_clip(const rect&);
 	//!Sets the texture.
 	void                set_texture(const texture& v) {texture_instance=&const_cast <texture&> (v);}
 	//!Sets the rgb_color tint.
@@ -84,12 +87,9 @@ class raster_representation:
 	virtual void        go_to(point);
 
 	//!Gets the position.
-	virtual const point& get_position() const {return location.origin;}
+	virtual const point& get_position() const {return base_view_position.origin;}
 
 	//!Gets the base view position.
-	virtual const rect&  get_base_view_position() const {return location;}
-	virtual rect&        get_base_view_position() {return location;}
-
 	private:
 
 	using point_type=GLdouble;
@@ -118,7 +118,6 @@ class raster_representation:
 	void                reset_texture() {texture_instance=nullptr;}
 	virtual void        do_draw();
 
-	rect                location; 	//!< Location in which it is drawm.
 	rect                clip;		//!< Section of the texture used.
 };
 

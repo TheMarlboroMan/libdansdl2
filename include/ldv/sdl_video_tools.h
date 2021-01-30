@@ -25,6 +25,7 @@ video_display_mode		get_display_info(int=0);
 void 					set_cursor_visible(bool v);
 void					set_vsync(bool v);
 bool					get_vsync();
+SDL_Surface * 			new_sdl_surface(int, int, int);
 SDL_Surface * 			new_sdl_surface(SDL_Surface const *);
 SDL_Surface * 			new_sdl_surface(SDL_Surface const *, const SDL_Rect&, Uint32=0, Uint32=0);
 SDL_Surface * 			copy_sdl_surface(const SDL_Surface *);

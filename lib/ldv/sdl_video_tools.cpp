@@ -34,6 +34,36 @@ bool ldv::get_vsync()
 	return SDL_GL_GetSwapInterval();
 }
 
+//!Creates a SDL surface of wxh with the given depth.
+SDL_Surface * ldv::new_sdl_surface(
+	int _w, 
+	int _h, 
+	int _bpp
+) {
+
+	auto result=SDL_CreateRGBSurface(
+		0, _w, _h, _bpp,
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+		0xff000000,
+		0x00ff0000,
+		0x0000ff00,
+		0x000000ff
+#else
+		0x000000ff,
+		0x0000ff00,
+		0x00ff0000,
+		0xff000000
+#endif
+	);
+
+	if(nullptr==result) {
+
+		throw std::runtime_error(std::string("ldv::new_sdl_surface() failed ")+SDL_GetError());
+	}
+
+	return result;
+}
+
 //!Creates a SDL_Surface with the same format and size as the one given.
 
 SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin)
