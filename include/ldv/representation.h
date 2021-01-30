@@ -108,7 +108,7 @@ class representation {
 	virtual void    reset_transform() {transformation.reset();}
 
 #ifndef NDEBUG
-	void            debug_trace_box() const;
+	void            debug_trace_box();
 #endif
 	void            align(const representation&, const representation_alignment&);
 	void            align(const rect&, const representation_alignment&);

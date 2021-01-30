@@ -90,9 +90,9 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 //!This function should not be used beyond debug purposes.
 
-void representation::debug_trace_box() const
+void representation::debug_trace_box() 
 {
-	calculate_transformed_view_position()
+	calculate_transformed_view_position();
 	const auto& rect=transformed_view_position;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
