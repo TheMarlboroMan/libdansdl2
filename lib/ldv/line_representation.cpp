@@ -3,17 +3,21 @@
 using namespace ldv;
 
 line_representation::line_representation(point p1, point p2, rgba_color c)
-	:primitive_representation(c), origin{p1}
+	:primitive_representation(c),
+	origin{p1},
+	base_view_position{0,0,0,0}
 {
 	set_points(p1, p2);
-	update_view_position();
+	update_base_view_position();
 }
 
 line_representation::line_representation(point p1, point p2, rgb_color c)
-	:primitive_representation(c), origin{p1}
+	:primitive_representation(c),
+	origin{p1},
+	base_view_position{0,0,0,0}
 {
 	set_points(p1, p2);
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Reassigns the points.
@@ -24,12 +28,12 @@ void line_representation::set_points(point p1, point p2)
 	origin=p1;
 	points[0]={p1.x-origin.x, p1.y-origin.y};
 	points[1]={p2.x-origin.x, p2.y-origin.y};
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Gets the base view position.
 
-rect line_representation::get_base_view_position() const
+void line_representation::update_base_view_position()
 {
 	int x, y, w, h;
 
@@ -50,7 +54,7 @@ rect line_representation::get_base_view_position() const
 	f(points[0].x+origin.x, points[1].x+origin.x, x, w);
 	f(points[0].y+origin.y, points[1].y+origin.y, y, h);
 
-	return rect{x, y, (unsigned int)w, (unsigned int)h};
+	base_view_position={x, y, (unsigned int)w, (unsigned int)h};
 }
 
 //!Does the drawing.
@@ -73,6 +77,6 @@ void line_representation::do_draw()
 void line_representation::go_to(point p)
 {
 	origin=p;
-	update_view_position();
+	update_base_view_position();
 }
 

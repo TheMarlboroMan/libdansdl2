@@ -13,7 +13,7 @@ representation::representation(int valpha):
 	visible(true),
 	blend_mode(blends::none),
 	val_alpha{colorfi(valpha)},
-	view_position{0,0,0,0}
+	transformed_view_position{0,0,0,0}
 {
 
 }
@@ -28,10 +28,10 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 	//Using the draw info allows us to work with cartesian coordinates.
 	const auto& cf=pcamera.get_draw_info();
 
-//	if(visible && (skip_take || pcamera.get_focus_box().collides_with(view_position, true)))
+	const auto& vp=get_view_position();
 
 	//We need to force the template typenames, since the parameters don't match.
-	if(visible && (skip_take || rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, view_position.origin.x, view_position.origin.y, view_position.w, view_position.h, true
+	if(visible && (skip_take || rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true
 		)))
 	{
 		pscreen.set_camera(pcamera);
@@ -56,14 +56,15 @@ void representation::draw(screen& pscreen, bool skip_take)
 	auto in_screen=[this](screen &screen)
 	{
 		//TODO: There are functions for this, the screen already has a rect...
+		const auto& vp=get_view_position();
 
-		int ex=view_position.origin.x+view_position.w,
-			ey=view_position.origin.y+view_position.h;
+		int ex=vp.origin.x+vp.w,
+			ey=vp.origin.y+vp.h;
 
 		return 	ex >= 0
-			&& view_position.origin.x <= (int) screen.get_w()
+			&& vp.origin.x <= (int) screen.get_w()
 			&& ey >= 0
-			&& view_position.origin.y <= (int) screen.get_h();
+			&& vp.origin.y <= (int) screen.get_h();
 	};
 
 	if(visible && (skip_take || in_screen(pscreen)))
@@ -91,7 +92,7 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 void representation::debug_trace_box() const
 {
-	auto rect=calculate_view_position();
+	auto rect=calculate_transformed_view_position();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f(1.f, 0.f, 0.f, 0.25f);
@@ -151,7 +152,7 @@ void representation::pre_render_transform(const draw_info& iv)
 void representation::set_rotation(float v)
 {
 	transformation.angle=fmod(v, 360.f);
-	update_view_position();
+	calculate_transformed_view_position();
 }
 
 //!Sets the rotation center
@@ -161,33 +162,14 @@ void representation::set_rotation(float v)
 
 void representation::set_rotation_center(float x, float y) {
 	transformation.center={x, y};
-	update_view_position();
-}
-
-//!Updates the view_position rect with the base or transformed rects.
-
-void representation::update_view_position()
-{
-
-	//TODO: Perhaps we could so with a "lock-unlock" system.
-
-	//TODO:
-	//There's ALWAYS a copy here... Perhaps it should be a pointer to something
-	//each rep stores.
-	view_position=!transformation.is_transformed()
-		//TODO: Can this be referenced???
-		? get_base_view_position()
-		: calculate_view_position();
+	calculate_transformed_view_position();
 }
 
 //!Calculates the view position when rotation transformations are involved.
 
-rect representation::calculate_view_position() const {
+void representation::calculate_transformed_view_position() {
 
-
-	//TODO: We should cache this. This is hardcore shit.
-	//TODO: Can this be referenced???
-	const auto p=get_base_view_position();
+	const auto& p=get_base_view_position();
 	const auto& pos=get_position();
 
 	auto c=transformation.center;
@@ -207,13 +189,10 @@ rect representation::calculate_view_position() const {
 	std::vector<double> xs={polig.get_vertex(0).x, polig.get_vertex(1).x, polig.get_vertex(2).x, polig.get_vertex(3).x};
 	std::vector<double> ys={polig.get_vertex(0).y, polig.get_vertex(1).y, polig.get_vertex(2).y, polig.get_vertex(3).y};
 
-	rect res{0,0,0,0};
-	res.origin.x=*std::min_element(std::begin(xs), std::end(xs));
-	res.origin.y=*std::min_element(std::begin(ys), std::end(ys));
-	res.w=*std::max_element(std::begin(xs), std::end(xs))-res.origin.x;
-	res.h=*std::max_element(std::begin(ys), std::end(ys))-res.origin.y;
-
-	return res;
+	transformed_view_position.origin.x=*std::min_element(std::begin(xs), std::end(xs));
+	transformed_view_position.origin.y=*std::min_element(std::begin(ys), std::end(ys));
+	transformed_view_position.w=*std::max_element(std::begin(xs), std::end(xs))-transformed_view_position.origin.x;
+	transformed_view_position.h=*std::max_element(std::begin(ys), std::end(ys))-transformed_view_position.origin.y;
 }
 
 //!Aligns this representation with respect to the parameter

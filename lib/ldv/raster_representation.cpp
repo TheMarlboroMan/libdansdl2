@@ -249,7 +249,6 @@ void raster_representation::reset_brush() {
 void raster_representation::set_location(rect c) {
 
 	location=c;
-	update_view_position();
 }
 
 //!Sets the texture clip.
@@ -265,7 +264,6 @@ void raster_representation::set_clip(rect p_caja) {
 void raster_representation::go_to(point p) {
 
 	location.origin=p;
-	update_view_position();
 }
 
 //!Gets assigned texture width.

@@ -87,7 +87,7 @@ class raster_representation:
 	virtual const point& get_position() const {return location.origin;}
 
 	//!Gets the base view position.
-	virtual rect        get_base_view_position() const {return location;}
+	virtual const rect&  get_base_view_position() const {return location;}
 
 	private:
 

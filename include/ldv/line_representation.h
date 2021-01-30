@@ -26,19 +26,22 @@ class line_representation:
 	//!Retrieves the position.
 
 	//!The position is the origin (first point specified).
-	virtual const point&	get_position() const {return origin;}
-	virtual rect			get_base_view_position() const;
+	virtual const point&        get_position() const {return origin;}
+	virtual const rect&         get_base_view_position() const {return base_view_position;}
 
-	void 				set_points(point, point);
+	void                        set_points(point, point);
 
 	protected:
 
-	virtual void			do_draw();
+	virtual void                do_draw();
 
 	private:
 
-	std::array<point, 2>		points; //!<Points as described as relative to a 0.0...
-	point				origin; //!<this is that 0.0.
+	void                        update_base_view_position();
+
+	std::array<point, 2>        points; //!<Points as described as relative to a 0.0...
+	point                       origin; //!<this is that 0.0.
+	rect                        base_view_position;
 };
 
 }

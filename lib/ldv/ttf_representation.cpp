@@ -22,7 +22,6 @@ ttf_representation::ttf_representation(const ttf_font& pfont, rgba_color pcolor,
 	text_x_displacement{0} {
 
 	create_texture();
-	update_view_position();
 }
 
 //!Copy constructor.
@@ -526,16 +525,6 @@ ttf_representation&	ttf_representation::set_style(int _flags) {
 	TTF_SetFontStyle(fontptr, flags);
 
 	return *this;
-}
-
-rect ttf_representation::get_base_view_position() const {
-
-
-	auto result=text_position;
-	//result.origin.x+=location.origin.x;
-	//result.origin.y+=location.origin.y;
-
-	return result;
 }
 
 std::vector<std::string> ttf_representation::explode(const std::string& _text, char _delimiter) {

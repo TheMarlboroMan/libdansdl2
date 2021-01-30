@@ -7,7 +7,6 @@ using namespace ldv;
 bitmap_representation::bitmap_representation()
 	:raster_representation()
 {
-	update_view_position();
 }
 
 //!Constructs the representation from a texture, position and clipping rectangle.
@@ -20,5 +19,4 @@ bitmap_representation::bitmap_representation(const texture& p_rec, rect pos, rec
 	if(!pos.w) location.w=clip.w;
 	if(!pos.h) location.h=clip.h;
 
-	update_view_position();
 }

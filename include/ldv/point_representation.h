@@ -45,19 +45,21 @@ class point_representation:
 //!That is, if origin is 10,10 and there is a point in -5,-5 this function
 //!will return 5,5.
 //!Will throw if the representation has no points.
-	virtual const point&		get_position() const {return position;}
-	virtual rect				get_base_view_position() const;
+	virtual const point&    get_position() const {return position;}
+	virtual const rect&     get_base_view_position() const {return base_view_position;}
 
 	protected:
 
-	virtual void				do_draw();
+	virtual void            do_draw();
 
 	private:
 
-	void					internal_insert(point, bool=true);
+	void                    update_base_view_position();
+	void                    internal_insert(point, bool=true);
 
-	std::vector<point>			points;
-	point					origin;
+	std::vector<point>      points;
+	rect                    base_view_position;
+	point                   origin;
 	point                   position;
 };
 

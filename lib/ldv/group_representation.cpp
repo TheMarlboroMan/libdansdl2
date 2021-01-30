@@ -3,9 +3,11 @@
 using namespace ldv;
 
 group_representation::group_representation(point p)
-	:representation(), position{p}
+	:representation(),
+	position{p},
+	base_view_position{0,0,0,0}
 {
-	update_view_position();
+	update_base_view_position();
 }
 //!Empties the group.
 
@@ -135,7 +137,7 @@ void group_representation::do_draw()
 void group_representation::insert(representation * p_rep)
 {
 	data.push_back(std::unique_ptr<representation>(p_rep));
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Updates the group position.
@@ -143,30 +145,30 @@ void group_representation::insert(representation * p_rep)
 void  group_representation::go_to(point p)
 {
 	position={p.x, p.y};
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Returns the box of all representations put together.
 
-rect group_representation::get_base_view_position() const
+void group_representation::update_base_view_position()
 {
-	if(!data.size())
-	{
-		return rect{position.x,position.y,0,0};
-	}
-	else
-	{
-		rect res=data[0]->get_base_view_position();
+	if(!data.size()) {
 
-		int 	fx=res.origin.x+res.w,
-			fy=res.origin.y+res.h;
+		base_view_position={position.x,position.y,0,0};
+	}
+	else {
+
+		base_view_position=data[0]->get_base_view_position();
+
+		int 	fx=base_view_position.origin.x+base_view_position.w,
+			fy=base_view_position.origin.y+base_view_position.h;
 
 		for(const auto& r : data)
 		{
 			rect pr=r->get_base_view_position();
 
-			if(pr.origin.x < res.origin.x) res.origin.x=pr.origin.x;
-			if(pr.origin.y < res.origin.y) res.origin.y=pr.origin.y;
+			if(pr.origin.x < base_view_position.origin.x) base_view_position.origin.x=pr.origin.x;
+			if(pr.origin.y < base_view_position.origin.y) base_view_position.origin.y=pr.origin.y;
 
 			int 	prfx=pr.origin.x+pr.w,
 				prfy=pr.origin.y+pr.h;
@@ -175,12 +177,10 @@ rect group_representation::get_base_view_position() const
 			if(prfy > fy) fy=prfy;
 		}
 
-		res.w=fx-res.origin.x;
-		res.h=fy-res.origin.y;
+		base_view_position.w=fx-base_view_position.origin.x;
+		base_view_position.h=fy-base_view_position.origin.y;
 
-		res.origin.x+=position.x;
-		res.origin.y+=position.y;
-
-		return res;
+		base_view_position.origin.x+=position.x;
+		base_view_position.origin.y+=position.y;
 	}
 }

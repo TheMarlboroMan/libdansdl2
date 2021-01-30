@@ -27,8 +27,8 @@ class primitive_representation:
 	}
 
 	virtual void 	go_to(point)=0;
-	virtual const point&	get_position() const=0;
-	virtual rect	get_base_view_position() const=0;
+	virtual const point& get_position() const=0;
+	virtual const rect& get_base_view_position() const=0;
 
 	protected:
 

@@ -3,17 +3,19 @@
 using namespace ldv;
 
 polygon_representation::polygon_representation(const std::vector<point>& pt, rgba_color c, type t)
-	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
+	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t),
+	base_view_position{0,0,0,0}
 {
 	normalize();
-	update_view_position();
+	update_base_view_position();
 }
 
 polygon_representation::polygon_representation(const std::vector<point>& pt, rgb_color c, type t)
-	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t)
+	:primitive_representation(c), points(pt), origin(pt[0]), filltype(t),
+	base_view_position{0,0,0,0}
 {
 	normalize();
-	update_view_position();
+	update_base_view_position();
 }
 //!Sets the points from a vector of points.
 
@@ -25,7 +27,7 @@ void polygon_representation::set_points(const std::vector<point>& pt)
 	origin=pt[0];
 	points=pt;
 	normalize();
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Normalizes the points.
@@ -56,7 +58,7 @@ void polygon_representation::do_draw()
 
 //!Gets the box formed by all points.
 
-rect polygon_representation::get_base_view_position() const
+void polygon_representation::update_base_view_position()
 {
 	int x=points[0].x+origin.x, y=points[0].y+origin.y, maxx=x, maxy=y;
 
@@ -73,7 +75,7 @@ rect polygon_representation::get_base_view_position() const
 		else if(p.y > maxy) maxy=p.y;
 	}
 
-	return rect{x, y, (unsigned int)maxx-x, (unsigned int)maxy-y};
+	base_view_position={x, y, (unsigned int)maxx-x, (unsigned int)maxy-y};
 }
 
 //!Moves the polygon.
@@ -81,6 +83,6 @@ rect polygon_representation::get_base_view_position() const
 void polygon_representation::go_to(point p)
 {
 	origin=p;
-	update_view_position();
+	update_base_view_position();
 }
 

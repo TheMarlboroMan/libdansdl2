@@ -56,7 +56,7 @@ class ttf_representation:
 	const rect&         get_text_position() const {return text_position;}
 
 	//!Allows correct use of the "align" method.
-	virtual rect        get_base_view_position() const;
+	virtual const rect& get_base_view_position() const {return text_position;}
 
 	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
 	//!Must be accompanied by a call to "unlock_changes" that will perform recreation.

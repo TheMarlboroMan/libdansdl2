@@ -33,8 +33,6 @@ void box_representation::set_dimensions(int w, int h)
 	points[2].x=nx;
 	points[2].y=ny;
 	points[3].y=ny;
-
-	update_view_position();
 }
 
 void box_representation::set_location(const rect& r)
@@ -52,5 +50,4 @@ void box_representation::set_location(const rect& r)
 	points.push_back({r.origin.x, fy});
 
 	normalize();
-	update_view_position();
 }

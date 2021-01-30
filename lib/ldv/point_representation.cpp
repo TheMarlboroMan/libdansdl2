@@ -4,43 +4,53 @@
 using namespace ldv;
 
 point_representation::point_representation(point p, rgba_color c)
-	:primitive_representation(c), origin{0,0}
+	:primitive_representation(c),
+	base_view_position{0,0,0,0},
+	origin{0,0}
 {
 	internal_insert(p, false);
-	update_view_position();
+	update_base_view_position();
 }
 
 point_representation::point_representation(point p, rgb_color c)
-	:primitive_representation(c), origin{0,0}
+	:primitive_representation(c),
+	base_view_position{0,0,0,0},
+	origin{0,0}
 {
 	internal_insert(p, false);
-	update_view_position();
+	update_base_view_position();
 }
 
 point_representation::point_representation(const std::vector<point>& pts, rgba_color c)
-	:primitive_representation(c), origin{0,0}
+	:primitive_representation(c),
+	base_view_position{0,0,0,0},
+	origin{0,0}
 {
 	insert(pts);
-//	update_view_position();
 }
 
 point_representation::point_representation(const std::vector<point>& pts, rgb_color c)
-	:primitive_representation(c), origin{0,0}
+	:primitive_representation(c),
+	base_view_position{0,0,0,0},
+	origin{0,0}
 {
 	insert(pts);
-//	update_view_position();
 }
 
 point_representation::point_representation(rgba_color c)
-	:primitive_representation(c), origin{0,0}
+	:primitive_representation(c),
+	base_view_position{0,0,0,0},
+	origin{0,0}
 {
-	update_view_position();
+	update_base_view_position();
 }
 
 point_representation::point_representation(rgb_color c)
-	:primitive_representation(c), origin{0,0}
+	:primitive_representation(c),
+	base_view_position{0,0,0,0},
+	origin{0,0}
 {
-	update_view_position();
+	update_base_view_position();
 }
 //!Inserts a vector of points.
 
@@ -49,7 +59,7 @@ point_representation::point_representation(rgb_color c)
 void point_representation::insert(const std::vector<point>& pts)
 {
 	for(const auto& p : pts) internal_insert(p, false);
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Internal insertion function.
@@ -61,7 +71,9 @@ void point_representation::internal_insert(point p, bool update_state)
 {
 	if(!points.size()) origin=p;
 	points.push_back({p.x-origin.x, p.y-origin.y});
-	if(update_state) update_view_position();
+	if(update_state) {
+		update_base_view_position();
+	}
 
 	struct {bool operator() (point a, point b) {return a.x < b.x;}}fx;
 	struct {bool operator() (point a, point b) {return a.y < b.y;}}fy;
@@ -79,16 +91,16 @@ void point_representation::clear()
 {
 	points.clear();
 	origin={0,0};
-	update_view_position();
+	update_base_view_position();
 }
 
 //!Gets the base view position.
 
-rect point_representation::get_base_view_position() const
+void point_representation::update_base_view_position()
 {
 	if(!points.size())
 	{
-		return rect{0,0,0,0};
+		base_view_position={0,0,0,0};
 	}
 	else
 	{
@@ -102,10 +114,9 @@ rect point_representation::get_base_view_position() const
 		auto min_y=*std::min_element(std::begin(points), std::end(points), fy);
 		auto max_y=*std::max_element(std::begin(points), std::end(points), fy);
 
-		rect res{min_x.x, min_y.y, (unsigned int)max_x.x-min_x.x, (unsigned int)max_y.y-min_y.y};
-		res.origin.x+=origin.x;
-		res.origin.y+=origin.y;
-		return res;
+		base_view_position={min_x.x, min_y.y, (unsigned int)max_x.x-min_x.x, (unsigned int)max_y.y-min_y.y};
+		base_view_position.origin.x+=origin.x;
+		base_view_position.origin.y+=origin.y;
 	}
 }
 
@@ -129,6 +140,6 @@ void point_representation::do_draw()
 void point_representation::go_to(point p)
 {
 	origin=p;
-	update_view_position();
+	update_base_view_position();
 }
 
