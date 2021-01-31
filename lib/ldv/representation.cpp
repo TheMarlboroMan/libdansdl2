@@ -99,7 +99,7 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 //!This function should not be used beyond debug purposes.
 
-void representation::debug_trace_box() 
+void representation::debug_trace_box()
 {
 	calculate_transformed_view_position();
 	const auto& rect=transformed_view_position;
@@ -199,11 +199,11 @@ void representation::calculate_transformed_view_position() {
 
 	transformed_view_position={
 		{
-			*std::min_element(std::begin(xs), std::end(xs)),
-			*std::min_element(std::begin(ys), std::end(ys))
+			(int)*std::min_element(std::begin(xs), std::end(xs)),
+			(int)*std::min_element(std::begin(ys), std::end(ys))
 		},
-		*std::max_element(std::begin(xs), std::end(xs))-transformed_view_position.origin.x,
-		*std::max_element(std::begin(ys), std::end(ys))-transformed_view_position.origin.y
+		(unsigned int)*std::max_element(std::begin(xs), std::end(xs))-transformed_view_position.origin.x,
+		(unsigned int)*std::max_element(std::begin(ys), std::end(ys))-transformed_view_position.origin.y
 	};
 }
 

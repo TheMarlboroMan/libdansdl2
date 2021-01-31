@@ -13,6 +13,8 @@ class surface
 {
 	public:
 
+	enum class blends{none, alpha, add, mod};
+
 			surface();
 			surface(const surface&);
 			surface(SDL_Surface *);
@@ -32,9 +34,10 @@ class surface
 	void 		set_colorkey(Uint32=0);
 	void 		set_colorkey(Uint8=0, Uint8=255, Uint8=255);
 	void 		set_alpha(Uint8);
+	void        set_blend(blends);
 
 	void 		clear_colorkey();
-	void 		clear(Uint8=0, Uint8=255, Uint8=255);
+	void 		clear(Uint8=0, Uint8=255, Uint8=255, Uint8=255);
 	void 		clear(Uint32 c);
 
 	void 		copy_from(surface const&);
@@ -44,6 +47,7 @@ class surface
 	protected:
 
 	Uint32 		map_color(unsigned int r, unsigned int g, unsigned int b);
+	Uint32 		map_color(unsigned int r, unsigned int g, unsigned int b, unsigned int a);
 
 	SDL_Surface * 	sdl_surface;	//!< Underlying SDL_Surface.
 

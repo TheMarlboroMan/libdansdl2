@@ -7,7 +7,7 @@
 
 /*! \file sdl_video_tools.h
     \brief Video functions.
-    
+
 	Miscellaneous video and SDL related functionality.
 */
 
@@ -36,9 +36,10 @@ bool ldv::get_vsync()
 
 //!Creates a SDL surface of wxh with the given depth.
 SDL_Surface * ldv::new_sdl_surface(
-	int _w, 
-	int _h, 
-	int _bpp
+	int _w,
+	int _h,
+	int _bpp,
+	bool _alpha
 ) {
 
 	auto result=SDL_CreateRGBSurface(
@@ -47,12 +48,12 @@ SDL_Surface * ldv::new_sdl_surface(
 		0xff000000,
 		0x00ff0000,
 		0x0000ff00,
-		0x000000ff
+		_alpha ? 0x000000ff : 0
 #else
 		0x000000ff,
 		0x0000ff00,
 		0x00ff0000,
-		0xff000000
+		_alpha ? 0xff000000 : 0
 #endif
 	);
 
@@ -60,6 +61,8 @@ SDL_Surface * ldv::new_sdl_surface(
 
 		throw std::runtime_error(std::string("ldv::new_sdl_surface() failed ")+SDL_GetError());
 	}
+
+	SDL_SetSurfaceBlendMode(result, SDL_BLENDMODE_BLEND);
 
 	return result;
 }
@@ -80,7 +83,6 @@ SDL_Surface * ldv::new_sdl_surface(SDL_Surface const * porigin, const SDL_Rect& 
 	SDL_Surface * copy=nullptr;
 
 	copy=SDL_CreateRGBSurface(
-//		origin->flags|pflags,
 		pflags,
 		pbox.w, pbox.h, origin->format->BitsPerPixel,
 		origin->format->Rmask, origin->format->Gmask, origin->format->Bmask, origin->format->Amask);
@@ -114,7 +116,7 @@ SDL_Surface * ldv::copy_sdl_surface(SDL_Surface const * porigin, const SDL_Rect&
 	return copy;
 }
 
-//!Loads image into SDL_Surface. 
+//!Loads image into SDL_Surface.
 
 //This goes well with open_gl. Use this one.
 
@@ -155,11 +157,10 @@ SDL_Surface * ldv::load_image_from_memory(const std::vector<unsigned char>& _seq
 
 //!Does not work with textures and is mostly obsolete.
 
-Uint32 ldv::SDL_GetPixel(SDL_Surface *surface, int x, int y)
+Uint32 ldv::get_pixel(SDL_Surface *surface, int x, int y)
 {
 	int bpp = surface->format->BytesPerPixel;
-	
-	/* Here p is the address to the pixel we want to retrieve */
+
 	if(SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
 	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 	if(SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
@@ -172,8 +173,40 @@ Uint32 ldv::SDL_GetPixel(SDL_Surface *surface, int x, int y)
 			else return p[0] | p[1] << 8 | p[2] << 16;
 		case 4:			return *(Uint32 *)p;
 		default:		return 0;
-   /* shouldn't happen, but avoids warnings */
 	}
+}
+
+//Directly from the old SDL docs.
+void ldv::set_pixel(SDL_Surface * surface, int x, int y, Uint32 pixel)
+{
+    int bpp = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1:
+        *p = pixel;
+        break;
+
+    case 2:
+        *(Uint16 *)p = pixel;
+        break;
+
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (pixel >> 16) & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = pixel & 0xff;
+        } else {
+            p[0] = pixel & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = (pixel >> 16) & 0xff;
+        }
+        break;
+
+    case 4:
+        *(Uint32 *)p = pixel;
+        break;
+    }
 }
 
 ldv::video_display_mode	ldv::get_display_info(int _display) {

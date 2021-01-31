@@ -63,6 +63,11 @@ Uint32 surface::map_color(unsigned int r, unsigned int g, unsigned int b)
 	return SDL_MapRGB(sdl_surface->format, r, g, b);
 }
 
+Uint32 surface::map_color(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
+{
+	return SDL_MapRGBA(sdl_surface->format, r, g, b, a);
+}
+
 //!Sets the colorkey.
 
 //!The colorkey is the "transparent" pixel in surfaces without an alpha value.
@@ -91,11 +96,11 @@ void surface::set_colorkey(Uint8 r, Uint8 g, Uint8 b)
 
 //!May throw a std::runtime_error if no surface is present.
 
-void surface::clear(Uint8 r, Uint8 g, Uint8 b)
+void surface::clear(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	if(sdl_surface)
 	{
-		clear(map_color(r,g,b));
+		clear(map_color(r,g,b,a));
 	}
 	else
 	{
@@ -173,4 +178,21 @@ void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen)
 void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen, SDL_Rect p_rect_destino)
 {
 	SDL_BlitSurface(p_recurso.sdl_surface, &p_rect_origen, sdl_surface, &p_rect_destino);
+}
+
+void surface::set_blend(
+	surface::blends _blend
+) {
+	if(!sdl_surface) {
+
+		throw std::runtime_error("calling set_blend() with no sdl_surface");
+	}
+
+	switch(_blend) {
+
+		case surface::blends::add: SDL_SetSurfaceBlendMode(sdl_surface, SDL_BLENDMODE_ADD); break;
+		case surface::blends::mod: SDL_SetSurfaceBlendMode(sdl_surface, SDL_BLENDMODE_MOD); break;
+		case surface::blends::none: SDL_SetSurfaceBlendMode(sdl_surface, SDL_BLENDMODE_NONE); break;
+		case surface::blends::alpha: SDL_SetSurfaceBlendMode(sdl_surface, SDL_BLENDMODE_BLEND); break;
+	}
 }
