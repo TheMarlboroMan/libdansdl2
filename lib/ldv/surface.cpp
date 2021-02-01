@@ -153,27 +153,16 @@ void surface::set_alpha(Uint8 pvalue)
 	with_colorkey=pvalue; //TODO: What is this?.
 }
 
-//!Blits the parameter surface into the current surface.
-
-//!The full surface is copied.
 
 void surface::copy_from(surface const& p_res)
 {
 	SDL_BlitSurface(p_res.sdl_surface, nullptr, sdl_surface, nullptr);
 }
 
-//!Blits the parameter surface specifying clip.
-
-//!Useful to compose surfaces, but less useful than the four parameter variant.
-
 void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen)
 {
 	SDL_BlitSurface(p_recurso.sdl_surface, &p_rect_origen, sdl_surface, nullptr);
 }
-
-//!Blits the parameter surface specifying clip and destination.
-
-//!Useful to compose surfaces.
 
 void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen, SDL_Rect p_rect_destino)
 {

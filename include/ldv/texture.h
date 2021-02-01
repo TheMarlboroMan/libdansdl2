@@ -18,29 +18,31 @@ namespace ldv
 class texture
 {
 	public:
-			texture(const surface&);
+	                texture(const surface&);
+	                texture(texture&&);
 	//!Textures cannot be copy constructed.
-			texture(const texture&)=delete;
-			~texture();
+	                texture(const texture&)=delete;
+	                ~texture();
+	texture&        operator=(texture&& t);
 	//!Textures cannot be copied.
-	texture& 	operator=(const texture& t)=delete;
+	texture&        operator=(const texture& t)=delete;
 
 	//!Gets texture width.
-	unsigned int 	get_w() const {return w;}
+	unsigned int    get_w() const {return w;}
 	//!Gets texture height.
-	unsigned int 	get_h() const {return h;}
+	unsigned int    get_h() const {return h;}
 	//!Gets openGL texture index.
-	GLuint		get_index() const {return index;}
-	void		replace(const surface&);
+	GLuint          get_index() const {return index;}
+	void            replace(const surface&);
 
 	private:
 
-	void		load(const SDL_Surface *);
+	void            load(const SDL_Surface *);
 
-	GLuint		index;
-	int 		mode; 	//! <OpenGL mode... GL_RGB by default.
-	unsigned int 	w,
-	 		h;
+	GLuint          index;
+	int             mode; 	//! <OpenGL mode... GL_RGB by default.
+	unsigned int    w,
+	                h;
 };
 
 }

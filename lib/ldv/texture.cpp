@@ -16,6 +16,35 @@ texture::texture(const surface& s):
 	load(s.get_surface());
 }
 
+texture::texture(
+	texture&& _other
+):
+	index{_other.index},
+	mode{_other.mode},
+	w{_other.w},
+	h{_other.h}
+{
+
+	_other.index=0;
+	_other.w=0;
+	_other.h=0;
+}
+
+texture& texture::operator=(
+	texture&& _other
+) {
+	index=_other.index;
+	mode=_other.mode;
+	w=_other.w;
+	h=_other.h;
+
+	_other.index=0;
+	_other.w=0;
+	_other.h=0;
+
+	return *this;
+}
+
 //!Class destructor
 
 //!Triggers openGL deletion mechanism.
@@ -48,7 +77,7 @@ void texture::load(const SDL_Surface * surface)
 	{
 		glGenTextures(1, &index);
 	}
-	
+
 	glBindTexture(GL_TEXTURE_2D, index);
 
 /*	switch(surface->format->BytesPerPixel)
@@ -76,7 +105,7 @@ void texture::load(const SDL_Surface * surface)
 
 //std::cout<<"Format -> r:"<<std::hex<<surface->format->Rmask<<" g:"<<surface->format->Gmask<<" b:"<<surface->format->Bmask<<" a:"<<surface->format->Amask<<std::endl;
 
- 	if(surface->format->BytesPerPixel==4) 
+ 	if(surface->format->BytesPerPixel==4)
 	{
 		if(surface->format->Rmask==0x000000ff)
 		{
@@ -89,7 +118,7 @@ void texture::load(const SDL_Surface * surface)
 			mode=GL_RGBA;
 		}
 	}
-	else 
+	else
 	{
 		mode=GL_RGB;
 	}

@@ -40,8 +40,19 @@ class surface
 	void 		clear(Uint8=0, Uint8=255, Uint8=255, Uint8=255);
 	void 		clear(Uint32 c);
 
+//!Blits the parameter surface into the current surface.
+
+//!The full surface is copied.
 	void 		copy_from(surface const&);
+
+//!Blits the parameter surface specifying clip.
+
+//!Useful to compose surfaces, but less useful than the four parameter variant.
 	void 		copy_from(surface const&, SDL_Rect);
+
+//!Blits the parameter surface specifying clip and destination.
+
+//!Useful to compose surfaces.
 	void 		copy_from(surface const&, SDL_Rect, SDL_Rect);
 
 	protected:
