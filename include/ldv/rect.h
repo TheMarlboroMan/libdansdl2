@@ -2,10 +2,11 @@
 
 #include <ldt/box.h>
 #include <SDL2/SDL.h>
+#include <ostream>
 
 namespace ldv
 {
-//!Video specialization of a box. 
+//!Video specialization of a box.
 
 //!It must be understood that the origin is at the top left and the width
 //!and height extend to the right and down respectively, regardless of the

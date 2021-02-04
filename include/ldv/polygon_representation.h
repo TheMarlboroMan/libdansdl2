@@ -39,10 +39,9 @@ class polygon_representation
 
 	private:
 
-	void                    update_base_view_position();
-
 	protected:
 
+	void                    update_base_view_position();
 	virtual void            do_draw();
 	void                    normalize();
 

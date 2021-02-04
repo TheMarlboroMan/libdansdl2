@@ -26,18 +26,23 @@ box_representation::box_representation(const rect& p_pos, const rgb_color& c, ty
 
 void box_representation::set_dimensions(int w, int h)
 {
-	int 	nx=points[0].x+w,
-		ny=points[0].y+h;
+	int nx=points[0].x+w,
+	    ny=points[0].y+h;
 
 	points[1].x=nx;
 	points[2].x=nx;
 	points[2].y=ny;
 	points[3].y=ny;
+
+	update_base_view_position();
 }
 
 void box_representation::set_location(const rect& r)
 {
 	points.clear();
+
+	//TODO: This could be done just by overwriting the points
+	//without clearing anything.
 
 	origin={r.origin.x, r.origin.y};
 
@@ -50,4 +55,5 @@ void box_representation::set_location(const rect& r)
 	points.push_back({r.origin.x, fy});
 
 	normalize();
+	update_base_view_position();
 }

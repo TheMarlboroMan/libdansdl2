@@ -36,7 +36,6 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 {
 	//Using the draw info allows us to work with cartesian coordinates.
 	const auto& cf=pcamera.get_draw_info();
-
 	const auto& vp=get_view_position();
 
 	//We need to force the template typenames, since the parameters don't match.
