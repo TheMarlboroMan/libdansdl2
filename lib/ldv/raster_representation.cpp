@@ -150,7 +150,6 @@ void raster_representation::calculate_points_brush() {
 	                h_tex=texture_instance->get_h();
 
 	int itx=0;
-
 	for(int x=0; x < (int)pos.w; x+=brush.w) {
 
 		int ity=0;
@@ -158,7 +157,7 @@ void raster_representation::calculate_points_brush() {
 
 		for(int y=0; y < (int)pos.h; y+=brush.h) {
 
-			const int dif_y=y+brush.h > (int)pos.h ? pos.w - (ity * brush.h) : brush.h;
+			const int dif_y=y+brush.h > (int)pos.h ? pos.h - (ity * brush.h) : brush.h;
 
 			point pts[]={
 				{x, y},
@@ -166,6 +165,7 @@ void raster_representation::calculate_points_brush() {
 				{x+dif_x, y+dif_y},
 				{x, y+dif_y}
 			};
+
 			points.insert(std::end(points), pts, pts+4);
 
 			//ptex_fx y ptex_fy calculations are a proportion between the brush
