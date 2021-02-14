@@ -100,6 +100,14 @@ void screen::set_fullscreen(bool _value) {
 
 		throw std::runtime_error(std::string("unable to set fullscreen mode: ")+SDL_GetError());
 	}
+
+	SDL_DisplayMode display_mode;
+	//There's also SDL_GetDesktopDisplayMode...
+	SDL_GetCurrentDisplayMode(0, &display_mode);
+
+//	set_logical_size(display_mode.w, display_mode.h);
+	set_logical_size(w_logic, h_logic);
+	glViewport(0.f, 0.f, display_mode.w, display_mode.h);
 }
 
 //!Sets or removes fake fullscreen mode.
