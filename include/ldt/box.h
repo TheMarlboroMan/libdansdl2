@@ -88,6 +88,13 @@ class box
 			&& _box.h==h;
 	}
 
+	bool operator!=(const box& _box) const {
+
+		return _box.origin!=origin
+			|| _box.w!=w
+			|| _box.h!=h;
+	}
+
 	/**
 	* Adjusts the box so its edge _edge rests in _edge_position.
 	*/
@@ -114,7 +121,7 @@ class box
 
 	/**
 	* Makes the horizontal center rest on _center.
-	*/ 
+	*/
 
 	void            center_horizontally(T _center) {
 
@@ -123,7 +130,7 @@ class box
 
 	/**
 	* Makes the horizontal center match the one on _obstacle.
-	*/ 
+	*/
 	void            center_horizontally(const box& _obstacle) {
 
 		ldt::center_horizontally(*this, _obstacle);
@@ -131,7 +138,7 @@ class box
 
 	/**
 	* Makes the vertical center rest on _center.
-	*/ 
+	*/
 
 	void            center_vertically(T _center) {
 
@@ -140,7 +147,7 @@ class box
 
 	/**
 	* Makes the vertical center match the one on _obstacle.
-	*/ 
+	*/
 	void            center_vertically(const box& _obstacle) {
 
 		ldt::center_vertically(*this, _obstacle);
@@ -195,7 +202,7 @@ std::ostream& operator<<(
 }
 
 /**box
-* Adjusts _box so its_edge rests in _edge_position. Edges make sense in 
+* Adjusts _box so its_edge rests in _edge_position. Edges make sense in
 * cartesian space only.
 */
 template<typename T, typename U>
@@ -259,8 +266,8 @@ void snap_to_edge(
 
 template<typename T, typename U>
 void match_edge(
-	box<T, U>& _box, 
-	const box<T, U>& _obstacle, 
+	box<T, U>& _box,
+	const box<T, U>& _obstacle,
 	box_edges _edge
 ) {
 
@@ -283,7 +290,7 @@ void match_edge(
 
 template<typename T, typename U>
 void center_horizontally(
-	box<T, U>& _box, 
+	box<T, U>& _box,
 	T _center
 ) {
 
@@ -292,7 +299,7 @@ void center_horizontally(
 
 template<typename T, typename U>
 void center_horizontally(
-	box<T, U>& _box, 
+	box<T, U>& _box,
 	const box<T, U>& _container
 ) {
 
@@ -301,7 +308,7 @@ void center_horizontally(
 
 template<typename T, typename U>
 void center_vertically(
-	box<T, U>& _box, 
+	box<T, U>& _box,
 	T _center
 ) {
 
@@ -310,7 +317,7 @@ void center_vertically(
 
 template<typename T, typename U>
 void center_vertically(
-	box<T, U>& _box, 
+	box<T, U>& _box,
 	const box<T, U>& _container
 ) {
 
