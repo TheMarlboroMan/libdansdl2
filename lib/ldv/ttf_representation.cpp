@@ -3,7 +3,7 @@
 
 using namespace ldv;
 
-const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048};
+const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
 
 //!Default class constructor.
 
@@ -320,7 +320,7 @@ void ttf_representation::create_texture_internal(
 	base_view_position.origin=text_position.origin;
 	base_view_position.w=canvas_w;
 	base_view_position.h=canvas_h;
-	
+
 }
 
 //!Sets a new ttf font.
