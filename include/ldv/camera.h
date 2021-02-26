@@ -61,6 +61,10 @@ class camera
 	void            set_position(point);
 	void            set_coordinate_system(tsystem);
 
+	//!Sets camera dimensions (the physical size the camera takes on screen).
+	void            set_w(unsigned _w) {pos_box.w=_w;}
+	void            set_h(unsigned _h) {pos_box.h=_h;}
+
 	//Camera movement.
 	void            go_to(point);
 	void            center_on(point);

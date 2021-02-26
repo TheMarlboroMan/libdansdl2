@@ -42,6 +42,7 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 	if(visible && (skip_take || rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true
 		)))
 	{
+		//TODO: i am sure this fucks up some cycles needlessly.
 		pscreen.set_camera(pcamera);
 		pre_render_transform(cf);
 		do_draw();
