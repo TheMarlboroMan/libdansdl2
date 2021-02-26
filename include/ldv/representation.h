@@ -113,8 +113,8 @@ class representation {
 #ifndef NDEBUG
 	void            debug_trace_box();
 #endif
-	void            align(const representation&, const representation_alignment&);
-	void            align(const rect&, const representation_alignment&);
+	virtual void    align(const representation&, const representation_alignment&);
+	virtual void    align(const rect&, const representation_alignment&);
 
 	//!Toogles visibility flag.
 	void            toogle_visible() {visible=!visible;}
@@ -145,6 +145,8 @@ class representation {
 
 	rect            base_view_position;
 	void            pre_render_transform(const draw_info&);
+	virtual rect&   get_align_rect() {return base_view_position;}
+	virtual const rect& get_align_rect() const {return base_view_position;}
 
 	//!Real drawing functions must be defined by each subclass.
 	virtual void    do_draw()=0;

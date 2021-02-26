@@ -52,16 +52,20 @@ class ttf_representation:
 
 	//!Returns the rectangle of the text position, which may be different
 	//!from the texture size (textures are in powers of two, and are usually
-	//!larger than the text portion. 
+	//!larger than the text portion.
 	const rect&         get_text_position() const {return text_position;}
 
 	//!Allows correct use of the "align" method.
+	virtual rect&   get_align_rect() {return text_position;}
+	virtual const rect& get_align_rect() const {return text_position;}
 
 	//!Locks the representation so calls to functions that would recreate the texture return before doing so.
 	//!Must be accompanied by a call to "unlock_changes" that will perform recreation.
 	//!Trying to draw a locked ttf_representation will throw,
 	void                lock_changes() {perform_changes=false;}
 	void                unlock_changes();
+
+	//!Specialization for this class.
 
 	void                set_color(rgb_color);
 	void                set_color(rgba_color);

@@ -208,9 +208,12 @@ void representation::calculate_transformed_view_position() {
 
 //!Aligns this representation with respect to the parameter
 
-void representation::align(const representation& o, const representation_alignment& ra) {
+void representation::align(
+	const representation& o,
+	const representation_alignment& ra
+) {
 
-	align(o.base_view_position, ra);
+	align(o.get_align_rect(), ra);
 }
 
 //Aligns this representation relative to the rectangle.
@@ -219,7 +222,9 @@ void representation::align(const representation& o, const representation_alignme
 //!inverted. This function only takes into account screen coordinates (as
 //!it aligns representations, not logic objects).
 
-void representation::align(const rect& r, const representation_alignment& ra) {
+void representation::align(
+	const rect& r,
+	const representation_alignment& ra) {
 
 	auto inverted_alignment=ra;
 	switch(ra.vertical) {
@@ -240,6 +245,6 @@ void representation::align(const rect& r, const representation_alignment& ra) {
 		break;
 	}
 
-	ldt::align(base_view_position, r, inverted_alignment);
-	go_to(base_view_position.origin);
+	ldt::align(get_align_rect(), r, inverted_alignment);
+	go_to(get_align_rect().origin);
 }
