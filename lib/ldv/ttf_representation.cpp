@@ -435,7 +435,7 @@ void ttf_representation::set_color(rgb_color c) {
 //!Will trigger a recreation of the texture if different and unlocked.
 void ttf_representation::set_color(rgba_color _c) {
 
-	auto c=ldv::rgb8(_c.r, _c.g, _c.b);
+	auto c=ldv::rgb_color(_c.r, _c.g, _c.b);
 
 	if(c==text_color && get_alphaf()==_c.a) {
 		return;
