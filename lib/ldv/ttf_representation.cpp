@@ -447,7 +447,10 @@ void ttf_representation::set_color(rgba_color _c) {
 		return;
 	}
 
+	auto pos=get_position();
+	reset_calculations();
 	create_texture();
+	go_to(pos); //Setting the color incidentally resets the position.
 }
 
 
