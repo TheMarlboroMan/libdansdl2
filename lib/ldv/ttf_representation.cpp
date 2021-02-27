@@ -426,7 +426,10 @@ void ttf_representation::set_color(rgb_color c) {
 		return;
 	}
 
+	auto pos=get_position();
+	reset_calculations();
 	create_texture();
+	go_to(pos); //Setting the color incidentally resets the position.
 }
 
 //!Will trigger a recreation of the texture if different and unlocked.
