@@ -64,7 +64,7 @@ class screen
 	bool				is_fullscreen() const {return fullscreen;}
 
 	//!Returns a rect with the screen size. Useful to align representations.
-	rect				get_rect() {return rect{0,0,(unsigned)w,(unsigned)h};}
+	rect				get_rect() const {return rect{0,0,(unsigned)w,(unsigned)h};}
 
 #ifndef NDEBUG
 	unsigned int        draw_count{0};
