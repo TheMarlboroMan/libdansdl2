@@ -489,7 +489,11 @@ void ttf_representation::set_text_align(text_align v) {
 	if(v==alignment) return;
 	alignment=v;
 	if(!perform_changes) return;
+
+	auto pos=get_position();
+	reset_calculations();
 	create_texture();
+	go_to(pos); //Setting the text alignment incidentally resets the position.
 }
 
 void ttf_representation::do_draw() {

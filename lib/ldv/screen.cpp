@@ -7,16 +7,24 @@ using namespace ldv;
 //!Constructs the window in an initialised state.
 
 screen::screen(int p_w, int p_h, int flags_window):
-	window(nullptr), current_camera(nullptr),
+	window{nullptr},
+	current_camera{nullptr},
 	draw_info_instance{0,0,0,0,0,0,1.0},
-	w(p_w), h(p_h),
-	w_logic(w), h_logic(h) {
+	w{p_w},
+	h{p_h},
+	w_logic{w},
+	h_logic{h}
+{
 
 	init(flags_window);
 }
 
 screen::~screen() {
-	if(window) SDL_DestroyWindow(window);
+
+	if(window) {
+		SDL_DestroyWindow(window);
+	}
+
 	SDL_GL_DeleteContext(context);
 }
 
@@ -91,9 +99,12 @@ void screen::set_size(int pw, int ph) {
 //!with set_fake_fullscreen.
 void screen::set_fullscreen(bool _value) {
 
-	if(fullscreen==_value) return;
+	if(fullscreen==_value) {
+		return;
+	}
 
 	fullscreen=_value;
+
 	//TODO: Perhaps we should be able to configure the window to use
 	//SDL_WINDOW_FULLSCREEN or SDL_WINDOW_FULLSCREEN_DESKTOP
 	if(0!=SDL_SetWindowFullscreen(window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0)) {
@@ -101,13 +112,18 @@ void screen::set_fullscreen(bool _value) {
 		throw std::runtime_error(std::string("unable to set fullscreen mode: ")+SDL_GetError());
 	}
 
-	SDL_DisplayMode display_mode;
-	//There's also SDL_GetDesktopDisplayMode...
-	SDL_GetCurrentDisplayMode(0, &display_mode);
-
-//	set_logical_size(display_mode.w, display_mode.h);
 	set_logical_size(w_logic, h_logic);
-	glViewport(0.f, 0.f, display_mode.w, display_mode.h);
+
+	if(fullscreen) {
+
+		SDL_DisplayMode display_mode;
+		SDL_GetCurrentDisplayMode(0, &display_mode);
+		glViewport(0.f, 0.f, display_mode.w, display_mode.h);
+	}
+	else {
+
+		glViewport(0.f, 0.f, w, h);
+	}
 }
 
 //!Sets or removes fake fullscreen mode.
