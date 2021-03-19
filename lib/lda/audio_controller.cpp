@@ -25,8 +25,7 @@ audio_controller::audio_controller(const audio_controller_config& c):
 	out(c.out),
 	buffers(c.buffers), //1024), //2048),
 	requested_channels(c.channels),
-	format(c.format),
-	music_playing(false)
+	format(c.format)
 {
 
 	lm::log(ldt::log_lsdl::get(), lm::lvl::info)<<"Init audio controller with "<<requested_channels<<" channels, "<<buffers<<" buffers, "<<out<<" outputs and a ratio of "<<ratio<<std::endl;
@@ -362,4 +361,37 @@ void audio_controller::remove_music_stop_callback(
 	}
 
 	music_stop_callbacks.erase(_key);
+}
+
+void audio_controller::pause_music() {
+
+	if(!music_playing) {
+
+		return;
+	}
+
+	if(music_paused) {
+
+		return;
+	}
+
+	music_paused=true;
+	Mix_PauseMusic();
+}
+
+void audio_controller::resume_music() {
+
+	if(!music_playing) {
+
+		return;
+	}
+
+	if(!music_paused) {
+
+		return;
+	}
+
+	music_paused=false;
+	Mix_ResumeMusic();
+
 }

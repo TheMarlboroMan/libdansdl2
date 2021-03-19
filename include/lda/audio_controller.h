@@ -60,6 +60,8 @@ class audio_controller
 	void                    set_sound_volume(int p_vol, int pchannel); //p_vol de 0 a 128.
 	void                    add_music_stop_callback(const std::string&, audio_callback_interface&);
 	void                    remove_music_stop_callback(const std::string&);
+	void                    pause_music();
+	void                    resume_music();
 
 	//!Sets the master music volume.
 	void                    set_main_music_volume(int v);
@@ -104,7 +106,8 @@ class audio_controller
 
 	Uint16                  format;
 
-	bool                    music_playing;
+	bool                    music_playing{false},
+	                        music_paused{false};
 
 	std::vector<real_audio_channel> channels;
 	std::map<std::string, audio_callback_interface *> music_stop_callbacks;
