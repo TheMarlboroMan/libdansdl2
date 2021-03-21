@@ -27,8 +27,10 @@ class resource_manager
 
 	void        insert_sound(int, const std::string&);
 	void        unload_sound(int);
+	bool        has_sound(int _id) const {return sounds.count(_id);}
 	void        insert_music(int, const std::string&);
 	void        unload_music(int);
+	bool        has_music(int _id) const {return musics.count(_id);}
 
 	music&      get_music(int) const;
 	sound&      get_sound(int) const;
