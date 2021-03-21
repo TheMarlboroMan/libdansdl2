@@ -25,16 +25,18 @@ class resource_manager
 {
 	public:
 
-	void 		insert_sound(int, const std::string&);
-	void		insert_music(int, const std::string&);
+	void        insert_sound(int, const std::string&);
+	void        unload_sound(int);
+	void        insert_music(int, const std::string&);
+	void        unload_music(int);
 
-	music& 		get_music(int) const;
-	sound&		get_sound(int) const;
+	music&      get_music(int) const;
+	sound&      get_sound(int) const;
 
 	//!Returns the number of music files loaded.
-	size_t		size_music() const {return musics.size();}
+	size_t      size_music() const {return musics.size();}
 	//!Returns the number of sound files loaded.
-	size_t		size_sound() const {return sounds.size();}
+	size_t      size_sound() const {return sounds.size();}
 
 	private:
 

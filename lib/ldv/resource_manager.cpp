@@ -4,9 +4,9 @@
 
 using namespace ldv;
 
-//!Inserts a texture with the numerical handle. 
+//!Inserts a texture with the numerical handle.
 
-//!The new texture will be managed by the resource_manager and must not be 
+//!The new texture will be managed by the resource_manager and must not be
 //!freed anywhere else. Will throw if the numerical key is in use.
 
 void resource_manager::insert(int key, texture * p_rec)
@@ -19,7 +19,7 @@ void resource_manager::insert(int key, texture * p_rec)
 	texture_data.insert(std::pair<int, std::unique_ptr<texture> >(key, std::unique_ptr<texture>(p_rec)));
 }
 
-//!Returns a reference to the texture with the numerical handle. 
+//!Returns a reference to the texture with the numerical handle.
 
 //!Will throw if the handle does not exist.
 
@@ -33,9 +33,9 @@ const texture& resource_manager::get_texture(int key) const
 	return *(texture_data.at(key));
 }
 
-//!Inserts a surface with the numerical handle. 
+//!Inserts a surface with the numerical handle.
 
-//!The new surface will be managed by the resource_manager and must not be 
+//!The new surface will be managed by the resource_manager and must not be
 //!freed anywhere else. Will throw if the numerical key is in use.
 
 void resource_manager::insert(int key, surface * p_rec)
@@ -48,7 +48,7 @@ void resource_manager::insert(int key, surface * p_rec)
 	surface_data[key]=std::unique_ptr<surface>(p_rec);
 }
 
-//!Returns a reference to the surface with the numerical handle. 
+//!Returns a reference to the surface with the numerical handle.
 
 //!Will throw if the handle does not exist.
 
@@ -61,4 +61,28 @@ const surface& resource_manager::get_surface(int key) const
 	}
 
 	return *(surface_data.at(key));
+}
+
+void resource_manager::unload_texture(
+	int _key
+) {
+
+	if(!texture_data.count(_key)) {
+
+		throw std::runtime_error("cannot unload non existing texture");
+	}
+
+	texture_data.erase(_key);
+}
+
+void resource_manager::unload_surface(
+	int _key
+) {
+
+	if(!surface_data.count(_key)) {
+
+		throw std::runtime_error("cannot unload non existing surface");
+	}
+
+	surface_data.erase(_key);
 }

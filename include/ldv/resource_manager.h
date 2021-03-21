@@ -14,7 +14,7 @@ namespace ldv
 
 //!A single entry-point to manage textures and surfaces.
 /**Provides an easy, tried and true interface to insert textures and surfaces
-and retrieve them later. 
+and retrieve them later.
 
 All surfaces and textures are stored and retrieved by an unique numerical identifier
 that can be - for example - assigned to an enum. Textures and surfaces do not share
@@ -29,11 +29,13 @@ class resource_manager
 
 	void 		insert(int, texture *);
 	const texture& 	get_texture(int) const;
+	void        unload_texture(int);
 	//!Gets the count number of all loaded textures.
 	size_t 		size_texture() const {return texture_data.size();}
 
 	void	 	insert(int, surface *);
 	const surface&	get_surface(int) const;
+	void        unload_surface(int);
 	//!Gets the count number of all loaded surfaces.
 	size_t		size_surface() const {return surface_data.size();}
 

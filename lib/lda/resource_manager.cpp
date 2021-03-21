@@ -66,3 +66,27 @@ music& resource_manager::get_music(int key) const
 
 	return *musics.at(key);
 }
+
+void resource_manager::unload_sound(
+	int _key
+) {
+
+	if(!sounds.count(_key)) {
+
+		throw std::runtime_error("cannot unload non existing sound");
+	}
+
+	sounds.erase(_key);
+}
+
+void resource_manager::unload_music(
+	int _key
+) {
+
+	if(!musics.count(_key)) {
+
+		throw std::runtime_error("cannot unload non existing music");
+	}
+
+	musics.erase(_key);
+}
