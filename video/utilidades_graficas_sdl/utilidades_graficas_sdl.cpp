@@ -58,45 +58,14 @@ SDL_Surface * Utilidades_graficas_SDL::copiar_superficie(SDL_Surface const * p_o
 	return copia;
 }
 
-SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const SDL_Window * ventana)
+SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const SDL_Window *)
 {
-        SDL_Surface * temporal=IMG_Load(cadena);
-        if(!temporal)
-        {
-		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:"<<cadena<<std::endl;
-                return NULL;
-        }
-	else
-	{
-		if(!ventana)
-		{
-			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_ARGB8888, 0);
-	      	        SDL_FreeSurface(temporal);
-			return optimizada;
-		}
-		else
-		{
-
-			SDL_Window * ncw=const_cast<SDL_Window *>(ventana);
-			SDL_Surface * wsur=SDL_GetWindowSurface(ncw);
-
-			if(nullptr==wsur) {
-
-				std::string err;
-				err+=SDL_GetError();
-				throw std::runtime_error(err);
-			}
-
-			SDL_Surface * optimizada=SDL_ConvertSurface(
-				temporal,
-				wsur->format,
-				0
-			);
-
-			SDL_FreeSurface(temporal);
-			return optimizada;
-		}
+    SDL_Surface * temporal=IMG_Load(cadena);
+	if (!temporal) {
+		throw std::runtime_error(std::string("Utilidades_graficas_SDL::cargar_imagen() : unable to load image ")+std::string(cadena));
 	}
+
+    return temporal;
 }
 
 void Utilidades_graficas_SDL::mostrar_ocultar_cursor(bool p_modo)
