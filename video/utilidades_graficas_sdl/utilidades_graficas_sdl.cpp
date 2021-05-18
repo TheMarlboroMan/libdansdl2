@@ -38,8 +38,8 @@ SDL_Surface * Utilidades_graficas_SDL::copiar_superficie(SDL_Surface const * p_o
 	p_caja.w=p_origen->w;
 	p_caja.h=p_origen->h;
 
-	Uint32 p_flags=p_origen->flags;	
-	Uint32 p_color=0;	
+	Uint32 p_flags=p_origen->flags;
+	Uint32 p_color=0;
 
 	return copiar_superficie(p_origen, p_caja, p_flags, p_color);
 }
@@ -61,14 +61,14 @@ SDL_Surface * Utilidades_graficas_SDL::copiar_superficie(SDL_Surface const * p_o
 SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const SDL_Window * ventana)
 {
         SDL_Surface * temporal=IMG_Load(cadena);
-        if (!temporal) 
+        if(!temporal)
         {
 		DLibH::Log_motor::L()<<DLibH::Log_base_n(1)<<DLibH::Log_base_t()<<"Utilidades_graficas_SDL::cargar_imagen() : Imagen no cargada:"<<cadena<<std::endl;
                 return NULL;
         }
 	else
 	{
-		if(!ventana) 
+		if(!ventana)
 		{
 			SDL_Surface * optimizada=SDL_ConvertSurfaceFormat(temporal, SDL_PIXELFORMAT_ARGB8888, 0);
 	      	        SDL_FreeSurface(temporal);
@@ -76,8 +76,24 @@ SDL_Surface * Utilidades_graficas_SDL::cargar_imagen(const char * cadena, const 
 		}
 		else
 		{
-			SDL_Surface * optimizada=SDL_ConvertSurface(temporal, SDL_GetWindowSurface(const_cast<SDL_Window *>(ventana))->format, 0);
-	      	        SDL_FreeSurface(temporal);
+
+			SDL_Window * ncw=const_cast<SDL_Window *>(ventana);
+			SDL_Surface * wsur=SDL_GetWindowSurface(ncw);
+
+			if(nullptr==wsur) {
+
+				std::string err;
+				err+=SDL_GetError();
+				throw std::runtime_error(err);
+			}
+
+			SDL_Surface * optimizada=SDL_ConvertSurface(
+				temporal,
+				wsur->format,
+				0
+			);
+
+			SDL_FreeSurface(temporal);
 			return optimizada;
 		}
 	}
@@ -106,7 +122,7 @@ SDL_Texture * Utilidades_graficas_SDL::cargar_textura_desde_superficie(const SDL
 }
 
 SDL_Texture * Utilidades_graficas_SDL::copiar_textura(const SDL_Renderer * renderer, const SDL_Texture * textura)
-{	
+{
 	SDL_Renderer * ren=const_cast<SDL_Renderer *>(renderer);
 	SDL_Texture * tex=const_cast<SDL_Texture *>(textura);
 
@@ -160,13 +176,13 @@ SDL_Texture * Utilidades_graficas_SDL::crear_textura(const SDL_Renderer * render
 Uint32 Utilidades_graficas_SDL::SDL_GetPixel(SDL_Surface *surface, int x, int y)
 {
 	int bpp = surface->format->BytesPerPixel;
-	
+
 	/* Here p is the address to the pixel we want to retrieve */
 	if(SDL_MUSTLOCK(surface)) SDL_LockSurface(surface);
 	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 	if(SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface);
 
-	switch(bpp) 
+	switch(bpp)
 	{
 		case 1:
 			return *p;

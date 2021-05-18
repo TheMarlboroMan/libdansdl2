@@ -3,7 +3,7 @@
 using namespace DLibV;
 
 Pantalla::Pantalla(int p_w, int p_h, unsigned short int p_m):
-	ventana(nullptr), renderer(nullptr), volcados(0), 
+	ventana(nullptr), renderer(nullptr), volcados(0),
 	w(p_w), h(p_h), modo_ventana(p_m), w_logico(w), h_logico(h)
 {
 	this->simulacro_caja.w=0;
@@ -63,12 +63,12 @@ void Pantalla::actualizar()
 	//Uint32 SDL_GetWindowFlags(SDL_Window* window)
 //	std::cout<<SDL_GetWindowFlags(ventana)<<std::endl;
 
-//	if(SDL_GetWindowFlags(ventana) & SDL_WINDOW_OPENGL) 
+//	if(SDL_GetWindowFlags(ventana) & SDL_WINDOW_OPENGL)
 //	{
 //		std::cout<<"GL"<<std::endl;
 //		SDL_GL_SwapWindow(ventana);
 //	}
-//	else 
+//	else
 //	{
 //		std::cout<<"NO GL"<<std::endl;
 		SDL_RenderPresent(renderer);
@@ -78,13 +78,13 @@ void Pantalla::actualizar()
 
 void Pantalla::cortar_caja_a_pantalla(SDL_Rect * p_caja)
 {
-	if(p_caja->x < 0) 
+	if(p_caja->x < 0)
 	{
 		p_caja->w=p_caja->w-p_caja->x;
 		p_caja->x=0;
 	}
 
-	if(p_caja->y < 0) 
+	if(p_caja->y < 0)
 	{
 		p_caja->h=p_caja->h-p_caja->y;
 		p_caja->y=0;
@@ -109,8 +109,8 @@ void Pantalla::preparar_para_camara(Camara const& p_camara)
 void Pantalla::configurar(int flags_ventana)
 {
 	if(!ventana)
-	{	
-		ventana=SDL_CreateWindow("", 
+	{
+		ventana=SDL_CreateWindow("",
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
 			w, h, flags_ventana); //SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -124,6 +124,12 @@ void Pantalla::configurar(int flags_ventana)
 	{
 		//TODO: NO crear renderer si la flag de OpenGL está activa...
 		renderer=SDL_CreateRenderer(ventana, -1, 0);
+		if(nullptr==renderer) {
+
+			std::string err{"could not create window renderer: "};
+			err+=SDL_GetError();
+			throw std::runtime_error(err);
+		}
 		establecer_modo_ventana(modo_ventana);
 	}
 //	establecer_medidas_logicas();
@@ -156,7 +162,7 @@ void Pantalla::establecer_modo_ventana(unsigned int v)
 void Pantalla::reiniciar_clip_completo()
 {
 	SDL_Rect caja;
-	caja.x=0; 
+	caja.x=0;
 	caja.y=0;
 	caja.w=w;
 	caja.h=h;
