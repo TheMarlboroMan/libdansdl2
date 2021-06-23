@@ -114,7 +114,7 @@ class ttf_representation:
 	void                create_texture_internal(int, int, const std::vector<std::string>&);
 	void                set_text_internal(const std::string&);
 	void                text_replace(std::string&, const std::string&, const std::string&);
-	std::vector<std::string> explode(const std::string&, char);
+	std::vector<std::string> 		explode(const std::string &, const std::string&, size_t max=0);
 	int                 get_next_power_of_two(int) const;
 
 	ttf_font const *    font; //! <This is a pointer so it can change.

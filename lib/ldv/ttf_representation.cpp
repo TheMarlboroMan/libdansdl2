@@ -90,7 +90,13 @@ void ttf_representation::create_texture() {
 void ttf_representation::create_texture_free_size() {
 
 	//The text is prepared line by line in different surfaces.
-	auto lines=explode(text, '\n');
+#ifdef WINBUILD
+	auto lines=explode(text, "\r\n");
+#else
+	auto lines=explode(text, "\n");
+#endif
+	
+	
 
 	//Measuring the full resulting texture...
 	int h=0, w=0, total_w=0;
@@ -110,7 +116,13 @@ void ttf_representation::create_texture_free_size() {
 void ttf_representation::create_texture_fixed_width() {
 
 	//The text is prepared line by line in different surfaces.
-	auto original_lines=explode(text, '\n');
+	
+#ifdef WINBUILD
+	auto original_lines=explode(text, "\r\n");
+#else
+	auto original_lines=explode(text, "\n");
+#endif
+	
 	std::vector<std::string> lines;
 
 	//Measuring the full resulting texture...
@@ -547,25 +559,30 @@ ttf_representation&	ttf_representation::set_style(int _flags) {
 	return *this;
 }
 
-std::vector<std::string> ttf_representation::explode(const std::string& _text, char _delimiter) {
+std::vector<std::string> tools::explode(const std::string & pstring, const std::string& delimiter, size_t max) {
+
+	size_t count=1, pos=0, prev_pos=0;
 
 	std::vector<std::string> result;
-	std::string temp;
 
-	for(const char& c : _text) {
-		if(c==_delimiter) {
-			result.push_back(temp);
-			temp="";
+	do {
+		pos=pstring.find(delimiter, prev_pos);
+
+		if(pos==std::string::npos) {
+			result.push_back(pstring.substr(prev_pos));
 		}
 		else {
-			temp+=c;
+			result.push_back(pstring.substr(prev_pos, pos-prev_pos));
+			prev_pos=pos+delimiter.size();
 		}
-	}
 
-	result.push_back(temp);
+		++count;
+		if(max && count >= max) break;
+	}
+	while(pos!=std::string::npos);
+
 	return result;
 }
-
 int ttf_representation::get_next_power_of_two(int _v) const {
 
 	for(const auto& vs : valid_sizes) {

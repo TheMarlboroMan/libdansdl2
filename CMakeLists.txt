@@ -30,6 +30,8 @@ set_target_properties(dansdl2_static PROPERTIES OUTPUT_NAME dansdl2)
 set_target_properties(dansdl2_shared PROPERTIES OUTPUT_NAME dansdl2)
 
 if(WIN32)
+	add_compile_definitions(WINBUILD=1)
+
 	target_compile_definitions(dansdl2_shared PUBLIC -DWINBUILD)
 	target_compile_definitions(dansdl2_static PUBLIC -DWINBUILD)
 
@@ -37,6 +39,7 @@ if(WIN32)
 	
 	add_library(lm SHARED IMPORTED)
 	set_target_properties(lm PROPERTIES IMPORTED_IMPLIB "C:/Program Files (x86)/lm/lib/liblm.dll")
+	
 endif()
 
 
