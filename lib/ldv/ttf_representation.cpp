@@ -559,7 +559,7 @@ ttf_representation&	ttf_representation::set_style(int _flags) {
 	return *this;
 }
 
-std::vector<std::string> tools::explode(const std::string & pstring, const std::string& delimiter, size_t max) {
+std::vector<std::string> ttf_representation::explode(const std::string & pstring, const std::string& delimiter, size_t max) {
 
 	size_t count=1, pos=0, prev_pos=0;
 
