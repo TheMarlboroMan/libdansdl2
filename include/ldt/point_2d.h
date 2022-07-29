@@ -1,10 +1,12 @@
 #pragma once
 
 #include <ldt/tools.h> //Por si acaso no hay M_PI...
+#include <lm/log.h>
 
 #include <cmath>
 #include <vector>
 #include <ostream>
+
 
 namespace ldt
 {
@@ -124,6 +126,9 @@ struct point_2d
 
 	template<typename Z>
 	friend std::ostream& operator<<(std::ostream&, const point_2d<Z>&);
+
+	template<typename Z>
+	friend lm::log& operator<<(lm::log&, const point_2d<Z>&);
 };
 
 template<typename T>
@@ -132,8 +137,18 @@ std::ostream& operator<<(
 	const point_2d<T>& _point
 ) {
 
-	_stream<<_point.x<<","<<_point.y;
+	_stream<<"ldt::point["<<_point.x<<","<<_point.y<<"]";
 	return _stream;
+}
+
+template<typename T>
+lm::log& operator<<(
+	lm::log& _log,
+	const point_2d<T>& _point
+) {
+
+	_log<<"ldt::point["<<_point.x<<","<<_point.y<<"]";
+	return _log;
 }
 
 //!Returns the distance between two points.

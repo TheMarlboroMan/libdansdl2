@@ -2,7 +2,7 @@
 
 #include <ldt/log.h>
 
-#include <lm/sentry.h>
+#include <lm/log.h>
 #include <stdexcept>
 
 /*! \file sdl_video_tools.h
@@ -15,15 +15,21 @@ using namespace ldv;
 
 void ldv::set_cursor_visible(bool v)
 {
-	lm::log(log_lsdl::get(), lm::lvl::info)<<"set_cursor_visible "<<v<<std::endl;
+#ifdef LIBDANSDL2_DEBUG
+	lm::log(log_lsdl::get()).debug()<<"set_cursor_visible "<<v<<std::endl;
+#endif
+
 	SDL_ShowCursor(v);
 }
 
 //!Sets the vsync value.
 
-void ldv::set_vsync(bool v)
-{
-	lm::log(log_lsdl::get(), lm::lvl::info)<<"set_vsync "<<v<<std::endl;
+void ldv::set_vsync(bool v) {
+
+#ifdef LIBDANSDL2_DEBUG
+	lm::log(log_lsdl::get()).debug()<<"set_vsync "<<v<<std::endl;
+#endif
+
 	SDL_GL_SetSwapInterval(v ? 1 : 0);
 }
 

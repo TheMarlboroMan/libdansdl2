@@ -7,11 +7,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 if(${BUILD_DEBUG})
-	message("DEBUG BUILD")
-        set(CMAKE_BUILD_TYPE Debug)
 
+	message("DEBUG BUILD")
+	set(CMAKE_BUILD_TYPE Debug)
+	add_compile_definitions(LIBDANSDL2_DEBUG)
 else()
-        set(CMAKE_BUILD_TYPE Release)
+
+	set(CMAKE_BUILD_TYPE Release)
 endif()
 
 add_compile_options(-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wno-deprecated -ansi -pedantic -fno-rtti)
@@ -36,10 +38,10 @@ if(WIN32)
 	target_compile_definitions(dansdl2_static PUBLIC -DWINBUILD)
 
 	include_directories("${CMAKE_CURRENT_LIST_DIR}/../log/include/")
-	
+
 	add_library(lm SHARED IMPORTED)
 	set_target_properties(lm PROPERTIES IMPORTED_IMPLIB "C:/Program Files (x86)/lm/lib/liblm.dll")
-	
+
 endif()
 
 

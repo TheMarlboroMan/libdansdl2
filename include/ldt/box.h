@@ -3,7 +3,10 @@
 #include "point_2d.h"
 #include "tools.h"
 
+#include <lm/log.h>
 #include <SDL2/SDL.h>
+#include <ostream>
+
 namespace ldt
 {
 
@@ -189,6 +192,9 @@ class box
 
 	template<typename Y, typename Z>
 	friend std::ostream& operator<<(std::ostream&, const box<Y, Z>&);
+
+	template<typename Y, typename Z>
+	friend lm::log& operator<<(lm::log&, const box<Y, Z>&);
 };
 
 template<typename T, typename U>
@@ -197,8 +203,18 @@ std::ostream& operator<<(
 	const box<T, U>& _box
 ) {
 
-	_stream<<_box.origin<<" "<<_box.w<<"x"<<_box.h;
+	_stream<<"ldt::box["<<_box.origin<<" "<<_box.w<<"x"<<_box.h<<"]";
 	return _stream;
+}
+
+template<typename T, typename U>
+lm::log& operator<<(
+	lm::log& _log,
+	const box<T, U>& _box
+) {
+
+	_log<<"ldt::box["<<_box.origin<<" "<<_box.w<<"x"<<_box.h<<"]";
+	return _log;
 }
 
 /**box

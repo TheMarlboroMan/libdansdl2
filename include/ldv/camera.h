@@ -4,6 +4,8 @@
 #include "draw_info.h"
 
 #include <functional>
+#include <ostream>
+#include <lm/log.h>
 
 #include <SDL2/SDL.h>
 namespace ldv
@@ -80,6 +82,9 @@ class camera
 	//!Return a draw_info struct. The information contained may not be the same as the one exposed by the public interface due to coordinate system differences.
 	const draw_info&    get_draw_info() const {return d_info;}
 
+	friend std::ostream& operator<<(std::ostream&, const camera&);
+	friend lm::log& operator<<(lm::log&, const camera&);
+
 	private:
 
 	//Methods...
@@ -99,5 +104,7 @@ class camera
 	tsystem         coordinate_system;
 };
 
-} //Fin namespace DLibV
+std::ostream& operator<<(std::ostream&, const camera&);
+lm::log& operator<<(lm::log&, const camera&);
 
+} //Fin namespace DLibV
