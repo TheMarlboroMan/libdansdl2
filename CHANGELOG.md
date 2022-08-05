@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.1]: 06-8-2022
+### Added
+- Adds "debug" mode to camera, can be turned on and off when building in debug mode.
+
 ## [v3.1.0]: Jul 2022
 ### Added
 - Adds LIBDANSDL2_DEBUG mode which logs things.
