@@ -11,6 +11,11 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.2]: 06-8-2022
+### Added
+- Adds ldt::get_lib_version to retrieve the version number and build type
+- Builds up to three libraries (shared, static and debug) selectable from Cmake Options
+
 ## [V3.1.1]: 06-8-2022
 ### Added
 - Adds "debug" mode to camera, can be turned on and off when building in debug mode.
