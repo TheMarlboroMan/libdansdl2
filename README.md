@@ -18,6 +18,10 @@ Use Cmake.
 
 Starting in 2018 and for the first time there is an external dependency on the "log" project in github.com/TheMarlboroMan/log. You'll need to link every project against the log.o created when building that project.
 
+## License
+
+See LICENSE. Dependencies of this project are all my own and similarly licensed.
+
 ## TODO: 
 
 - Add a test directory where all uses are tested.
