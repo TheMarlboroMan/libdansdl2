@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.3]: 11-01-2023
+### Added:
+- Adds ability to add and remove screen borders.
+
 ## [V3.1.2]: 06-8-2022
 ### Added
 - Adds ldt::get_lib_version to retrieve the version number and build type

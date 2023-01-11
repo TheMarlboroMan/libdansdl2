@@ -52,6 +52,8 @@ class screen
 
 	//!Sets or removes underlying library fullscreen mode.
 	void                set_fullscreen(bool);
+	//!Sets or removes underlying library borders.
+	void                set_borders(bool);
 
 	void                clear(const rgba_color&);
 	void                update();
@@ -61,6 +63,9 @@ class screen
 
 	//!Returns true is the fullscreen flag is set.
 	bool                is_fullscreen() const {return fullscreen;}
+
+	//!Returns if the window has decorations
+	bool                has_borders() const {return borders;}
 
 	//!Returns a rect with the screen size. Useful to align representations.
 	rect                get_rect() const {return rect{0,0,(unsigned)w,(unsigned)h};}
@@ -79,7 +84,8 @@ class screen
 	                    h,
 	                    w_logic, //! <Rendered size. May differ from window dimensions.
 	                    h_logic; //! <Rendered size. May differ from window dimensions.
-	bool                fullscreen{false};
+	bool                fullscreen{false},
+	                    borders{true}; //!< Indicated whether or not the window will have decorations.
 
 #ifndef NDEBUG
 	public:

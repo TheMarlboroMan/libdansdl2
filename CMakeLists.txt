@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 #library version
 set(MAJOR_VERSION 3)
 set(MINOR_VERSION 1)
-set(PATCH_VERSION 2)
+set(PATCH_VERSION 3)
 
 option(BUILD_STATIC "generate static release" OFF)
 option(BUILD_SHARED "generate shared release" OFF)
@@ -25,7 +25,7 @@ else()
 	add_compile_definitions(PATCH_VERSION=${PATCH_VERSION})
 endif()
 
-message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${BUILD_VERSION}")
+message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 
 add_compile_options(-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wno-deprecated -ansi -pedantic -fno-rtti)
 

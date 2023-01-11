@@ -94,6 +94,19 @@ void screen::set_size(int pw, int ph) {
 	glViewport(0.f, 0.f, w, h);
 }
 
+void screen::set_borders(
+	bool _value
+) {
+
+	if(_value==borders) {
+
+		return;
+	}
+
+	borders=_value;
+	SDL_SetWindowBordered(window, borders ? SDL_TRUE : SDL_FALSE);
+}
+
 //TODO: The interaction between real and fake is sketchy.
 //!This method will do a real videomode change. It is not advised to mix this
 //!with set_fake_fullscreen.
