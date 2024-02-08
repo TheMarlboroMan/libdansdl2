@@ -11,6 +11,12 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.4]: 08-02-2024
+### Added:
+- Adds version type (debug or not) to lib version type.
+### Changed:
+- Changes build process so it defaults to shared.
+
 ## [V3.1.3]: 11-01-2023
 ### Added:
 - Adds ability to add and remove screen borders.

@@ -4,28 +4,53 @@ project(libdansdl2)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+option(BUILD_STATIC "generate static release" OFF)
+option(BUILD_SHARED "generate shared release" ON)
+option(BUILD_DEBUG "set the release as debug" OFF)
+option(BUILD_TESTS "Build test code" OFF)
+
 #library version
 set(MAJOR_VERSION 3)
 set(MINOR_VERSION 1)
-set(PATCH_VERSION 3)
+set(PATCH_VERSION 4)
 
-option(BUILD_STATIC "generate static release" OFF)
-option(BUILD_SHARED "generate shared release" OFF)
-option(BUILD_DEBUG "generate shared debug release" OFF)
+if(${BUILD_DEBUG})
+	set(CMAKE_BUILD_TYPE Debug)
+	set(RELEASE_VERSION "debug")
+else()
+	set(CMAKE_BUILD_TYPE Release)
+	set(RELEASE_VERSION "prod")
+endif()
+
+if(${BUILD_STATIC})
+
+	set(LIB_VERSION "static")
+endif()
+
+if(${BUILD_SHARED})
+
+	set(LIB_VERSION "shared")
+endif()
+
 
 if(${CMAKE_VERSION} VERSION_LESS "3.22.0")
 
 	add_definitions(-DMAJOR_VERSION=${MAJOR_VERSION})
 	add_definitions(-DMINOR_VERSION=${MINOR_VERSION})
 	add_definitions(-DPATCH_VERSION=${PATCH_VERSION})
+	add_definitions(-DRELEASE_VERSION=\"${RELEASE_VERSION}\")
+	add_definitions(-DLIB_VERSION=\"${LIB_VERSION}\")
 else()
 
 	add_compile_definitions(MAJOR_VERSION=${MAJOR_VERSION})
 	add_compile_definitions(MINOR_VERSION=${MINOR_VERSION})
 	add_compile_definitions(PATCH_VERSION=${PATCH_VERSION})
+	add_compile_definitions(RELEASE_VERSION=\"${RELEASE_VERSION}\")
+	add_compile_definitions(LIB_VERSION=\"${LIB_VERSION}\")
 endif()
 
-message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
+message("will build ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${RELEASE_VERSION}-${LIB_VERSION}")
 
 add_compile_options(-Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Woverloaded-virtual -Wno-deprecated -ansi -pedantic -fno-rtti)
 
@@ -39,7 +64,6 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/lib")
 if(${BUILD_STATIC})
 
 	add_library(dansdl2_static STATIC ${SOURCE})
-	target_compile_definitions(dansdl2_static PUBLIC "-DBUILD_VERSION=\"archive\"")
 	set_target_properties(dansdl2_static PROPERTIES OUTPUT_NAME dansdl2)
 	set_target_properties(dansdl2_static PROPERTIES COMPILE_FLAGS "-O3 -DNDEBUG")
 	install(TARGETS dansdl2_static DESTINATION lib)
@@ -48,7 +72,6 @@ endif()
 if(${BUILD_SHARED})
 
 	add_library(dansdl2_shared SHARED ${SOURCE})
-	target_compile_definitions(dansdl2_shared PUBLIC "-DBUILD_VERSION=\"lib\"")
 	set_target_properties(dansdl2_shared PROPERTIES OUTPUT_NAME dansdl2)
 	set_target_properties(dansdl2_shared PROPERTIES COMPILE_FLAGS "-O3 -DNDEBUG")
 	install(TARGETS dansdl2_shared DESTINATION lib)
@@ -56,16 +79,28 @@ endif()
 
 if(${BUILD_DEBUG})
 
-	add_library(dansdl2_debug SHARED ${SOURCE})
-	target_compile_definitions(dansdl2_debug PUBLIC "-DBUILD_VERSION=\"debug\"")
-	target_compile_definitions(dansdl2_debug PUBLIC "-DLIBDANSDL2_DEBUG")
-	set_target_properties(dansdl2_debug PROPERTIES OUTPUT_NAME dansdl2_debug)
-	set_target_properties(dansdl2_debug PROPERTIES COMPILE_FLAGS "-O0 -g")
-	install(TARGETS dansdl2_debug DESTINATION lib)
+	if(${BUILD_STATIC})
+
+		add_library(dansdl2_debug_static STATIC ${SOURCE})
+		target_compile_definitions(dansdl2_debug_static PUBLIC "-DLIBDANSDL2_DEBUG")
+		set_target_properties(dansdl2_debug_static PROPERTIES OUTPUT_NAME dansdl2_debug)
+		set_target_properties(dansdl2_debug_static PROPERTIES COMPILE_FLAGS "-O0 -g")
+		install(TARGETS dansdl2_debug_static DESTINATION lib)
+	endif()
+
+	if(${BUILD_SHARED})
+
+		add_library(dansdl2_debug_shared SHARED ${SOURCE})
+		target_compile_definitions(dansdl2_debug_shared PUBLIC "-DLIBDANSDL2_DEBUG")
+		set_target_properties(dansdl2_debug_shared PROPERTIES OUTPUT_NAME dansdl2_debug)
+		set_target_properties(dansdl2_debug_shared PROPERTIES COMPILE_FLAGS "-O0 -g")
+		install(TARGETS dansdl2_debug_shared DESTINATION lib)
+	endif()
 endif()
 
 #windows specifics
 if(WIN32)
+
 	add_compile_definitions(WINBUILD=1)
 
 	if(${BUILD_STATIC})
@@ -91,7 +126,9 @@ if(WIN32)
 endif()
 
 install(DIRECTORY include/ DESTINATION include)
+
 if(WIN32)
+
 #	target_link_libraries(dansdl2_static lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
 #	target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
 
