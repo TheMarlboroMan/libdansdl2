@@ -78,9 +78,7 @@ class audio_controller
 	audio_channel           get_channel(int);
 	audio_channel           get_free_channel();
 
-#ifndef NDEBUG
 	std::string             debug_state();
-#endif
 
 	/////////////////////////////////////
 	// Propiedades...

@@ -1,10 +1,10 @@
 #include <ldv/camera.h>
 
-#include <sstream>
-
 #ifdef LIBDANSDL2_DEBUG
 #include <ldt/log.h>
 #endif
+
+#include <sstream>
 
 using namespace ldv;
 
@@ -22,14 +22,14 @@ camera::camera(rect foco, point pos):
 //!This is a private function. Basically feeds a draw_info struct with the
 //!camera values and converts its y coordinates to screen space if neccesary.
 
-void camera::sync()
-{
+void camera::sync() {
+
 	d_info.pos_x=pos_box.origin.x;
 	d_info.pos_y=pos_box.origin.y;
 	d_info.rel_x=focus_box.origin.x;
-	d_info.rel_y=coordinate_system==tsystem::screen ?
-		focus_box.origin.y :
-		-focus_box.origin.y-focus_box.h; //Set to screen space.
+	d_info.rel_y=coordinate_system==tsystem::screen
+		? focus_box.origin.y
+		: -focus_box.origin.y-focus_box.h; //Set to screen space.
 	d_info.view_w=focus_box.w;
 	d_info.view_h=focus_box.h;
 }
@@ -43,18 +43,20 @@ void camera::sync()
 //!to center on it, triggering this behaviour and creating sort of a
 //!"letterbox" effect.
 
-void camera::go_to(point p)
-{
-	if(with_limit)
-	{
+void camera::go_to(point p) {
+
+	if(with_limit) {
+
 		//If the dimension of the limits if smaller than the focus
 		//we'll center on the limits. Otherwise, we set the origin as
 		//necessary respecting the limits.
+		
+		//TODO: There must be some sort of bug here...
+		
+		auto calculate=[this](int foc_dimension, int limit_origin, int limit_dimension, int pos) {
 
-		auto calculate=[this](int foc_dimension, int limit_origin, int limit_dimension, int pos)
-		{
-			if(foc_dimension <= limit_dimension) //Set the origin in the proposed point, according to the limits...
-			{
+			if(foc_dimension <= limit_dimension) { //Set the origin in the proposed point, according to the limits...
+
 				int 	end=pos + foc_dimension,
 					limit_max=limit_origin+limit_dimension;
 
@@ -62,8 +64,8 @@ void camera::go_to(point p)
 				else if(end > limit_max) return limit_max-foc_dimension;
 				else return pos;
 			}
-			else //Set the focus origin so it centers on the limits.
-			{
+			else { //Set the focus origin so it centers on the limits.
+			
 				return ((limit_dimension-foc_dimension) / 2) + limit_origin;
 			}
 		};
@@ -72,14 +74,12 @@ void camera::go_to(point p)
 		focus_box.origin.y=calculate(focus_box.h, limits.origin.y, limits.h, p.y);
 
 #ifdef LIBDANSDL2_DEBUG
-		if(debug) {
-			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::go_to("<<p<<") with limit resulted in focus box "<<focus_box.origin<<std::endl;
-		}
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::go_to("<<p<<") with limit resulted in focus box "<<focus_box.origin<<std::endl;
 #endif
 
 	}
-	else
-	{
+	else {
+
 		focus_box.origin={p.x, p.y};
 	}
 
@@ -92,33 +92,27 @@ void camera::go_to(point p)
 //!the one requested. Coordinate systems for the camera are irrelevant as it
 //!will focus in the given position.
 
-void camera::center_on(point p)
-{
-	if(with_margin)
-	{
+void camera::center_on(point p) {
+
+	if(with_margin) {
 
 		//Limit margin is expressed in terms of pos_box so the point must be converted.
 		auto pt=p-focus_box.origin;
 
-		if(limit_margin.point_inside(pt))
-		{
+		if(limit_margin.point_inside(pt)) {
 
 #ifdef LIBDANSDL2_DEBUG
-			if(debug) {
-				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines that pt is inside margin box, nothing to be done"<<std::endl;
-			}
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines that pt is inside margin box, nothing to be done"<<std::endl;
 #endif
 			return;
 		}
-		else
-		{
+		else {
 			//Calculate the necessary difference. Everything
 			//here is expressed in screen values, so there is no coordinate
 			//system to take care of.
 			int x=0, y=0; //These are zeroed in case no changes are made... at the end we just add a 0.0 point.
 
-			auto calculate_diff=[](int val, int origin, int dimension) -> int
-			{
+			auto calculate_diff=[](int val, int origin, int dimension) -> int {
 				if(val < origin) return val-origin;
 				else if(val > origin+dimension) return val-origin-dimension;
 				else return 0;
@@ -130,16 +124,13 @@ void camera::center_on(point p)
 
 			point displacement{x, y};
 #ifdef LIBDANSDL2_DEBUG
-			if(debug) {
-				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines a displacement "<<displacement<<" from focus box "<<focus_box<<std::endl;
-			}
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines a displacement "<<displacement<<" from focus box "<<focus_box<<std::endl;
 #endif
 
 			go_to(focus_box.origin + displacement);
 		}
 	}
-	else
-	{
+	else {
 		go_to({p.x-((int)focus_box.w/2), p.y-((int)focus_box.h/2)});
 	}
 }
@@ -149,8 +140,8 @@ void camera::center_on(point p)
 //!The function ignores coordinate systems. If cartesian is chosen, the origin
 //!of the rect will be assumed to be its bottom-left corner.
 
-void camera::center_on(const rect& r)
-{
+void camera::center_on(const rect& r) {
+
 	center_on({r.origin.x+((int)r.w/2), r.origin.y+((int)r.h/2)});
 }
 
@@ -160,8 +151,8 @@ void camera::center_on(const rect& r)
 //!Cartesian coordinates have Y positives rising, while screen coordinates
 //!have them falling.
 
-void camera::move_by(int p_x, int p_y)
-{
+void camera::move_by(int p_x, int p_y) {
+
 	go_to(focus_box.origin + point{p_x, p_y});
 }
 
@@ -170,28 +161,25 @@ void camera::move_by(int p_x, int p_y)
 //!The rect is assumed to correspond with the camera's coordinate system (that
 //!is, top-left for screen and bottom-left for cartesian).
 
-void camera::set_limits(const rect& r)
-{
+void camera::set_limits(const rect& r) {
+
 	with_limit=true;
 	limits=r;
 
 #ifdef LIBDANSDL2_DEBUG
-	if(debug) {
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_limits("<<r<<")"<<std::endl;
-	}
+	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_limits("<<r<<")"<<std::endl;
 #endif
 
 }
 
 //!Removes camera movement limits in world space.
 
-void camera::clear_limits()
-{
+void camera::clear_limits() {
+
 	with_limit=false;
+
 #ifdef LIBDANSDL2_DEBUG
-	if(debug) {
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_limits()"<<std::endl;
-	}
+	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_limits()"<<std::endl;
 #endif
 }
 
@@ -203,17 +191,15 @@ void camera::clear_limits()
 //!be adjusted accordingly. In cartesian mode the zoom happens from the bottom-
 //!left corner.
 
-void camera::set_zoom(double v)
-{
+void camera::set_zoom(double v) {
+
 	if(v < 0.01) v=0.01;
 	d_info.zoom=v;
 	focus_box.w=pos_box.w / v;
 	focus_box.h=pos_box.h / v;
 
 #ifdef LIBDANSDL2_DEBUG
-	if(debug) {
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_zoom("<<v<<"), focus box is now "<<focus_box<<" as calculated from pos_box "<<pos_box<<std::endl;
-	}
+	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_zoom("<<v<<"), focus box is now "<<focus_box<<" as calculated from pos_box "<<pos_box<<std::endl;
 #endif
 	sync();
 }
@@ -224,14 +210,12 @@ void camera::set_zoom(double v)
 //!The rect is interpreted as relative to pos_box and always in screen
 //!coordinates.
 
-void camera::set_center_margin(const rect& r)
-{
+void camera::set_center_margin(const rect& r) {
+
 	with_margin=true;
 	limit_margin=r;
 #ifdef LIBDANSDL2_DEBUG
-	if(debug) {
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_center_margin("<<r<<")"<<std::endl;
-	}
+	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_center_margin("<<r<<")"<<std::endl;
 #endif
 }
 
@@ -242,9 +226,7 @@ void camera::clear_center_margin()
 	with_margin=false;
 	limit_margin={0,0,0,0};
 #ifdef LIBDANSDL2_DEBUG
-	if(debug) {
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_center_margin()"<<std::endl;
-	}
+	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_center_margin()"<<std::endl;
 #endif
 }
 
@@ -253,29 +235,27 @@ void camera::clear_center_margin()
 //!Repositions the camera on the screen using screen coordinates. Has no effect
 //!in the focused area of the world space.
 
-void camera::set_position(point v)
-{
+void camera::set_position(point v) {
+
 	pos_box.origin=v;
 	sync();
 }
 
 //!Sets the coordinate system (basically controlling whether the positive Y axis points up or down).
 
-void camera::set_coordinate_system(tsystem v)
-{
+void camera::set_coordinate_system(tsystem v) {
+
 	coordinate_system=v;
 
 #ifdef LIBDANSDL2_DEBUG
-	if(debug) {
-		switch(coordinate_system)
-		{
-			case tsystem::screen:
-				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(screen)"<<std::endl;
-			break;
-			case tsystem::cartesian:
-				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(cartesian)"<<std::endl;
-			break;
-		}
+	switch(coordinate_system) {
+
+		case tsystem::screen:
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(screen)"<<std::endl;
+		break;
+		case tsystem::cartesian:
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(cartesian)"<<std::endl;
+		break;
 	}
 #endif
 	sync();
@@ -287,8 +267,8 @@ void camera::set_coordinate_system(tsystem v)
 //!coordinates (not a drawable object). This function is sensitive to the
 //!coordinate system selected.
 
-bool camera::in_focus(const rect& r) const
-{
+bool camera::in_focus(const rect& r) const {
+
 	//TODO: Two functions, or two calculations. Choose... Or do not choose and
 	//rework it.
 	return r.collides_with(focus_box);

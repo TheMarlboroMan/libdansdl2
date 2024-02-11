@@ -36,8 +36,8 @@ void screen::clear(const rgba_color& c) {
 	glClearColor(c.r, c.g, c.b, c.a);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-#ifndef NDEBUG
-	draw_count=0;
+#ifdef LIBDANSDL2_DEBUG
+	debug_draw_count=0;
 #endif
 
 }

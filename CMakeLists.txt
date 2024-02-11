@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(libdansdl2)
 
-option(BUILD_STATIC "generate static release" OFF)
+option(BUILD_STATIC "generate static release" ON)
 option(BUILD_SHARED "generate shared release" ON)
 option(BUILD_DEBUG "set the release as debug" OFF)
 option(BUILD_TESTS "Build test code" OFF)

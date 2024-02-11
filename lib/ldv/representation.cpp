@@ -46,8 +46,8 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 		pscreen.set_camera(pcamera);
 		pre_render_transform(cf);
 		do_draw();
-#ifndef NDEBUG
-		pscreen.draw_count++;
+#ifdef LIBDANSDL2_DEBUG
+		pscreen.debug_draw_count++;
 #endif
 	}
 
@@ -85,8 +85,8 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 		pre_render_transform(pscreen.get_draw_info());
 		do_draw();
-#ifndef NDEBUG
-		pscreen.draw_count++;
+#ifndef LIBDANSDL2_DEBUG
+		pscreen.debug_draw_count++;
 #endif
 	}
 
@@ -94,13 +94,13 @@ void representation::draw(screen& pscreen, bool skip_take)
 	glLoadIdentity();
 }
 
-#ifndef NDEBUG
 //!Directly uses openGL to trace the view position.
 
 //!This function should not be used beyond debug purposes.
 
 void representation::debug_trace_box()
 {
+#ifndef LIBDANSDL2_DEBUG
 	calculate_transformed_view_position();
 	const auto& rect=transformed_view_position;
 	glEnable(GL_BLEND);
@@ -119,9 +119,8 @@ void representation::debug_trace_box()
 	glVertexPointer(2, GL_INT, 0, points.data());
 	glDrawArrays(GL_POLYGON, 0, points.size());
 	glDisableClientState(GL_VERTEX_ARRAY);
-}
-
 #endif
+}
 
 //!Applies all SDL transformations of zoom, position and rotation.
 

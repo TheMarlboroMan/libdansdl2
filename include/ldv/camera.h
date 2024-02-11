@@ -85,14 +85,6 @@ class camera
 	friend std::ostream& operator<<(std::ostream&, const camera&);
 	friend lm::log& operator<<(lm::log&, const camera&);
 
-#ifdef LIBDANSDL2_DEBUG
-
-	private:
-	void					set_debug(bool _val) {debug=_val;}
-	bool					debug{false};
-#endif
-
-
 	private:
 
 	//Methods...

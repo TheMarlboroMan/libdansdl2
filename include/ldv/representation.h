@@ -110,9 +110,8 @@ class representation {
 	//!Resets rotation transformation data.
 	virtual void    reset_transform() {transformation.reset();}
 
-#ifndef NDEBUG
 	void            debug_trace_box();
-#endif
+
 	virtual void    align(const representation&, const representation_alignment&);
 	virtual void    align(const rect&, const representation_alignment&);
 

@@ -70,6 +70,8 @@ class screen
 	//!Returns a rect with the screen size. Useful to align representations.
 	rect                get_rect() const {return rect{0,0,(unsigned)w,(unsigned)h};}
 
+	unsigned int        debug_draw_count{0};
+
 	private:
 
 	void                init(int);
@@ -86,13 +88,6 @@ class screen
 	                    h_logic; //! <Rendered size. May differ from window dimensions.
 	bool                fullscreen{false},
 	                    borders{true}; //!< Indicated whether or not the window will have decorations.
-
-#ifndef NDEBUG
-	public:
-	unsigned int        draw_count{0};
-#endif
-
-
 };
 
 } //Fin namespace DLibV

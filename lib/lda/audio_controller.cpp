@@ -244,8 +244,6 @@ int audio_controller::get_music_volume() const
 	return ceil(vol);
 }
 
-#ifndef NDEBUG
-
 //!Returns a crude representation of channel state to stout.
 
 //!The representation looks like this:
@@ -258,6 +256,7 @@ int audio_controller::get_music_volume() const
 
 std::string audio_controller::debug_state()
 {
+#ifdef LIBDANSDL2_DEBUG
 	std::stringstream ss;
 	ss<<"C["<<channels.size()<<"/"<<Mix_AllocateChannels(-1)<<"/"<<requested_channels<<"] = ";
 
@@ -278,9 +277,9 @@ std::string audio_controller::debug_state()
 	}
 
 	return ss.str();
+#endif
 }
 
-#endif
 
 //!Gets a handle for the specified audio channel.
 
