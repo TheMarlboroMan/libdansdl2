@@ -131,7 +131,13 @@ void camera::center_on(point p) {
 		}
 	}
 	else {
-		go_to({p.x-((int)focus_box.w/2), p.y-((int)focus_box.h/2)});
+
+		point pt={p.x-((int)focus_box.w/2), p.y-((int)focus_box.h/2)};
+
+#ifdef LIBDANSDL2_DEBUG
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and focus box "<<focus_box<<std::endl;
+#endif
+		go_to(pt);
 	}
 }
 

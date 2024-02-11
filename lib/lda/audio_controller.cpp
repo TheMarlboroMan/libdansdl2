@@ -278,6 +278,8 @@ std::string audio_controller::debug_state()
 
 	return ss.str();
 #endif
+
+	return "";
 }
 
 
