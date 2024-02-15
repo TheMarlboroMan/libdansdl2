@@ -17,6 +17,29 @@ camera::camera(rect foco, point pos):
 	sync();
 }
 
+camera& camera::set_debug_flags(
+#ifdef LIBDANSDL2_DEBUG
+	int _flags
+#else
+	int
+#endif
+) {
+
+#ifdef LIBDANSDL2_DEBUG
+	debug_flags=_flags;
+#endif
+	return *this;
+}
+
+int camera::get_debug_flags() const {
+
+#ifdef LIBDANSDL2_DEBUG
+	return debug_flags;
+#else
+	return 0;
+#endif
+}
+
 //!Syncs camera boxes and performs neccesary coordinate system conversions.
 
 //!This is a private function. Basically feeds a draw_info struct with the
@@ -51,8 +74,6 @@ void camera::go_to(point p) {
 		//we'll center on the limits. Otherwise, we set the origin as
 		//necessary respecting the limits.
 		
-		//TODO: There must be some sort of bug here...
-		
 		auto calculate=[this](int foc_dimension, int limit_origin, int limit_dimension, int pos) {
 
 			if(foc_dimension <= limit_dimension) { //Set the origin in the proposed point, according to the limits...
@@ -66,6 +87,7 @@ void camera::go_to(point p) {
 			}
 			else { //Set the focus origin so it centers on the limits.
 			
+				//TODO: This may be a bug...
 				return ((limit_dimension-foc_dimension) / 2) + limit_origin;
 			}
 		};
@@ -74,13 +96,23 @@ void camera::go_to(point p) {
 		focus_box.origin.y=calculate(focus_box.h, limits.origin.y, limits.h, p.y);
 
 #ifdef LIBDANSDL2_DEBUG
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::go_to("<<p<<") with limit resulted in focus box "<<focus_box.origin<<std::endl;
+		if(debug_flags & dflag_go_to) {
+
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::go_to("<<p<<") with limit "<<limits<<" resulted in focus box origin "<<focus_box.origin<<std::endl;
+		}
 #endif
 
 	}
 	else {
 
 		focus_box.origin={p.x, p.y};
+
+#ifdef LIBDANSDL2_DEBUG
+		if(debug_flags & dflag_go_to) {
+
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::go_to("<<p<<") no limit resulted in focus box origin "<<focus_box.origin<<std::endl;
+		}
+#endif
 	}
 
 	sync();
@@ -102,7 +134,10 @@ void camera::center_on(point p) {
 		if(limit_margin.point_inside(pt)) {
 
 #ifdef LIBDANSDL2_DEBUG
-			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines that pt is inside margin box, nothing to be done"<<std::endl;
+			if(debug_flags & dflag_center_on) {
+
+				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines that pt is inside margin box, nothing to be done"<<std::endl;
+			}
 #endif
 			return;
 		}
@@ -124,7 +159,10 @@ void camera::center_on(point p) {
 
 			point displacement{x, y};
 #ifdef LIBDANSDL2_DEBUG
-			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines a displacement "<<displacement<<" from focus box "<<focus_box<<std::endl;
+			if(debug_flags & dflag_center_on) {
+
+				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and limit_margin="<<limit_margin<<" determines a displacement "<<displacement<<" from focus box "<<focus_box<<std::endl;
+			}
 #endif
 
 			go_to(focus_box.origin + displacement);
@@ -135,8 +173,12 @@ void camera::center_on(point p) {
 		point pt={p.x-((int)focus_box.w/2), p.y-((int)focus_box.h/2)};
 
 #ifdef LIBDANSDL2_DEBUG
-		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and focus box "<<focus_box<<std::endl;
+		if(debug_flags & dflag_center_on) {
+
+			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::center_on("<<p<<") with pt="<<pt<<" and focus box "<<focus_box<<std::endl;
+		}
 #endif
+
 		go_to(pt);
 	}
 }
@@ -173,9 +215,11 @@ void camera::set_limits(const rect& r) {
 	limits=r;
 
 #ifdef LIBDANSDL2_DEBUG
-	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_limits("<<r<<")"<<std::endl;
-#endif
+	if(debug_flags & dflag_set_limits) {
 
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_limits("<<r<<")"<<std::endl;
+	}
+#endif
 }
 
 //!Removes camera movement limits in world space.
@@ -185,7 +229,10 @@ void camera::clear_limits() {
 	with_limit=false;
 
 #ifdef LIBDANSDL2_DEBUG
-	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_limits()"<<std::endl;
+	if(debug_flags & dflag_clear_limits) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_limits()"<<std::endl;
+	}
 #endif
 }
 
@@ -205,7 +252,10 @@ void camera::set_zoom(double v) {
 	focus_box.h=pos_box.h / v;
 
 #ifdef LIBDANSDL2_DEBUG
-	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_zoom("<<v<<"), focus box is now "<<focus_box<<" as calculated from pos_box "<<pos_box<<std::endl;
+	if(debug_flags & dflag_set_zoom) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_zoom("<<v<<"), focus box is now "<<focus_box<<" as calculated from pos_box "<<pos_box<<std::endl;
+	}
 #endif
 	sync();
 }
@@ -221,7 +271,10 @@ void camera::set_center_margin(const rect& r) {
 	with_margin=true;
 	limit_margin=r;
 #ifdef LIBDANSDL2_DEBUG
-	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_center_margin("<<r<<")"<<std::endl;
+	if(debug_flags & dflag_set_center_margin) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_center_margin("<<r<<")"<<std::endl;
+	}
 #endif
 }
 
@@ -232,7 +285,10 @@ void camera::clear_center_margin()
 	with_margin=false;
 	limit_margin={0,0,0,0};
 #ifdef LIBDANSDL2_DEBUG
-	lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_center_margin()"<<std::endl;
+	if(debug_flags & dflag_clear_center_margin) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::clear_center_margin()"<<std::endl;
+	}
 #endif
 }
 
@@ -254,14 +310,17 @@ void camera::set_coordinate_system(tsystem v) {
 	coordinate_system=v;
 
 #ifdef LIBDANSDL2_DEBUG
-	switch(coordinate_system) {
+	if(debug_flags & dflag_set_coordinate_system) {
 
-		case tsystem::screen:
-			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(screen)"<<std::endl;
-		break;
-		case tsystem::cartesian:
-			lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(cartesian)"<<std::endl;
-		break;
+		switch(coordinate_system) {
+
+			case tsystem::screen:
+				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(screen)"<<std::endl;
+			break;
+			case tsystem::cartesian:
+				lm::log(ldt::log_lsdl::get()).debug()<<"ldv::camera::set_coordinate_system(cartesian)"<<std::endl;
+			break;
+		}
 	}
 #endif
 	sync();

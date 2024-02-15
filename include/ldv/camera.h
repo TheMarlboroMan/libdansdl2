@@ -43,6 +43,19 @@ class camera
 	//!Y coordinate move away from zero "south" (cartesian has it grow "north").
 	enum class      tsystem{screen, cartesian};
 
+	//!Specify what the logger should tell in debug mode.
+	enum debug_flags {
+		dflag_none=0,
+		dflag_go_to=1,
+		dflag_center_on=2,
+		dflag_set_limits=4,
+		dflag_clear_limits=8,
+		dflag_set_zoom=16,
+		dflag_set_center_margin=32,
+		dflag_clear_center_margin=64,
+		dflag_set_coordinate_system=128
+	};
+
 	//!Class constructor with focus and screen position. Camera box w and h
 	//!will match that of the focus.
 	camera(rect/*={0,0,640,400}*/, point/*={0,0}*/);
@@ -79,6 +92,12 @@ class camera
 	void            set_center_margin(const rect&);
 	void            clear_center_margin();
 
+	//!Sets the debug flags at the given value.
+	camera&         set_debug_flags(int);
+	//!Returns the current debug flags.
+	int             get_debug_flags() const;
+
+
 	//!Return a draw_info struct. The information contained may not be the same as the one exposed by the public interface due to coordinate system differences.
 	const draw_info&    get_draw_info() const {return d_info;}
 
@@ -102,6 +121,7 @@ class camera
 	rect            limit_margin;
 
 	tsystem         coordinate_system;
+	int             debug_flags{0};
 };
 
 std::ostream& operator<<(std::ostream&, const camera&);
