@@ -10,6 +10,7 @@ application code but also appears in other libdansdl2 parts.
 
 #include <algorithm>
 #include <cmath>
+#include <ostream>
 
 namespace ldt {
 
@@ -189,6 +190,13 @@ struct vector_2d {
 		return angle_for_vector_deg(*this);
 	}
 };
+
+template<typename T>
+std::ostream& ldt::operator<<(std::ostream& _stream, const vector_2d<T>& _vec) {
+
+	_stream<<_vec.x<<","<<_vec.y;
+	return _stream;
+}
 
 template<typename T> 
 vector_2d<T> operator*(T _val, const vector_2d<T>& _vec) {
