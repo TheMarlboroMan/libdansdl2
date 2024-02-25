@@ -444,9 +444,11 @@ class sdl_input
 	//!Clears the internal text buffer.
 	void 			clear_text_input() {input_text=std::string("");}
 	//!Returns the internal text buffer.
-	const std::string 	get_text_input() const {return input_text;}
+	const std::string& 	get_text_input() const {return input_text;}
 	//!Checks whether text input is activated.
 	bool 			is_text_input() const {return SDL_IsTextInputActive();}
+	//!Returns true if the backspace and enter are passed to text input.
+	bool            get_keydown_control_text_filter() const {return keydown_control_text_filter;}
 	//!Sets whether or not to pass backspace or enter to the input_text when text input is active.
 	void			set_keydown_control_text_filter(bool v) {keydown_control_text_filter=v;}
 	//!Sets the text filter function, which must return true for the input to be accepted.

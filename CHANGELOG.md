@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.5]: 08-02-2024
+### Added:
+- added get_keydown_control_text_filter to input.
+
 ## [V3.1.4]: 08-02-2024
 ### Added:
 - Adds version type (debug or not) to lib version type.
