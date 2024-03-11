@@ -23,7 +23,7 @@ class primitive_representation:
 	//Assigns color plus alpha.
 	void            set_color(rgba_color _c) {
 		set_color(rgb_color(_c.r, _c.g, _c.b));
-		set_alpha(_c.a * 255.f);
+		set_alpha(_c.a);
 	}
 
 	virtual void    go_to(point)=0;

@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.6]: 2024-03-11
+### Added:
+- Color indexed surfaces can now be used as textures.
+
 ## [V3.1.5]: 08-02-2024
 ### Added:
 - added get_keydown_control_text_filter to input.
