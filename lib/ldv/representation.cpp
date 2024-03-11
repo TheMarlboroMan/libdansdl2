@@ -174,6 +174,12 @@ void representation::set_rotation_center(float x, float y) {
 	calculate_transformed_view_position();
 }
 
+void representation::center_rotation_center() {
+
+	transformation.center={base_view_position.w / 2.f, base_view_position.h / 2.f};
+	calculate_transformed_view_position();
+}
+
 //!Calculates the view position when rotation transformations are involved.
 
 void representation::calculate_transformed_view_position() {

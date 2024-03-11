@@ -95,6 +95,9 @@ class representation {
 	void            set_rotation(float v);
 	void            set_rotation_center(float x, float y);
 
+	//!Sets the rotation center to the very center of the box.
+	void            center_rotation_center();
+
 	//!Sets the visibility flag.
 	void            set_visible(bool v) {visible=v;}
 

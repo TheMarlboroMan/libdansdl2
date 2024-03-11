@@ -14,6 +14,7 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## [V3.1.6]: 2024-03-11
 ### Added:
 - Color indexed surfaces can now be used as textures.
+- Added "center_rotation_center" method, acting as an "auto center".
 
 ## [V3.1.5]: 08-02-2024
 ### Added:
