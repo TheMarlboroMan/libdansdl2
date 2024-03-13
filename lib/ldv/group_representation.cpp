@@ -21,7 +21,7 @@ void group_representation::clear()
 
 //!Parameters are the same as in a regular representation object.
 
-void group_representation::draw(screen& p_screen, const camera& pcamera, bool skip_take)
+bool group_representation::draw(screen& p_screen, const camera& pcamera, bool skip_take)
 {
 	//Using the draw info allows us to work with cartesian coordinates.
 	const auto& cf=pcamera.get_draw_info();
@@ -30,15 +30,17 @@ void group_representation::draw(screen& p_screen, const camera& pcamera, bool sk
 //	if(is_visible() && (skip_take || pcamera.get_focus_box().collides_with(get_view_position(), true) ))
 	if(is_visible() && (skip_take || ldt::rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true)))
 	{
-		draw_internal(p_screen, &pcamera);
+		return draw_internal(p_screen, &pcamera);
 	}
+
+	return false;
 }
 
 //!Draws the group to the screen with no camera.
 
 //!Parameters are the same as in a regular representation object.
 
-void group_representation::draw(screen& p_screen, bool skip_take)
+bool group_representation::draw(screen& p_screen, bool skip_take)
 {
 	auto in_screen=[this](screen &screen)
 	{
@@ -55,8 +57,10 @@ void group_representation::draw(screen& p_screen, bool skip_take)
 
 	if(is_visible() && (skip_take || in_screen(p_screen)))
 	{
-		draw_internal(p_screen, nullptr);
+		return draw_internal(p_screen, nullptr);
 	}
+
+	return false;
 }
 
 //!Internal draw function.
@@ -65,12 +69,14 @@ void group_representation::draw(screen& p_screen, bool skip_take)
 //!top-left of the group is 0.0. Group alpha is applied to each item whenever
 //!it is not opaque. In other words, it is not accumulative nor it does blend.
 
-void group_representation::draw_internal(screen& p_screen, camera const * pcamera)
+bool group_representation::draw_internal(screen& p_screen, camera const * pcamera)
 {
 	//When assigning, matrixes are reset. If assignation occurs during
 	//this iteration we can have terrible results because translations not
 	//accounted for.
 	if(pcamera!=nullptr) p_screen.set_camera(*pcamera);
+
+	bool result=false;
 
 	for(auto &r : data)
 	{
@@ -113,12 +119,18 @@ void group_representation::draw_internal(screen& p_screen, camera const * pcamer
 		r->set_alpha(calculado);
 
 		//Camera and screen checks are skipped.
-		if(pcamera!=nullptr) r->draw(p_screen, *pcamera, true);
-		else r->draw(p_screen, true);
+		if(pcamera!=nullptr) {
+			result|=r->draw(p_screen, *pcamera, true);
+		}
+		else {
+			result|=r->draw(p_screen, true);
+		}
 
 		r->set_blend(blend_original);
 		r->set_alpha(alpha_original);
 	}
+
+	return result;
 }
 
 //!This function is unreachable.

@@ -129,9 +129,10 @@ class representation {
 	virtual const point& get_position() const=0;
 
 	//These are virtuals because grouped representations need it.
-	virtual void    draw(screen&, const camera&, bool=false);
+	//Return true if drawing actually took place.
+	virtual bool    draw(screen&, const camera&, bool=false);
 
-	virtual void    draw(screen&, bool=false);
+	virtual bool    draw(screen&, bool=false);
 
 	private:
 

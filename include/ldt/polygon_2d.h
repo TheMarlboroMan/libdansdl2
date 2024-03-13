@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <array>
 #include <cassert>
+#include <ostream>
 
 namespace ldt
 {
@@ -197,7 +198,28 @@ class polygon_2d {
 	tpoint				centroid;		//!< Centroid (median center) for the polygon.
 	tpoint				rotation_center;	//!< Rotation center for the polygon.
 
+	template<typename TA>
+	friend std::ostream& operator<<(std::ostream&, const polygon_2d<TA>&);
 };
+
+template<typename T>
+std::ostream& ldt::operator<<(
+	std::ostream& _stream,
+	const polygon_2d<T>& _polygon
+) {
+
+	_stream<<"ldt::polygon_2d[ vertices:[";
+
+	for(const auto& pt : _polygon.vertices) {
+
+		_stream<<pt<<", ";
+	}
+
+	_stream<<"], centroid["<<_polygon.centroid<<"], ";
+	_stream<<"rotation_center["<<_polygon.rotation_center<<"]]";
+
+	return _stream;
+}
 
 //!Calculates the centroid (median center point) of the polygon made up by the vertices.
 

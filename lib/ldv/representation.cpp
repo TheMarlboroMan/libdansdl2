@@ -37,7 +37,7 @@ representation::representation(int valpha, const rect& _bvp):
 //!skip_take is mostly useful for group repesentations, specially when rotations
 //are applied to them.
 
-void representation::draw(
+bool representation::draw(
 	screen& pscreen, 
 	const camera& pcamera, 
 	bool skip_take
@@ -47,17 +47,15 @@ void representation::draw(
 	const auto& cf=pcamera.get_draw_info();
 	const auto& vp=get_view_position();
 
+	const bool in_take=rects_overlap<int, int>(
+		cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, 
+		vp.origin.x, vp.origin.y, vp.w, vp.h, 
+		true
+	);
+
 	//We need to force the template typenames, since the parameters don't match.
 	if(
-		visible && 
-		(
-			skip_take || 
-			rects_overlap<int, int>(
-				cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, 
-				vp.origin.x, vp.origin.y, vp.w, vp.h, 
-				true
-			)
-		)
+		visible && ( skip_take || in_take)
 	) {
 
 		//TODO: i am sure this fucks up some cycles needlessly.
@@ -67,14 +65,34 @@ void representation::draw(
 #ifdef LIBDANSDL2_DEBUG
 		pscreen.debug_draw_count++;
 #endif
+
+		glLoadIdentity();
+		return true;
 	}
+
+#ifdef LIBDANSDL2_DEBUG
+	std::stringstream ss;
+	ss<<"DID NOT DRAW!"<<std::endl;
+	ss<<"visible: "<<(visible ? "true" : "false")<<std::endl;
+	ss<<"skip_take: "<<(skip_take ? "true" : "false")<<std::endl;
+	ss<<"in_take: "<<(in_take ? "true" : "false")<<std::endl;
+	ss<<"view position:"<<vp<<std::endl;
+	ss<<"draw info:"<<cf<<std::endl;
+
+	lm::log(ldt::log_lsdl::get()).debug()<<ss.str();
+#endif
 
 	//Do not forget this.
 	glLoadIdentity();
+	return false;
 }
 
 void representation::debug_against_camera(
+#ifdef LIBDANSDL2_DEBUG
 	const camera& _camera
+#else
+	const camera&
+#endif
 ) {
 #ifdef LIBDANSDL2_DEBUG
 
@@ -103,7 +121,7 @@ void representation::debug_against_camera(
 //!This function actually delegates to do_draw on each derived class.
 //!The second parameter skips window bound tests and tries to draw anyway.
 
-void representation::draw(screen& pscreen, bool skip_take) {
+bool representation::draw(screen& pscreen, bool skip_take) {
 
 	auto in_screen=[this](screen &screen) {
 
@@ -131,10 +149,14 @@ void representation::draw(screen& pscreen, bool skip_take) {
 #ifndef LIBDANSDL2_DEBUG
 		pscreen.debug_draw_count++;
 #endif
+
+		glLoadIdentity();
+		return true;
 	}
 
 	//Es importante que esto siempre esté presente...
 	glLoadIdentity();
+	return false;
 }
 
 //!Directly uses openGL to trace the view position.
@@ -143,10 +165,14 @@ void representation::draw(screen& pscreen, bool skip_take) {
 //to one. Uses ABSOLUTE positioning, no cameras.
 
 void representation::debug_trace_box(
+#ifdef LIBDANSDL2_DEBUG
 	float _r,
 	float _g,
 	float _b,
 	float _a
+#else
+	float, float, float, float
+#endif
 ) {
 #ifdef LIBDANSDL2_DEBUG
 	calculate_transformed_view_position();
@@ -235,28 +261,48 @@ void representation::calculate_transformed_view_position() {
 	const auto& p=base_view_position;
 	const auto& pos=get_position();
 
-	polygon_2d<double> polig(
-		{
-			{(double)p.origin.x, (double)p.origin.y},
-			{(double)(p.origin.x+p.w), (double)p.origin.y},
-			{(double)(p.origin.x+p.w), (double)(p.origin.y+p.h)},
-			{(double)p.origin.x, (double)(p.origin.y+p.h)},
-		}, {(double)transformation.center.x+pos.x, (double)transformation.center.y+pos.y});
-		//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
 
+	double  origin_x=p.origin.x,
+	        origin_y=p.origin.y,
+	        end_x=origin_x+p.w,
+	        end_y=origin_y+p.h,
+	        rotation_x=transformation.center.x+pos.x,
+	        rotation_y=transformation.center.y+pos.y;
+
+	polygon_2d<double> polig{
+		{
+			{origin_x, origin_y},
+			{end_x, origin_y},
+			{end_x, end_y},
+			{origin_x, end_y}
+		},
+		{rotation_x, rotation_y}
+	};
+
+	//Las rotaciones son "clockwise"... Las reales son "counter-clockwise"...
 	polig.rotate(transformation.angle);
 
 	//Sacar las medidas para la nueva caja...
 	const std::vector<double> xs={polig.get_vertex(0).x, polig.get_vertex(1).x, polig.get_vertex(2).x, polig.get_vertex(3).x};
 	const std::vector<double> ys={polig.get_vertex(0).y, polig.get_vertex(1).y, polig.get_vertex(2).y, polig.get_vertex(3).y};
 
+	double transformed_origin_x=floor(*std::min_element(std::begin(xs), std::end(xs)));
+	double transformed_origin_y=floor(*std::min_element(std::begin(ys), std::end(ys)));
+
+	double max_x=floor(*std::max_element(std::begin(xs), std::end(xs)));
+	double max_y=floor(*std::max_element(std::begin(ys), std::end(ys)));
+
+	double w=max_x-transformed_origin_x;
+	double h=max_y-transformed_origin_y;
+
+	int final_x=floor(transformed_origin_x),
+	    final_y=floor(transformed_origin_y);
+	unsigned final_w=floor(w),
+	        final_h=floor(h);
+
 	transformed_view_position={
-		{
-			(int)*std::min_element(std::begin(xs), std::end(xs)),
-			(int)*std::min_element(std::begin(ys), std::end(ys))
-		},
-		(unsigned int)*std::max_element(std::begin(xs), std::end(xs))-transformed_view_position.origin.x,
-		(unsigned int)*std::max_element(std::begin(ys), std::end(ys))-transformed_view_position.origin.y
+		{final_x, final_y},
+		final_w, final_h
 	};
 }
 

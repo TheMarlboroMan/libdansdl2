@@ -36,12 +36,12 @@ class group_representation:
 	//!Each part of the group may go into the group negative space.
 	virtual const point&    get_position() const {return position;}
 
-	virtual void            draw(screen&, const camera&, bool=false);
-	virtual void            draw(screen&, bool=false);
+	virtual bool            draw(screen&, const camera&, bool=false);
+	virtual bool            draw(screen&, bool=false);
 
 	private:
 
-	void                    draw_internal(screen&, camera const *);
+	bool                    draw_internal(screen&, camera const *);
 	void                    update_base_view_position();
 
 	point                   position;
