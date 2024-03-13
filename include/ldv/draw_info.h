@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 namespace ldv
 {
 
@@ -24,5 +26,7 @@ struct draw_info
 		view_h; //!< Height of the focus box (might change if zoom is applied).
 	double	zoom;	//!< Zoom ratio, 1 is 1:1 (same size), 2 is 1:2 (half size), etc.
 };
+
+std::ostream& operator<<(std::ostream&, const draw_info&);
 }
 

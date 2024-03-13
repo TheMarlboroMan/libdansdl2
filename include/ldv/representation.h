@@ -113,7 +113,8 @@ class representation {
 	//!Resets rotation transformation data.
 	virtual void    reset_transform() {transformation.reset();}
 
-	void            debug_trace_box();
+	void            debug_trace_box(float=1.f, float=0.f, float=0.f, float=0.25f);
+	void            debug_against_camera(const camera&);
 
 	virtual void    align(const representation&, const representation_alignment&);
 	virtual void    align(const rect&, const representation_alignment&);

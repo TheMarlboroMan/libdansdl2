@@ -3,6 +3,11 @@
 #include <iostream>
 #include <algorithm>
 
+#ifdef LIBDANSDL2_DEBUG
+#include <lm/log.h>
+#include <ldt/log.h>
+#endif
+
 using namespace ldv;
 
 //!Class constructor.
@@ -32,16 +37,29 @@ representation::representation(int valpha, const rect& _bvp):
 //!skip_take is mostly useful for group repesentations, specially when rotations
 //are applied to them.
 
-void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take)
-{
+void representation::draw(
+	screen& pscreen, 
+	const camera& pcamera, 
+	bool skip_take
+) {
+
 	//Using the draw info allows us to work with cartesian coordinates.
 	const auto& cf=pcamera.get_draw_info();
 	const auto& vp=get_view_position();
 
 	//We need to force the template typenames, since the parameters don't match.
-	if(visible && (skip_take || rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true
-		)))
-	{
+	if(
+		visible && 
+		(
+			skip_take || 
+			rects_overlap<int, int>(
+				cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, 
+				vp.origin.x, vp.origin.y, vp.w, vp.h, 
+				true
+			)
+		)
+	) {
+
 		//TODO: i am sure this fucks up some cycles needlessly.
 		pscreen.set_camera(pcamera);
 		pre_render_transform(cf);
@@ -55,15 +73,40 @@ void representation::draw(screen& pscreen, const camera& pcamera, bool skip_take
 	glLoadIdentity();
 }
 
+void representation::debug_against_camera(
+	const camera& _camera
+) {
+#ifdef LIBDANSDL2_DEBUG
+
+	calculate_transformed_view_position();
+	const auto& cf=_camera.get_draw_info();
+	const auto& vp=get_view_position();
+
+	bool overlap=rects_overlap<int, int>(
+		cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, 
+		vp.origin.x, vp.origin.y, vp.w, vp.h, 
+		true
+	);
+
+	std::stringstream ss;
+	ss<<"overlap: "<<(overlap ? "true" : "false")<<std::endl;
+	ss<<"view position: "<<vp<<std::endl;
+	ss<<"draw_info: "<<cf<<std::endl;
+
+	lm::log(ldt::log_lsdl::get()).debug()<<ss.str();
+
+#endif
+}
+
 //!Draws to screen with no camera bounds.
 
 //!This function actually delegates to do_draw on each derived class.
 //!The second parameter skips window bound tests and tries to draw anyway.
 
-void representation::draw(screen& pscreen, bool skip_take)
-{
-	auto in_screen=[this](screen &screen)
-	{
+void representation::draw(screen& pscreen, bool skip_take) {
+
+	auto in_screen=[this](screen &screen) {
+
 		//TODO: There are functions for this, the screen already has a rect...
 		const auto& vp=get_view_position();
 
@@ -76,10 +119,10 @@ void representation::draw(screen& pscreen, bool skip_take)
 			&& vp.origin.y <= (int) screen.get_h();
 	};
 
-	if(visible && (skip_take || in_screen(pscreen)))
-	{
-		if(pscreen.has_camera())
-		{
+	if(visible && (skip_take || in_screen(pscreen))) {
+
+		if(pscreen.has_camera()) {
+
 			pscreen.reset_clip();
 		}
 
@@ -96,16 +139,21 @@ void representation::draw(screen& pscreen, bool skip_take)
 
 //!Directly uses openGL to trace the view position.
 
-//!This function should not be used beyond debug purposes.
+//!This function should not be used beyond debug purposes. Colors go from 0
+//to one. Uses ABSOLUTE positioning, no cameras.
 
-void representation::debug_trace_box()
-{
-#ifndef LIBDANSDL2_DEBUG
+void representation::debug_trace_box(
+	float _r,
+	float _g,
+	float _b,
+	float _a
+) {
+#ifdef LIBDANSDL2_DEBUG
 	calculate_transformed_view_position();
 	const auto& rect=transformed_view_position;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(1.f, 0.f, 0.f, 0.25f);
+	glColor4f(_r, _g, _b, _a);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
 	int 	fx=rect.origin.x+rect.w,

@@ -21,5 +21,6 @@ set(SOURCE
 	${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ttf_font.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/ttf_representation.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/draw_info.cpp
 	PARENT_SCOPE
 )
