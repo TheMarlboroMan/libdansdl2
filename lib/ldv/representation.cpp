@@ -70,18 +70,6 @@ bool representation::draw(
 		return true;
 	}
 
-#ifdef LIBDANSDL2_DEBUG
-	std::stringstream ss;
-	ss<<"DID NOT DRAW!"<<std::endl;
-	ss<<"visible: "<<(visible ? "true" : "false")<<std::endl;
-	ss<<"skip_take: "<<(skip_take ? "true" : "false")<<std::endl;
-	ss<<"in_take: "<<(in_take ? "true" : "false")<<std::endl;
-	ss<<"view position:"<<vp<<std::endl;
-	ss<<"draw info:"<<cf<<std::endl;
-
-	lm::log(ldt::log_lsdl::get()).debug()<<ss.str();
-#endif
-
 	//Do not forget this.
 	glLoadIdentity();
 	return false;
