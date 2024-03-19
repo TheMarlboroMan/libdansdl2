@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.7]: 2024-03-19
+### Fixed:
+- Alpha on representations now works as expected.
+
 ## [V3.1.6]: 2024-03-11
 ### Added:
 - Color indexed surfaces can now be used as textures.
