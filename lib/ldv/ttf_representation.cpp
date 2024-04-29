@@ -1,6 +1,10 @@
 #include <ldv/ttf_representation.h>
 #include <sstream>
 
+#ifdef LIBDANSDL2_DEBUG
+#include <ldt/log.h>
+#endif
+
 using namespace ldv;
 
 const std::vector<int> ttf_representation::valid_sizes={2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
@@ -67,9 +71,11 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 void ttf_representation::create_texture() {
 
 	if(-1==max_width) {
+
 		create_texture_free_size();
 	}
 	else {
+
 		create_texture_fixed_width();
 	}
 }
@@ -89,6 +95,13 @@ void ttf_representation::create_texture() {
 
 void ttf_representation::create_texture_free_size() {
 
+#ifdef LIBDANSDL2_DEBUG
+	if(debug_flags & dflag_width_mode) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::ttf_representation::create_texture_free_size"<<std::endl;
+	}
+#endif
+
 	//The text is prepared line by line in different surfaces.
 #ifdef WINBUILD
 	auto lines=explode(text, "\r\n");
@@ -96,8 +109,6 @@ void ttf_representation::create_texture_free_size() {
 	auto lines=explode(text, "\n");
 #endif
 	
-	
-
 	//Measuring the full resulting texture...
 	int h=0, w=0, total_w=0;
 	for(std::string& c : lines) {
@@ -106,15 +117,29 @@ void ttf_representation::create_texture_free_size() {
 
 		TTF_SizeUTF8(const_cast<TTF_Font*>(font->get_font()), c.c_str(), &w, &h);
 		if(w > total_w) {
+
 			total_w=w;
 		}
 	}
+
+#ifdef LIBDANSDL2_DEBUG
+	if(debug_flags & dflag_width_mode) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::ttf_representation::create_texture_free_size will result on a text of "<<total_w<<"x"<<h<<" with "<<lines.size()<<"lines"<<std::endl;
+	}
+#endif
 
 	create_texture_internal(total_w, h, lines);
 }
 
 void ttf_representation::create_texture_fixed_width() {
 
+#ifdef LIBDANSDL2_DEBUG
+	if(debug_flags & dflag_width_mode) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::ttf_representation::create_texture_fixed_width"<<std::endl;
+	}
+#endif
 	//The text is prepared line by line in different surfaces.
 	
 #ifdef WINBUILD
@@ -122,6 +147,8 @@ void ttf_representation::create_texture_fixed_width() {
 #else
 	auto original_lines=explode(text, "\n");
 #endif
+
+//TODO: Add debug stuff to this so at least I can't know what's going on here???
 	
 	std::vector<std::string> lines;
 
@@ -138,6 +165,7 @@ void ttf_representation::create_texture_fixed_width() {
 		auto add_line=[&total_w, &lines](const std::string& _str, int _size) {
 
 			if(_size > total_w) {
+
 				total_w=_size;
 			}
 
@@ -155,11 +183,14 @@ void ttf_representation::create_texture_fixed_width() {
 			if(isspace(c)) {
 
 				if(!word.size()) {
+
 					++consecutive_spaces;
 				}
 				else {
+
 					//End of the word... put the space back, pls...
 					if(!done) {
+
 						ss.unget();
 					}
 
@@ -185,6 +216,7 @@ void ttf_representation::create_texture_fixed_width() {
 					}
 					//can't fit it...
 					else {
+
 						//there were words... spacing does not count.
 						if(curline.size()) {
 
@@ -216,6 +248,13 @@ void ttf_representation::create_texture_fixed_width() {
 		}
 	}
 
+#ifdef LIBDANSDL2_DEBUG
+	if(debug_flags & dflag_width_mode) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::ttf_representation::create_texture_fixed_width will result on a text of "<<total_w<<"x"<<h<<" with "<<lines.size()<<"lines"<<std::endl;
+	}
+#endif
+
 	create_texture_internal(total_w, h, lines);
 }
 
@@ -231,12 +270,20 @@ void ttf_representation::create_texture_internal(
 	auto canvas_w=get_next_power_of_two(_total_w);
 	auto canvas_h=get_next_power_of_two(total_h);
 
+#ifdef LIBDANSDL2_DEBUG
+	if(debug_flags & dflag_internal_size) {
+
+		lm::log(ldt::log_lsdl::get()).debug()<<"ldv::ttf_representation::create_texture_internal, canvas size is "<<canvas_w<<"x"<<canvas_h<<std::endl;
+	}
+#endif
+
 	//A raw surface will be created with a given color, so we can extract its internal flags.
 	//This is going to render a surface. Alpha will be always 1. When rendering it will be applied and colorised.
 	//Also, notice the hack. The shaded thing will create a BGRA, so we change the colors.
 
 	SDL_Color sdl_col{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
 	if(mode==render_mode::blended) {
+
 		sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
 	}
 
@@ -294,7 +341,6 @@ void ttf_representation::create_texture_internal(
 
 		int x=0;
 
-		//TODO: This only makes sense if we have more than one line.
 		switch(alignment) {
 			case text_align::left: x=0; break;
 			case text_align::center: x=(canvas_w/2)-(w/2); break;
@@ -360,7 +406,6 @@ void ttf_representation::set_text(const char c) {
 	set_text_internal(temp);
 }
 
-
 //!Internal function to change text.
 
 //!Triggers a change of the text property and the creation of a new texture if unlocked.
@@ -394,7 +439,11 @@ void ttf_representation::unlock_changes() {
 
 //!Basically keeps this class independent from the "tools" project.
 
-void ttf_representation::text_replace(std::string& sujeto, const std::string& busca, const std::string& reemplaza) {
+void ttf_representation::text_replace(
+	std::string& sujeto, 
+	const std::string& busca, 
+	const std::string& reemplaza
+) {
 
 	size_t pos = 0, l=reemplaza.length();
 	while ((pos = sujeto.find(busca, pos)) != std::string::npos) {
@@ -559,7 +608,11 @@ ttf_representation&	ttf_representation::set_style(int _flags) {
 	return *this;
 }
 
-std::vector<std::string> ttf_representation::explode(const std::string & pstring, const std::string& delimiter, size_t max) {
+std::vector<std::string> ttf_representation::explode(
+	const std::string & pstring, 
+	const std::string& delimiter, 
+	size_t max
+) {
 
 	size_t count=1, pos=0, prev_pos=0;
 
@@ -591,4 +644,27 @@ int ttf_representation::get_next_power_of_two(int _v) const {
 	}
 
 	throw std::runtime_error(std::string{"Invalid text texture size "}+std::to_string(_v)+std::string{" for text "}+text);
+}
+
+int ttf_representation::get_debug_flags() const {
+
+#ifdef LIBDANSDL2_DEBUG
+	return debug_flags;
+#else
+	return 0;
+#endif
+}
+
+ttf_representation& ttf_representation::set_debug_flags(
+#ifdef LIBDANSDL2_DEBUG
+	int _flags
+#else
+	int
+#endif
+) {
+
+#ifdef LIBDANSDL2_DEBUG
+	debug_flags=_flags;
+#endif
+	return *this;
 }

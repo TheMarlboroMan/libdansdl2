@@ -30,7 +30,14 @@ class ttf_representation:
 		bold=TTF_STYLE_BOLD,
 		italic=TTF_STYLE_ITALIC,
 		underline=TTF_STYLE_UNDERLINE,
-		striketrough=TTF_STYLE_STRIKETHROUGH};
+		striketrough=TTF_STYLE_STRIKETHROUGH
+	};
+
+	enum debug_flags {
+		dflag_none=0,
+		dflag_width_mode=1,
+		dflag_internal_size=2
+	};
 
 	//!Render modes. Default is blended.
 	enum class          render_mode{solid, shaded, blended};
@@ -41,6 +48,8 @@ class ttf_representation:
 	                    ttf_representation(const ttf_representation&);
 	virtual             ~ttf_representation();
 
+	int                 get_debug_flags() const;
+	ttf_representation& set_debug_flags(int);
 	//!Assignment operator. Texture is recreated as a different resource from the original.
 	ttf_representation& operator=(const ttf_representation&);
 
@@ -132,6 +141,9 @@ class ttf_representation:
 
 	//!Lookup table for powers of two.
 	static const std::vector<int>	valid_sizes;
+
+	//A necessary evil, I guess???
+	int                 debug_flags{0};
 };
 
 }
