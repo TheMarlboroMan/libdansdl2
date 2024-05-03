@@ -11,6 +11,12 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.8]: 2024-05-03
+### Added:
+- Added simplified event querying system.
+### Fixed:
+- Fixes repeated internal details on keyboard input.
+
 ## [V3.1.7]: 2024-03-19
 ### Fixed:
 - Alpha on representations now works as expected.

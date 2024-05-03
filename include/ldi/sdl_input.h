@@ -138,8 +138,11 @@ class sdl_input {
 	//!Returns the kind of activity event. //TODO: Again, what is this???
 	Uint8           get_activity_event() const {return activity_event_instance.get_state();}
 	int             get_key_down_index() const;
+	int             get_key_up_index() const;
 	int             get_mouse_button_down_index() const;
+	int             get_mouse_button_up_index() const;
 	int             get_joystick_button_down_index(int) const;
+	int             get_joystick_button_up_index(int) const;
 
 	//!Indicates if a text event has taken place.
 	bool            is_event_text() const {return events_cache[text];}
@@ -171,20 +174,29 @@ class sdl_input {
 	bool            is_event_joystick_button_up() const {return events_cache[joystick_button_up];}
 	//!Indicates a joystick button down event has taken place.
 	bool            is_event_joystick_button_down() const {return events_cache[joystick_button_down];}
-	//!Indicates if any input is received.
+	//!Indicates if any input is received from mouse, keyboard or joystick.
 	bool            is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
 	//!Same as before, but with key presses (not really events) too.
 	bool            is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
-
-/**
+	//!Simplified event that can be polled from get_event methods. These are
+	//!extracted from the internal buffers of the ldi::sld_input class so their
+	//!order is fixed.
 	struct event {
 
-		enum class sources {mouse, keyboard, joystick, system} source; //Type of event.
-		int source_index{0}; //Index of the source, used for hoysticks
-	};
-*/
+		enum codes{c_exit=1}; 
 
-		
+		enum class sources {none, mouse, keyboard, joystick, system} source; //origin of event.
+		enum class types {none, up, down, system} type;
+		int code{0}; //Code of the event (button, key...).
+		int source_index{0}; //Index of the source, used for joysticks
+	};
+	//!Gets the first of any events in the system,keyboard,mouse,joystick order.
+	event           get_event() const;
+	event           get_system_event() const;
+	event           get_keyboard_event() const;
+	event           get_mouse_event() const;
+	event           get_joystick_event() const;
+
 	//!Resets the custom processing function to its default value, which
 	//!is to call "process_event".
 	void			reset_event_processing_function();

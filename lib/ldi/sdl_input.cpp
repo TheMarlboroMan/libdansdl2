@@ -95,9 +95,9 @@ void sdl_input::reset_event_processing_function()
 void sdl_input::loop()
 {
 	clear_loop();
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-		if(!f_process_event(event, f_default_process_event)) {
+	SDL_Event sdl_event;
+	while(SDL_PollEvent(&sdl_event)) {
+		if(!f_process_event(sdl_event, f_default_process_event)) {
 			return;
 		}
 	}
@@ -105,9 +105,9 @@ void sdl_input::loop()
 
 //!Called for each event, alters the internal structure of the class according to input.
 
-void sdl_input::process_event(SDL_Event& event)
-{
-	switch(event.type) {
+void sdl_input::process_event(SDL_Event& _event) {
+
+	switch(_event.type) {
 
 		case SDL_QUIT:
 			exit_signal=true;
@@ -115,47 +115,47 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_MOUSEMOTION:
 			events_cache[mousemove]=true;
-			device_mouse.position.x=event.motion.x;
-			device_mouse.position.y=event.motion.y;
+			device_mouse.position.x=_event.motion.x;
+			device_mouse.position.y=_event.motion.y;
 			device_mouse.movement=true;
 		break;
 
 		case SDL_MOUSEBUTTONDOWN:
 			events_cache[mousedown]=true;
-			device_mouse.buttons_down[event.button.button]=1;
-			device_mouse.buttons_pressed[event.button.button]=1;
-			device_mouse.buttons_released[event.button.button]=0;
+			device_mouse.buttons_down[_event.button.button]=1;
+			device_mouse.buttons_pressed[_event.button.button]=1;
+			device_mouse.buttons_released[_event.button.button]=0;
 		break;
 
 		case SDL_MOUSEBUTTONUP:
 			events_cache[mouseup]=true;
-			device_mouse.buttons_up[event.button.button]=1;
-			device_mouse.buttons_pressed[event.button.button]=0;
-			device_mouse.buttons_released[event.button.button]=1;
+			device_mouse.buttons_up[_event.button.button]=1;
+			device_mouse.buttons_pressed[_event.button.button]=0;
+			device_mouse.buttons_released[_event.button.button]=1;
 		break;
 
 		case SDL_JOYBUTTONDOWN:
 			events_cache[joystick_button_down]=true;
-			joysticks.at(id_joystick_to_index[event.jbutton.which]).register_button(0, event.jbutton.button);
+			joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_button(0, _event.jbutton.button);
 		break;
 
 		case SDL_JOYBUTTONUP:
 			events_cache[joystick_button_up]=true;
-			joysticks.at(id_joystick_to_index[event.jbutton.which]).register_button(1, event.jbutton.button);
+			joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_button(1, _event.jbutton.button);
 		break;
 
 		case SDL_JOYAXISMOTION:
-			if(event.jaxis.value < -min_noise || event.jaxis.value > max_noise)
+			if(_event.jaxis.value < -min_noise || _event.jaxis.value > max_noise)
 			{
 				events_cache[joystick_axis]=true;
-				joysticks.at(id_joystick_to_index[event.jbutton.which]).register_axis(event.jaxis.axis, event.jaxis.value);
+				joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_axis(_event.jaxis.axis, _event.jaxis.value);
 			}
 			else
 			{
-				joysticks.at(id_joystick_to_index[event.jbutton.which]).register_axis(event.jaxis.axis, 0);
+				joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_axis(_event.jaxis.axis, 0);
 			}
 
-			if(joysticks.at(id_joystick_to_index[event.jhat.which]).virtualized_axis)
+			if(joysticks.at(id_joystick_to_index[_event.jhat.which]).virtualized_axis)
 			{
 				set_virtualized_input();
 			}
@@ -163,9 +163,9 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_JOYHATMOTION:
 			events_cache[joystick_hat]=true;
-			joysticks.at(id_joystick_to_index[event.jhat.which]).register_hat(event.jhat.hat, event.jhat.value);
+			joysticks.at(id_joystick_to_index[_event.jhat.which]).register_hat(_event.jhat.hat, _event.jhat.value);
 
-			if(joysticks.at(id_joystick_to_index[event.jhat.which]).virtualized_hats)
+			if(joysticks.at(id_joystick_to_index[_event.jhat.which]).virtualized_hats)
 			{
 				set_virtualized_input();
 			}
@@ -176,9 +176,9 @@ void sdl_input::process_event(SDL_Event& event)
 		case SDL_CONTROLLERDEVICEADDED:
 			lm::log(ldt::log_lsdl::get()).info()<<"New joystick detected."<<std::endl;
 
-			if(!is_joystick_registered_by_device_id(event.cdevice.which))
+			if(!is_joystick_registered_by_device_id(_event.cdevice.which))
 			{
-				init_joystick(SDL_JoystickOpen(event.cdevice.which), joysticks.size());
+				init_joystick(SDL_JoystickOpen(_event.cdevice.which), joysticks.size());
 				++joysticks_size;
 				events_cache[joystick_connected]=true;
 				lm::log(ldt::log_lsdl::get()).info()<<"Joystick registered"<<std::endl;
@@ -192,7 +192,7 @@ void sdl_input::process_event(SDL_Event& event)
 		case SDL_JOYDEVICEREMOVED:
 		case SDL_CONTROLLERDEVICEREMOVED:
 			lm::log(ldt::log_lsdl::get()).info()<<"Joystick removal detected."<<std::endl;
-			joysticks.erase(id_joystick_to_index[event.cdevice.which]);
+			joysticks.erase(id_joystick_to_index[_event.cdevice.which]);
 			--joysticks_size;
 			events_cache[joystick_disconnected]=true;
 		break;
@@ -200,10 +200,10 @@ void sdl_input::process_event(SDL_Event& event)
 		case SDL_TEXTINPUT:
 //			if(SDL_IsTextInputActive())
 //			{
-				if(!f_text_filter || f_text_filter(event)) {
+				if(!f_text_filter || f_text_filter(_event)) {
 
 					events_cache[text]=true;
-					input_text+=event.text.text;
+					input_text+=_event.text.text;
 				}
 //			}
 		break;
@@ -214,11 +214,11 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_KEYDOWN:
 		{
-			if(event.key.repeat) {
+			if(_event.key.repeat) {
 				return;
 			}
 
-			unsigned int index=event.key.keysym.scancode;
+			unsigned int index=_event.key.keysym.scancode;
 
 				events_cache[keyboard_down]=true;
 
@@ -230,7 +230,7 @@ void sdl_input::process_event(SDL_Event& event)
 
 			if(keydown_control_text_filter && SDL_IsTextInputActive())
 			{
-				switch(event.key.keysym.sym)
+				switch(_event.key.keysym.sym)
 				{
 					case SDLK_BACKSPACE:
 						if(input_text.length() > 0)
@@ -247,7 +247,7 @@ void sdl_input::process_event(SDL_Event& event)
 
 		case SDL_KEYUP:
 		{
-			unsigned int index=event.key.keysym.scancode;
+			unsigned int index=_event.key.keysym.scancode;
 
 			events_cache[keyboard_up]=true;
 
@@ -385,19 +385,21 @@ Sint16 sdl_input::get_joystick_axis(unsigned int p_joystick, unsigned int p_eje)
 
 //!Gets joystick hat value.
 
-int sdl_input::get_joystick_hat(unsigned int p_joystick, unsigned int p_hat) const
-{
-	if(!this->check_joystick_hat(p_joystick, p_hat)) return false;
-	else
-	{
+int sdl_input::get_joystick_hat(unsigned int p_joystick, unsigned int p_hat) const {
+
+	if(!this->check_joystick_hat(p_joystick, p_hat)) {
+
+		return false;
+	}
+	else {
 		return joysticks.at(p_joystick).hats[p_hat];
 	}
 }
 
 //!Internally clears state for next tic.
 
-void sdl_input::clear_loop()
-{
+void sdl_input::clear_loop() {
+
 	//Fucking elegant, tough memset would be faster :P.
 	std::fill(std::begin(events_cache), std::end(events_cache), false);
 
@@ -410,27 +412,45 @@ void sdl_input::clear_loop()
 
 
 //!Returns the first key down index registered. Of limited use, actually.
+int sdl_input::get_key_down_index() const {
 
-int sdl_input::get_key_down_index() const
-{
 	int i=0;
-	while(i < SDL_NUM_SCANCODES)
-	{
+	while(i < SDL_NUM_SCANCODES) {
 		if(device_keyboard.keys_down[i]) return i;
 		++i;
 	}
 
-	return 1;
+	return -1;
+}
+
+int sdl_input::get_key_up_index() const {
+
+	int i=0;
+	while(i < SDL_NUM_SCANCODES) {
+		if(device_keyboard.keys_up[i]) return i;
+		++i;
+	}
+
+	return -1;
 }
 
 //!Returns the first mouse button down index registered. Sees little use.
 
-int sdl_input::get_mouse_button_down_index() const
-{
+int sdl_input::get_mouse_button_down_index() const {
+
 	unsigned int i=0;
-	while(i < mouse::max_buttons)
-	{
+	while(i < mouse::max_buttons) {
 		if(device_mouse.buttons_down[i]) return i;
+		++i;
+	}
+	return -1;
+}
+
+int sdl_input::get_mouse_button_up_index() const {
+
+	unsigned int i=0;
+	while(i < mouse::max_buttons) {
+		if(device_mouse.buttons_up[i]) return i;
 		++i;
 	}
 	return -1;
@@ -438,15 +458,12 @@ int sdl_input::get_mouse_button_down_index() const
 
 //!Returns the first joystick button down index registered. Used very sparingly.
 
-int sdl_input::get_joystick_button_down_index(int index) const
-{
+int sdl_input::get_joystick_button_down_index(int index) const {
+
 	const joystick& j=joysticks.at(index);
 	unsigned int i=0;
-
-	while(i < j.buttons)
-	{
-		if(j.buttons_down[i])
-		{
+	while(i < j.buttons) {
+		if(j.buttons_down[i]) {
 			return i;
 		}
 		++i;
@@ -455,12 +472,129 @@ int sdl_input::get_joystick_button_down_index(int index) const
 	return -1;
 }
 
+int sdl_input::get_joystick_button_up_index(int index) const {
+
+	const joystick& j=joysticks.at(index);
+	unsigned int i=0;
+	while(i < j.buttons) {
+		if(j.buttons_up[i]) {
+			return i;
+		}
+		++i;
+	}
+
+	return -1;
+}
 
 //Returns the joystick index from its id. Useful to "learn" controls, specifically to convert event.jbutton.which to id.
 int sdl_input::get_joystick_index_from_id(SDL_JoystickID id) const
 {
 	if(!id_joystick_to_index.count(id)) throw std::runtime_error("Invalid joystick id in get_joystick_index_from_id");
 	return id_joystick_to_index.at(id);
+}
+
+sdl_input::event sdl_input::get_event() const {
+
+	auto ev=get_system_event();
+	if(ev.source!=event::sources::none) {
+
+		return ev;
+	}
+
+	ev=get_keyboard_event();
+	if(ev.source!=event::sources::none) {
+
+		return ev;
+	}
+
+	ev=get_mouse_event();
+	if(ev.source!=event::sources::none) {
+
+		return ev;
+	}
+
+	ev=get_joystick_event();
+	if(ev.source!=event::sources::none) {
+
+		return ev;
+	}
+
+	return event{event::sources::none, event::types::none, 0, 0};
+}
+
+sdl_input::event sdl_input::get_system_event() const {
+ 
+	if(is_exit_signal()) {
+
+		return event{event::sources::system, event::types::system, event::c_exit, 0};
+	}
+
+	if(is_event_activity()) {
+
+		//TODO:
+	}
+
+	if(is_event_activity_focus()) {
+
+		//TODO:
+	}
+
+	return event{event::sources::none, event::types::none, 0, 0};
+}
+
+sdl_input::event sdl_input::get_keyboard_event() const {
+
+	//First the keydowns
+	if(is_event_keyboard_down()) {
+
+		return event{event::sources::keyboard, event::types::down, get_key_down_index(), 0};
+	}
+	
+	///Then the keyups
+	if(is_event_keyboard_up()) {
+
+		return event{event::sources::keyboard, event::types::up, get_key_up_index(), 0};
+	}
+
+	return event{event::sources::none, event::types::none, 0, 0};
+}
+
+sdl_input::event sdl_input::get_mouse_event() const {
+
+	if(is_event_mouse_button_down()) {
+
+		return event{event::sources::mouse, event::types::down, get_mouse_button_down_index(), 0};
+	}
+
+	if(is_event_mouse_button_up()) {
+
+		return event{event::sources::mouse, event::types::up, get_mouse_button_up_index(), 0};
+	}
+	
+	return event{event::sources::none, event::types::none, 0, 0};
+}
+
+sdl_input::event sdl_input::get_joystick_event() const {
+
+	if(is_event_joystick_button_down()) {
+
+		for(const auto& pair : joysticks) {
+
+			int joy_index=pair.first;
+			return event{event::sources::joystick, event::types::down, get_joystick_button_down_index(joy_index), joy_index};
+		}
+	}
+
+	if(is_event_joystick_button_up()) {
+
+		for(const auto& pair : joysticks) {
+
+			int joy_index=pair.first;
+			return event{event::sources::joystick, event::types::up, get_joystick_button_up_index(joy_index), joy_index};
+		}
+	}
+
+	return event{event::sources::none, event::types::none, 0, 0};
 }
 
 //////////////////////
