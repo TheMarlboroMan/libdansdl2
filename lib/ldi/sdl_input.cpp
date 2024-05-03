@@ -514,12 +514,7 @@ sdl_input::event sdl_input::get_event() const {
 	}
 
 	ev=get_joystick_event();
-	if(ev.source!=event::sources::none) {
-
-		return ev;
-	}
-
-	return event{event::sources::none, event::types::none, 0, 0};
+	return ev;
 }
 
 sdl_input::event sdl_input::get_system_event() const {
