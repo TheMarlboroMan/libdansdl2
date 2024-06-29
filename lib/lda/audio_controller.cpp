@@ -166,7 +166,7 @@ void audio_controller::play_music(const music_struct& m, int _fade_in )
 
 	if(m.volume!=-1) set_music_volume(m.volume);
 
-	-1==_fade_in
+	-1==_fade_in || 0==_fade_in
 		? Mix_PlayMusic(m.music_ptr->get_data(), m.repeat)
 		: Mix_FadeInMusic(m.music_ptr->get_data(), m.repeat, _fade_in);
 
@@ -186,7 +186,7 @@ void audio_controller::stop_music(
 		return;
 	}
 
-	-1==_fade_ms
+	0==_fade_ms
 		? Mix_HaltMusic()
 		: Mix_FadeOutMusic(_fade_ms);
 }

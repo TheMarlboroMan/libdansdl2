@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.9]: 2024-06-29
+### Changed:
+- Changes defaults for some audio methods.
+
 ## [V3.1.8]: 2024-05-03
 ### Added:
 - Added simplified event querying system.

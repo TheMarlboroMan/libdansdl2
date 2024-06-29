@@ -55,7 +55,7 @@ class audio_controller
 	void                    pause_sound(); //Pauses all sounds.
 	void                    resume_sound(); //Restarts all sounds.
 	void                    play_music(const music_struct&, int=-1);
-	void                    stop_music(int =-1);
+	void                    stop_music(int =0);
 	void                    set_main_sound_volume(int);
 	void                    set_sound_volume(int p_vol, int pchannel); //p_vol de 0 a 128.
 	void                    add_music_stop_callback(const std::string&, audio_callback_interface&);

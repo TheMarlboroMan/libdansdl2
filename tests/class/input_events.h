@@ -9,7 +9,13 @@ class input_events {
 
 	void 				run(ldv::screen& _screen, ldi::sdl_input& _input) {
 
-		std::cout<<"watch the std out for events..."<<std::endl;
+		std::cout<<"watch the stdout for events..."<<std::endl;
+
+		for(std::size_t i=0; i<_input.get_joysticks_size(); i++) {
+
+			_input.virtualize_joystick_hats(i); 
+			_input.virtualize_joystick_axis(i, 15000); 
+		}
 
 		auto type_to_str=[](ldi::sdl_input::event::types _type) {
 
@@ -26,6 +32,17 @@ class input_events {
 		while(true) {
 
 			_input.loop();
+
+			if(_input.is_event_joystick_connected()) {
+
+				std::cout<<"joystick connected, virtualizing..."<<std::endl;
+				for(std::size_t i=0; i<_input.get_joysticks_size(); i++) {
+
+					_input.virtualize_joystick_hats(i); 
+					_input.virtualize_joystick_axis(i, 15000); 
+				}
+			}
+
 			if(_input.is_exit_signal() || _input.is_key_down(SDL_SCANCODE_ESCAPE)) {
 
 				break;

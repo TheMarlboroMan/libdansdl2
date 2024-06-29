@@ -96,7 +96,7 @@ class sdl_input {
 	/**
 	* Indicates if a joystick was removed. No way to know which, actually, it
 	* falls upon the application to keep track of this with calls to 
-	* get_joystick_indexes.
+	* get_joysticks_size
 	*/
 	bool                is_event_joystick_disconnected() const {return events_cache[joystick_disconnected];}
 	//!Moves the mouse cursor to the specified position.
