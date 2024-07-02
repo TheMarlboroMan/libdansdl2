@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.1.10]: 2024-07-02
+### Changed:
+- Adds more information to exception when sound fails to load.
+
 ## [V3.1.9]: 2024-06-29
 ### Changed:
 - Changes defaults for some audio methods.

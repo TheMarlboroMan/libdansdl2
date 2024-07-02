@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <sstream>
 
 using namespace lda;
 
@@ -61,9 +62,12 @@ void sound::load(const std::string& ppath)
 	path=ppath;
 	sound_data=Mix_LoadWAV(path.c_str());
 
-	if(!sound_data)
-	{
-		throw std::runtime_error(std::string("sound::load() : error loading ")+path);
+	if(!sound_data) {
+
+		std::stringstream ss;
+		ss<<"lda::sound::load, error loading file '"<<path<<"': "<<Mix_GetError();
+		Mix_ClearError();
+		throw std::runtime_error(ss.str());
 	}
 
 	ready=true;
