@@ -11,6 +11,14 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.2.0]: 2024-08-28
+### Added:
+- Add filter class to substitute for the get_X_event of the input class.
+### Changed:
+- Moves joystick, keyboard and mouse to its own files.
+### Removed:
+- Removes get_X_event methods of the input class. This breaks compatibility.
+
 ## [V3.1.10]: 2024-07-02
 ### Changed:
 - Adds more information to exception when sound fails to load.

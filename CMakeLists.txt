@@ -8,8 +8,8 @@ option(BUILD_TESTS "Build test code" OFF)
 
 #library version and naming...
 set(MAJOR_VERSION 3)
-set(MINOR_VERSION 1)
-set(PATCH_VERSION 10)
+set(MINOR_VERSION 2)
+set(PATCH_VERSION 0)
 
 if(${BUILD_DEBUG})
 
@@ -124,6 +124,18 @@ if(WIN32)
 
 #	target_link_libraries(dansdl2_static lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
 #	target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
+
+endif()
+
+if(BUILD_TESTS) 
+
+	if(!${BUILD_SHARED})
+	
+		message(FATAL_ERROR "The shared library must be built to build the examples!")
+	endif()
+
+	add_executable(input_filter tests/drivers/input_events.cpp)
+	target_link_libraries(input_filter dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
 
 endif()
 

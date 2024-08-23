@@ -32,18 +32,17 @@ sdl_input::~sdl_input()
 }
 
 //!Starts all joysticks.
-void sdl_input::init_joysticks()
-{
+void sdl_input::init_joysticks() {
+
 	this->joysticks_size=SDL_NumJoysticks();
 
-	if(this->joysticks_size > 0)
-	{
-		SDL_JoystickEventState(SDL_ENABLE);
+	if(this->joysticks_size > 0) {
 
+		SDL_JoystickEventState(SDL_ENABLE);
 		lm::log(ldt::log_lsdl::get()).info()<<"Located "<<joysticks_size<<" joysticks"<<std::endl;
 
-		for(int i=0; i<joysticks_size; i++)
-		{
+		for(int i=0; i<joysticks_size; i++) {
+
 			SDL_Joystick * joy=SDL_JoystickOpen(i);	//De alguna manera el valgrind saca aquí una pérdida.
 			init_joystick(joy, i);
 		}
@@ -145,18 +144,18 @@ void sdl_input::process_event(SDL_Event& _event) {
 		break;
 
 		case SDL_JOYAXISMOTION:
-			if(_event.jaxis.value < -min_noise || _event.jaxis.value > max_noise)
-			{
+			if(_event.jaxis.value < -min_noise || _event.jaxis.value > max_noise) {
+
 				events_cache[joystick_axis]=true;
 				joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_axis(_event.jaxis.axis, _event.jaxis.value);
 			}
-			else
-			{
+			else {
+
 				joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_axis(_event.jaxis.axis, 0);
 			}
 
-			if(joysticks.at(id_joystick_to_index[_event.jhat.which]).virtualized_axis)
-			{
+			if(joysticks.at(id_joystick_to_index[_event.jhat.which]).virtualized_axis) {
+
 				set_virtualized_input();
 			}
 		break;
@@ -265,14 +264,14 @@ void sdl_input::process_event(SDL_Event& _event) {
 
 //!Internally loops joystick state to update the event cache.
 
-void sdl_input::set_virtualized_input()
-{
-	for(const auto& pj: joysticks)
-	{
+void sdl_input::set_virtualized_input() {
+
+	for(const auto& pj: joysticks) {
+
 		const auto& j=pj.second;
 
-		if(j.virtualized_hats || j.virtualized_axis)
-		{
+		if(j.virtualized_hats || j.virtualized_axis) {
+
 			if(std::any_of(std::begin(j.buttons_pressed), std::end(j.buttons_pressed), [](bool v) {return v;})) events_cache[joystick_button_up]=true;
 			if(std::any_of(std::begin(j.buttons_down), std::end(j.buttons_down), [](bool v) {return v;})) events_cache[joystick_button_down]=true;
 		}
@@ -281,10 +280,10 @@ void sdl_input::set_virtualized_input()
 
 //!Checks if a joystick with the given device id is registered.
 
-bool sdl_input::is_joystick_registered_by_device_id(unsigned int d_id)
-{
-	for(const auto& j : joysticks)
-	{
+bool sdl_input::is_joystick_registered_by_device_id(unsigned int d_id) {
+
+	for(const auto& j : joysticks) {
+
 		if(j.second.device_id==d_id) return true;
 	}
 
@@ -493,363 +492,3 @@ int sdl_input::get_joystick_index_from_id(SDL_JoystickID id) const
 	return id_joystick_to_index.at(id);
 }
 
-sdl_input::event sdl_input::get_event() const {
-
-	auto ev=get_system_event();
-	if(ev.source!=event::sources::none) {
-
-		return ev;
-	}
-
-	ev=get_keyboard_event();
-	if(ev.source!=event::sources::none) {
-
-		return ev;
-	}
-
-	ev=get_mouse_event();
-	if(ev.source!=event::sources::none) {
-
-		return ev;
-	}
-
-	ev=get_joystick_event();
-	return ev;
-}
-
-sdl_input::event sdl_input::get_system_event() const {
- 
-	if(is_exit_signal()) {
-
-		return event{event::sources::system, event::types::system, event::c_exit, 0};
-	}
-
-	if(is_event_activity()) {
-
-		//TODO:
-	}
-
-	if(is_event_activity_focus()) {
-
-		//TODO:
-	}
-
-	return event{event::sources::none, event::types::none, 0, 0};
-}
-
-sdl_input::event sdl_input::get_keyboard_event() const {
-
-	//First the keydowns
-	if(is_event_keyboard_down()) {
-
-		return event{event::sources::keyboard, event::types::down, get_key_down_index(), 0};
-	}
-	
-	///Then the keyups
-	if(is_event_keyboard_up()) {
-
-		return event{event::sources::keyboard, event::types::up, get_key_up_index(), 0};
-	}
-
-	return event{event::sources::none, event::types::none, 0, 0};
-}
-
-sdl_input::event sdl_input::get_mouse_event() const {
-
-	if(is_event_mouse_button_down()) {
-
-		return event{event::sources::mouse, event::types::down, get_mouse_button_down_index(), 0};
-	}
-
-	if(is_event_mouse_button_up()) {
-
-		return event{event::sources::mouse, event::types::up, get_mouse_button_up_index(), 0};
-	}
-	
-	return event{event::sources::none, event::types::none, 0, 0};
-}
-
-sdl_input::event sdl_input::get_joystick_event() const {
-
-	if(is_event_joystick_button_down()) {
-
-		for(const auto& pair : joysticks) {
-
-			int joy_index=pair.first;
-			return event{event::sources::joystick, event::types::down, get_joystick_button_down_index(joy_index), joy_index};
-		}
-	}
-
-	if(is_event_joystick_button_up()) {
-
-		for(const auto& pair : joysticks) {
-
-			int joy_index=pair.first;
-			return event{event::sources::joystick, event::types::up, get_joystick_button_up_index(joy_index), joy_index};
-		}
-	}
-
-	return event{event::sources::none, event::types::none, 0, 0};
-}
-
-//////////////////////
-
-sdl_input::joystick::joystick(
-	SDL_JoystickID pid, 
-	int pdevice_id
-)
-	:structure(nullptr), id(pid), device_id(pdevice_id), 
-	buttons(0), axis_size(0), hats_size(0),
-	virtualized_hats(0), virtualized_axis(0),
-	threshold_virtual_axis_button(0)
-{ }
-
-sdl_input::joystick::~joystick() {
-
-	if(structure) {
-
-		SDL_JoystickClose(structure);
-	}
-}
-
-void sdl_input::joystick::init(SDL_Joystick * joy) {
-
-	structure=joy;
-	buttons=SDL_JoystickNumButtons(structure);
-	axis_size=SDL_JoystickNumAxes(structure);
-	hats_size=SDL_JoystickNumHats(structure);
-
-	if(buttons) {
-
-		buttons_up.resize(buttons, false);
-		buttons_down.resize(buttons, false);
-		buttons_pressed.resize(buttons, false);
-		buttons_released.resize(buttons, false);
-	}
-
-	if(axis_size) {
-
-		axis.resize(axis_size, 0);
-	}
-
-	if(hats_size) {
-
-		hats.resize(hats_size, 0);
-	}
-
-	init_state();
-
-	//Warning: this should not be moved to "init_state":
-	//if done we'd lose the axis movement or pressed buttons.
-
-	if(buttons) {
-
-		buttons_up.insert(std::begin(buttons_up), buttons, false);
-		buttons_pressed.insert(std::begin(buttons_pressed), buttons, false);
-		buttons_down.insert(std::begin(buttons_down), buttons, false);
-		buttons_released.insert(std::begin(buttons_released), buttons, true);
-	}
-
-	if(axis_size) {
-
-		axis.insert(std::begin(axis), axis_size, 0);
-	}
-
-	if(hats_size) {
-
-		hats.insert(std::begin(hats), hats_size, SDL_HAT_CENTERED);
-	}
-}
-
-void sdl_input::joystick::virtualize_hats() {
-
-	if(virtualized_hats) return;
-	int nbuttons=4 * hats_size;
-
-	buttons_up.insert(std::end(buttons_up), nbuttons, false);
-	buttons_pressed.insert(std::end(buttons_pressed), nbuttons, false);
-	buttons_down.insert(std::end(buttons_down), nbuttons, false);
-	buttons_released.insert(std::end(buttons_released), nbuttons, true);
-
-	virtualized_hats=buttons; //First virtualised hat index.
-	buttons+=nbuttons;
-}
-
-void sdl_input::joystick::virtualize_axis(
-	int virtual_threshold
-) {
-
-	if(virtualized_axis) return;
-
-	threshold_virtual_axis_button=virtual_threshold;
-	int nbuttons=2 * axis_size;
-
-	buttons_up.insert(std::end(buttons_up), nbuttons, false);
-	buttons_pressed.insert(std::end(buttons_pressed), nbuttons, false);
-	buttons_down.insert(std::end(buttons_down), nbuttons, false);
-	buttons_released.insert(std::end(buttons_released), nbuttons, true);
-
-	virtualized_axis=buttons; //First virtualised axis index.
-	buttons+=nbuttons;
-}
-
-void sdl_input::joystick::register_button(
-	unsigned int v_tipo, 
-	unsigned int v_button
-) {
-
-	if(v_tipo==0) {
-
-		buttons_down[v_button]=true;
-		buttons_pressed[v_button]=true;
-		buttons_released[v_button]=false;
-	}
-	else {
-
-		buttons_up[v_button]=true;
-		buttons_released[v_button]=true;
-		buttons_pressed[v_button]=false;
-	}
-}
-
-void sdl_input::joystick::register_axis(
-	unsigned int v_axis, 
-	Sint16 v_value
-) {
-
-	axis[v_axis]=v_value;
-
-	if(virtualized_axis) {
-
-		size_t index=virtualized_axis + (2 * v_axis);
-
-		if(abs(v_value) > threshold_virtual_axis_button) {
-
-			std::fill(std::begin(buttons_down)+index, std::begin(buttons_down)+index+2, false);
-			std::fill(std::begin(buttons_pressed)+index, std::begin(buttons_pressed)+index+2, false);
-			std::fill(std::begin(buttons_released)+index, std::begin(buttons_released)+index+2, true);
-
-			auto f=[this](size_t v_button) {
-
-				buttons_down[v_button]=true;
-				buttons_pressed[v_button]=true;
-				buttons_released[v_button]=false;
-			};
-
-			if(v_value > 0) f(index);
-			else f(index+1);
-		}
-		else {
-
-			auto f=[this](size_t v_button) {
-
-				if(buttons_pressed[v_button]) {
-
-					buttons_released[v_button]=true;
-					buttons_up[v_button]=true;
-				}
-			};
-
-			f(index);
-			f(index+1);
-
-			std::fill(std::begin(buttons_pressed)+index, std::begin(buttons_pressed)+index+2, false);
-		}
-	}
-}
-
-
-void sdl_input::joystick::register_hat(
-	unsigned int v_hat, 
-	int v_value
-) {
-
-	hats[v_hat]=v_value;
-
-	if(virtualized_hats) {
-
-		size_t index=virtualized_hats + (4 * v_hat);
-
-		if(v_value==SDL_HAT_CENTERED) {
-
-			for(size_t helper=0; helper < 4; ++helper) {
-
-				if(buttons_pressed[index+helper]) {
-
-					buttons_released[index+helper]=true;
-					buttons_up[index+helper]=true;
-				}
-			}
-
-			std::fill(std::begin(buttons_pressed)+index, std::begin(buttons_pressed)+index+4, false);
-		}
-		else {
-
-			std::fill(std::begin(buttons_down)+index, std::begin(buttons_down)+index+4, false);
-			std::fill(std::begin(buttons_pressed)+index, std::begin(buttons_pressed)+index+4, false);
-			std::fill(std::begin(buttons_released)+index, std::begin(buttons_released)+index+4, true);
-
-			auto f=[this](size_t v_button) {
-				buttons_down[v_button]=true;
-				buttons_pressed[v_button]=true;
-				buttons_released[v_button]=false;
-			};
-
-			if(v_value & SDL_HAT_UP) f(index);
-			if(v_value & SDL_HAT_RIGHT) f(index+1);
-			if(v_value & SDL_HAT_DOWN) f(index+2);
-			if(v_value & SDL_HAT_LEFT) f(index+3);
-		}
-	}
-}
-
-void sdl_input::joystick::init_state() {
-
-	if(buttons) {
-
-		std::fill(std::begin(buttons_up), std::end(buttons_up), false);
-		std::fill(std::begin(buttons_down), std::end(buttons_down), false);
-	}
-}
-
-///////////////
-
-sdl_input::mouse::mouse()
-	:position(),
-	movement(false) {
-
-	std::fill(std::begin(buttons_up), std::end(buttons_up), false);
-	std::fill(std::begin(buttons_down), std::end(buttons_down), false);
-	std::fill(std::begin(buttons_pressed), std::end(buttons_pressed), false);
-	std::fill(std::begin(buttons_released), std::end(buttons_released), false);
-}
-
-void sdl_input::mouse::init() {
-
-	std::fill(std::begin(buttons_up), std::end(buttons_up), false);
-	std::fill(std::begin(buttons_down), std::end(buttons_down), false);
-	movement=false;
-}
-
-//////////////
-
-sdl_input::keyboard::keyboard()
-	:keys_pressed_size{0}
-{}
-
-void sdl_input::keyboard::init_keys() {
-
-	auto f=[](std::array<bool, SDL_NUM_SCANCODES>& a) {std::fill(std::begin(a), std::end(a), false);};
-	f(keys_up);
-	f(keys_down);
-	f(keys_pressed);
-	f(keys_released);
-}
-
-
-void sdl_input::keyboard::reset_keys() {
-
-	auto f=[](std::array<bool, SDL_NUM_SCANCODES>& a) {std::fill(std::begin(a), std::end(a), false);};
-	f(keys_up);
-	f(keys_down);
-}

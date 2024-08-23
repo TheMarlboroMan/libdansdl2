@@ -1,16 +1,22 @@
 #pragma once
 
+#include "keyboard.h"
+#include "mouse.h"
+#include "joystick.h"
+#include "activity_event.h"
+
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <cstdlib> //Para abs en windows.
 #include <vector>
 #include <functional>
 #include <map>
-#include <array>
 #include <string>
 
 namespace ldi
 {
+
+class filter; //forward.
 
 //!Complete input inferface.
 
@@ -20,20 +26,8 @@ namespace ldi
 
 class sdl_input {
 
-	private:
-
-	class mouse;
-	class joystick;
-
 	public:
 	
-	//!Represents the mouse position.
-	struct mouse_position {
-		int x=0,	//!< X position for the mouse.
-	        y=0;	//!< Y position for the mouse.
-	};
-
-
 	//!Defines a default event handling function that can be passed to a 
 	//!custom event handling function.
 	using               tf_default=std::function<void(SDL_Event& event)> ;
@@ -178,24 +172,6 @@ class sdl_input {
 	bool            is_event_input() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick();}
 	//!Same as before, but with key presses (not really events) too.
 	bool            is_event_input_with_pressed() const {return is_event_mouse() || is_event_keyboard() || is_event_joystick() || is_event_keyboard_pressed();}
-	//!Simplified event that can be polled from get_event methods. These are
-	//!extracted from the internal buffers of the ldi::sld_input class so their
-	//!order is fixed.
-	struct event {
-
-		enum codes{c_exit=1}; 
-
-		enum class sources {none, mouse, keyboard, joystick, system} source; //origin of event.
-		enum class types {none, up, down, system} type;
-		int code{0}; //Code of the event (button, key...).
-		int source_index{0}; //Index of the source, used for joysticks
-	};
-	//!Gets the first of any events in the system,keyboard,mouse,joystick order.
-	event           get_event() const;
-	event           get_system_event() const;
-	event           get_keyboard_event() const;
-	event           get_mouse_event() const;
-	event           get_joystick_event() const;
 
 	//!Resets the custom processing function to its default value, which
 	//!is to call "process_event".
@@ -211,129 +187,6 @@ class sdl_input {
 
 	//!Returns the internal joystic index from the SDL id handler.
 	int			get_joystick_index_from_id(SDL_JoystickID) const;
-
-	private:
-
-	//!Private structure representing the keyboard layout and state.
-	class keyboard {
-
-		public:
-		            keyboard();
-		void        init_keys();
-		void        reset_keys();
-
-		std::array<bool, SDL_NUM_SCANCODES>	keys_up,
-		                    keys_down,
-		                    keys_pressed,
-		                    keys_released;
-		int                 keys_pressed_size; //This goes up when a key down and down when a key up. As long as it is larger than zero there are keypresses.
-	};
-
-	//!Private structure to interact with mouse parameters.
-
-	class mouse {
-
-		public:	//Public porque esto si se devuelve es como "const" y es más cómodo que andar con accedentes a este nivel.
-
-		mouse_position  position;
-
-		int             get_x() const {return position.x;}
-		int             get_y() const {return position.y;}
-		const mouse_position&	get_position() const {return position;}
-
-		bool            movement;
-
-		static const unsigned int max_buttons=6;
-		std::array<bool, max_buttons>	buttons_up,
-		                buttons_down,
-		                buttons_pressed,
-		                buttons_released;
-
-		mouse();
-		void init();
-	};
-
-	//!Private structure to interact with joysticks and controllers.
-
-	class joystick {
-
-		public:
-
-		typedef 	std::vector<bool> vbuttons;
-		typedef 	std::vector<Sint16> vaxis;
-		typedef 	std::vector<int> vhats;
-
-		SDL_Joystick * 	structure;
-		SDL_JoystickID	id;
-		unsigned int	device_id,
-			 	buttons,
-			 	axis_size,
-			 	hats_size;
-		vbuttons 	buttons_up,
-			 	buttons_down,
-			 	buttons_pressed,
-			 	buttons_released;
-		vaxis		axis;
-		vhats		hats;
-		size_t 		virtualized_hats,
-				virtualized_axis;
-		int		threshold_virtual_axis_button;
-
-		joystick(SDL_JoystickID pid, int pdevice_id);
-		~joystick();
-
-		//Joysticks are inside a map that copies the object so it
-		//would be deleted and freed if emplaced in the constructor.
-		//So far we'll just pass the structure after construction.
-
-		void init(SDL_Joystick * joy);
-
-		//Hats are treated as buttons.
-		void virtualize_hats();
-		void virtualize_axis(int virtual_threshold);
-		void register_button(unsigned int v_tipo, unsigned int v_button);
-		void register_axis(unsigned int v_axis, Sint16 v_value);
-		void register_hat(unsigned int v_hat, int v_value);
-		void init_state();
-	};
-
-	//!Keeps track of all activity events (minimize, maximize, lose focus...).
-
-	//!So far, this interface allows for only one simultaneous activity 
-	//!event. To support more, we'd need a queue of these events.
-	//!Supposedly get_state returns the SDL state index.
-
-	class activity_event {
-
-		public:
-
-		activity_event():state(0), focus(false), activity_event_registered(false){}
-		~activity_event(){}
-
-		void 				get_input(bool p_focus, Uint8 p_state) {
-
-	        focus=p_focus;
-	        state=p_state;
-	        activity_event_registered=true;
-		}
-
-		void                reset() {
-
-	        activity_event_registered=false;
-	        focus=false;
-			state=0;
-		}
-
-		bool                is_activity_event_registered() const {return activity_event_registered;}
-		bool                is_focused() const {return focus;}
-		Uint8               get_state() const {return state;}
-
-		private:
-
-		Uint8               state;
-		bool                focus,
-		                    activity_event_registered;
-	};
 
 	private:
 
@@ -373,6 +226,8 @@ class sdl_input {
 		max_cache_index};
 
 	std::vector<bool> events_cache;
+
+	friend class filter;
 };
 
 }

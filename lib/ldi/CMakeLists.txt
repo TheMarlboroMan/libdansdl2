@@ -1,5 +1,9 @@
 set(SOURCE
    ${SOURCE}
    ${CMAKE_CURRENT_SOURCE_DIR}/sdl_input.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/filter.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/joystick.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/mouse.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/keyboard.cpp
    PARENT_SCOPE
 )

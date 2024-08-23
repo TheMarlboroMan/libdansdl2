@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#include "../../include/ldi/filter.h"
+
 namespace ldtest {
 
 class input_events {
@@ -17,17 +19,19 @@ class input_events {
 			_input.virtualize_joystick_axis(i, 15000); 
 		}
 
-		auto type_to_str=[](ldi::sdl_input::event::types _type) {
+		auto type_to_str=[](int _type) {
 
 			switch(_type) {
-				case ldi::sdl_input::event::types::none: return "none";
-				case ldi::sdl_input::event::types::up: return "up";
-				case ldi::sdl_input::event::types::down: return "down";
-				case ldi::sdl_input::event::types::system: return "system";
+				case ldi::event::types::type_none: return "none";
+				case ldi::event::types::type_up: return "up";
+				case ldi::event::types::type_down: return "down";
+				case ldi::event::types::type_system: return "system";
 			}
 
 			return "???";
 		};
+
+		ldi::filter filter{_input};
 
 		while(true) {
 
@@ -48,8 +52,8 @@ class input_events {
 				break;
 			}
 
-			auto ev=_input.get_event();
-			if(ev.source==ldi::sdl_input::event::sources::none) {
+			auto ev=filter.find_one();
+			if(!ev) {
 
 				_screen.clear(ldv::rgba8(0, 0, 0, 255));
 				_screen.update();
@@ -58,13 +62,13 @@ class input_events {
 
 			switch(ev.source) {
 
-				case ldi::sdl_input::event::sources::keyboard:
+				case ldi::event::sources::source_keyboard:
 					std::cout<<"keyboard key "<<type_to_str(ev.type)<<" "<<ev.code<<std::endl;
 				break;
-				case ldi::sdl_input::event::sources::mouse:
+				case ldi::event::sources::source_mouse:
 					std::cout<<"mouse button "<<type_to_str(ev.type)<<" "<<ev.code<<std::endl;
 				break;
-				case ldi::sdl_input::event::sources::joystick:
+				case ldi::event::sources::source_joystick:
 					std::cout<<"joystick "<<ev.source_index<<" button "<<type_to_str(ev.type)<<" "<<ev.code<<std::endl;
 				break;
 			}
