@@ -35,5 +35,6 @@ SDL_Surface * 			load_image_from_memory(const std::vector<unsigned char>& _seq);
 SDL_Surface * 			load_image_from_memory(const unsigned char *, size_t);
 Uint32 					get_pixel(SDL_Surface *, int, int);
 void                    set_pixel(SDL_Surface *, int, int, Uint32);
+std::string             get_opengl_version();
 
 } //Fin namespace DLibV

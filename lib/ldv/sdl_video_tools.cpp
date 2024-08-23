@@ -1,8 +1,11 @@
 #include <ldv/sdl_video_tools.h>
-
 #include <ldt/log.h>
-
 #include <lm/log.h>
+#include <GL/gl.h>
+
+#ifdef WINCOMPIL
+#include <GL/glext.h>
+#endif
 #include <stdexcept>
 
 /*! \file sdl_video_tools.h
@@ -237,4 +240,15 @@ ldv::video_display_mode	ldv::get_display_info(int _display) {
 	return video_display_mode{
 		dm.w, dm.h, dm.refresh_rate
 	};
+}
+
+std::string ldv::get_opengl_version() {
+
+	auto bytes=glGetString(GL_VERSION);
+	if(nullptr==bytes) {
+
+		return "unknown";
+	}
+
+	return std::string(reinterpret_cast<const char*>(bytes));
 }

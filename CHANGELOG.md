@@ -11,9 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
-## [V3.2.0]: 2024-08-28
+## [V3.2.0]: 2024-08-23
 ### Added:
 - Add filter class to substitute for the get_X_event of the input class.
+- get_opengl_version function.
 ### Changed:
 - Moves joystick, keyboard and mouse to its own files.
 ### Removed:
