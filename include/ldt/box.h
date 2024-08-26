@@ -37,10 +37,13 @@ void center_vertically(box<T, U>&, T);
 
 template<typename T, typename U>
 void center_vertically(box<T, U>&, const box<T, U>&);
+
+template<typename T, typename U>
+point_2d<T> get_center(const box<T, Y>&);
+
 //!The only thing that is enforced here is that height goes towards the positive
 //!infinite in the Y axis. This means "down" in screen coordinates and "up"
 //!in cartesian ones. If this rule is respected, its functions should work.
-
 template<typename T, typename U>
 class box
 {
@@ -438,6 +441,14 @@ void align(
 	_box.origin=pos;
 }
 
+template<typename T, typename U>
+point_2d<T> get_center(const box<T, Y>& _box) {
+
+	point_2d<T> result{box.origin};
+	result.x+=box.w / 2.;
+	result.y+=box.h / 2.;
+	return result;
+}
 
 }
 
