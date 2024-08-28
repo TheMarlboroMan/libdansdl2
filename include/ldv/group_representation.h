@@ -26,6 +26,12 @@ class group_representation:
 	void                    insert(representation *);
 
 	void                    clear();
+/**
+ * changes contents so that the top-leftmost of them occupies the relative
+ * position 0.0. Newly added representations will not be normalized with
+ * regards to them.
+ */
+	void                    trim();
 
 	//!Returns the number of representations grouped under this one.
 	unsigned int            size() const {return data.size();}

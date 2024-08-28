@@ -223,3 +223,24 @@ void group_representation::update_base_view_position() {
 	base_view_position.origin.x+=position.x;
 	base_view_position.origin.y+=position.y;
 }
+
+void group_representation::trim() {
+
+	if(!data.size()) {
+
+		return;
+	}
+
+	auto topleftmost=data[0]->base_view_position.origin;
+
+	for(const auto& node : data) {
+
+		topleftmost.x=std::min(topleftmost.x, node->base_view_position.origin.x);
+		topleftmost.y=std::min(topleftmost.y, node->base_view_position.origin.y);
+	}
+
+	for(auto& node : data) {
+
+		node->go_to(node->get_position()-topleftmost);
+	}
+}

@@ -12,6 +12,8 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ### Pending
 
 ## [V3.2.1]: 2024-08-28
+### Added:
+- Added trim method to group representation.
 ### Changed:
 - Group representations take part visibility into account when centering and drawing.
 
