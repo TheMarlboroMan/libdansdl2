@@ -19,8 +19,6 @@ and retrieve them later.
 All surfaces and textures are stored and retrieved by an unique numerical identifier
 that can be - for example - assigned to an enum. Textures and surfaces do not share
 containers, so their indexes can be repeated.
-
-Textures and surfaces loaded remain in memory, since there is no "clear" functions.
 */
 
 class resource_manager

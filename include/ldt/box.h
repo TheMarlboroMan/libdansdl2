@@ -392,8 +392,8 @@ void align(
 	int mh=_alignment.margin_horizontal,
 		mv=_alignment.margin_vertical;
 
-	switch(_alignment.horizontal)
-	{
+	switch(_alignment.horizontal) {
+
 		case alignment::h::none: break;
 		case alignment::h::outer_left:
 			pos.x=_container.origin.x-_box.w;
@@ -403,7 +403,7 @@ void align(
 			pos.x=_container.origin.x;
 		break;
 		case alignment::h::center:
-			pos.x=(_container.origin.x+_container.w / 2)-(_box.w/2);
+			pos.x=(_container.origin.x+(_container.w / 2))-(_box.w/2);
 		break;
 		case alignment::h::inner_right:
 			pos.x=_container.origin.x+_container.w-_box.w;
@@ -414,8 +414,8 @@ void align(
 		break;
 	}
 
-	switch(_alignment.vertical)
-	{
+	switch(_alignment.vertical) {
+
 		case alignment::v::none: break;
 		case alignment::v::outer_top:
 			pos.y=_container.origin.y+_container.h;
@@ -425,7 +425,7 @@ void align(
 			mv=-mv;
 		break;
 		case alignment::v::center:
-			pos.y=(_container.origin.y+_container.h / 2)-(_box.h/2);
+			pos.y=(_container.origin.y+(_container.h / 2))-(_box.h/2);
 		break;
 		case alignment::v::inner_bottom:
 			pos.y=_container.origin.y;

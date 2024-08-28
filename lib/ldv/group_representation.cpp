@@ -8,12 +8,13 @@ group_representation::group_representation(point p)
 {
 	update_base_view_position();
 }
+
 //!Empties the group.
 
 //!All representations will be destroyed.
 
-void group_representation::clear()
-{
+void group_representation::clear() {
+
 	data.clear();
 }
 
@@ -21,15 +22,24 @@ void group_representation::clear()
 
 //!Parameters are the same as in a regular representation object.
 
-bool group_representation::draw(screen& p_screen, const camera& pcamera, bool skip_take)
-{
+bool group_representation::draw(
+	screen& p_screen, 
+	const camera& pcamera, 
+	bool skip_take
+) {
+
 	//Using the draw info allows us to work with cartesian coordinates.
 	const auto& cf=pcamera.get_draw_info();
 	const auto& vp=get_view_position();
 
-//	if(is_visible() && (skip_take || pcamera.get_focus_box().collides_with(get_view_position(), true) ))
-	if(is_visible() && (skip_take || ldt::rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true)))
-	{
+	if(
+		is_visible() && 
+		(
+			skip_take 
+			|| ldt::rects_overlap<int, int>(cf.rel_x, cf.rel_y, cf.view_w, cf.view_h, vp.origin.x, vp.origin.y, vp.w, vp.h, true)
+		)
+	) {
+
 		return draw_internal(p_screen, &pcamera);
 	}
 
@@ -40,10 +50,13 @@ bool group_representation::draw(screen& p_screen, const camera& pcamera, bool sk
 
 //!Parameters are the same as in a regular representation object.
 
-bool group_representation::draw(screen& p_screen, bool skip_take)
-{
-	auto in_screen=[this](screen &screen)
-	{
+bool group_representation::draw(
+	screen& p_screen, 
+	bool skip_take
+) {
+
+	auto in_screen=[this](screen &screen) {
+
 		const auto& v_position=get_view_position();
 
 		int ex=v_position.origin.x+v_position.w,
@@ -55,8 +68,8 @@ bool group_representation::draw(screen& p_screen, bool skip_take)
 			&& v_position.origin.y <= (int) screen.get_h();
 	};
 
-	if(is_visible() && (skip_take || in_screen(p_screen)))
-	{
+	if(is_visible() && (skip_take || in_screen(p_screen))) {
+
 		return draw_internal(p_screen, nullptr);
 	}
 
@@ -69,8 +82,11 @@ bool group_representation::draw(screen& p_screen, bool skip_take)
 //!top-left of the group is 0.0. Group alpha is applied to each item whenever
 //!it is not opaque. In other words, it is not accumulative nor it does blend.
 
-bool group_representation::draw_internal(screen& p_screen, camera const * pcamera)
-{
+bool group_representation::draw_internal(
+	screen& p_screen, 
+	camera const * pcamera
+) {
+
 	//When assigning, matrixes are reset. If assignation occurs during
 	//this iteration we can have terrible results because translations not
 	//accounted for.
@@ -78,8 +94,13 @@ bool group_representation::draw_internal(screen& p_screen, camera const * pcamer
 
 	bool result=false;
 
-	for(auto &r : data)
-	{
+	for(auto &r : data) {
+
+		if(!r->is_visible()) {
+
+			continue;
+		}
+
 		glMatrixMode(GL_MODELVIEW);
 
 		//Traslación propia del grupo, rotaciones...
@@ -88,11 +109,11 @@ bool group_representation::draw_internal(screen& p_screen, camera const * pcamer
 
 		glTranslatef(position.x*iv.zoom, position.y*iv.zoom, 0.f);
 
-		if(pcamera!=nullptr)
-		{
+		if(pcamera!=nullptr) {
+
 			//This is pure empiric knowledge. Try and error.
-			if(tr.angle != 0.f)
-			{
+			if(tr.angle != 0.f) {
+
 				float 	tx=iv.pos_x+((tr.center.x-iv.rel_x)*iv.zoom),
 					ty=iv.pos_y+((tr.center.y-iv.rel_y)*iv.zoom);
 
@@ -101,10 +122,10 @@ bool group_representation::draw_internal(screen& p_screen, camera const * pcamer
 				glTranslatef(-tx, -ty, 0.f);
 			}
 		}
-		else
-		{
-			if(tr.angle != 0.f)
-			{
+		else {
+
+			if(tr.angle != 0.f) {
+
 				glTranslatef(tr.center.x, tr.center.y, 0.f);
 				glRotatef(tr.angle, 0.f, 0.f, 1.f);
 				glTranslatef(-tr.center.x, -tr.center.y, 0.f);
@@ -120,9 +141,11 @@ bool group_representation::draw_internal(screen& p_screen, camera const * pcamer
 
 		//Camera and screen checks are skipped.
 		if(pcamera!=nullptr) {
+
 			result|=r->draw(p_screen, *pcamera, true);
 		}
 		else {
+
 			result|=r->draw(p_screen, true);
 		}
 
@@ -135,8 +158,7 @@ bool group_representation::draw_internal(screen& p_screen, camera const * pcamer
 
 //!This function is unreachable.
 
-void group_representation::do_draw()
-{
+void group_representation::do_draw() {
 
 }
 
@@ -145,55 +167,59 @@ void group_representation::do_draw()
 //!The order of insertion determines the subsequent drawing order, making
 //!groups a very rigid structure.
 
-void group_representation::insert(representation * p_rep)
-{
+void group_representation::insert(representation * p_rep) {
+
 	data.push_back(std::unique_ptr<representation>(p_rep));
 	update_base_view_position();
 }
 
 //!Updates the group position.
 
-void  group_representation::go_to(point p)
-{
+void  group_representation::go_to(point p) {
+
 	position={p.x, p.y};
 	update_base_view_position();
 }
 
 //!Returns the box of all representations put together.
 
-void group_representation::update_base_view_position()
-{
+void group_representation::update_base_view_position() {
+
 	if(!data.size()) {
 
 		base_view_position.origin=position;
 		base_view_position.w=0;
 		base_view_position.h=0;
+		return;
 	}
-	else {
 
-		base_view_position=data[0]->base_view_position;
+	base_view_position=data[0]->base_view_position;
 
-		int 	fx=base_view_position.origin.x+base_view_position.w,
-			fy=base_view_position.origin.y+base_view_position.h;
+	int	fx=base_view_position.origin.x+base_view_position.w,
+	    fy=base_view_position.origin.y+base_view_position.h;
 
-		for(const auto& r : data)
-		{
-			const auto& pr=r->base_view_position;
+	for(const auto& r : data) {
 
-			if(pr.origin.x < base_view_position.origin.x) base_view_position.origin.x=pr.origin.x;
-			if(pr.origin.y < base_view_position.origin.y) base_view_position.origin.y=pr.origin.y;
+		if(!r->is_visible()) {
 
-			int 	prfx=pr.origin.x+pr.w,
-				prfy=pr.origin.y+pr.h;
-
-			if(prfx > fx) fx=prfx;
-			if(prfy > fy) fy=prfy;
+			continue;
 		}
 
-		base_view_position.w=fx-base_view_position.origin.x;
-		base_view_position.h=fy-base_view_position.origin.y;
+		const auto& pr=r->base_view_position;
 
-		base_view_position.origin.x+=position.x;
-		base_view_position.origin.y+=position.y;
+		base_view_position.origin.x=std::min(pr.origin.x, base_view_position.origin.x);
+		base_view_position.origin.y=std::min(pr.origin.y, base_view_position.origin.y);
+
+		int	prfx=pr.origin.x+pr.w,
+		    prfy=pr.origin.y+pr.h;
+
+		if(prfx > fx) fx=prfx;
+		if(prfy > fy) fy=prfy;
 	}
+
+	base_view_position.w=fx-base_view_position.origin.x;
+	base_view_position.h=fy-base_view_position.origin.y;
+
+	base_view_position.origin.x+=position.x;
+	base_view_position.origin.y+=position.y;
 }
