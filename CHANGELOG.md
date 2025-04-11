@@ -11,6 +11,11 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.2.2]: 2025-04-11
+### Added:
+- Audio controller has_free_channels()
+- New audio exception to separate it from the std::runtime_error.
+
 ## [V3.2.1]: 2024-08-28
 ### Added:
 - Added trim method to group representation.

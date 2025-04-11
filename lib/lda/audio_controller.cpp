@@ -1,4 +1,5 @@
 #include <lda/audio_controller.h>
+#include <lda/exception.h>
 
 #include <ldt/log.h>
 
@@ -35,12 +36,12 @@ audio_controller::audio_controller(const audio_controller_config& c):
 
 		lm::log(ldt::log_lsdl::get()).info()<<"Starting sdl audio subsystem."<<std::endl;
 		if(SDL_InitSubSystem(SDL_INIT_AUDIO)==-1) {
-			throw std::runtime_error("Unable to init audio system");
+			throw exception("Unable to init audio system");
 		}
 	}
 
 	if(Mix_OpenAudio(ratio, format, out, buffers) == -1) {
-		throw std::runtime_error("Unable to open audio device");
+		throw exception("Unable to open audio device");
 	}
 
 
@@ -91,7 +92,7 @@ audio_controller::~audio_controller()
 //!Plays sound in a free channel.
 
 //!Attempts to locate a free channel. If no free channel is available the
-//!function will throw a std::runtime_error.s
+//!function will throw a exception.
 //!The sound_struct is checked before played. If it is not ready no sound will be
 //!Played.
 
@@ -105,7 +106,7 @@ void audio_controller::play_sound(const sound_struct& pstruct)
 
 	if(channels.at(get_free_channel_index()).play(pstruct)==-1)
 	{
-		throw std::runtime_error("Error while playing sound :"+std::string(Mix_GetError()));
+		throw exception("Error while playing sound :"+std::string(Mix_GetError()));
 	}
 }
 
@@ -114,11 +115,17 @@ void audio_controller::play_sound(const sound_struct& pstruct)
 //!A free channel is not playing. Monitored channels will not be reported as
 //!free.
 //!pfrom will be used to start the search and pto will be the last channel
-//!searched if provided. Returns -1 when no channels are available.
+//!searched if provided. throws when no channels are available.
 
 int audio_controller::get_free_channel_index(int pfrom, int pto)
 {
-	int l=(pto==-1) ? (int)channels.size()-1 : (pto >= (int)channels.size() ? channels.size()-1 : pto);
+	int l=(pto==-1) 
+		? (int)channels.size()-1 
+		: (
+			pto >= (int)channels.size() 
+				? channels.size()-1 
+				: pto
+		);
 
 	for(; pfrom < l; pfrom++)
 	{
@@ -129,12 +136,27 @@ int audio_controller::get_free_channel_index(int pfrom, int pto)
 		}
 	}
 
-	throw std::runtime_error("No free channels available");
+	throw exception("No free channels available");
+}
+
+bool audio_controller::has_free_channels() const {
+
+	const int size=channels.size();
+	for(int i=0; i < size; i++) {
+
+		const real_audio_channel& c=channels.at(i);
+		if(!c.is_monitored() && !c.is_playing()) {
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //!Stops the sound at the indicated channel.
 
-//!The channel index is checked before execution, which may throw a std::runtime_error
+//!The channel index is checked before execution, which may throw a exception
 //!if the channel does not exist.
 
 void audio_controller::stop_sound(int pchannel)
@@ -151,7 +173,7 @@ void audio_controller::check_channel(int pchannel)
 {
 	if(pchannel < 0 || pchannel >= (int)channels.size())
 	{
-		throw std::runtime_error("Unable access channel out of bounds");
+		throw exception("Unable access channel out of bounds");
 	}
 }
 
@@ -213,7 +235,7 @@ void audio_controller::set_main_music_volume(
 //!Sets the volume for a channel.
 
 //!Volume is in the range 0-128. Channel will be checked, which could result
-//!in a std::runtime_error being thrown if it doesn't exist.
+//!in a exception being thrown if it doesn't exist.
 
 void audio_controller::set_sound_volume(int p_vol, int pchannel)	//p_vol de 0 a 128.
 {
@@ -286,7 +308,7 @@ std::string audio_controller::debug_state()
 //!Gets a handle for the specified audio channel.
 
 //!An audio_channel object (a proxy for a real_audio_channel) will be returned.
-//!Channel index will be checked, which may result in a std::runtime_error being
+//!Channel index will be checked, which may result in a exception being
 //!thrown.
 
 audio_channel audio_controller::get_channel(int pchannel)// throw()
@@ -301,7 +323,7 @@ audio_channel audio_controller::get_channel(int pchannel)// throw()
 //!two consecutive calls will !yield the very same channel. To avoid this,
 //!either have the channel play something or set it under monitoring with
 //!channel.set_monitoring(true);
-//!If no channels are available will throw with std::runtime_error, since it
+//!If no channels are available will throw with exception since it
 //is implemented on terms of get_free_channel_index.
 
 audio_channel audio_controller::get_free_channel()// throw()
@@ -345,7 +367,7 @@ void audio_controller::add_music_stop_callback(
 
 	if(music_stop_callbacks.count(_key)) {
 
-		throw std::runtime_error(std::string{"cannot add existing music stop callback '"}+_key+"'");
+		throw exception(std::string{"cannot add existing music stop callback '"}+_key+"'");
 	}
 
 	music_stop_callbacks[_key]=&_cb;
@@ -358,7 +380,7 @@ void audio_controller::remove_music_stop_callback(
 
 	if(!music_stop_callbacks.count(_key)) {
 
-		throw std::runtime_error(std::string{"cannot remove non existing music stop callback '"}+_key+"'");
+		throw exception(std::string{"cannot remove non existing music stop callback '"}+_key+"'");
 	}
 
 	music_stop_callbacks.erase(_key);

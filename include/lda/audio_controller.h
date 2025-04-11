@@ -77,6 +77,8 @@ class audio_controller
 	unsigned int            get_main_sound_volume() const {return main_sound_volume;}
 	audio_channel           get_channel(int);
 	audio_channel           get_free_channel();
+	//!Returns true if any channel is not playing and unmonitored.
+	bool                    has_free_channels() const;
 
 	std::string             debug_state();
 

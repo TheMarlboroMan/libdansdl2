@@ -1,5 +1,6 @@
 #include <lda/audio_channel.h>
 #include <lda/real_audio_channel.h>
+#include <sstream>
 
 using namespace lda;
 
@@ -338,15 +339,17 @@ void audio_channel_safe::set_stereo_volume(sound_panning sp)
 
 //!Removes panning from the channel.
 
-void audio_channel_safe::clear_panning()
-{
+void audio_channel_safe::clear_panning() {
 	if(channel==nullptr) fail("clear_panning");
 	channel->clear_panning();
 }
 
 void audio_channel_safe::fail(
 	const std::string& _method
-) const
-{
-	throw audio_channel_safe_exception(std::string{"the channel is unlinked for operation: "}+_method);
+) const {
+
+	std::stringstream ss;
+	ss<<"the channel is unlinked for operation: "<<_method;
+
+	throw audio_channel_safe_exception(ss.str());
 }

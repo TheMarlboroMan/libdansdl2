@@ -1,10 +1,8 @@
 #pragma once
 
 #include "sound.h"
+#include "exception.h"
 #include "audio_callback_interface.h"
-
-#include <stdexcept>
-#include <string>
 
 namespace lda
 {
@@ -77,13 +75,13 @@ class audio_channel
 //!Exception thrown from the audio_channel_safe
 
 class audio_channel_safe_exception:
-	public std::runtime_error
+	public exception
 {
 	public:
 
 	//!Class constructor.
 	audio_channel_safe_exception(const std::string& s)
-		:std::runtime_error(s) {
+		:exception(s) {
 	}
 };
 
