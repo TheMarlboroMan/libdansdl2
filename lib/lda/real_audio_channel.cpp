@@ -12,8 +12,12 @@ real_audio_channel::real_audio_channel(int i, const int& main_vol)
 	:index(i), repeat(0), volume(128), playing(false),
 	monitoring(false), paused(false), main_sound_volume_ptr(&main_vol),
 	sound_playing(nullptr)
-{
+{ }
 
+real_audio_channel::~real_audio_channel(){
+
+	sound_playing=nullptr;
+	callback_listener=nullptr;
 }
 
 //!Copy constructor.
@@ -66,8 +70,15 @@ void real_audio_channel::stop()
 void real_audio_channel::do_callback()
 {
 	playing=false;
-	if(callback_listener) callback_listener->do_callback();
-	if(!monitoring) free();
+	if(callback_listener) {
+
+		callback_listener->do_callback();
+	}
+
+	if(!monitoring) {
+
+		free();
+	}
 }
 
 //!Sets the volume for the channel.

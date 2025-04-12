@@ -120,10 +120,10 @@ void audio_controller::play_sound(const sound_struct& pstruct)
 int audio_controller::get_free_channel_index(int pfrom, int pto)
 {
 	int l=(pto==-1) 
-		? (int)channels.size()-1 
+		? (int)channels.size()
 		: (
 			pto >= (int)channels.size() 
-				? channels.size()-1 
+				? channels.size()
 				: pto
 		);
 

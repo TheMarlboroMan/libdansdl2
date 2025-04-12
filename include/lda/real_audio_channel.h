@@ -48,7 +48,7 @@ class real_audio_channel
 	//!Removes the callback listener (useful in case the listener is going to be deleted before the sound is done playing.
 	void				clear_callback_listener() {callback_listener=nullptr;}
 
-					~real_audio_channel(){sound_playing=nullptr;}
+					~real_audio_channel();
 					real_audio_channel(const real_audio_channel&);
 	private:
 					real_audio_channel(int, const int&);
