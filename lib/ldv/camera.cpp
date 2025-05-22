@@ -8,11 +8,19 @@
 
 using namespace ldv;
 
-camera::camera(rect foco, point pos):
+camera::camera(
+	rect foco, 
+	point pos,
+	tsystem _coord_system
+):
 	d_info{pos.x, pos.y, foco.origin.x, foco.origin.y, (int)foco.w, (int)foco.h, 1.0},
-	focus_box(foco), pos_box(pos.x, pos.y, focus_box.w, focus_box.h),
-	with_limit(false), limits{0,0,0,0}, with_margin(false), limit_margin{0,0,0,0},
-	coordinate_system(tsystem::screen)
+	focus_box(foco), 
+	pos_box(pos.x, pos.y, focus_box.w, focus_box.h),
+	with_limit(false), 
+	limits{0,0,0,0}, 
+	with_margin(false), 
+	limit_margin{0,0,0,0},
+	coordinate_system(_coord_system)
 {
 	sync();
 }

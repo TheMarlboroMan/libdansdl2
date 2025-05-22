@@ -58,7 +58,7 @@ class camera
 
 	//!Class constructor with focus and screen position. Camera box w and h
 	//!will match that of the focus.
-	camera(rect/*={0,0,640,400}*/, point/*={0,0}*/);
+	camera(rect/*={0,0,640,400}*/, point/*={0,0}*/, tsystem=tsystem::screen);
 
 	//!The focus box represents the place in space the camera points at.
 	const rect&     get_focus_box() const {return focus_box;}

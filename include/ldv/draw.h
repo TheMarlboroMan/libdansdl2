@@ -14,7 +14,6 @@ namespace ldv {
 *It happens to work with entities using double as point type. It will always
 *use cartesian coordinates and system (left-bottom is 0,0, x and y grow to
 *the right and top, unlike in typical raster modes.
-*TODO: Untested.
 *TODO: test without camera... which should switch to "screen mode"??? Or 
 *   maybe that does not make any sense...
 */
@@ -33,6 +32,7 @@ class draw {
 	                draw(screen&, camera * =nullptr, modes=modes::cartesian);
 
 	draw&           clear(const rgba_color&);
+	draw&           update();
 	draw&           box(const tbox&, const rgba_color&);
 	draw&           box_bordered(const tbox&, const rgba_color&, const rgba_color&);
 	draw&           box_outline(const tbox&, const rgba_color&);

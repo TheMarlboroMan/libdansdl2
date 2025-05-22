@@ -34,6 +34,12 @@ draw& draw::clear(
 	return *this;
 }
 
+draw& draw::update() {
+
+	scr.update();
+	return *this;
+}
+
 draw& draw::box(
 	const tbox& _box,
 	const ldv::rgba_color& _color

@@ -15,6 +15,7 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ### Added:
 - New "draw" class for quick and dirty geometry
 - New aabb_collision supporting ray casting against aabb boxes.
+- Add example with draw and aabb_collision example.
 
 ## [V3.2.2]: 2025-04-11
 ### Added:
