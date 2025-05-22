@@ -11,6 +11,11 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.2.3]: 2025-05-22
+### Added:
+- New "draw" class for quick and dirty geometry
+- New aabb_collision supporting ray casting against aabb boxes.
+
 ## [V3.2.2]: 2025-04-11
 ### Added:
 - Audio controller has_free_channels()

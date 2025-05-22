@@ -9,7 +9,7 @@ option(BUILD_TESTS "Build test code" OFF)
 #library version and naming...
 set(MAJOR_VERSION 3)
 set(MINOR_VERSION 2)
-set(PATCH_VERSION 2)
+set(PATCH_VERSION 3)
 
 if(${BUILD_DEBUG})
 

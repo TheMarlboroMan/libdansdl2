@@ -66,10 +66,21 @@ struct point_2d
 		return point_2d<T> {x*p, y*p};
 	}
 
+	point_2d operator*(const point_2d& p) const {
+
+		return point_2d<T> {x*p.x, y*p.y};
+	}
+
 	//!Multiplies the point.
-	point_2d& operator*=(T p) {
+	point_2d& operator*=(T p) { 
 		x*=p;
 		y*=p;
+		return *this;
+	}
+
+	point_2d& operator*=(const point_2d& p) { 
+		x*=p.x;
+		y*=p.y;
 		return *this;
 	}
 
@@ -78,10 +89,20 @@ struct point_2d
 		return point_2d<T> {x/p, y/p};
 	}
 
+	point_2d operator/(const point_2d& p) const {
+		return point_2d<T> {x/p.x, y/p.y};
+	}
+
 	//!Divides the point.
 	point_2d& operator/=(T p) {
 		x/=p;
 		y/=p;
+		return *this;
+	}
+
+	point_2d& operator/=(const point_2d& p) {
+		x/=p.x;
+		y/=p.y;
 		return *this;
 	}
 
