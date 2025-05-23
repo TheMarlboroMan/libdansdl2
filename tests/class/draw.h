@@ -14,7 +14,7 @@ class draw {
 	private:
 
 	ldv::camera cam;
-	std::vector<ldt::box<double, double>> boxes;
+	std::vector<ldt::box<double, int>> boxes;
 	ldt::point_2d<double> origin;
 
 	public:

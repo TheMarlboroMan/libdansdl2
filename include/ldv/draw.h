@@ -21,7 +21,7 @@ class draw {
 
 	using tpoint=ldt::point_2d<double>;
 	using tray=ldt::segment_2d<double>;
-	using tbox=ldt::box<double, double>;
+	using tbox=ldt::box<double, int>;
 
 	enum class modes {
 		screen,
