@@ -41,6 +41,17 @@ bool ray_intersects_box_simple(
 	point_2d<T> near=( _box.origin - _ray.point) / direction,
 	            far=(endpoint - _ray.point ) / direction;
 
+	//I think this means something like... you are waaaay to near.
+	if(std::isnan(far.y) || std::isnan(far.x)) {
+
+		return false;
+	}
+
+	if(std::isnan(near.y) || std::isnan(near.x)) {
+
+		return false;
+	}
+
 	//These will produce stuff like:
 	//ldt::point[2.09091,2.92857] ldt::point[-0.939394,1.5]
 	//which means that at 2.09 times the ray we will intersect the x axis,
@@ -123,6 +134,16 @@ ray_box_intersection<T> ray_intersects_box(
 	point_2d<T> near=( _box.origin - _ray.point) / direction,
 	            far=(endpoint - _ray.point ) / direction;
 
+	if(std::isnan(far.y) || std::isnan(far.x)) {
+
+		return {false, 0., {0., 0.}, {0., 0.}};
+	}
+
+	if(std::isnan(near.y) || std::isnan(near.x)) {
+
+		return {false, 0., {0., 0.}, {0., 0.}};
+	}
+
 	if(near.x > far.x) {
 
 		std::swap(near.x, far.x);
@@ -190,6 +211,16 @@ bool ray_intersects_box(
 
 	point_2d<T> near=( _box.origin - _ray.point) / direction,
 	            far=(endpoint - _ray.point ) / direction;
+
+	if(std::isnan(far.y) || std::isnan(far.x)) {
+
+		return false;
+	}
+
+	if(std::isnan(near.y) || std::isnan(near.x)) {
+
+		return false;
+	}
 
 	if(near.x > far.x) {
 
