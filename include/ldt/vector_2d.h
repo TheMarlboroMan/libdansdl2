@@ -8,6 +8,7 @@ application code but also appears in other libdansdl2 parts.
 
 #include "point_2d.h"
 
+#include <lm/log.h>
 #include <algorithm>
 #include <cmath>
 #include <ostream>
@@ -192,10 +193,24 @@ struct vector_2d {
 };
 
 template<typename T>
-std::ostream& ldt::operator<<(std::ostream& _stream, const vector_2d<T>& _vec) {
+std::ostream& ldt::operator<<(
+	std::ostream& _stream, 
+	const vector_2d<T>& _vec
+) {
 
 	_stream<<_vec.x<<","<<_vec.y;
 	return _stream;
+}
+
+
+template<typename T>
+lm::log& operator<<(
+	lm::log& _log,
+	const vector_2d<T>& _vector
+) {
+
+	_log<<_vector.x<<","<<_vector.y;
+	return _log;
 }
 
 template<typename T> 

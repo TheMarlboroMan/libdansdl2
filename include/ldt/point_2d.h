@@ -61,6 +61,18 @@ struct point_2d
 		return *this;
 	}
 
+	//!Gets a new point by substraction of components.
+	point_2d operator-(T p) const {
+		return point_2d<T> {x-p, y-p};
+	}
+
+	//!Substracts from the point the components 
+	point_2d& operator-=(T p) {
+		x-=p;
+		y-=p;
+		return *this;
+	}
+
 	//!Gets a new point by product.
 	point_2d operator*(T p) const {
 		return point_2d<T> {x*p, y*p};
@@ -158,7 +170,7 @@ std::ostream& operator<<(
 	const point_2d<T>& _point
 ) {
 
-	_stream<<"ldt::point["<<_point.x<<","<<_point.y<<"]";
+	_stream<<_point.x<<","<<_point.y;
 	return _stream;
 }
 
@@ -168,7 +180,7 @@ lm::log& operator<<(
 	const point_2d<T>& _point
 ) {
 
-	_log<<"ldt::point["<<_point.x<<","<<_point.y<<"]";
+	_log<<_point.x<<","<<_point.y;
 	return _log;
 }
 

@@ -6,6 +6,7 @@
 
 namespace ldt {
 
+
 /**
 *Returns true if the given segment (ray) intersects the given box, both using
 *cartesian coordinates! Seems this is called the Cyrus-Beck clip but math
@@ -100,6 +101,8 @@ ray_box_intersection {
 	T           intersection_t; //intersection "moment"
 	point_2d<T> point;
 	vector_2d<T> normal;
+
+	operator bool() const {return has_intersection;}
 };
 
 /**

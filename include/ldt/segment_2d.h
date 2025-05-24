@@ -2,6 +2,8 @@
 
 #include "point_2d.h"
 #include "vector_2d.h"
+#include <lm/log.h>
+#include <ostream>
 
 namespace ldt {
 
@@ -46,6 +48,20 @@ struct segment_2d {
 		point+=p;
 		return *this;
 	}
+
+	//!Extends the vector by the given factor and returns a new one.
+	segment_2d<T>       operator*(T _factor) {
+
+		return segment_2d<T> {point, vector*_factor};
+	}
+
+	//!Extends the vector by the given factor.
+	segment_2d<T>&      operator*=(T _factor) {
+
+		vector*=_factor;
+		return *this;
+	}
+	
 
 	//!Returns the point that marks the end of the segment
 	tpoint				end() const {
@@ -135,5 +151,26 @@ bool segments_intersect(const segment_2d<T>& a, const segment_2d<T>& b) {
 
 	return t >= 0 && t <= 1 && u >= 0 && u <= 1;
 }
+
+template<typename T>
+std::ostream& operator<<(
+	std::ostream& _stream,
+	const segment_2d<T>& _segment
+) {
+
+	_stream<<_segment.point<<" => "<<_segment.vector;
+	return _stream;
+}
+
+template<typename T>
+lm::log& operator<<(
+	lm::log& _log,
+	const segment_2d<T>& _segment
+) {
+
+	_log<<_segment.point<<" => "<<_segment.vector;
+	return _log;
+}
+
 
 }//End of namespace.

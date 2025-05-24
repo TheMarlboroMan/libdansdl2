@@ -206,7 +206,7 @@ std::ostream& operator<<(
 	const box<T, U>& _box
 ) {
 
-	_stream<<"ldt::box["<<_box.origin<<" "<<_box.w<<"x"<<_box.h<<"]";
+	_stream<<_box.origin<<" "<<_box.w<<"x"<<_box.h;
 	return _stream;
 }
 
@@ -216,7 +216,7 @@ lm::log& operator<<(
 	const box<T, U>& _box
 ) {
 
-	_log<<"ldt::box["<<_box.origin<<" "<<_box.w<<"x"<<_box.h<<"]";
+	_log<<_box.origin<<" "<<_box.w<<"x"<<_box.h;
 	return _log;
 }
 
