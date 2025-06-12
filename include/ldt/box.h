@@ -101,6 +101,18 @@ class box
 			|| _box.h!=h;
 	}
 
+/**
+* Keeping the same center, grows the box (the origin will be displaced).
+*/
+	void            grow(T _amount) {
+
+		T quantity=_amount / 2.;
+		origin.x-=quantity;
+		origin.y-=quantity;
+		w+=_amount;
+		h+=_amount;
+	}
+
 	/**
 	* Adjusts the box so its edge _edge rests in _edge_position.
 	*/

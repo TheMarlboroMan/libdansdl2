@@ -11,6 +11,11 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.2.4]: 2025-06-12
+### Added:
+- New "grow" method for the rect class.
+- Missing point operators.
+
 ## [V3.2.3]: 2025-05-22
 ### Added:
 - New "draw" class for quick and dirty geometry

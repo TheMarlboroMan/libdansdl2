@@ -18,6 +18,8 @@ bool ray_intersects_box_simple(
 	const box<T, U>& _box
 ) {
 
+	//TODO: Very repeated stuff...
+
 	//Convert the vector to a point, to facilitate operations...
 	point_2d direction={_ray.vector.x, _ray.vector.y};
 
@@ -134,12 +136,10 @@ ray_box_intersection<T> ray_intersects_box(
 	point_2d<T> near=( _box.origin - _ray.point) / direction,
 	            far=(endpoint - _ray.point ) / direction;
 
-	if(std::isnan(far.y) || std::isnan(far.x)) {
-
-		return {false, 0., {0., 0.}, {0., 0.}};
-	}
-
-	if(std::isnan(near.y) || std::isnan(near.x)) {
+	if(
+		std::isnan(far.y) || std::isnan(far.x)
+		|| std::isnan(near.y) || std::isnan(near.x)
+	) {
 
 		return {false, 0., {0., 0.}, {0., 0.}};
 	}
@@ -201,68 +201,8 @@ bool ray_intersects_box(
 	const box<T, U>& _box,
 	ray_box_intersection<T>& _out
 ) {
-	_out={false, 0., {0., 0.}, {0., 0.}};
-
-	point_2d direction={_ray.vector.x, _ray.vector.y};
-
-	auto endpoint=_box.origin;
-	endpoint.x+=_box.w;
-	endpoint.y+=_box.h;
-
-	point_2d<T> near=( _box.origin - _ray.point) / direction,
-	            far=(endpoint - _ray.point ) / direction;
-
-	if(std::isnan(far.y) || std::isnan(far.x)) {
-
-		return false;
-	}
-
-	if(std::isnan(near.y) || std::isnan(near.x)) {
-
-		return false;
-	}
-
-	if(near.x > far.x) {
-
-		std::swap(near.x, far.x);
-	}
-
-	if(near.y > far.y) {
-
-		std::swap(near.y, far.y);
-	}
-
-	if(near.x > far.y || near.y > far.x) {
-
-		return false;
-	}
-
-	T intersection_far=std::min(far.x, far.y);
-	if(intersection_far < 0.) {
-
-		return false;
-	}
-
-	T intersection_near=std::max(near.x, near.y);
-	if(intersection_near < 0. || intersection_near > 1.) {
-
-		return false;
-	}
-
-	point_2d<T> intersection_point=_ray.point + (direction * intersection_near);
-
-	vector_2d<T> normal;
-	if(near.x > near.y) {
-
-		normal=direction.x < 0 ? vector_2d<T>{1., 0.} : vector_2d<T>{-1, 0.};
-	}
-	else {
-
-		normal=direction.y < 0 ? vector_2d<T>{0., 1.} : vector_2d<T>{0., -1};
-	}
-
-	_out={true, intersection_near, intersection_point, normal};
-	return true;
+	_out=ray_intersects_box(_ray, _box);
+	return _out;
 }
 
 }//end of namespace!
