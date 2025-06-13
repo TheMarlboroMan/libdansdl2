@@ -28,10 +28,12 @@ template<typename T, typename U>
 void match_edge(box<T, U>&, const box<T, U>&, box_edges);
 
 //Look at the actual definition below to make sense of this...
-template<typename T, typename U, std::enable_if_t<std::is_arithmetic<T>::value, int> = 0 >
+//template<typename T, typename U, std::enable_if_t<std::is_arithmetic<T>::value, int> = 0 >
+template<typename T, typename U>
 void center_horizontally(box<T, U>&, T);
 
-template<typename T, typename U, std::enable_if_t<std::is_arithmetic<T>::value, int> = 0 >
+//template<typename T, typename U, std::enable_if_t<std::is_arithmetic<T>::value, int> = 0 >
+template<typename T, typename U>
 void center_vertically(box<T, U>&, T);
 
 template<typename T, typename U>
@@ -334,8 +336,8 @@ void match_edge(
  */
 template<
 	typename T, 
-	typename U,
-	std::enable_if_t<std::is_arithmetic<T>::value, int>
+	typename U
+//	std::enable_if_t<std::is_arithmetic<T>::value, int>
 >
 void center_horizontally(
 	box<T, U>& _box,
@@ -357,8 +359,8 @@ void center_horizontally(
 
 template<
 	typename T, 
-	typename U,
-	std::enable_if_t<std::is_arithmetic<T>::value, int>
+	typename U
+//	std::enable_if_t<std::is_arithmetic<T>::value, int>
 >
 void center_vertically(
 	box<T, U>& _box,
