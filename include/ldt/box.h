@@ -355,6 +355,16 @@ void center_vertically(
 	center_vertically(_box, _container.origin.y+(_container.h / 2));
 }
 
+template<typename T, typename U>
+void center(
+	box<T, U>& _box,
+	const box<T, U>& _container
+) {
+
+	center_vertically(_box, _container.origin.y+(_container.h / 2));
+	center_horizontally(_box, _container.origin.x+(_container.w / 2));
+}
+
 /**
 * Defines an alignment structure for boxes.
 */
