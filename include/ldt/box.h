@@ -6,6 +6,7 @@
 #include <lm/log.h>
 #include <SDL2/SDL.h>
 #include <ostream>
+#include <type_traits>
 
 namespace ldt
 {
@@ -26,14 +27,15 @@ void snap_to_edge(box<T, U>&, const box<T, U>&, box_edges);
 template<typename T, typename U>
 void match_edge(box<T, U>&, const box<T, U>&, box_edges);
 
-template<typename T, typename U>
+//Look at the actual definition below to make sense of this...
+template<typename T, typename U, std::enable_if_t<std::is_arithmetic<T>::value, int> = 0 >
 void center_horizontally(box<T, U>&, T);
+
+template<typename T, typename U, std::enable_if_t<std::is_arithmetic<T>::value, int> = 0 >
+void center_vertically(box<T, U>&, T);
 
 template<typename T, typename U>
 void center_horizontally(box<T, U>&, const box<T, U>&);
-
-template<typename T, typename U>
-void center_vertically(box<T, U>&, T);
 
 template<typename T, typename U>
 void center_vertically(box<T, U>&, const box<T, U>&);
@@ -157,7 +159,6 @@ class box
 	/**
 	* Makes the vertical center rest on _center.
 	*/
-
 	void            center_vertically(T _center) {
 
 		ldt::center_vertically(*this, _center);
@@ -169,6 +170,12 @@ class box
 	void            center_vertically(const box& _obstacle) {
 
 		ldt::center_vertically(*this, _obstacle);
+	}
+
+	void            center(const box& _obstacle) {
+
+		ldt::center_horizontally(*this, _obstacle);
+		//ldt::center_vertically(*this, _obstacle);
 	}
 
 	//!Returns true if this box collides with the given box  The second
@@ -319,7 +326,17 @@ void match_edge(
 	}
 }
 
-template<typename T, typename U>
+/**
+ * what that last parameter means... if the type of T is arithmetic, 
+ * add an argument here that is an int. The declaration above puts its 
+ * default value at zero. This becomes a method with 3 args that gets only
+ * instantiated when the type T is arithmetic, disambiguating a lot.
+ */
+template<
+	typename T, 
+	typename U,
+	std::enable_if_t<std::is_arithmetic<T>::value, int>
+>
 void center_horizontally(
 	box<T, U>& _box,
 	T _center
@@ -334,10 +351,15 @@ void center_horizontally(
 	const box<T, U>& _container
 ) {
 
-	center_horizontally(_box, _container.origin.x+(_container.w / 2));
+	T half=_container.w / 2;
+	center_horizontally(_box, _container.origin.x+half);
 }
 
-template<typename T, typename U>
+template<
+	typename T, 
+	typename U,
+	std::enable_if_t<std::is_arithmetic<T>::value, int>
+>
 void center_vertically(
 	box<T, U>& _box,
 	T _center
@@ -352,7 +374,8 @@ void center_vertically(
 	const box<T, U>& _container
 ) {
 
-	center_vertically(_box, _container.origin.y+(_container.h / 2));
+	T half=_container.h / 2;
+	center_vertically(_box, _container.origin.y+half);
 }
 
 template<typename T, typename U>
@@ -361,8 +384,8 @@ void center(
 	const box<T, U>& _container
 ) {
 
-	center_vertically(_box, _container.origin.y+(_container.h / 2));
-	center_horizontally(_box, _container.origin.x+(_container.w / 2));
+	center_horizontally(_box, _container);
+	center_vertically(_box, _container);
 }
 
 /**
@@ -467,8 +490,8 @@ template<typename T, typename U>
 point_2d<T> get_center(const box<T, U>& _box) {
 
 	point_2d<T> result{_box.origin};
-	result.x+=_box.w / 2.;
-	result.y+=_box.h / 2.;
+	result.x+=_box.w / 2;
+	result.y+=_box.h / 2;
 	return result;
 }
 
