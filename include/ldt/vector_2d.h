@@ -229,6 +229,15 @@ vector_2d<T> vector_from_angle(T p_ang) {
 	return {cos(rad), sin(rad)};
 }
 
+//!Creates a unit vector pointing towards the angle in radians, using cartesian space (0 is right).
+template<typename T>
+vector_2d<T> vector_from_angle_rad(
+	T _ang
+) {
+
+	return {cos(_ang), sin(_ang)};
+}
+
 //!Obtains a vector for the given angle and magnitude.
 template<typename T>
 vector_2d<T> vector_from_angle_and_magnitude(T _angle, T _magnitude) {

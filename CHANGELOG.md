@@ -11,6 +11,11 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.2.5]: 2025-08-03
+### Added:
+- Added from_angle method for vectors.
+- Added angle between methods for points.
+
 ## [V3.2.4]: 2025-06-12
 ### Added:
 - New "grow" method for the rect class.

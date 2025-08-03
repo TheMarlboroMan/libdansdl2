@@ -193,10 +193,35 @@ lm::log& operator<<(
 	return _log;
 }
 
+//! Returns the angle between two points, in radians.
+template<typename T>
+T angle_between_rad(
+	const point_2d<T>& _origin, 
+	const point_2d<T>& _target
+) {
+
+	T rad=std::atan2(_target.y-_origin.y, _target.x-_origin.x);
+	return rad;
+}
+
+//! Returns the angle between two points
+template<typename T>
+T angle_between(
+	const point_2d<T>& _origin, 
+	const point_2d<T>& _target
+) {
+
+	T rad=angle_between_rad(_origin, _target);
+	return ldt::rad_to_deg(rad);
+}
+
 //!Returns the distance between two points.
 
 template<typename T>
-T distance_between(const point_2d<T>& p1, const point_2d<T>& p2) {
+T distance_between(
+	const point_2d<T>& p1, 
+	const point_2d<T>& p2
+) {
 
 	T x=(p1.x-p2.x)*(p1.x-p2.x);
 	T y=(p1.y-p2.y)*(p1.y-p2.y);
