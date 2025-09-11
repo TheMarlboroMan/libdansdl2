@@ -109,6 +109,10 @@ class ttf_representation:
 	void                set_text(const char);
 	void                set_text(const std::string& _c) {set_text_internal(_c);}
 	void                set_render_mode(render_mode r);
+	//!Sets the line height as a ratio of the font size.
+	//!A value of 1.0 gives an space equal to the font size. 1.5 gives a line
+	//!and a half and so on.
+	//!This function will trigger a recreation of the texture if unlocked.
 	void                set_line_height_ratio(double);
 
 	protected:

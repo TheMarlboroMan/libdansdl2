@@ -16,7 +16,10 @@
 namespace ldv
 {
 
+//This one is mostly deprecated...
 using representation_alignment=ldt::alignment;
+//...because this one is just so much easier to write and remember.
+using alignment=ldt::alignment;
 
 //!Structure that contains rotation information.
 

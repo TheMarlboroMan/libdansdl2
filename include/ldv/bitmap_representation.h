@@ -15,6 +15,7 @@ class bitmap_representation:
 	public:
 
 			bitmap_representation();
+			//!Constructs the representation from a texture, position and clipping rectangle.
 			bitmap_representation(const texture&, rect={0,0,0,0}, rect={0,0,0,0});
 };
 
