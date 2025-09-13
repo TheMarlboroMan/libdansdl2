@@ -1,5 +1,7 @@
 #include "ldi/joystick.h"
 #include <algorithm>
+#include <sstream>
+#include <lm/log.h>
 
 using namespace ldi;
 
@@ -103,22 +105,21 @@ void joystick::virtualize_axis(
 }
 
 void joystick::register_button(
-	unsigned int v_tipo, 
+	bool _down, 
 	unsigned int v_button
 ) {
 
-	if(v_tipo==0) {
+	if(_down) {
 
 		buttons_down[v_button]=true;
 		buttons_pressed[v_button]=true;
 		buttons_released[v_button]=false;
+		return;
 	}
-	else {
 
-		buttons_up[v_button]=true;
-		buttons_released[v_button]=true;
-		buttons_pressed[v_button]=false;
-	}
+	buttons_up[v_button]=true;
+	buttons_released[v_button]=true;
+	buttons_pressed[v_button]=false;
 }
 
 void joystick::register_axis(
@@ -220,9 +221,33 @@ void joystick::init_state() {
 	}
 }
 
-///////////////
+void joystick::debug_state(
+	std::ostream& _stream
+) const {
 
+	auto out=[&](const vbuttons& _btns) {
 
-//////////////
+		for(const auto& v : _btns) {
 
+			_stream<<(v ? 1 : 0);
+		}
+	};
 
+	_stream<<"up:";
+	out(buttons_up);
+	_stream<<" down:";
+	out(buttons_down);
+	_stream<<" pressed:";
+	out(buttons_pressed);
+	_stream<<" released:";
+	out(buttons_released);
+}
+
+void joystick::debug_state(
+	lm::logger& _logger
+) const {
+
+	std::stringstream ss;
+	debug_state(ss);
+	lm::log(_logger).debug()<<ss.str();
+}

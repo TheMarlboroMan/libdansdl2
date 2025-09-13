@@ -6,6 +6,7 @@
 #include "activity_event.h"
 
 #include <SDL2/SDL.h>
+#include <ostream>
 #include <iostream>
 #include <cstdlib> //Para abs en windows.
 #include <vector>
@@ -87,6 +88,9 @@ class sdl_input {
 	void                loop();
 	//!Indicates if a new joystick was connected
 	bool                is_event_joystick_connected() const {return events_cache[joystick_connected];}
+	//!Shows the state of all joysticks. See joystick.h for the output.
+	void                debug_joystick_state(std::ostream&) const;
+	void                debug_joystick_state(lm::logger&) const;
 	/**
 	* Indicates if a joystick was removed. No way to know which, actually, it
 	* falls upon the application to keep track of this with calls to 

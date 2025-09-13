@@ -112,22 +112,49 @@ event filter::find_one_joystick(
 	int _type
 ) const {
 
-	if((event::type_down & _type) && input.is_event_joystick_button_down()) {
+	//pointer to sdl_input method taking nothing, returning bool, which is const.
+	bool (sdl_input::*input_event_type_ptr)()const=nullptr;
+	//pointer to sdl_input method taking int, returning int, const again.
+	int (sdl_input::*input_btn_index_ptr)(int)const=nullptr;
+	auto type{event::types::type_down};
 
-		for(const auto& pair : input.joysticks) {
+	if(event::type_down & _type) {
 
-			int joy_index=pair.first;
-			return event{event::sources::source_joystick, event::types::type_down, input.get_joystick_button_down_index(joy_index), joy_index};
-		}
+		input_event_type_ptr=&sdl_input::is_event_joystick_button_down;
+		input_btn_index_ptr=&sdl_input::get_joystick_button_down_index;
+		type=event::types::type_down;
+	}
+	else if(event::type_up & _type) {
+
+		input_event_type_ptr=&sdl_input::is_event_joystick_button_up;
+		input_btn_index_ptr=&sdl_input::get_joystick_button_up_index;
+		type=event::types::type_up;
+	}
+	else {
+
+		return event{};
 	}
 
-	if((event::type_up & _type) && input.is_event_joystick_button_up()) {
+	if(! (input.*input_event_type_ptr)()) {
 
-		for(const auto& pair : input.joysticks) {
+		return event{};
+	}
 
-			int joy_index=pair.first;
-			return event{event::sources::source_joystick, event::types::type_up, input.get_joystick_button_up_index(joy_index), joy_index};
+	for(const auto& pair : input.joysticks) {
+
+		int joy_index=pair.first;
+		int btn_index=(input.*input_btn_index_ptr)(joy_index);
+		if(-1==btn_index) {
+
+			continue;
 		}
+
+		return event{
+			event::sources::source_joystick, 
+			type,
+			btn_index,
+			joy_index
+		};
 	}
 
 	return event{};

@@ -1,10 +1,12 @@
 #include "../../include/ldv/screen.h"
 #include "../../include/ldi/sdl_input.h"
 #include "../../include/ldt/sdl_tools.h"
+#include "../../include/ldt/log.h"
 #include "../class/input_events.h"
 
 int main(int /*argc*/, char ** /*argv*/) {
 
+	ldt::log_lsdl::set_type(ldt::log_lsdl::types::out);
 	ldt::sdl_init();
 
 	//Basic skeleton: video and input...

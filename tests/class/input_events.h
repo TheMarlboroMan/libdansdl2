@@ -31,6 +31,7 @@ class input_events {
 			return "???";
 		};
 
+
 		ldi::filter filter{_input};
 
 		while(true) {
@@ -52,6 +53,8 @@ class input_events {
 				break;
 			}
 
+			//_input.debug_joystick_state(std::cout);
+			
 			auto ev=filter.find_one();
 			if(!ev) {
 

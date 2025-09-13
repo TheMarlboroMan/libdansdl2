@@ -1,9 +1,9 @@
 #include <ldi/sdl_input.h>
 
 #include <ldt/log.h>
-
 #include <lm/log.h>
 #include <algorithm>
+#include <sstream>
 
 using namespace ldi;
 
@@ -50,8 +50,11 @@ void sdl_input::init_joysticks() {
 }
 
 //!Individual joystick init subroutine.
-void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
-{
+void sdl_input::init_joystick(
+	SDL_Joystick * estructura, 
+	int index
+) {
+
 	SDL_JoystickID id=SDL_JoystickInstanceID(estructura);
 	joysticks.insert(std::pair<int, joystick>(index, joystick(id, index) ) ) ;
 	joysticks.at(index).init(estructura);
@@ -63,7 +66,6 @@ void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 		j.buttons<<" buttons, "<<
 		j.hats_size<<" hats, "<<
 		j.axis_size<<" axis."<<std::endl;
-
 }
 
 //!Manually pumps an event into the first parameter, optionally processing it
@@ -71,8 +73,8 @@ void sdl_input::init_joystick(SDL_Joystick * estructura, int index)
 
 //!Returns if there was an event to pump.
 
-bool sdl_input::pump_events(SDL_Event &pevent, bool pprocess)
-{
+bool sdl_input::pump_events(SDL_Event &pevent, bool pprocess) {
+
 	bool result=SDL_PollEvent(&pevent);
 	if(pprocess && result) {
 		f_process_event(pevent, f_default_process_event);
@@ -81,8 +83,8 @@ bool sdl_input::pump_events(SDL_Event &pevent, bool pprocess)
 	return result;
 }
 
-void sdl_input::reset_event_processing_function()
-{
+void sdl_input::reset_event_processing_function() {
+
 	f_process_event=[this](SDL_Event& e, tf_default){
 		process_event(e);
 		return true;
@@ -91,8 +93,8 @@ void sdl_input::reset_event_processing_function()
 
 //!Main event loop. Must be called once per application tick.
 
-void sdl_input::loop()
-{
+void sdl_input::loop() {
+
 	clear_loop();
 	SDL_Event sdl_event;
 	while(SDL_PollEvent(&sdl_event)) {
@@ -135,12 +137,14 @@ void sdl_input::process_event(SDL_Event& _event) {
 
 		case SDL_JOYBUTTONDOWN:
 			events_cache[joystick_button_down]=true;
-			joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_button(0, _event.jbutton.button);
+
+			//lm::log(ldt::log_lsdl::get()).debug()<<"joy btn down "<<_event.jbutton.which<<" ("<<id_joystick_to_index[_event.jbutton.which]<<") btn: "<<_event.jbutton.button<<std::endl;
+			joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_button(true, _event.jbutton.button);
 		break;
 
 		case SDL_JOYBUTTONUP:
 			events_cache[joystick_button_up]=true;
-			joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_button(1, _event.jbutton.button);
+			joysticks.at(id_joystick_to_index[_event.jbutton.which]).register_button(false, _event.jbutton.button);
 		break;
 
 		case SDL_JOYAXISMOTION:
@@ -173,17 +177,15 @@ void sdl_input::process_event(SDL_Event& _event) {
 
 		case SDL_JOYDEVICEADDED:
 		case SDL_CONTROLLERDEVICEADDED:
-			lm::log(ldt::log_lsdl::get()).info()<<"New joystick detected."<<std::endl;
+			lm::log(ldt::log_lsdl::get()).info()<<"New joystick detected: "<<_event.cdevice.which<<std::endl;
 
-			if(!is_joystick_registered_by_device_id(_event.cdevice.which))
-			{
+			if(!is_joystick_registered_by_device_id(_event.cdevice.which)) {
 				init_joystick(SDL_JoystickOpen(_event.cdevice.which), joysticks.size());
 				++joysticks_size;
 				events_cache[joystick_connected]=true;
 				lm::log(ldt::log_lsdl::get()).info()<<"Joystick registered"<<std::endl;
 			}
-			else
-			{
+			else {
 				lm::log(ldt::log_lsdl::get()).info()<<"The joystick had been already registered."<<std::endl;
 			}
 		break;
@@ -457,11 +459,14 @@ int sdl_input::get_mouse_button_up_index() const {
 
 //!Returns the first joystick button down index registered. Used very sparingly.
 
-int sdl_input::get_joystick_button_down_index(int index) const {
+int sdl_input::get_joystick_button_down_index(
+	int _index
+) const {
 
-	const joystick& j=joysticks.at(index);
+	const joystick& j{joysticks.at(_index)};
 	unsigned int i=0;
 	while(i < j.buttons) {
+
 		if(j.buttons_down[i]) {
 			return i;
 		}
@@ -492,3 +497,23 @@ int sdl_input::get_joystick_index_from_id(SDL_JoystickID id) const
 	return id_joystick_to_index.at(id);
 }
 
+void sdl_input::debug_joystick_state(
+	std::ostream& _stream
+) const {
+
+	for(const auto& pair: joysticks) {
+
+		_stream<<"joystick "<<pair.first<<": ";
+		pair.second.debug_state(_stream);
+		_stream<<std::endl;
+	}
+}
+
+void sdl_input::debug_joystick_state(
+	lm::logger& _logger
+) const {
+
+	std::stringstream ss;
+	debug_joystick_state(ss);
+	lm::log(_logger).debug()<<ss.str();
+}

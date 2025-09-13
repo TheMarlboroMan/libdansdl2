@@ -1,7 +1,9 @@
 #pragma once
 
+#include <lm/log.h>
 #include <SDL2/SDL.h>
 #include <vector>
+#include <ostream>
 
 namespace ldi {
 
@@ -42,9 +44,17 @@ class joystick {
 	//Hats are treated as buttons.
 	void virtualize_hats();
 	void virtualize_axis(int virtual_threshold);
-	void register_button(unsigned int v_tipo, unsigned int v_button);
+	//true is down, false is up.
+	void register_button(bool, unsigned int v_button);
 	void register_axis(unsigned int v_axis, Sint16 v_value);
 	void register_hat(unsigned int v_hat, int v_value);
 	void init_state();
+/**
+ * Outputs the state of this joystick as a series of digits, representing 
+ * the up, down, pressed and released buttons (0 means nothing, 1 means present)
+ * separated by a space and preceded by their label (up: down: pressed: released:).
+ */
+	void debug_state(std::ostream&) const;
+	void debug_state(lm::logger&) const;
 };
 }
