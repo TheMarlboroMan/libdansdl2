@@ -12,7 +12,13 @@ bool ldt::rects_overlap(T x1, T y1, U w1, U h1, T x2, T y2, U w2, U h2, bool uni
 		endy2=y2+h2,
 		endy1=y1+h1;
 
-        //Check if not colliding and negate...
+	//There is an inherent problem here we cannot fix. If we are using doubles,
+	//we can have a box at 244.0000000000003 with a width of 12 and have it
+	//rounded at exactly 256. There is nothing we can do about this using 
+	//floating point primitives, except believing that a collision did not
+	//take place against an edge at 256.0 (if unit_is_collision=false).
+
+	//Check if not colliding and negate...
 	auto with_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 < p1 || p2 > e1);};
 	auto no_unit_collision=[](T p1, T p2, T e1, T e2) -> bool {return !(e2 <= p1 || p2 >= e1);};
 	
