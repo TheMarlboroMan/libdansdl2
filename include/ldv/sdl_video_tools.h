@@ -13,8 +13,19 @@
 namespace ldv
 {
 
+/**
+ * represents a display video mode
+ */
 struct video_display_mode {
-	int w, h, refresh_rate;
+
+/**
+ * @var w width of the video mode
+ * @var h height of the video mode
+ * @var refresh_rate screen rate refresh
+ */
+	int w, //!< width of the video mode
+	    h, //!< height of the video mode
+	    refresh_rate; //!< screen rate refresh 
 };
 
 //!Returns a video_display_mode with the current w, h and refresh_rate. Might

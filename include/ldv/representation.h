@@ -150,9 +150,12 @@ class representation {
 
 	protected:
 
-	rect            base_view_position;
+	rect            base_view_position; //!< Base position when the representation is not transformed.
+	//! Applies all SDL transformations of zoom, position and rotation.
 	void            pre_render_transform(const draw_info&);
+	//! Returns the rectangle representing this instance when it comes to alignment.
 	virtual rect&   get_align_rect() {return base_view_position;}
+	//! Returns the rectangle representing this instance when it comes to alignment.
 	virtual const rect& get_align_rect() const {return base_view_position;}
 
 	//!Real drawing functions must be defined by each subclass.

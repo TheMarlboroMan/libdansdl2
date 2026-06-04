@@ -112,6 +112,10 @@ class raster_representation:
 
 	protected:
 
+/**
+* Marks this representation for recalculation next time it is drawn.
+* This may imply recalculating openGL points for textures.
+*/
 	void                reset_calculations() {calculate=true;}
 	void                free_texture();
 	//!Removes the texture.

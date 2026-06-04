@@ -25,18 +25,19 @@ class ttf_representation:
 {
 	public:
 
-	//Enum for set_style.
+	//! Enum for set_style.
 	enum                font_faces {
-		bold=TTF_STYLE_BOLD,
-		italic=TTF_STYLE_ITALIC,
-		underline=TTF_STYLE_UNDERLINE,
-		striketrough=TTF_STYLE_STRIKETHROUGH
+		bold=TTF_STYLE_BOLD,                //!< Text will be bold
+		italic=TTF_STYLE_ITALIC,            //!< Text will be in italics
+		underline=TTF_STYLE_UNDERLINE,      //!< Text will be underlined.
+		striketrough=TTF_STYLE_STRIKETHROUGH //!< Text will be striked.
 	};
 
-	enum debug_flags {
-		dflag_none=0,
-		dflag_width_mode=1,
-		dflag_internal_size=2
+	//! Flags for get_debug_flags and set_debug_flags.
+	enum debug_flags { 
+		dflag_none=0, //!< will log no information
+		dflag_width_mode=1, //!< will log information about the text size
+		dflag_internal_size=2 //!< will log information about texture size
 	};
 
 	//!Render modes. Default is blended.
@@ -48,7 +49,9 @@ class ttf_representation:
 	                    ttf_representation(const ttf_representation&);
 	virtual             ~ttf_representation();
 
+	//! Returns the debug flags applies as per the debug_flags enum.
 	int                 get_debug_flags() const;
+	//! Sets the debug flags as per the debug_flags enum.
 	ttf_representation& set_debug_flags(int);
 	//!Assignment operator. Texture is recreated as a different resource from the original.
 	ttf_representation& operator=(const ttf_representation&);
@@ -105,8 +108,8 @@ class ttf_representation:
 
 	void                set_font(const ttf_font&);
 
-	//!Sets the text as a string. Triggers a cleanse and recreation of the texture if unlocked.
 	void                set_text(const char);
+	//!Sets the text as a string. Triggers a cleanse and recreation of the texture if unlocked.
 	void                set_text(const std::string& _c) {set_text_internal(_c);}
 	void                set_render_mode(render_mode r);
 	//!Sets the line height as a ratio of the font size.

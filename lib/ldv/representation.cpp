@@ -75,6 +75,8 @@ bool representation::draw(
 	return false;
 }
 
+//!Logs if the representation overlaps the camera along with useful information.
+
 void representation::debug_against_camera(
 #ifdef LIBDANSDL2_DEBUG
 	const camera& _camera
@@ -183,8 +185,6 @@ void representation::debug_trace_box(
 	glDisableClientState(GL_VERTEX_ARRAY);
 #endif
 }
-
-//!Applies all SDL transformations of zoom, position and rotation.
 
 void representation::pre_render_transform(const draw_info& iv)
 {
