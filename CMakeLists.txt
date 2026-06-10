@@ -139,13 +139,20 @@ if(BUILD_TESTS)
 	endif()
 
 	add_executable(input_filter tests/drivers/input_events.cpp)
-	target_link_libraries(input_filter dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
-
 	add_executable(gl_version tests/drivers/gl_version.cpp)
-	target_link_libraries(gl_version dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
-
 	add_executable(draw tests/drivers/draw.cpp)
-	target_link_libraries(draw dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
+
+	if(WIN32)
+
+		target_link_libraries(input_filter dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer pthread)
+		target_link_libraries(gl_version dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer pthread)
+		target_link_libraries(draw dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer pthread)
+	else()
+
+		target_link_libraries(input_filter dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
+		target_link_libraries(gl_version dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
+		target_link_libraries(draw dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
+	endif()
 endif()
 
 
