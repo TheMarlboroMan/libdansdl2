@@ -40,16 +40,16 @@ bool ray_intersects_box_simple(
 	//and 1.
 	//NOTE: using floats here we can get inf and -inf when direction is zero,
 	//thus avoiding a crash.
-	point_2d<T> near=( _box.origin - _ray.point) / direction,
-	            far=(endpoint - _ray.point ) / direction;
+	point_2d<T> pnear=( _box.origin - _ray.point) / direction,
+	            pfar=(endpoint - _ray.point ) / direction;
 
 	//I think this means something like... you are waaaay to near.
-	if(std::isnan(far.y) || std::isnan(far.x)) {
+	if(std::isnan(pfar.y) || std::isnan(pfar.x)) {
 
 		return false;
 	}
 
-	if(std::isnan(near.y) || std::isnan(near.x)) {
+	if(std::isnan(pnear.y) || std::isnan(pnear.x)) {
 
 		return false;
 	}
@@ -74,24 +74,24 @@ bool ray_intersects_box_simple(
 	//minimum valid value in one axis must be smaller than the largest one
 	//in the other, so there goes another early exit... Let us sort the
 	//components of the points to check that (this is the 
-	if(near.x > far.x) {
+	if(pnear.x > pfar.x) {
 
-		std::swap(near.x, far.x);
+		std::swap(pnear.x, pfar.x);
 	}
 
-	if(near.y > far.y) {
+	if(pnear.y > pfar.y) {
 
-		std::swap(near.y, far.y);
+		std::swap(pnear.y, pfar.y);
 	}
 
-	if(near.x > far.y || near.y > far.x) {
+	if(pnear.x > pfar.y || pnear.y > pfar.x) {
 
 		return false;
 	}
 
 	//Ok, we grab the furthest intersection.A negative value means we are
 	//pointing away, so another early exit.
-	T intersection_far=std::min(far.x, far.y);
+	T intersection_far=std::min(pfar.x, pfar.y);
 	if(intersection_far < 0.) {
 
 		return false;
@@ -99,7 +99,7 @@ bool ray_intersects_box_simple(
 
 	//This is the nearest intersection... It must be between 0 and 1 to be
 	//an intersection and the math just works out.
-	T intersection_near=std::max(near.x, near.y);
+	T intersection_near=std::max(pnear.x, pnear.y);
 	if(intersection_near < 0. || intersection_near > 1.) {
 
 		return false;
@@ -133,41 +133,41 @@ ray_box_intersection<T> ray_intersects_box(
 	endpoint.x+=_box.w;
 	endpoint.y+=_box.h;
 
-	point_2d<T> near=( _box.origin - _ray.point) / direction,
-	            far=(endpoint - _ray.point ) / direction;
+	point_2d<T> pnear=( _box.origin - _ray.point) / direction,
+	            pfar=(endpoint - _ray.point ) / direction;
 
 	if(
-		std::isnan(far.y) || std::isnan(far.x)
-		|| std::isnan(near.y) || std::isnan(near.x)
+		std::isnan(pfar.y) || std::isnan(pfar.x)
+		|| std::isnan(pnear.y) || std::isnan(pnear.x)
 	) {
 
 		return {false, 0., {0., 0.}, {0., 0.}};
 	}
 
-	if(near.x > far.x) {
+	if(pnear.x > pfar.x) {
 
-		std::swap(near.x, far.x);
+		std::swap(pnear.x, pfar.x);
 	}
 
-	if(near.y > far.y) {
+	if(pnear.y > pfar.y) {
 
-		std::swap(near.y, far.y);
+		std::swap(pnear.y, pfar.y);
 	}
 
-	if(near.x > far.y || near.y > far.x) {
+	if(pnear.x > pfar.y || pnear.y > pfar.x) {
 
 		return {false, 0., {0., 0.}, {0., 0.}};
 	}
 
 	//Ok, we grab the furthest intersection.A negative value means we are
 	//pointing away, so another early exit.
-	T intersection_far=std::min(far.x, far.y);
+	T intersection_far=std::min(pfar.x, pfar.y);
 	if(intersection_far < 0.) {
 
 		return {false, 0., {0., 0.}, {0., 0.}};
 	}
 
-	T intersection_near=std::max(near.x, near.y);
+	T intersection_near=std::max(pnear.x, pnear.y);
 	if(intersection_near < 0. || intersection_near > 1.) {
 
 		return {false, 0., {0., 0.}, {0., 0.}};
@@ -180,7 +180,7 @@ ray_box_intersection<T> ray_intersects_box(
 	//The normals... the normals... We can combine vector direction and
 	//some of the properties to obtain a normal.
 	vector_2d<T> normal;
-	if(near.x > near.y) {
+	if(pnear.x > pnear.y) {
 
 		normal=direction.x < 0 ? vector_2d<T>{1., 0.} : vector_2d<T>{-1, 0.};
 	}
