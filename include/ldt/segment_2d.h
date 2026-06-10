@@ -25,14 +25,14 @@ struct segment_2d {
 	}
 
 	//!Creates a segment from point and vector
-					segment_2d<T>(
+					segment_2d(
 			tpoint _point, 
 			tvector _vector
 	) :point{_point}, vector{_vector} {
 
 	}
 
-					segment_2d<T>()
+					segment_2d()
 		:point(tpoint(0,0)), vector(tvector(0,0)) {
 
 	}
