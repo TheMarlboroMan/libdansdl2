@@ -94,38 +94,42 @@ endif()
 #windows specifics
 if(WIN32)
 
+	include_directories(../log/include)
 	add_compile_definitions(WINBUILD=1)
+
+	if(${BUILD_SHARED})
+
+		target_compile_definitions(dansdl2_shared PUBLIC -DWINBUILD)
+
+		set(IMPORTED_LIB_POSTFIX "")
+		if(${BUILD_DEBUG})
+
+			set(IMPORTED_LIB_POSTFIX "_debug")
+		endif()
+
+		add_library(lm SHARED IMPORTED)
+		set_target_properties(lm PROPERTIES 
+			IMPORTED_IMPLIB "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.dll.a"
+			IMPORTED_LOCATION "../../log/build/liblm${IMPORTED_LIB_POSTFIX}.dll"
+		)
+
+#	target_link_libraries(dansdl2_static lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
+#	target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
+
+		target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
+	endif()
 
 	if(${BUILD_STATIC})
 		target_compile_definitions(dansdl2_static PUBLIC -DWINBUILD)
 		target_link_libraries(dansdl2_static lm SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
 	endif()
 
-	if(${BUILD_SHARED})
-		target_compile_definitions(dansdl2_shared PUBLIC -DWINBUILD)
-		target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
-	endif()
-
-	if(${BUILD_DEBUG})
-		target_compile_definitions(dansdl2_debug PUBLIC -DWINBUILD)
-		target_link_libraries(dansdl2_debug lm SDL2 SDL2_ttf SDL2_mixer SDL2_image glu32 opengl32 stdc++fs)
-	endif()
-
 	include_directories("${CMAKE_CURRENT_LIST_DIR}/../log/include/")
 
-	add_library(lm SHARED IMPORTED)
-	set_target_properties(lm PROPERTIES IMPORTED_IMPLIB "C:/Program Files (x86)/lm/lib/liblm.dll")
 
 endif()
 
 install(DIRECTORY include/ DESTINATION include)
-
-if(WIN32)
-
-#	target_link_libraries(dansdl2_static lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
-#	target_link_libraries(dansdl2_shared lm SDL2 SDL2_ttf SDL2_mixer SDL2_image freeglut glew32 glu32 opengl32 stdc++fs)
-
-endif()
 
 if(BUILD_TESTS) 
 
