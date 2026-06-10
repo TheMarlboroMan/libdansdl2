@@ -145,8 +145,13 @@ if(BUILD_TESTS)
 	if(WIN32)
 
 		target_link_libraries(input_filter dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer pthread)
+		target_link_options(input_filter PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
+
 		target_link_libraries(gl_version dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer pthread)
+		target_link_options(gl_version PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
+
 		target_link_libraries(draw dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer pthread)
+		target_link_options(draw PRIVATE -lmingw32 -lSDL2main -lSDL2 -mwindows)
 	else()
 
 		target_link_libraries(input_filter dansdl2_shared lm SDL2 SDL2_image SDL2_ttf SDL2_mixer GL pthread)
