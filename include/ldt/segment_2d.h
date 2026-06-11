@@ -19,7 +19,7 @@ struct segment_2d {
 	tvector             vector; //!< vector of the segment. Somewhat redundant given that we have vertexes... or is it the other way around?.
 
 	//!Creates a segment from point to v2.
-					segment_2d<T>(tpoint _point, tpoint _point_2)
+					segment_2d(tpoint _point, tpoint _point_2)
 		:point(_point), vector(vector_from_points(_point, _point_2)) {
 
 	}
@@ -38,7 +38,7 @@ struct segment_2d {
 	}
 
 	//!Copy constructor.
-					segment_2d<T>(const segment_2d<T>& o)
+					segment_2d(const segment_2d<T>& o)
 	:point(o.point), vector(o.vector) {
 
 	}
