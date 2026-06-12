@@ -1,6 +1,7 @@
 #include <ldv/screen.h>
 
 #include <iostream>
+#include <sstream>
 
 using namespace ldv;
 
@@ -74,6 +75,14 @@ void screen::init(int flags_window)
 
 	//Bind the sdl window to openGL.
 	context=SDL_GL_CreateContext(window);
+	if(nullptr==context) {
+
+		std::stringstream ss;
+		ss<<"failed to create GL context "<<SDL_GetError();
+
+		throw std::runtime_error(ss.str());
+	}
+
 	set_logical_size(w, h);
 	glViewport(0.f, 0.f, w, h);
 
