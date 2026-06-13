@@ -103,7 +103,7 @@ void texture::load(
 		if(0!=error) {
 
 			std::stringstream ss;
-			ss<<"texture load failed with glerror "<<error;
+			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h;
 			throw std::runtime_error(ss.str());
 		}
 
@@ -128,7 +128,7 @@ void texture::load(
 		if(0!=error) {
 
 			std::stringstream ss;
-			ss<<"texture load failed with glerror "<<error;
+			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h;
 			throw std::runtime_error(ss.str());
 		}
 
@@ -153,7 +153,7 @@ void texture::load(
 		if(0!=error) {
 
 			std::stringstream ss;
-			ss<<"texture load failed with glerror "<<error;
+			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h;
 			throw std::runtime_error(ss.str());
 		}
 
