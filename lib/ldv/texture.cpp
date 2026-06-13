@@ -2,6 +2,8 @@
 #include <stdexcept>
 #include <vector>
 #include <cstdint>
+#include <stdexcept>
+#include <sstream>
 
 #ifdef LIBDANSDL2_DEBUG
 #include <lm/log.h>
@@ -93,16 +95,33 @@ void texture::load(
 
 		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
 		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
-		mode=GL_RGBA;
-		glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, converted->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
 		return;
 	}
 
-	mode=surface->format->BytesPerPixel==4
-		? GL_RGBA
-		: GL_RGB;
+	if(surface->format->BytesPerPixel==4) {
 
-	glTexImage2D(GL_TEXTURE_2D, 0, mode, w, h, 0, mode, GL_UNSIGNED_BYTE, surface->pixels);
+		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
+		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+		SDL_FreeSurface(converted);
+		SDL_FreeFormat(targetformat);
+		return;
+	}
+	
+	if(surface->format->BytesPerPixel==3) {
+
+		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGB24);
+		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
+		SDL_FreeSurface(converted);
+		SDL_FreeFormat(targetformat);
+		return;
+	}
+
+	std::stringstream ss;
+	ss<<"attempted to load texture with "<<surface->format->BytesPerPixel<<" bpp, should be 4 or 3";
+	throw std::runtime_error(ss.str());
 }
