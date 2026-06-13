@@ -109,7 +109,7 @@ void texture::load(
 
 		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
 		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
 		return;
@@ -123,7 +123,7 @@ void texture::load(
 
 		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGB24);
 		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, surface->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, converted->pixels);
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
 		return;
