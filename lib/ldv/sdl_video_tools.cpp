@@ -3,6 +3,11 @@
 #include <lm/log.h>
 #include <GL/gl.h>
 
+#ifdef LIBDANSDL2_DEBUG
+#include <lm/log.h>
+#include <ldt/log.h>
+#endif
+
 #ifdef WINCOMPIL
 #include <GL/glext.h>
 #endif
@@ -135,6 +140,13 @@ SDL_Surface * ldv::load_image(const std::string& path) {
 	if (!temp) {
 		throw std::runtime_error(std::string("ldv::load_image() : unable to load image ")+path);
 	}
+
+#ifdef LIBDANSDL2_DEBUG
+
+	lm::log(ldt::log_lsdl::get()).debug()<<"loaded surface from "<<path<<std::endl;
+
+#endif
+
 
 	return temp;
 }
