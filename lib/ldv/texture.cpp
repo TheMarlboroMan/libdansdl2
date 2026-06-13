@@ -90,12 +90,23 @@ void texture::load(
 	if(SDL_ISPIXELFORMAT_INDEXED(const_cast<SDL_Surface*>(surface)->format->format)) {
 
 #ifdef LIBDANSDL2_DEBUG
-		lm::log(ldt::log_lsdl::get()).debug()<<"detected indexed surface, will convert"<<std::endl;
+		lm::log(ldt::log_lsdl::get()).debug()<<"detected indexed surface, will convert to RGBA32"<<std::endl;
 #endif
 
 		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
 		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
+
+		auto error=glGetError();
+		if(0!=error) {
+
+			std::stringstream ss;
+			ss<<"texture load failed with glerror "<<error;
+			throw std::runtime_error(ss.str());
+		}
+
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
 		return;
@@ -109,7 +120,18 @@ void texture::load(
 
 		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
 		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
+
+		auto error=glGetError();
+		if(0!=error) {
+
+			std::stringstream ss;
+			ss<<"texture load failed with glerror "<<error;
+			throw std::runtime_error(ss.str());
+		}
+
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
 		return;
@@ -123,7 +145,18 @@ void texture::load(
 
 		SDL_PixelFormat * targetformat=SDL_AllocFormat(SDL_PIXELFORMAT_RGB24);
 		SDL_Surface * converted=SDL_ConvertSurface(const_cast<SDL_Surface *>(surface), targetformat, 0);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, converted->pixels);
+
+		auto error=glGetError();
+		if(0!=error) {
+
+			std::stringstream ss;
+			ss<<"texture load failed with glerror "<<error;
+			throw std::runtime_error(ss.str());
+		}
+
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
 		return;
