@@ -77,15 +77,33 @@ void texture::replace(const surface& s)
 void texture::load(
 	const SDL_Surface * surface
 ) {
+
+	auto check_failure=[this](const std::string& _context) {
+
+		auto error=glGetError();
+		if(GL_NO_ERROR!=error) {
+
+			std::stringstream ss;
+			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h<<": "<<_context;
+			throw std::runtime_error(ss.str());
+		}
+	};
+
+	//Terribly pump out all previous errors. Yes, we should do this better...
+	while(GL_NO_ERROR!=glGetError()) {}
+
 	w=surface->w;
 	h=surface->h;
 
 	//If there is no index, we request a new from opengl.
 	if(!index) {
+
 		glGenTextures(1, &index);
+		check_failure("unable to request index");
 	}
 
 	glBindTexture(GL_TEXTURE_2D, index);
+	check_failure("unable to bind texture");
 
 	if(SDL_ISPIXELFORMAT_INDEXED(const_cast<SDL_Surface*>(surface)->format->format)) {
 
@@ -99,13 +117,7 @@ void texture::load(
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
 
-		auto error=glGetError();
-		if(0!=error) {
-
-			std::stringstream ss;
-			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h;
-			throw std::runtime_error(ss.str());
-		}
+		check_failure("unable to generate texture");
 
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
@@ -124,13 +136,7 @@ void texture::load(
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, converted->pixels);
 
-		auto error=glGetError();
-		if(0!=error) {
-
-			std::stringstream ss;
-			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h;
-			throw std::runtime_error(ss.str());
-		}
+		check_failure("unable to generate texture");
 
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
@@ -149,13 +155,7 @@ void texture::load(
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, converted->pixels);
 
-		auto error=glGetError();
-		if(0!=error) {
-
-			std::stringstream ss;
-			ss<<"texture load failed with glerror "<<error<<" for an image of "<<w<<"x"<<h;
-			throw std::runtime_error(ss.str());
-		}
+		check_failure("unable to generate texture");
 
 		SDL_FreeSurface(converted);
 		SDL_FreeFormat(targetformat);
