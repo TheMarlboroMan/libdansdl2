@@ -284,9 +284,12 @@ void ttf_representation::create_texture_internal(
 	SDL_Color sdl_col{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
 	if(mode==render_mode::blended) {
 
-		sdl_col=SDL_Color{(Uint8)colorif(text_color.b), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.r), (Uint8)colorif(1.f)};
+		sdl_col=SDL_Color{(Uint8)colorif(text_color.r), (Uint8)colorif(text_color.g), (Uint8)colorif(text_color.b), (Uint8)colorif(1.f)};
 	}
 
+
+	//We are attempting to create a surface here to later copy its format. So ugly...
+	//TODO: This is so ugly.
 	//TODO: raw pointers!
 	SDL_Surface * s=nullptr;
 	switch(mode) {
@@ -297,15 +300,25 @@ void ttf_representation::create_texture_internal(
 			s=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col,
 				SDL_Color{(Uint8)colorif(bg_shaded.r), (Uint8)colorif(bg_shaded.g), (Uint8)colorif(bg_shaded.b), (Uint8)colorif(bg_shaded.a)});
 		break;
-		case render_mode::blended:
-			s=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
+		case render_mode::blended: {
+			//Produces a ARGB surface, we convert it to RGBA.
+			SDL_Surface * argb=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
+			s=SDL_ConvertSurfaceFormat(argb, SDL_PIXELFORMAT_RGBA32, 0);
+			SDL_FreeSurface(argb);
+		//	s=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), "a", sdl_col);
+		}
 		break;
 	}
 
 	std::unique_ptr<canvas> cnv(canvas::create(
 		canvas_w,
 		canvas_h,
-		s->format->BitsPerPixel, s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask));
+		s->format->BitsPerPixel,
+		s->format->Rmask,
+		s->format->Gmask,
+		s->format->Bmask,
+		s->format->Amask
+	));
 
 	SDL_FreeSurface(s);
 
@@ -326,12 +339,18 @@ void ttf_representation::create_texture_internal(
 				surf=TTF_RenderUTF8_Shaded(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col,
 					SDL_Color{(Uint8)colorif(bg_shaded.r), (Uint8)colorif(bg_shaded.g), (Uint8)colorif(bg_shaded.b), (Uint8)colorif(bg_shaded.a)});
 			break;
-			case render_mode::blended:
-				surf=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
+			case render_mode::blended: {
+				//Produces a ARGB surface, 
+				SDL_Surface * argb=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
+				surf=SDL_ConvertSurfaceFormat(argb, SDL_PIXELFORMAT_RGBA32, 0);
+				SDL_FreeSurface(argb);
+				//surf=TTF_RenderUTF8_Blended(const_cast<TTF_Font*>(font->get_font()), cad, sdl_col);
+			}
 			break;
 		}
 
-		if(!surf) {
+		if(nullptr==surf) {
+
 			throw std::runtime_error("Unable to prepare ttf_representation : "+std::string(TTF_GetError())+" : "+c);
 		}
 
@@ -355,6 +374,12 @@ void ttf_representation::create_texture_internal(
 		y+=h+(line_height-h);
 	}
 
+/**
+	//Multiplatform endianess is always ready to break stuff up.
+	SDL_Surface* converted_raw=SDL_ConvertSurfaceFormat(cnv->get_surface(), SDL_PIXELFORMAT_RGBA32, 0);
+	surface converted(converted_raw);
+*/
+
 	if(!get_texture())	{
 		ldv::texture * tex=new ldv::texture(*cnv);
 		set_texture(*tex);
@@ -363,11 +388,12 @@ void ttf_representation::create_texture_internal(
 		get_texture()->replace(*cnv);
 	}
 
+	SDL_SaveBMP(cnv->get_surface(), "lol.bmp");
+
 	set_blend(representation::blends::alpha);
 	set_clip({0,0, (unsigned)canvas_w, (unsigned)canvas_h});
 	//This must be triggered: dimensions would be left at 0 and cameras would fail.
 	set_location({0, 0, (unsigned)canvas_w, (unsigned)canvas_h});
-
 
 	text_x_displacement=text_x;
 	text_position.origin.x=text_x_displacement;
@@ -378,7 +404,6 @@ void ttf_representation::create_texture_internal(
 	base_view_position.origin=text_position.origin;
 	base_view_position.w=canvas_w;
 	base_view_position.h=canvas_h;
-
 }
 
 //!Sets a new ttf font.

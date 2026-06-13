@@ -9,8 +9,8 @@ namespace ldv
 
 //!Wrapper for a SDL_Surface and base class for image and canvas.
 
-class surface
-{
+class surface {
+
 	public:
 
 	enum class blends{none, alpha, add, mod};
@@ -25,8 +25,10 @@ class surface
 	SDL_Surface * 	get_surface() const {return sdl_surface;}
 	//!Returns the underlying surface.
 	SDL_Surface * 	get_surface() {return sdl_surface;}
+	//TODO: Sure, let's deference a possibly null pointer.
 	//!Shortcut for get_surface()->w.
 	unsigned int 	get_w() const {return sdl_surface->w;}
+	//TODO: Sure, let's deference a possibly null pointer.
 	//!Shortcut for get_surface()->h.
 	unsigned int 	get_h() const {return sdl_surface->h;}
 	//!Checks whether colokeying is active.

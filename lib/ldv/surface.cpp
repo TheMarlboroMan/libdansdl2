@@ -25,10 +25,9 @@ surface::surface()
 
 //!Class destructor.
 
-surface::~surface()
-{
-	if(sdl_surface)
-	{
+surface::~surface() {
+	if(sdl_surface) {
+
 		SDL_FreeSurface(sdl_surface);
 		sdl_surface=nullptr;
 	}
