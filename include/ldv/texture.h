@@ -15,17 +15,15 @@ namespace ldv
 
 //!Textures are created from ldv::surface derived objects.
 
-class texture
-{
+class texture {
+
 	public:
 	                texture(const surface&);
+	                texture(const texture&);
+	texture&        operator=(const texture&);
 	                texture(texture&&);
-	//!Textures cannot be copy constructed.
-	                texture(const texture&)=delete;
+	texture&        operator=(texture&&); //but they can be move assigned to.
 	                ~texture();
-	texture&        operator=(texture&& t);
-	//!Textures cannot be copied.
-	texture&        operator=(const texture& t)=delete;
 
 	//!Gets texture width.
 	unsigned int    get_w() const {return w;}
@@ -44,6 +42,8 @@ class texture
 	unsigned int    w,
 	                h;
 };
+
+GLuint duplicate_texture(GLuint, unsigned int, unsigned int, int);
 
 }
 

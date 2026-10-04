@@ -13,8 +13,8 @@ class audio_controller;
 //!Can only be created from within the audio_controller class. 
 //!There's another class: audio_channel, that provides the same public interface for it. 
 
-class real_audio_channel
-{
+class real_audio_channel {
+
 	public:
 
 	int 				play(const sound_struct&);

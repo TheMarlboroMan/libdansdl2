@@ -68,6 +68,45 @@ ttf_representation& ttf_representation::operator=(const ttf_representation& o) {
 	return *this;
 }
 
+ttf_representation::ttf_representation(
+	ttf_representation&& _other
+):
+	raster_representation{std::move(_other)},
+	font{_other.font}, //not owned, ok.
+	text{std::move(_other.text)},
+	mode{_other.mode},
+	text_color{std::move(_other.text_color)},
+	bg_shaded{std::move(_other.bg_shaded)},
+	text_position{std::move(_other.text_position)},
+	text_x_displacement{_other.text_x_displacement} //this is just a scalar we can copy.
+{
+
+	//The raster representation does not own its texture but WE actually do
+	//so it it important to remove it from the other so that it's not 
+	//destroyed on its way out and we can keep it.
+
+	_other.reset_texture();
+}
+
+ttf_representation& ttf_representation::operator=(
+	ttf_representation&& _other
+) {
+	raster_representation::operator=(_other);
+	font=_other.font; //not owned, ok.
+	text=std::move(_other.text);
+	mode=_other.mode;
+	text_color=std::move(_other.text_color);
+	bg_shaded=std::move(_other.bg_shaded);
+	text_position=std::move(_other.text_position);
+	text_x_displacement=_other.text_x_displacement;
+
+	//Now, we copied the texture, but let's make sure _other does not break
+	//it on its way out...
+	_other.reset_texture();
+
+	return *this;
+}
+
 void ttf_representation::create_texture() {
 
 	if(-1==max_width) {

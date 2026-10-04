@@ -91,6 +91,9 @@ class box
 		return *this;
 	}
 
+	box(box&&)=default;
+	box& operator=(box&&)=default;
+
 	bool operator==(const box& _box) const {
 
 		return _box.origin==origin

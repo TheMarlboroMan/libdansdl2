@@ -29,7 +29,7 @@ struct invert_transform
 	}
 };
 
-//!Base class for all texture-based representations.
+//!Base class for all texture-based representations. Does NOT OWN its texture.
 
 class raster_representation:
 	public representation
@@ -37,6 +37,7 @@ class raster_representation:
 	public:
 
 	                    raster_representation(rect={0,0,0,0}, rect={0,0,0,0}, int=representation::alpha_max);
+	//The rest of constructor, assignment operators and destructor are default.
 
 	//!Gets the assigned texture.
 	const texture *     get_texture() const {return texture_instance;}
@@ -99,13 +100,13 @@ class raster_representation:
 	void                calculate_points_brush();
 
 	invert_transform    transformation;
+	//The texture is not owned by this instance!
 	texture *           texture_instance{nullptr};	//Este es el puntero a su superficie de memoria. Es un puntero y no una referencia para permitir cambiarlo.
 	struct 	{int w, h;} brush;
 	std::vector<point>  points; 	//!<Space points.
 	std::vector<texpoint> tex_points; //!<Texture mapping points.
 	static std::vector<point>  quad_points; 	//!<Space points.
 	static std::vector<texpoint> quad_tex_points; //!<Texture mapping points.
-
 	bool                calculate{true},
 	                    with_brush{false};
 	rgb_color           rgb_colorize;

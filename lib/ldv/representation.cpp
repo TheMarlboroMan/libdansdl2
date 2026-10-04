@@ -31,10 +31,11 @@ representation::representation(int valpha, const rect& _bvp):
 {
 
 }
+
 //!Draws to screen with camera. The third parameter skips camera checks and draws anyway.
 
 //!This function actually delegates to do_draw on each derived class.
-//!skip_take is mostly useful for group repesentations, specially when rotations
+//!skip_take is mostly useful for group representations, specially when rotations
 //are applied to them.
 
 bool representation::draw(

@@ -41,8 +41,10 @@ class audio_channel
 
 	                        audio_channel();
 	                        audio_channel(real_audio_channel&);
-	                        audio_channel(const audio_channel&);
-	                        audio_channel& operator=(const audio_channel&);
+	                        audio_channel(const audio_channel&)=default;
+	                        audio_channel& operator=(const audio_channel&)=default;
+	                        audio_channel(audio_channel&&)=default;
+	                        audio_channel& operator=(audio_channel&&)=default;
 
 	int                     play(const sound_struct& e);
 	void                    pause();

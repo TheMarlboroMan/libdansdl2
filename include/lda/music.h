@@ -19,6 +19,10 @@ class music
 
 				music();
 				music(const std::string&);
+				music(const music&); 
+				music& operator=(const music&);
+				music(music&&);
+				music& operator=(music&&);
 				~music();
 
 	void	 		load(const std::string&);

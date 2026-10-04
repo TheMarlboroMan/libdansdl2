@@ -15,11 +15,13 @@ class surface {
 
 	enum class blends{none, alpha, add, mod};
 
-			surface();
-			surface(const surface&);
-			surface(SDL_Surface *);
-			virtual ~surface();
-			surface& operator=(const surface&);
+	                surface();
+	                surface(const surface&);
+	                surface(surface&&);
+	                surface(SDL_Surface *);
+	                surface& operator=(const surface&);
+	                surface& operator=(surface&&);
+	virtual         ~surface();
 
 	//!Returns the underlying surface.
 	SDL_Surface * 	get_surface() const {return sdl_surface;}

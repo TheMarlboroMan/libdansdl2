@@ -26,6 +26,53 @@ music::music(const std::string& ppath)
 	load(ppath);
 }
 
+music::music(
+	const music& _other
+):
+	music_data{nullptr},
+	path{},
+	ready{}
+{
+
+	load(_other.path);
+}
+
+music& music::operator=(
+	const music& _other
+) {
+
+	music_data=nullptr;
+	path="";
+	ready=false;
+
+	load(_other.path);
+
+	return *this;
+}
+
+music::music(
+	music&& _other
+):
+	music_data{_other.music_data},
+	path{std::move(_other.path)},
+	ready{_other.ready}
+{
+
+	_other.music_data=nullptr;
+}
+
+music& music::operator=(
+	music&& _other
+) {
+
+	music_data=_other.music_data;
+	path=std::move(_other.path);
+	ready=_other.ready;
+	_other.music_data=nullptr;
+
+	return *this;
+}
+
 //!Class destructor.
 
 //!Implicitely calls free.

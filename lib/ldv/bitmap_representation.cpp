@@ -6,10 +6,13 @@ using namespace ldv;
 
 bitmap_representation::bitmap_representation()
 	:raster_representation()
-{
-}
+{}
 
-bitmap_representation::bitmap_representation(const texture& p_rec, rect pos, rect rec)
+bitmap_representation::bitmap_representation(
+	const texture& p_rec, 
+	rect pos, 
+	rect rec
+)
 	:raster_representation(pos, rec)
 {
 	set_texture(p_rec);

@@ -47,14 +47,16 @@ class ttf_representation:
 
 	                    ttf_representation(const ttf_font&, rgba_color, std::string="", double=1., text_align=text_align::left, render_mode=render_mode::blended);
 	                    ttf_representation(const ttf_representation&);
+	//!Assignment operator. Texture is recreated as a different resource from the original.
+	ttf_representation& operator=(const ttf_representation&);
+	                    ttf_representation(ttf_representation&&);
+	ttf_representation& operator=(ttf_representation&&);
 	virtual             ~ttf_representation();
 
 	//! Returns the debug flags applies as per the debug_flags enum.
 	int                 get_debug_flags() const;
 	//! Sets the debug flags as per the debug_flags enum.
 	ttf_representation& set_debug_flags(int);
-	//!Assignment operator. Texture is recreated as a different resource from the original.
-	ttf_representation& operator=(const ttf_representation&);
 
 	//!Specialization of go_to, which will move the text_position.
 	virtual void        go_to(point);
@@ -133,7 +135,7 @@ class ttf_representation:
 	std::vector<std::string> 		explode(const std::string &, const std::string&, size_t max=0);
 	int                 get_next_power_of_two(int) const;
 
-	ttf_font const *    font; //! <This is a pointer so it can change.
+	ttf_font const *    font; //! <This is a pointer so it can change. We don´t own it!.
 	std::string         text;
 
 	render_mode         mode;

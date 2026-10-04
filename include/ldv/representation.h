@@ -68,6 +68,10 @@ class representation {
 	//!By default all representations have 255 as alpha value.
 					representation(int, const rect&);
 					representation(int=alpha_max);
+	                representation(const representation&)=default;
+	representation& operator=(const representation&)=default;
+	                representation(representation&&)=default;
+	representation& operator=(representation&&)=default;
 	virtual         ~representation() {}
 
 	//!Gets blend mode.

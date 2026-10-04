@@ -24,6 +24,27 @@ texture::texture(const surface& s):
 }
 
 texture::texture(
+	const texture& _other
+):
+	index{duplicate_texture(_other.index, _other.w, _other.h, _other.mode)},
+	mode{_other.mode},
+	w{_other.w},
+	h{_other.h}
+{}
+
+texture& texture::operator=(
+	const texture& _other
+) {
+
+	index=duplicate_texture(_other.index, _other.w, _other.h, _other.mode);
+	w=_other.w;
+	h=_other.h;
+	mode=_other.mode;
+
+	return *this;
+}
+
+texture::texture(
 	texture&& _other
 ):
 	index{_other.index},
@@ -33,24 +54,22 @@ texture::texture(
 {
 
 	_other.index=0;
-	_other.w=0;
-	_other.h=0;
 }
 
 texture& texture::operator=(
 	texture&& _other
 ) {
+
 	index=_other.index;
 	mode=_other.mode;
 	w=_other.w;
 	h=_other.h;
 
 	_other.index=0;
-	_other.w=0;
-	_other.h=0;
 
 	return *this;
 }
+
 
 //!Class destructor
 
@@ -170,3 +189,46 @@ void texture::load(
 	ss<<"attempted to load texture with "<<surface->format->BytesPerPixel<<" bpp, should be 4 or 3";
 	throw std::runtime_error(ss.str());
 }
+
+GLuint ldv::duplicate_texture(
+	GLuint _index,
+	unsigned int _w,
+	unsigned int _h,
+	int _mode
+) {
+
+	const unsigned int components=GL_RGB==_mode
+		? 3
+		: 4; //rgba and stuff... there may be even less components but we are working with 4 and 3 bpp here.
+
+	std::vector<unsigned char> pixels(_w * _h * components);
+
+	//Select and read original texture...
+	glBindTexture(GL_TEXTURE_2D, _index);
+	glGetTexImage(
+		GL_TEXTURE_2D,
+		0,
+		_mode,
+		GL_UNSIGNED_BYTE,
+		pixels.data()
+	);
+
+	//Create new texture...
+	GLuint new_index;
+	glGenTextures(1, &new_index);
+	glBindTexture(GL_TEXTURE_2D, new_index); //select it...
+	//..and drop data in.
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		_mode,
+		_w, _h,
+		0,
+		_mode,
+		GL_UNSIGNED_BYTE,
+		pixels.data()
+	);
+
+	return new_index;
+}
+

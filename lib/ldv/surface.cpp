@@ -9,9 +9,7 @@ using namespace ldv;
 
 surface::surface(SDL_Surface * s)
 	:sdl_surface(s), with_colorkey(false)
-{
-
-}
+{}
 
 //!Constructs an empty surface.
 
@@ -26,6 +24,7 @@ surface::surface()
 //!Class destructor.
 
 surface::~surface() {
+
 	if(sdl_surface) {
 
 		SDL_FreeSurface(sdl_surface);
@@ -33,22 +32,46 @@ surface::~surface() {
 	}
 }
 
-surface::surface(const surface& _other):
+surface::surface(
+	const surface& _other
+):
 	sdl_surface{ldv::copy_sdl_surface(_other.sdl_surface)},
 	with_colorkey{_other.with_colorkey}
-{
+{}
 
+surface::surface(
+	surface&& _surface
+) {
+
+	sdl_surface=_surface.sdl_surface;
+	with_colorkey=_surface.with_colorkey;
+
+	_surface.sdl_surface=nullptr;
 }
+
 
 //!Assignment operator.
 
 //!Copies the reference surface to the result. The reference surface remains
 //!unchanged.
 
-surface& surface::operator=(const surface& o)
-{
+surface& surface::operator=(
+	const surface& o
+) {
+
 	with_colorkey=o.with_colorkey;
 	sdl_surface=ldv::copy_sdl_surface(o.sdl_surface);
+
+	return *this;
+}
+
+surface& surface::operator=(
+	surface&& o
+) {
+
+	with_colorkey=o.with_colorkey;
+	sdl_surface=o.sdl_surface;
+	o.sdl_surface=nullptr;
 
 	return *this;
 }
@@ -57,13 +80,21 @@ surface& surface::operator=(const surface& o)
 
 //!The 32 bit format is expected in old SDL functions.
 
-Uint32 surface::map_color(unsigned int r, unsigned int g, unsigned int b)
-{
+Uint32 surface::map_color(
+	unsigned int r, 
+	unsigned int g, 
+	unsigned int b
+) {
 	return SDL_MapRGB(sdl_surface->format, r, g, b);
 }
 
-Uint32 surface::map_color(unsigned int r, unsigned int g, unsigned int b, unsigned int a)
-{
+Uint32 surface::map_color(
+	unsigned int r, 
+	unsigned int g, 
+	unsigned int b, 
+	unsigned int a
+) {
+
 	return SDL_MapRGBA(sdl_surface->format, r, g, b, a);
 }
 
@@ -72,22 +103,25 @@ Uint32 surface::map_color(unsigned int r, unsigned int g, unsigned int b, unsign
 //!The colorkey is the "transparent" pixel in surfaces without an alpha value.
 //!May throw a std::runtime_error if no surface exists.
 
-void surface::set_colorkey(Uint32 color)
-{
-	if(sdl_surface)
-	{
+void surface::set_colorkey(
+	Uint32 color
+) {
+
+	if(sdl_surface) {
 		SDL_SetColorKey(sdl_surface, SDL_TRUE, color);
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("calling set_colorkey(Uint8, Uint8, Uint8, bool) with no sdl_surface.");
 	}
 }
 
 //!Sets the colorkey.
 
-void surface::set_colorkey(Uint8 r, Uint8 g, Uint8 b)
-{
+void surface::set_colorkey(
+	Uint8 r, 
+	Uint8 g, 
+	Uint8 b
+) {
 	set_colorkey(map_color(r, g, b));
 }
 
@@ -95,14 +129,16 @@ void surface::set_colorkey(Uint8 r, Uint8 g, Uint8 b)
 
 //!May throw a std::runtime_error if no surface is present.
 
-void surface::clear(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-{
-	if(sdl_surface)
-	{
+void surface::clear(
+	Uint8 r, 
+	Uint8 g, 
+	Uint8 b, 
+	Uint8 a
+) {
+	if(sdl_surface) {
 		clear(map_color(r,g,b,a));
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("calling clear(Uint8, Uint8, Uint8) with no sdl_surface");
 	}
 }
@@ -112,14 +148,12 @@ void surface::clear(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 //!The 32 bit integer is the SDL format, obtainable through map_color.
 //!May throw a std::runtime_error if no surface is present.
 
-void surface::clear(Uint32 c)
-{
-	if(sdl_surface)
-	{
+void surface::clear(Uint32 c) {
+
+	if(sdl_surface) {
 		SDL_FillRect(sdl_surface, nullptr, c);
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("calling clear(Uint32) with no sdl_surface");
 	}
 }
@@ -128,15 +162,13 @@ void surface::clear(Uint32 c)
 
 //!May throw a std::runtime_error if no surface is present.
 
-void surface::clear_colorkey()
-{
-	if(sdl_surface)
-	{
+void surface::clear_colorkey() {
+
+	if(sdl_surface) {
 		SDL_SetColorKey(sdl_surface, SDL_FALSE, 0);
 		with_colorkey=false;
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("calling clear_colorkey() with no sdl_surface");
 	}
 }
@@ -146,25 +178,24 @@ void surface::clear_colorkey()
 //!Values are between 0 and 255, with 0 being fully transparent.
 //!This function may be buggy. I haven't touched surfaces in a while...
 
-void surface::set_alpha(Uint8 pvalue)
-{
+void surface::set_alpha(Uint8 pvalue) {
+
 	SDL_SetSurfaceAlphaMod(sdl_surface, pvalue);
 	with_colorkey=pvalue; //TODO: What is this?.
 }
 
+void surface::copy_from(surface const& p_res) {
 
-void surface::copy_from(surface const& p_res)
-{
 	SDL_BlitSurface(p_res.sdl_surface, nullptr, sdl_surface, nullptr);
 }
 
-void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen)
-{
+void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen) {
+
 	SDL_BlitSurface(p_recurso.sdl_surface, &p_rect_origen, sdl_surface, nullptr);
 }
 
-void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen, SDL_Rect p_rect_destino)
-{
+void surface::copy_from(surface const& p_recurso, SDL_Rect p_rect_origen, SDL_Rect p_rect_destino) {
+
 	SDL_BlitSurface(p_recurso.sdl_surface, &p_rect_origen, sdl_surface, &p_rect_destino);
 }
 

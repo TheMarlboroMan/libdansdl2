@@ -11,6 +11,10 @@ Changes will be documented under Added, Changed, Deprecated, Removed, Fixed or S
 ## Unreleased
 ### Pending
 
+## [V3.3.0]: 2026-10-4
+### Added:
+- Added a bunch of move semantics that are completely untested. I question my motives.
+
 ## [V3.2.5]: 2026-09-12
 ### Added:
 - Added epsilon to box collision methods.

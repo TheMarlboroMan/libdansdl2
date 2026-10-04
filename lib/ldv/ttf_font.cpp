@@ -28,6 +28,29 @@ ttf_font::ttf_font(const ttf_font& f)
 	load_font();
 }
 
+ttf_font::ttf_font(
+	ttf_font&& _other
+) {
+
+	name=std::move(_other.name);
+	size=_other.size;
+	font=_other.font;
+
+	_other.font=nullptr;
+}
+
+ttf_font& ttf_font::operator=(
+	ttf_font&& _other
+) {
+
+	name=std::move(_other.name);
+	size=_other.size;
+	font=_other.font;
+
+	_other.font=nullptr;
+	return *this;
+}
+
 //!Assignment operator.
 
 //!Loads the font instead of copying the font data. 
@@ -49,6 +72,7 @@ ttf_font& ttf_font::operator=(const ttf_font& f)
 ttf_font::~ttf_font()
 {
 	if(nullptr!=font) {
+
 		TTF_CloseFont(font);
 	}
 }

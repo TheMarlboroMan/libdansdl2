@@ -4,43 +4,46 @@
 #include <SDL2/SDL_mixer.h>
 #include <string>
 
-namespace lda
-{
+namespace lda {
 
 //!Wrapper for Mix_Chunk data.
 
-class sound
-{
+class sound {
+
 	public:
 
-				sound();
-				sound(const std::string&);
-	~sound();
+	            sound();
+	            sound(const std::string&);
+	            sound(const sound&);
+	sound&      operator=(const sound&);
+	            sound(sound&&);
+	sound&      operator=(sound&&);
+	            ~sound();
 
 	void 			load(const std::string&);
 
 	//!Returns the original file path.
-	const std::string&	get_path() const {return path;}
+	const std::string&  get_path() const {return path;}
 	//!Indicates whether the file was loaded correctly.
-	bool			is_ready() const {return ready;}
+	bool                is_ready() const {return ready;}
 	//!Returns a raw pointer to the sound data. This pointer must not be freed.
-	Mix_Chunk * 		get_data() {return sound_data;}
+	Mix_Chunk *         get_data() {return sound_data;}
 
 	private:
 
-	void 			free();
+	void                free();
 
-	Mix_Chunk * 		sound_data;
-	std::string 		path;
-	bool 			ready;
+	Mix_Chunk *         sound_data;
+	std::string         path;
+	bool                ready;
 };
 
 //!Simple structure to calculate stereo panning.
 
 struct sound_panning {
 
-	int 			left,	//!< Left panning, 127 is the max value.
-				right;	//!< Right panning, 127 is the max value.
+	int         left,	//!< Left panning, 127 is the max value.
+	            right;	//!< Right panning, 127 is the max value.
 	
 	//!Gets a stereo sound panning object from the left value.
 	static sound_panning 	from_left(int v) {
@@ -55,8 +58,8 @@ struct sound_panning {
 //!else needed to interact with the audio_controller. It is recommended that
 //!applications use this class routinely to play sound.
 
-struct sound_struct
-{
+struct sound_struct {
+
 	sound *	 		sound_ptr; 	//!< This has to be copy constructible, ergo the pointer.
 	short int 		volume;		//!< -1 means "no changes" to the channel volume.
 	short int 		repeat; 	//!< -1 means "infinite".
@@ -78,4 +81,6 @@ struct sound_struct
 	}
 };
 
+//Copies a mix chunk into other.
+Mix_Chunk * duplicate_chunk(Mix_Chunk const *);
 }

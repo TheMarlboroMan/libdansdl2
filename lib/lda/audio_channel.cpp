@@ -6,31 +6,13 @@ using namespace lda;
 
 //!Default constructor, creates an unlinked channel.
 audio_channel::audio_channel()
-	:channel(nullptr)
-{
-
-}
+	:channel{nullptr}
+{}
 
 //!Real channel constructor.
 audio_channel::audio_channel(real_audio_channel& c)
 	:channel(&c)
-{
-
-}
-
-//!Copy constructor. Duplicates the real channel reference.
-audio_channel::audio_channel(const audio_channel& c)
-	:channel(c.channel)
-{
-
-}
-
-//!Assignment operator. Duplicates the real channel reference.
-audio_channel& audio_channel::operator=(const audio_channel& c)
-{
-	channel=c.channel;
-	return *this;
-}
+{}
 
 //!Plays the sound_struct. A bug in the Windows version of SDL audio prevents panning from working.
 int audio_channel::play(const sound_struct& e)

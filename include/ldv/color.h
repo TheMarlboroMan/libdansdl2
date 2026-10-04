@@ -23,15 +23,10 @@ struct rgba_color {
 	            a; //!< Alpha component (0. to 1.).
 
 	            rgba_color(float, float, float, float);
-	            rgba_color(const rgba_color&);
-	rgba_color& operator=(const rgba_color& _other) {
-
-					r=_other.r;
-					g=_other.g;
-					b=_other.b;
-					a=_other.a;
-					return *this;
-				}
+	            rgba_color(const rgba_color&)=default;
+	rgba_color& operator=(const rgba_color&)=default;
+				rgba_color(rgba_color&&)=default;
+	rgba_color& operator=(rgba_color&&)=default;
 
 	//!Comparison operator. Will return true if all components match.
 	bool        operator==(const rgba_color& o) const {return o.r==r && o.g==g && o.b==b && o.a==a;}
@@ -49,14 +44,11 @@ struct rgb_color
 
 	//!Comparison operator. Will return true if all components match.
 	            rgb_color(float, float, float);
-	            rgb_color(const rgb_color&);
-	rgb_color&  operator=(const rgb_color& _other) {
+	            rgb_color(const rgb_color&)=default;
+	rgb_color&  operator=(const rgb_color&)=default;
+	            rgb_color(rgb_color&&)=default;
+	rgb_color&  operator=(rgb_color&&)=default;
 
-					r=_other.r;
-					g=_other.g;
-					b=_other.b;
-					return *this;
-				}
 	bool        operator==(const rgb_color& o) const {return o.r==r && o.g==g && o.b==b;}
 };
 

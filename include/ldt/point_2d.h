@@ -30,8 +30,18 @@ struct point_2d
 	//!Copy constructor.
 	point_2d(const point_2d<T>& p):x(p.x), y(p.y) {}
 
+	//!Move constructor.
+	point_2d(point_2d<T>&& p):x(p.x), y(p.y) {}
+
 	//!Assignment operator.
 	point_2d& operator=(const point_2d<T>& p) {
+		x=p.x;
+		y=p.y;
+		return *this;
+	}
+
+	//!Move operator.
+	point_2d& operator=(const point_2d<T>&& p) {
 		x=p.x;
 		y=p.y;
 		return *this;
